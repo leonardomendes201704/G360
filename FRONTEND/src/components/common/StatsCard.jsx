@@ -23,6 +23,15 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  */
 const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = true, active = false, onClick }) => {
 
+    // Escurece uma cor hex em 25%
+    const darken = (hex, amount = 0.25) => {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.max(0, Math.round(((num >> 16) & 0xff) * (1 - amount)));
+        const g = Math.max(0, Math.round(((num >> 8) & 0xff) * (1 - amount)));
+        const b = Math.max(0, Math.round((num & 0xff) * (1 - amount)));
+        return `rgb(${r},${g},${b})`;
+    };
+
     const colorMap = {
         primary: '#2563eb',
         success: '#10b981',
@@ -32,6 +41,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
     };
 
     const mainColor = hexColor || colorMap[color] || colorMap.primary;
+    const darkColor = darken(mainColor, 0.3);
 
     const iconElement = iconName
         ? <span className="material-icons-round" style={{ fontSize: 42, color: '#ffffff' }}>{iconName}</span>
@@ -78,18 +88,18 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             {/* Corpo */}
             <Box sx={{ p: 2, pt: accentBar ? 2.5 : 2, flex: 1 }}>
                 {/* Valor */}
-                <Typography sx={{ fontSize: '36px', fontWeight: 800, color: '#0f172a', lineHeight: 1, mb: 0.5 }}>
+                <Typography sx={{ fontSize: '36px', fontWeight: 800, color: darkColor, lineHeight: 1, mb: 0.5 }}>
                     {value}
                 </Typography>
 
                 {/* Titulo */}
-                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#334155', mb: subtitle ? 0.25 : 0 }}>
+                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: darkColor, opacity: 0.85, mb: subtitle ? 0.25 : 0 }}>
                     {title}
                 </Typography>
 
                 {/* Subtitle */}
                 {subtitle && (
-                    <Typography sx={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: '11px', color: darkColor, opacity: 0.6, fontWeight: 500 }}>
                         {subtitle}
                     </Typography>
                 )}
