@@ -298,15 +298,16 @@ const ManagerOverview = () => {
                     </Box>
 
                     {/* Right: Health Score Card + Customizer */}
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexShrink: 0 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0, alignSelf: 'stretch' }}>
                         <Box
                             onClick={() => setScoreInfoOpen(true)}
                             sx={{
-                                textAlign: 'center', minWidth: 120, p: 2, pt: 2.5, pb: 1.5,
+                                textAlign: 'center', minWidth: 130, px: 2.5, py: 2,
                                 bgcolor: '#ffffff', borderRadius: '16px',
                                 border: '1px solid rgba(0,0,0,0.08)',
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                                 cursor: 'pointer',
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                                 transition: 'all 0.2s',
                                 '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.1)', transform: 'translateY(-2px)' },
                             }}
