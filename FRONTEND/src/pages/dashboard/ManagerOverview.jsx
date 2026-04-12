@@ -272,17 +272,18 @@ const ManagerOverview = () => {
         <Box sx={{ mt: -1.5 }}>
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
-            <Box sx={{
-                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px', position: 'relative',
-                background: isDark
-                    ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
-                    : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
-                border: isDark ? '1px solid rgba(102,126,234,0.25)' : '1px solid rgba(102,126,234,0.15)',
-            }}>
+            <Box sx={{ position: 'relative', mb: 3 }}>
                 {/* Gear icon floating top-right of banner */}
-                <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 2 }}>
+                <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}>
                     <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                 </Box>
+                <Box sx={{
+                    p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px',
+                    background: isDark
+                        ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
+                        : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
+                    border: isDark ? '1px solid rgba(102,126,234,0.25)' : '1px solid rgba(102,126,234,0.15)',
+                }}>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                     {/* Left: greeting + quick actions */}
@@ -342,6 +343,7 @@ const ManagerOverview = () => {
                         </Box>
                     </Box>
                 </Box>
+            </Box>
             </Box>
 
             {/* ── KPI STRIP (usando StatsCard padrao) ─────────────────────────── */}
