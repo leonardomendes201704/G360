@@ -273,7 +273,7 @@ const ManagerOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px',
+                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px', position: 'relative',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -298,8 +298,13 @@ const ManagerOverview = () => {
                         </Box>
                     </Box>
 
-                    {/* Right: Health Score Card + Customizer */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0, alignSelf: 'stretch' }}>
+                    {/* Gear icon floating top-right of banner */}
+                    <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+                        <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
+                    </Box>
+
+                    {/* Right: Health Score Card */}
+                    <Box sx={{ flexShrink: 0, alignSelf: 'stretch' }}>
                         <Box
                             onClick={() => setScoreInfoOpen(true)}
                             sx={{
@@ -335,7 +340,6 @@ const ManagerOverview = () => {
                             <Typography sx={{ fontSize: '14px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
                             <Typography sx={{ fontSize: '12px', color: '#94a3b8' }}>Saúde Geral</Typography>
                         </Box>
-                        <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
                 </Box>
             </Box>
