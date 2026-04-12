@@ -55,8 +55,8 @@ const QA = ({ icon, label, route, color, navigate, onClick }) => (
         transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
         '&:hover': {
-            transform: 'translateY(-15px)',
-            boxShadow: `0 16px 32px ${color}35`,
+            transform: 'translateY(-8px)',
+            boxShadow: `0 12px 24px ${color}35`,
         }
     }}>
         {/* Topo colorido com icone branco */}
@@ -273,8 +273,7 @@ const ManagerOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2.5, md: 3 }, borderRadius: '20px',
-                overflow: 'visible',
+                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -289,7 +288,7 @@ const ManagerOverview = () => {
                         <Typography sx={{ fontSize: '12px', color: textMuted, mt: 0.5 }}>
                             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, mt: 1.5, pt: '15px', flexWrap: 'nowrap', overflowX: 'auto' }}>
+                        <Box sx={{ display: 'flex', gap: 1, mt: 1.5, flexWrap: 'nowrap', overflowX: 'auto' }}>
                             <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} />
                             <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} />
                             <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} />
@@ -374,7 +373,7 @@ const ManagerOverview = () => {
 
             {/* ── MAIN CHARTS ────────────────────────────────────────────────── */}
             {(isOn('incidents') || isOn('distributions')) && (
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' }, gap: 2.5, mb: 3, alignItems: 'start' }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' }, gap: 2.5, mb: 3 }}>
 
                     {isOn('incidents') && (
                         <ChartCard isDark={isDark}>
@@ -403,8 +402,8 @@ const ManagerOverview = () => {
                     )}
 
                     {isOn('distributions') && (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <ChartCard isDark={isDark} sx={{ minHeight: 160 }}>
+                        <Box sx={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 2 }}>
+                            <ChartCard isDark={isDark}>
                                 <SectionHeader icon="task_alt" title="Distribuição de Tarefas" iconColor="#3b82f6" isDark={isDark} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     {taskPie.length > 0 ? (
@@ -434,7 +433,7 @@ const ManagerOverview = () => {
                                 </Box>
                             </ChartCard>
 
-                            <ChartCard isDark={isDark} sx={{ minHeight: 160 }}>
+                            <ChartCard isDark={isDark}>
                                 <SectionHeader icon="shield" title="Distribuição de Riscos" iconColor="#ef4444" isDark={isDark} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     {riskPie.length > 0 ? (
