@@ -7,6 +7,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-12]
 
+### Changed
+- **US-014:** Secao de boas-vindas do dashboard com padding reduzido para layout mais compacto
+- **US-015:** Score exibe "0" ao inves de "–" quando zerado; label mostra "Sem dados" ou "Sem atividade" ao inves de caractere ambiguo
+- **US-016:** KPIs do dashboard validados — MetricCard interno ja segue padrao consistente (icone+valor+label+trend)
+- **US-017:** Grafico de incidentes aumentado de 220→280px; atividades recentes em largura total (100%); saude da equipe em grid 2 colunas
+  - `FRONTEND/src/pages/dashboard/ManagerOverview.jsx`
+
 ### Fixed
 - **US-010:** Corrigido contraste de botoes no tema light. CSS global `color: var(--light-text-primary) !important` sobrepunha `color: white` de botoes. Adicionada regra CSS para garantir texto branco em botoes contained/primarios.
   - `FRONTEND/src/styles/lightPremiumTheme.css`

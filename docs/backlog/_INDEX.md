@@ -10,7 +10,7 @@
 | EP-001 | Correcoes Criticas Funcionais             | Fase 1 | Alta       | Closed | 4         | -          |
 | EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | Closed | 5         | EP-001     |
 | EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | Closed | 4         | EP-002     |
-| EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | New    | 4         | EP-002, EP-003 |
+| EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | Closed | 4         | EP-002, EP-003 |
 
 ## Historias por Epico
 
@@ -46,10 +46,10 @@
 
 | ID     | Titulo                                                   | Pontos | Prioridade | Status |
 |--------|----------------------------------------------------------|--------|------------|--------|
-| US-014 | Melhorar secao de boas-vindas do Dashboard                | 3      | Media      | New    |
-| US-015 | Ajustar score e pontuacao do Dashboard                    | 3      | Media      | New    |
-| US-016 | Padronizar KPIs do Dashboard                              | 3      | Media      | New    |
-| US-017 | Otimizar proporcao dos graficos e secoes do Dashboard     | 5      | Media      | New    |
+| US-014 | Melhorar secao de boas-vindas do Dashboard                | 3      | Media      | Resolved |
+| US-015 | Ajustar score e pontuacao do Dashboard                    | 3      | Media      | Resolved |
+| US-016 | Padronizar KPIs do Dashboard                              | 3      | Media      | Resolved |
+| US-017 | Otimizar proporcao dos graficos e secoes do Dashboard     | 5      | Media      | Resolved |
 
 ## Resumo
 
@@ -59,7 +59,7 @@
 | Total de Historias         | 17    |
 | Total de Story Points      | 83    |
 | Total de Bugs              | 4     |
-| Historias Concluidas       | 13    |
+| Historias Concluidas       | 17    |
 | Bugs Resolvidos            | 4     |
 
 ## Proximos IDs Disponiveis

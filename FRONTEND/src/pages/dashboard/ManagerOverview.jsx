@@ -245,10 +245,11 @@ const ManagerOverview = () => {
         : healthScore >= 75 ? '#10b981'
             : healthScore >= 50 ? '#f59e0b'
                 : '#ef4444';
-    const healthLabel = healthScore === null ? '–'
-        : healthScore >= 75 ? 'Saudável'
-            : healthScore >= 50 ? 'Atenção'
-                : 'Crítico';
+    const healthLabel = healthScore === null ? 'Sem dados'
+        : healthScore === 0 ? 'Sem atividade'
+            : healthScore >= 75 ? 'Saudável'
+                : healthScore >= 50 ? 'Atenção'
+                    : 'Crítico';
 
     // ─────────────────────────────────────────────────────────────────────────
     return (
@@ -256,7 +257,7 @@ const ManagerOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 2, md: 3 }, borderRadius: '20px',
+                mb: 3, p: { xs: 2, md: 2.5 }, borderRadius: '20px',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -300,7 +301,7 @@ const ManagerOverview = () => {
                                 </svg>
                                 <Box sx={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <Typography sx={{ fontSize: '22px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
-                                        {healthScore ?? '–'}
+                                        {healthScore ?? 0}
                                     </Typography>
                                     <Typography sx={{ fontSize: '9px', color: textMuted, fontWeight: 600 }}>SCORE</Typography>
                                 </Box>
@@ -358,13 +359,13 @@ const ManagerOverview = () => {
                                         { data: trendCreated, label: 'Criados', color: '#f59e0b', showMark: false, curve: 'catmullRom', area: true },
                                         { data: trendResolved, label: 'Resolvidos', color: '#10b981', showMark: false, curve: 'catmullRom' },
                                     ]}
-                                    height={220}
+                                    height={280}
                                     margin={{ top: 10, bottom: 30, left: 35, right: 10 }}
                                     slotProps={{ legend: { hidden: false, position: { vertical: 'top', horizontal: 'right' }, itemMarkWidth: 10, itemMarkHeight: 10, labelStyle: { fontSize: 11, fill: labelColor } } }}
                                     sx={{ '& .MuiChartsAxis-line': { stroke: 'transparent' }, '& .MuiChartsAxis-tick': { stroke: 'transparent' }, '& .MuiAreaElement-root': { fillOpacity: 0.15 } }}
                                 />
                             ) : (
-                                <Box sx={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1 }}>
+                                <Box sx={{ height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1 }}>
                                     <span className="material-icons-round" style={{ fontSize: '40px', color: labelColor, opacity: 0.3 }}>show_chart</span>
                                     <Typography sx={{ fontSize: '13px', color: textMuted }}>Sem dados de incidentes</Typography>
                                 </Box>
@@ -508,53 +509,54 @@ const ManagerOverview = () => {
                 </Box>
             )}
 
-            {/* ── TEAM HEALTH + ACTIVITY ─────────────────────────────────────── */}
-            {(isOn('team') || isOn('activity')) && (
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' }, gap: 2.5, mb: 3 }}>
-                    {isOn('team') && (
-                        <ChartCard isDark={isDark}>
-                            <SectionHeader icon="groups" title="Saúde da Equipe" iconColor="#3b82f6" isDark={isDark} />
-                            {teamHealth.length === 0 ? (
-                                <Box sx={{ py: 3, textAlign: 'center' }}>
-                                    <Typography sx={{ fontSize: '13px', color: textMuted }}>Nenhum membro no scope</Typography>
-                                </Box>
-                            ) : (
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                    {teamHealth.slice(0, 8).map((m, i) => {
-                                        const overduePct = m.openTasks > 0 ? Math.round((m.overdueTasks / m.openTasks) * 100) : 0;
-                                        const barColor = overduePct > 50 ? '#ef4444' : overduePct > 20 ? '#f59e0b' : '#10b981';
-                                        return (
-                                            <Box key={m.id || i} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                                <Avatar src={m.avatar} sx={{ width: 28, height: 28, fontSize: '11px', flexShrink: 0, bgcolor: '#667eea20', color: '#667eea' }}>
-                                                    {m.name?.charAt(0)}
-                                                </Avatar>
-                                                <Box sx={{ flex: 1, minWidth: 0 }}>
-                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.25 }}>
-                                                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>{m.name}</Typography>
-                                                        <Typography sx={{ fontSize: '10px', color: textMuted }}>
-                                                            {m.openTasks} aber. ·&nbsp;
-                                                            <Box component="span" sx={{ color: m.overdueTasks > 0 ? '#ef4444' : textMuted, fontWeight: m.overdueTasks > 0 ? 700 : 400 }}>
-                                                                {m.overdueTasks} atr.
-                                                            </Box>
-                                                        </Typography>
-                                                    </Box>
-                                                    <LinearProgress variant="determinate" value={Math.min(overduePct, 100)}
-                                                        sx={{ height: 4, borderRadius: 2, bgcolor: `${barColor}18`, '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: 2 } }} />
+            {/* ── TEAM HEALTH ───────────────────────────────────────────────── */}
+            {isOn('team') && (
+                <Box sx={{ mb: 3 }}>
+                    <ChartCard isDark={isDark}>
+                        <SectionHeader icon="groups" title="Saúde da Equipe" iconColor="#3b82f6" isDark={isDark} />
+                        {teamHealth.length === 0 ? (
+                            <Box sx={{ py: 3, textAlign: 'center' }}>
+                                <Typography sx={{ fontSize: '13px', color: textMuted }}>Nenhum membro no scope</Typography>
+                            </Box>
+                        ) : (
+                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 1.5 }}>
+                                {teamHealth.slice(0, 8).map((m, i) => {
+                                    const overduePct = m.openTasks > 0 ? Math.round((m.overdueTasks / m.openTasks) * 100) : 0;
+                                    const barColor = overduePct > 50 ? '#ef4444' : overduePct > 20 ? '#f59e0b' : '#10b981';
+                                    return (
+                                        <Box key={m.id || i} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                            <Avatar src={m.avatar} sx={{ width: 28, height: 28, fontSize: '11px', flexShrink: 0, bgcolor: '#667eea20', color: '#667eea' }}>
+                                                {m.name?.charAt(0)}
+                                            </Avatar>
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.25 }}>
+                                                    <Typography sx={{ fontSize: '12px', fontWeight: 600, color: textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>{m.name}</Typography>
+                                                    <Typography sx={{ fontSize: '10px', color: textMuted }}>
+                                                        {m.openTasks} aber. ·&nbsp;
+                                                        <Box component="span" sx={{ color: m.overdueTasks > 0 ? '#ef4444' : textMuted, fontWeight: m.overdueTasks > 0 ? 700 : 400 }}>
+                                                            {m.overdueTasks} atr.
+                                                        </Box>
+                                                    </Typography>
                                                 </Box>
+                                                <LinearProgress variant="determinate" value={Math.min(overduePct, 100)}
+                                                    sx={{ height: 4, borderRadius: 2, bgcolor: `${barColor}18`, '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: 2 } }} />
                                             </Box>
-                                        );
-                                    })}
-                                </Box>
-                            )}
-                        </ChartCard>
-                    )}
+                                        </Box>
+                                    );
+                                })}
+                            </Box>
+                        )}
+                    </ChartCard>
+                </Box>
+            )}
 
-                    {isOn('activity') && (
-                        <ChartCard isDark={isDark}>
-                            <SectionHeader icon="history" title="Atividades Recentes" iconColor="#667eea" isDark={isDark} />
-                            <ActivityFeed isDark={isDark} maxHeight={300} showModuleFilter={false} compact />
-                        </ChartCard>
-                    )}
+            {/* ── ACTIVITY FEED (100% width) ──────────────────────────────────── */}
+            {isOn('activity') && (
+                <Box sx={{ mb: 3 }}>
+                    <ChartCard isDark={isDark}>
+                        <SectionHeader icon="history" title="Atividades Recentes" iconColor="#667eea" isDark={isDark} />
+                        <ActivityFeed isDark={isDark} maxHeight={300} showModuleFilter={false} compact />
+                    </ChartCard>
                 </Box>
             )}
 
