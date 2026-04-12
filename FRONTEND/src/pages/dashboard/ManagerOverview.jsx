@@ -274,7 +274,7 @@ const ManagerOverview = () => {
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{ position: 'relative', mb: 3 }}>
                 {/* Gear icon floating top-right of banner */}
-                <Box sx={{ position: 'absolute', top: -20, right: -20, zIndex: 10 }}>
+                <Box sx={{ position: 'absolute', top: -17, right: -17, zIndex: 10 }}>
                     <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                 </Box>
                 <Box sx={{
