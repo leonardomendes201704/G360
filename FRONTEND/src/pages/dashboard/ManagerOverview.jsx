@@ -279,6 +279,11 @@ const ManagerOverview = () => {
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
                 border: isDark ? '1px solid rgba(102,126,234,0.25)' : '1px solid rgba(102,126,234,0.15)',
             }}>
+                {/* Gear icon floating top-right of banner */}
+                <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 2 }}>
+                    <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
+                </Box>
+
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                     {/* Left: greeting + quick actions */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -296,11 +301,6 @@ const ManagerOverview = () => {
                             <QA icon="description" label="Contratos" route="/contracts" color="#10b981" navigate={navigate} />
                             <QA icon="request_quote" label="Despesa" onClick={() => setIsExpenseOpen(true)} color="#f43f5e" navigate={navigate} />
                         </Box>
-                    </Box>
-
-                    {/* Gear icon floating top-right of banner */}
-                    <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
-                        <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
 
                     {/* Right: Health Score Card */}
