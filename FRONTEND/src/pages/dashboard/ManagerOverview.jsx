@@ -269,7 +269,7 @@ const ManagerOverview = () => {
 
     // ─────────────────────────────────────────────────────────────────────────
     return (
-        <Box sx={{ minHeight: '100vh', mt: -1.5 }}>
+        <Box sx={{ mt: -1.5 }}>
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
@@ -374,7 +374,7 @@ const ManagerOverview = () => {
 
             {/* ── MAIN CHARTS ────────────────────────────────────────────────── */}
             {(isOn('incidents') || isOn('distributions')) && (
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' }, gap: 2.5, mb: 3 }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' }, gap: 2.5, mb: 3, alignItems: 'start' }}>
 
                     {isOn('incidents') && (
                         <ChartCard isDark={isDark}>
@@ -403,8 +403,8 @@ const ManagerOverview = () => {
                     )}
 
                     {isOn('distributions') && (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                            <ChartCard isDark={isDark}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <ChartCard isDark={isDark} sx={{ minHeight: 160 }}>
                                 <SectionHeader icon="task_alt" title="Distribuição de Tarefas" iconColor="#3b82f6" isDark={isDark} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     {taskPie.length > 0 ? (
@@ -434,7 +434,7 @@ const ManagerOverview = () => {
                                 </Box>
                             </ChartCard>
 
-                            <ChartCard isDark={isDark}>
+                            <ChartCard isDark={isDark} sx={{ minHeight: 160 }}>
                                 <SectionHeader icon="shield" title="Distribuição de Riscos" iconColor="#ef4444" isDark={isDark} />
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     {riskPie.length > 0 ? (

@@ -20,7 +20,7 @@ const KpiGrid = ({ children, minWidth = '155px', gap = 2, mb = 4, center = true 
             '& > *': {
                 minWidth,
                 flex: `1 1 ${minWidth}`,
-                maxWidth: '220px',
+                maxWidth: '200px',
             }
         }}
     >

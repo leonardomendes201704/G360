@@ -54,7 +54,6 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             sx={{
                 borderRadius: '6px',
                 border: active ? `1px solid ${mainColor}` : '1px solid rgba(0,0,0,0.08)',
-                aspectRatio: '1',
                 display: 'flex',
                 flexDirection: 'column',
                 transition: 'all 0.2s ease-in-out',
@@ -86,7 +85,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             )}
 
             {/* Corpo */}
-            <Box sx={{ p: 2, pt: accentBar ? 2.5 : 2, flex: 1 }}>
+            <Box sx={{ p: 2, pt: accentBar ? 1.5 : 2 }}>
                 {/* Valor */}
                 <Typography sx={{ fontSize: '36px', fontWeight: 800, color: darkColor, lineHeight: 1, mb: 0.5 }}>
                     {value}
@@ -128,7 +127,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             </Box>
 
             {/* Linha fina colorida no rodape */}
-            <Box sx={{ height: '3px', bgcolor: mainColor }} />
+            <Box sx={{ height: '3px', bgcolor: mainColor, mt: 'auto' }} />
         </Paper>
     );
 };
