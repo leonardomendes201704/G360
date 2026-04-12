@@ -375,6 +375,7 @@ const ManagerOverview = () => {
                         subtitle="em vigência"
                         iconName="description" hexColor="#10b981" accentBar
                         onClick={() => navigate('/contracts')} />
+
                 </KpiGrid>
             )}
 
