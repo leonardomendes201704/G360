@@ -294,9 +294,6 @@ const MainLayout = ({ children }) => {
             >
               <Search sx={{ fontSize: 16, color: 'text.disabled' }} />
               <Typography sx={{ fontSize: '13px', color: 'text.disabled', flex: 1 }}>Buscar...</Typography>
-              <Box sx={{ display: 'flex', gap: 0.5 }}>
-                <Box sx={{ bgcolor: 'divider', borderRadius: '4px', px: 0.75, py: 0.25, fontSize: '10px', color: 'text.disabled', fontFamily: 'monospace' }}>⌘K</Box>
-              </Box>
             </Box>
           )}
 
