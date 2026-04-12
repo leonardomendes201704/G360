@@ -346,7 +346,7 @@ const MainLayout = ({ children }) => {
                 {user?.name?.charAt(0) || 'U'}
               </Avatar>
               <Box sx={{ textAlign: 'left', display: { xs: 'none', sm: 'block' } }}>
-                <Box sx={{ fontSize: '13px', fontWeight: 600, color: 'text.primary', lineHeight: 1.2 }}>
+                <Box sx={{ fontSize: '13px', fontWeight: 600, color: 'text.primary', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
                   {user?.name || 'Usuário'}
                 </Box>
               </Box>
@@ -441,7 +441,7 @@ const MainLayout = ({ children }) => {
             elevation: 0,
             sx: {
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.15))',
-              mt: 1.5, borderRadius: '4px',
+              mt: 1.5, borderRadius: '8px',
               width: userAnchor?.offsetWidth || 200,
               border: '1px solid',
               borderColor: 'divider',
