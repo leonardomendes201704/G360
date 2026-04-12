@@ -205,6 +205,37 @@ Os arquivos MD foram projetados para facilitar copy-paste no Azure DevOps:
    b. Registrar como nota no commit
 ```
 
+### Changelog
+
+O agente DEVE manter um arquivo `docs/CHANGELOG.md` atualizado a cada commit. O changelog serve como historico legivel de todas as alteracoes do projeto.
+
+**Regras:**
+1. **Atualizar a cada commit** - Toda vez que um commit for feito, adicionar entrada no changelog ANTES do commit, incluindo o arquivo no mesmo commit.
+2. **Formato** - Seguir o padrao [Keep a Changelog](https://keepachangelog.com/) com categorias:
+   - `Added` — Novas funcionalidades
+   - `Changed` — Alteracoes em funcionalidades existentes
+   - `Fixed` — Correcoes de bugs
+   - `Removed` — Funcionalidades removidas
+   - `Docs` — Alteracoes de documentacao
+   - `Refactored` — Refatoracoes sem mudanca de comportamento
+3. **Referenciar work items** - Incluir ID da US/BUG quando aplicavel
+4. **Listar arquivos** - Incluir os principais arquivos alterados em cada entrada
+5. **Agrupar por data** - Entradas agrupadas por data no formato `YYYY-MM-DD`
+
+**Exemplo:**
+```markdown
+## [2026-04-12]
+
+### Fixed
+- **US-001/BUG-001:** Corrigido comportamento de "pisca" ao salvar tenant. Modal agora exibe loading, feedback de sucesso e so fecha apos dados atualizados.
+  - `FRONTEND/src/components/modals/TenantModal.jsx`
+  - `FRONTEND/src/pages/admin/TenantAdminPage.jsx`
+
+### Docs
+- Adicionado CLAUDE.md com diretrizes do agente e templates de backlog
+- Criado backlog completo com 4 epicos, 17 historias e 4 bugs
+```
+
 ---
 
 ## Diretrizes Gerais do Projeto
