@@ -7,7 +7,7 @@
 
 | ID     | Titulo                                    | Fase   | Prioridade | Status | Historias | Depende de |
 |--------|-------------------------------------------|--------|------------|--------|-----------|------------|
-| EP-001 | Correcoes Criticas Funcionais             | Fase 1 | Alta       | New    | 4         | -          |
+| EP-001 | Correcoes Criticas Funcionais             | Fase 1 | Alta       | Closed | 4         | -          |
 | EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | New    | 5         | EP-001     |
 | EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | New    | 4         | EP-002     |
 | EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | New    | 4         | EP-002, EP-003 |
@@ -21,7 +21,7 @@
 | US-001 | Corrigir comportamento de salvamento do cadastro de tenant  | 5      | Alta       | Resolved |
 | US-002 | Corrigir impossibilidade de abrir chamado no Portal Suporte | 8      | Alta       | Resolved |
 | US-003 | Corrigir instabilidade em Aprovacoes ao navegar categorias  | 5      | Alta       | Resolved |
-| US-004 | Corrigir erro ao criar nova GMUD                            | 5      | Alta       | New    |
+| US-004 | Corrigir erro ao criar nova GMUD                            | 5      | Alta       | Resolved |
 
 ### EP-002 - Componentes Reutilizaveis Base
 
@@ -59,8 +59,8 @@
 | Total de Historias         | 17    |
 | Total de Story Points      | 83    |
 | Total de Bugs              | 4     |
-| Historias Concluidas       | 3     |
-| Bugs Resolvidos            | 3     |
+| Historias Concluidas       | 4     |
+| Bugs Resolvidos            | 4     |
 
 ## Proximos IDs Disponiveis
 

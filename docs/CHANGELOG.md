@@ -8,6 +8,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-12]
 
 ### Fixed
+- **US-004/BUG-004:** Corrigido erro ao clicar em "Nova GMUD". Dois bugs: (1) `projectService.getAll()` retornava objeto paginado `{data, meta}` sendo tratado como array — causava `TypeError: projectsList.map is not a function`. (2) Guard `if (!open || !mounted)` no ChangeModal criava deadlock impedindo modal de abrir.
+  - `FRONTEND/src/components/modals/ChangeModal.jsx`
 - **US-003/BUG-003:** Corrigido layout shift ao navegar entre categorias na tela de Aprovacoes. Lista de items agora permanece renderizada com overlay de loading por cima (ao inves de desmontar). Adicionado estado `switching`, `minHeight` no container e preservacao de scroll.
   - `FRONTEND/src/pages/approvals/MyApprovalsPage.jsx`
 - **US-002/BUG-002:** Corrigido Portal do Suporte que nao permitia abrir chamados no tenant Devcraft Studio. Causa: tabelas `ServiceCatalog` e `TicketCategory` nao existiam no schema `tenant_devcraft` (migrations/seed nunca executados). Solucao: executado `npm run deploy:tenants`.

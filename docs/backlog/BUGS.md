@@ -87,11 +87,11 @@
 |------------------|------------------------------------------------|
 | **ID**           | BUG-004                                        |
 | **Severidade**   | Alta                                           |
-| **Status**       | New                                            |
+| **Status**       | Resolved                                       |
 | **Modulo**       | GMUD / Gestao de Mudancas                      |
 | **Historia**     | US-004                                         |
 | **Encontrado em**| 2026-04-12                                     |
-| **Resolvido em** |                                                |
+| **Resolvido em** | 2026-04-12                                     |
 
 **Passos para Reproduzir:**
 1. Acessar modulo GMUD
@@ -102,7 +102,7 @@
 
 **Resultado Atual:** Sistema apresenta erro e o fluxo fica indisponivel.
 
-**Correcao Aplicada:**
+**Correcao Aplicada:** Dois bugs: (1) `projectService.getAll()` retornava objeto paginado `{data, meta}` mas era tratado como array — corrigido com `res?.data || []`. (2) Guard `if (!open || !mounted)` criava deadlock impedindo modal de abrir — removido `mounted` do guard. Arquivo: `ChangeModal.jsx`.
 
 ---
 

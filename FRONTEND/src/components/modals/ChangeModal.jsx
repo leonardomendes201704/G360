@@ -267,7 +267,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
         if (open) {
             userService.getAll().then(setUsers).catch(console.error);
             assetService.getAssets().then(setAssetsList).catch(console.error);
-            projectService.getAll().then(setProjectsList).catch(console.error); // FETCH PROJECTS
+            projectService.getAll().then(res => setProjectsList(Array.isArray(res) ? res : res?.data || [])).catch(console.error); // FETCH PROJECTS
 
             // Fetch Open Incidents
             getIncidents({ status: 'OPEN,IN_PROGRESS,PENDING' }).then(data => {
@@ -433,7 +433,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
     const myApproval = currentApprovers.find(app => (app.userId === user?.id || app.user?.id === user?.id));
     const isMyApprovalPending = myApproval && myApproval.status === 'PENDING';
 
-    if (!open || !mounted) return null;
+    if (!open) return null;
 
     const inputClass = `form-input ${isViewMode ? 'disabled-input' : ''}`;
     const selectClass = `form-select ${isViewMode ? 'disabled-input' : ''}`;
