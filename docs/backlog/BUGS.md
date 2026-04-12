@@ -62,11 +62,11 @@
 |------------------|------------------------------------------------|
 | **ID**           | BUG-003                                        |
 | **Severidade**   | Alta                                           |
-| **Status**       | New                                            |
+| **Status**       | Resolved                                       |
 | **Modulo**       | Aprovacoes                                     |
 | **Historia**     | US-003                                         |
 | **Encontrado em**| 2026-04-12                                     |
-| **Resolvido em** |                                                |
+| **Resolvido em** | 2026-04-12                                     |
 
 **Passos para Reproduzir:**
 1. Acessar tela de Aprovacoes
@@ -77,7 +77,7 @@
 
 **Resultado Atual:** Interface pisca e se move (layout shift), gerando sensacao de instabilidade.
 
-**Correcao Aplicada:**
+**Correcao Aplicada:** Substituido loading que desmontava a lista por overlay absoluto com CircularProgress. Adicionado estado `switching`, minHeight no container e preservacao de scroll position. Arquivo: `MyApprovalsPage.jsx`.
 
 ---
 

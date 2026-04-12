@@ -34,6 +34,7 @@ const MyApprovalsPage = () => {
     });
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [switching, setSwitching] = useState(false);
     const [activeTab, setActiveTab] = useState('all');
     const [rejectDialog, setRejectDialog] = useState({ open: false, item: null });
     const [rejectReason, setRejectReason] = useState('');
@@ -59,8 +60,12 @@ const MyApprovalsPage = () => {
         boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
     };
 
-    const fetchData = async () => {
-        setLoading(true);
+    const fetchData = async (isTabSwitch = false) => {
+        if (isTabSwitch) {
+            setSwitching(true);
+        } else {
+            setLoading(true);
+        }
         try {
             const [countsData, itemsData] = await Promise.all([
                 approvalService.getCounts(),
@@ -72,6 +77,7 @@ const MyApprovalsPage = () => {
             enqueueSnackbar('Erro ao carregar aprovações', { variant: 'error' });
         } finally {
             setLoading(false);
+            setSwitching(false);
         }
     };
 
@@ -82,8 +88,12 @@ const MyApprovalsPage = () => {
         }
     }, [searchParams]);
 
+    const isFirstLoad = items.length === 0 && loading;
     useEffect(() => {
-        fetchData();
+        const scrollY = window.scrollY;
+        fetchData(!isFirstLoad).then(() => {
+            window.scrollTo(0, scrollY);
+        });
     }, [activeTab]);
 
     const handleApprove = async (item) => {
@@ -186,7 +196,7 @@ const MyApprovalsPage = () => {
                 ].map((card) => (
                     <Paper
                         key={card.key}
-                        onClick={() => setActiveTab(card.key)}
+                        onClick={(e) => { e.preventDefault(); setActiveTab(card.key); }}
                         sx={{
                             p: 2.5, cursor: 'pointer', transition: 'all 0.2s',
                             bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
@@ -217,7 +227,7 @@ const MyApprovalsPage = () => {
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
                         style={{
                             padding: '10px 16px', borderRadius: '10px', border: 'none',
                             background: activeTab === tab.id ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
@@ -240,12 +250,19 @@ const MyApprovalsPage = () => {
             </Box>
 
             {/* Items List */}
-            <Paper sx={cardStyle}>
-                {loading ? (
-                    <Box sx={{ textAlign: 'center', py: 6 }}>
+            <Paper sx={{ ...cardStyle, position: 'relative', minHeight: 300 }}>
+                {(loading || switching) && (
+                    <Box sx={{
+                        position: 'absolute', inset: 0, zIndex: 2,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        bgcolor: mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
+                        borderRadius: 'inherit',
+                        transition: 'opacity 0.2s',
+                    }}>
                         <CircularProgress sx={{ color: '#2563eb' }} />
                     </Box>
-                ) : items.length === 0 ? (
+                )}
+                {items.length === 0 && !loading && !switching ? (
                     <EmptyState
                         icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>check_circle</span>}
                         title="Nenhuma aprovação pendente"
