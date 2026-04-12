@@ -1,26 +1,28 @@
 import { Box } from '@mui/material';
 
 /**
- * KpiGrid — Grid responsivo para exibir StatsCards lado a lado, centralizados.
+ * KpiGrid — Grid responsivo para exibir StatsCards.
+ * Maximo 6 colunas por linha. Cards quadrados (largura = altura).
  *
  * @param {ReactNode} children - StatsCard components
- * @param {string}    [minWidth='155px'] - Largura minima de cada card
+ * @param {number}    [maxColumns=6] - Maximo de colunas por linha
  * @param {number}    [gap=2] - Espacamento entre cards (MUI spacing)
- * @param {number}    [mb=4] - Margin bottom (MUI spacing)
- * @param {boolean}   [center=true] - Centralizar cards na pagina
+ * @param {number}    [mb=3] - Margin bottom (MUI spacing)
  */
-const KpiGrid = ({ children, minWidth = '155px', gap = 2, mb = 4, center = true }) => (
+const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3 }) => (
     <Box
         sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
+            display: 'grid',
+            gridTemplateColumns: {
+                xs: 'repeat(2, 1fr)',
+                sm: 'repeat(3, 1fr)',
+                md: `repeat(${Math.min(maxColumns, 4)}, 1fr)`,
+                lg: `repeat(${Math.min(maxColumns, 6)}, 1fr)`,
+            },
             gap,
             mb,
-            justifyContent: center ? 'center' : 'flex-start',
             '& > *': {
-                minWidth,
-                flex: `1 1 ${minWidth}`,
-                maxWidth: '200px',
+                aspectRatio: '1',
             }
         }}
     >
