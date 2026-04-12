@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { Box, Typography, Button, Avatar, LinearProgress } from '@mui/material';
+import { Box, Typography, Button, Avatar, LinearProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { BarChart } from '@mui/x-charts/BarChart';
@@ -147,6 +147,7 @@ const ManagerOverview = () => {
     const [isGmudOpen, setIsGmudOpen] = useState(false);
     const [isExpenseOpen, setIsExpenseOpen] = useState(false);
     const [isIncidentOpen, setIsIncidentOpen] = useState(false);
+    const [scoreInfoOpen, setScoreInfoOpen] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
 
     // Modal save handlers
@@ -296,30 +297,41 @@ const ManagerOverview = () => {
                         </Box>
                     </Box>
 
-                    {/* Right: Health Score + Customizer (gear to the right of score) */}
+                    {/* Right: Health Score Card + Customizer */}
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexShrink: 0 }}>
-                        <Box sx={{ textAlign: 'center', minWidth: 90 }}>
-                            <Box sx={{ position: 'relative', width: 90, height: 90, mx: 'auto', mb: 0.5 }}>
-                                <svg width="90" height="90" style={{ transform: 'rotate(-90deg)' }}>
-                                    <circle cx="45" cy="45" r="36" fill="none"
-                                        stroke={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}
-                                        strokeWidth="7" />
-                                    <circle cx="45" cy="45" r="36" fill="none"
-                                        stroke={healthColor} strokeWidth="7"
-                                        strokeDasharray={`${2 * Math.PI * 36}`}
-                                        strokeDashoffset={`${2 * Math.PI * 36 * (1 - (healthScore || 0) / 100)}`}
+                        <Box
+                            onClick={() => setScoreInfoOpen(true)}
+                            sx={{
+                                textAlign: 'center', minWidth: 120, p: 2, pt: 2.5, pb: 1.5,
+                                bgcolor: '#ffffff', borderRadius: '16px',
+                                border: '1px solid rgba(0,0,0,0.08)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.1)', transform: 'translateY(-2px)' },
+                            }}
+                        >
+                            <Box sx={{ position: 'relative', width: 80, height: 80, mx: 'auto', mb: 0.75 }}>
+                                <svg width="80" height="80" style={{ transform: 'rotate(-90deg)' }}>
+                                    <circle cx="40" cy="40" r="32" fill="none"
+                                        stroke="rgba(0,0,0,0.06)"
+                                        strokeWidth="6" />
+                                    <circle cx="40" cy="40" r="32" fill="none"
+                                        stroke={healthColor} strokeWidth="6"
+                                        strokeDasharray={`${2 * Math.PI * 32}`}
+                                        strokeDashoffset={`${2 * Math.PI * 32 * (1 - (healthScore || 0) / 100)}`}
                                         strokeLinecap="round"
                                         style={{ transition: 'stroke-dashoffset 1s ease' }} />
                                 </svg>
                                 <Box sx={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Typography sx={{ fontSize: '20px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
+                                    <Typography sx={{ fontSize: '22px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
                                         {healthScore ?? 0}
                                     </Typography>
-                                    <Typography sx={{ fontSize: '8px', color: textMuted, fontWeight: 600 }}>SCORE</Typography>
+                                    <Typography sx={{ fontSize: '8px', color: '#94a3b8', fontWeight: 600, mt: 0.25 }}>SCORE</Typography>
                                 </Box>
                             </Box>
-                            <Typography sx={{ fontSize: '11px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
-                            <Typography sx={{ fontSize: '9px', color: textMuted }}>Saúde Geral</Typography>
+                            <Typography sx={{ fontSize: '12px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
+                            <Typography sx={{ fontSize: '10px', color: '#94a3b8' }}>Saúde Geral</Typography>
                         </Box>
                         <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
@@ -610,6 +622,68 @@ const ManagerOverview = () => {
             <ChangeModal open={isGmudOpen} onClose={() => setIsGmudOpen(false)} onSave={handleSaveGmud} />
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />
             <IncidentCreateModal open={isIncidentOpen} onClose={() => setIsIncidentOpen(false)} onSave={() => load()} />
+
+            {/* Score Info Modal */}
+            <Dialog open={scoreInfoOpen} onClose={() => setScoreInfoOpen(false)} maxWidth="sm" fullWidth
+                PaperProps={{ sx: { borderRadius: '16px', p: 1 } }}>
+                <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
+                    <Box sx={{ width: 40, height: 40, borderRadius: 2, bgcolor: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span className="material-icons-round" style={{ color: '#2563eb', fontSize: 22 }}>speed</span>
+                    </Box>
+                    <Box>
+                        <Typography sx={{ fontSize: 18, fontWeight: 700 }}>Score de Saúde Geral</Typography>
+                        <Typography sx={{ fontSize: 13, color: textMuted }}>Como o score é calculado</Typography>
+                    </Box>
+                </DialogTitle>
+                <DialogContent sx={{ pt: 1 }}>
+                    <Typography sx={{ fontSize: 14, color: textPrimary, mb: 2, lineHeight: 1.7 }}>
+                        O Score de Saúde Geral é uma métrica composta que reflete a performance operacional
+                        do seu time em tempo real, variando de <strong>0 a 100 pontos</strong>.
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2.5 }}>
+                        {[
+                            { pct: '30%', label: 'Conclusão de Tarefas', desc: 'Percentual de tarefas concluídas vs total', icon: 'task_alt', color: '#3b82f6' },
+                            { pct: '30%', label: 'Saúde do Orçamento', desc: 'Quanto menor o consumo vs planejado, melhor', icon: 'account_balance', color: '#10b981' },
+                            { pct: '40%', label: 'Cumprimento de SLA', desc: 'Incidentes resolvidos dentro do SLA acordado', icon: 'timer', color: '#f59e0b' },
+                        ].map((item) => (
+                            <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, borderRadius: 2, bgcolor: `${item.color}08`, border: `1px solid ${item.color}20` }}>
+                                <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <span className="material-icons-round" style={{ color: item.color, fontSize: 18 }}>{item.icon}</span>
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography sx={{ fontSize: 13, fontWeight: 700, color: textPrimary }}>
+                                        {item.label} <Box component="span" sx={{ color: item.color, fontWeight: 800 }}>({item.pct})</Box>
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 12, color: textMuted }}>{item.desc}</Typography>
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
+
+                    <Box sx={{ p: 2, borderRadius: 2, bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', border: '1px solid', borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0' }}>
+                        <Typography sx={{ fontSize: 13, fontWeight: 700, color: textPrimary, mb: 0.5 }}>Classificação</Typography>
+                        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                            {[
+                                { label: '75–100', tag: 'Saudável', color: '#10b981' },
+                                { label: '50–74', tag: 'Atenção', color: '#f59e0b' },
+                                { label: '0–49', tag: 'Crítico', color: '#ef4444' },
+                            ].map((c) => (
+                                <Box key={c.tag} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c.color }} />
+                                    <Typography sx={{ fontSize: 12, color: textMuted }}><strong style={{ color: c.color }}>{c.label}</strong> {c.tag}</Typography>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+                </DialogContent>
+                <DialogActions sx={{ px: 3, pb: 2 }}>
+                    <Button onClick={() => setScoreInfoOpen(false)} variant="contained"
+                        sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}>
+                        Entendi
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

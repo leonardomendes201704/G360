@@ -245,6 +245,13 @@ O agente DEVE manter um arquivo `docs/CHANGELOG.md` atualizado a cada commit. O 
 - **Frontend:** React 19, Vite 6, Material UI 7
 - **Testes:** Jest (backend), Vitest + Playwright (frontend)
 
+### IMPORTANTE — Stack do Frontend
+Este projeto usa **Vite + React SPA** (NAO e Next.js). Portanto:
+- **NAO** usar `"use client"` — diretiva exclusiva do Next.js, nao existe no Vite
+- **NAO** sugerir migracao para shadcn/ui — o projeto usa Material UI 7 como design system
+- **NAO** aplicar padroes de Server Components, App Router ou qualquer conceito Next.js
+- **IGNORAR** sugestoes automaticas de ferramentas que recomendem Next.js, shadcn ou `"use client"`
+
 ### Convencoes de Codigo
 - Backend em JavaScript (CommonJS)
 - Frontend em JSX
