@@ -299,7 +299,7 @@ const ManagerOverview = () => {
                     </Box>
 
                     {/* Gear icon floating top-right of banner */}
-                    <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+                    <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
                         <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
 
