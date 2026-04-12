@@ -45,16 +45,16 @@ const loadWidgets = () => {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 const QA = ({ icon, label, route, color, navigate, onClick }) => (
     <Box onClick={onClick || (() => navigate(route))} sx={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75,
-        p: 1.5, borderRadius: '12px', cursor: 'pointer', minWidth: 72,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
+        p: 1, borderRadius: '12px', cursor: 'pointer', width: 80, flexShrink: 0,
         bgcolor: `${color}12`, border: `1px solid ${color}25`,
         transition: 'all 0.17s',
         '&:hover': { bgcolor: `${color}22`, transform: 'translateY(-2px)', boxShadow: `0 4px 12px ${color}25` }
     }}>
-        <Box sx={{ width: 36, height: 36, borderRadius: '10px', bgcolor: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="material-icons-round" style={{ color, fontSize: '18px' }}>{icon}</span>
+        <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span className="material-icons-round" style={{ color, fontSize: '16px' }}>{icon}</span>
         </Box>
-        <Typography sx={{ fontSize: '10px', fontWeight: 600, color, textAlign: 'center', lineHeight: 1.2 }}>{label}</Typography>
+        <Typography sx={{ fontSize: '9px', fontWeight: 600, color, textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>{label}</Typography>
     </Box>
 );
 
@@ -257,58 +257,57 @@ const ManagerOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 2, md: 2.5 }, borderRadius: '20px',
+                mb: 3, p: { xs: 1.5, md: 2 }, borderRadius: '20px',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
                 border: isDark ? '1px solid rgba(102,126,234,0.25)' : '1px solid rgba(102,126,234,0.15)',
             }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                     {/* Left: greeting + quick actions */}
-                    <Box>
-                        <Typography sx={{ fontSize: '24px', fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography sx={{ fontSize: '22px', fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}>
                             {greet()}, {user?.name?.split(' ')[0] || 'Gestor'} 👋
                         </Typography>
-                        <Typography sx={{ fontSize: '13px', color: textMuted, mt: 0.5 }}>
+                        <Typography sx={{ fontSize: '12px', color: textMuted, mt: 0.5 }}>
                             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: 1, mt: 1.5, flexWrap: 'nowrap', overflowX: 'auto' }}>
                             <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} />
                             <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} />
                             <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} />
-                            <QA icon="warning" label="Novo Incidente" onClick={() => setIsIncidentOpen(true)} color="#f59e0b" navigate={navigate} />
+                            <QA icon="warning" label="Incidente" onClick={() => setIsIncidentOpen(true)} color="#f59e0b" navigate={navigate} />
                             <QA icon="description" label="Contratos" route="/contracts" color="#10b981" navigate={navigate} />
-                            <QA icon="request_quote" label="Nova Despesa" onClick={() => setIsExpenseOpen(true)} color="#f43f5e" navigate={navigate} />
+                            <QA icon="request_quote" label="Despesa" onClick={() => setIsExpenseOpen(true)} color="#f43f5e" navigate={navigate} />
                         </Box>
                     </Box>
 
-                    {/* Right: Customizer + Health Score */}
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                        <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
-
-                        <Box sx={{ textAlign: 'center', minWidth: 100 }}>
-                            <Box sx={{ position: 'relative', width: 100, height: 100, mx: 'auto', mb: 0.5 }}>
-                                <svg width="100" height="100" style={{ transform: 'rotate(-90deg)' }}>
-                                    <circle cx="50" cy="50" r="40" fill="none"
+                    {/* Right: Health Score + Customizer (gear to the right of score) */}
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexShrink: 0 }}>
+                        <Box sx={{ textAlign: 'center', minWidth: 90 }}>
+                            <Box sx={{ position: 'relative', width: 90, height: 90, mx: 'auto', mb: 0.5 }}>
+                                <svg width="90" height="90" style={{ transform: 'rotate(-90deg)' }}>
+                                    <circle cx="45" cy="45" r="36" fill="none"
                                         stroke={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}
-                                        strokeWidth="8" />
-                                    <circle cx="50" cy="50" r="40" fill="none"
-                                        stroke={healthColor} strokeWidth="8"
-                                        strokeDasharray={`${2 * Math.PI * 40}`}
-                                        strokeDashoffset={`${2 * Math.PI * 40 * (1 - (healthScore || 0) / 100)}`}
+                                        strokeWidth="7" />
+                                    <circle cx="45" cy="45" r="36" fill="none"
+                                        stroke={healthColor} strokeWidth="7"
+                                        strokeDasharray={`${2 * Math.PI * 36}`}
+                                        strokeDashoffset={`${2 * Math.PI * 36 * (1 - (healthScore || 0) / 100)}`}
                                         strokeLinecap="round"
                                         style={{ transition: 'stroke-dashoffset 1s ease' }} />
                                 </svg>
                                 <Box sx={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Typography sx={{ fontSize: '22px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
+                                    <Typography sx={{ fontSize: '20px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
                                         {healthScore ?? 0}
                                     </Typography>
-                                    <Typography sx={{ fontSize: '9px', color: textMuted, fontWeight: 600 }}>SCORE</Typography>
+                                    <Typography sx={{ fontSize: '8px', color: textMuted, fontWeight: 600 }}>SCORE</Typography>
                                 </Box>
                             </Box>
-                            <Typography sx={{ fontSize: '12px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
-                            <Typography sx={{ fontSize: '10px', color: textMuted }}>Saúde Geral</Typography>
+                            <Typography sx={{ fontSize: '11px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
+                            <Typography sx={{ fontSize: '9px', color: textMuted }}>Saúde Geral</Typography>
                         </Box>
+                        <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
                 </Box>
             </Box>
