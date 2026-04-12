@@ -270,7 +270,8 @@ const ManagerOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 1.5, md: 2 }, borderRadius: '20px',
+                mb: 3, p: { xs: 1.5, md: 2 }, pb: { xs: 2.5, md: 3 }, borderRadius: '20px',
+                overflow: 'visible',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -285,7 +286,7 @@ const ManagerOverview = () => {
                         <Typography sx={{ fontSize: '12px', color: textMuted, mt: 0.5 }}>
                             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, mt: 1.5, flexWrap: 'nowrap', overflowX: 'auto' }}>
+                        <Box sx={{ display: 'flex', gap: 1, mt: 1.5, pt: '15px', flexWrap: 'nowrap', overflowX: 'auto' }}>
                             <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} />
                             <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} />
                             <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} />
