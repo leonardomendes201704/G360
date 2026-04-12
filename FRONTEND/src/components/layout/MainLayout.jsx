@@ -367,6 +367,7 @@ const MainLayout = ({ children }) => {
           anchorEl={notifAnchor}
           open={Boolean(notifAnchor)}
           onClose={handleCloseNotif}
+          disableScrollLock
           PaperProps={{
             elevation: 0,
             sx: {
@@ -437,6 +438,7 @@ const MainLayout = ({ children }) => {
           anchorEl={userAnchor}
           open={Boolean(userAnchor)}
           onClose={handleCloseUser}
+          disableScrollLock
           PaperProps={{
             elevation: 0,
             sx: {
