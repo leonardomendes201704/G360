@@ -57,34 +57,19 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
                 }
             }}
         >
-            {/* Barra colorida no topo com icone */}
+            {/* Barra colorida no topo com icone dentro */}
             {accentBar && (
                 <Box
                     sx={{
-                        height: '6px',
+                        height: 40,
                         bgcolor: mainColor,
-                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        px: 1.5,
                     }}
                 >
-                    {iconElement && (
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: '-12px',
-                                right: 12,
-                                width: 40,
-                                height: 40,
-                                borderRadius: '8px',
-                                bgcolor: mainColor,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: `0 2px 8px ${mainColor}40`,
-                            }}
-                        >
-                            {iconElement}
-                        </Box>
-                    )}
+                    {iconElement}
                 </Box>
             )}
 
