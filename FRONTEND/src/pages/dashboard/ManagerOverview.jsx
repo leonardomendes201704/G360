@@ -14,6 +14,8 @@ import ChangeModal from '../../components/modals/ChangeModal';
 import ExpenseModal from '../../components/modals/ExpenseModal';
 import IncidentCreateModal from '../../components/modals/IncidentCreateModal';
 import api from '../../services/api';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import { getIncidentKPIs } from '../../services/incident.service';
 import { createProject } from '../../services/project.service';
 import { createGeneralTask } from '../../services/task.service';
@@ -339,34 +341,35 @@ const ManagerOverview = () => {
                 </Box>
             </Box>
 
-            {/* ── KPI STRIP ──────────────────────────────────────────────────── */}
+            {/* ── KPI STRIP (usando StatsCard padrao) ─────────────────────────── */}
             {isOn('kpis') && (
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 1.5, mb: 3 }}>
-                    <MetricCard title="Incidentes Abertos" value={kpis?.open ?? (loading ? '…' : 0)}
-                        sub={kpis?.slaBreached > 0 ? `${kpis.slaBreached} SLA estourado` : 'SLA OK'}
-                        icon="warning" color="#f59e0b" trend={kpis?.trendOpen}
-                        onClick={() => navigate('/incidents')} isDark={isDark} />
-                    <MetricCard title="Tarefas da Equipe" value={s.tasks ?? '…'}
-                        sub={`${s.overdueTeamTasks ?? 0} atrasadas`}
-                        icon="task_alt" color="#3b82f6" trend={null}
-                        onClick={() => navigate('/tasks')} isDark={isDark} />
-                    <MetricCard title="Projetos Ativos" value={s.projects ?? '…'}
-                        sub={`${projDonePct}% concluídos`}
-                        icon="folder_special" color="#8b5cf6" trend={null}
-                        onClick={() => navigate('/projects')} isDark={isDark} />
-                    <MetricCard title="Budget Consumido" value={`${budgetPct}%`}
-                        sub={`${formatCurrency(spent)} / ${formatCurrency(budget)}`}
-                        icon="account_balance_wallet" color={budgetColor} trend={null}
-                        onClick={() => navigate('/finance')} isDark={isDark} />
-                    <MetricCard title="GMUDs Pendentes" value={s.gmuds ?? '…'}
-                        sub="aguard. aprovação"
-                        icon="published_with_changes" color="#6366f1" trend={null}
-                        onClick={() => navigate('/change-requests')} isDark={isDark} />
-                    <MetricCard title="Contratos Ativos" value={s.contracts ?? '…'}
-                        sub="em vigência"
-                        icon="description" color="#10b981" trend={null}
-                        onClick={() => navigate('/contracts')} isDark={isDark} />
-                </Box>
+                <KpiGrid minWidth="155px" gap={1.5} mb={3}>
+                    <StatsCard title="Incidentes Abertos" value={kpis?.open ?? (loading ? '…' : 0)}
+                        subtitle={kpis?.slaBreached > 0 ? `${kpis.slaBreached} SLA estourado` : 'SLA OK'}
+                        iconName="warning" hexColor="#f59e0b" accentBar
+                        trend={kpis?.trendOpen != null ? { value: Math.abs(kpis.trendOpen), type: kpis.trendOpen > 0 ? 'up' : kpis.trendOpen < 0 ? 'down' : 'neutral' } : null}
+                        onClick={() => navigate('/incidents')} />
+                    <StatsCard title="Tarefas da Equipe" value={s.tasks ?? '…'}
+                        subtitle={`${s.overdueTeamTasks ?? 0} atrasadas`}
+                        iconName="task_alt" hexColor="#3b82f6" accentBar
+                        onClick={() => navigate('/tasks')} />
+                    <StatsCard title="Projetos Ativos" value={s.projects ?? '…'}
+                        subtitle={`${projDonePct}% concluídos`}
+                        iconName="folder_special" hexColor="#8b5cf6" accentBar
+                        onClick={() => navigate('/projects')} />
+                    <StatsCard title="Budget Consumido" value={`${budgetPct}%`}
+                        subtitle={`${formatCurrency(spent)} / ${formatCurrency(budget)}`}
+                        iconName="account_balance_wallet" hexColor={budgetColor} accentBar
+                        onClick={() => navigate('/finance')} />
+                    <StatsCard title="GMUDs Pendentes" value={s.gmuds ?? '…'}
+                        subtitle="aguard. aprovação"
+                        iconName="published_with_changes" hexColor="#6366f1" accentBar
+                        onClick={() => navigate('/changes')} />
+                    <StatsCard title="Contratos Ativos" value={s.contracts ?? '…'}
+                        subtitle="em vigência"
+                        iconName="description" hexColor="#10b981" accentBar
+                        onClick={() => navigate('/contracts')} />
+                </KpiGrid>
             )}
 
             {/* ── MAIN CHARTS ────────────────────────────────────────────────── */}

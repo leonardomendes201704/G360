@@ -13,10 +13,12 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  * @param {string} color - Cor temática ('primary', 'success', 'warning', 'error', 'info')
  * @param {string} hexColor - Cor hex direta (sobrepoe color quando fornecida)
  * @param {object} trend - Objeto de tendência { value: number, label: string, type: 'up'|'down'|'neutral' }
+ * @param {string} subtitle - Texto auxiliar exibido abaixo do valor (ex: "SLA OK", "0 atrasadas")
+ * @param {boolean} accentBar - Se true, exibe barra colorida no topo do card (sempre visivel, nao apenas quando active)
  * @param {boolean} active - Se true, aplica um destaque visual (borda/sombra)
  * @param {function} onClick - Handler de clique (torna o card interativo)
  */
-const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, active = false, onClick }) => {
+const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = false, active = false, onClick }) => {
 
     // Mapeamento de cores para backgrounds suaves
     const bgColors = {
@@ -64,15 +66,15 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
                 }
             }}
         >
-            {/* Indicador de topo se ativo */}
-            {active && (
+            {/* Barra colorida no topo (accentBar = sempre, active = so quando ativo) */}
+            {(accentBar || active) && (
                 <Box
                     sx={{
                         position: 'absolute',
                         top: 0,
                         left: 0,
                         right: 0,
-                        height: '4px',
+                        height: '3px',
                         bgcolor: mainColor
                     }}
                 />
@@ -98,9 +100,15 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
                 </Box>
             </Box>
 
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e293b', mb: 1, letterSpacing: '-1px' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e293b', mb: subtitle ? 0.25 : 1, letterSpacing: '-1px' }}>
                 {value}
             </Typography>
+
+            {subtitle && (
+                <Typography sx={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500, mb: trend ? 0.75 : 0 }}>
+                    {subtitle}
+                </Typography>
+            )}
 
             {trend && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
