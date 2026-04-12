@@ -298,7 +298,7 @@ const MainLayout = ({ children }) => {
           )}
 
           {/* Right Side Actions Wrapper */}
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end', flex: 1, ml: isMobile ? 'auto' : 0 }}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end', flex: 1, ml: isMobile ? 'auto' : 2 }}>
             {/* Theme Toggle */}
             <Tooltip title={mode === 'dark' ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}>
               <IconButton onClick={toggleTheme} className="top-bar-icon">
@@ -325,7 +325,7 @@ const MainLayout = ({ children }) => {
                 background: { xs: 'transparent', sm: mode === 'dark' ? '#1c2632' : 'transparent' },
                 border: { xs: 'none', sm: '1px solid' },
                 borderColor: 'divider',
-                borderRadius: '16px',
+                borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 '&:hover': {
