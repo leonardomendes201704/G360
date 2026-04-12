@@ -292,8 +292,8 @@ const MainLayout = ({ children }) => {
                 '&:hover': { borderColor: 'rgba(59,130,246,0.4)', bgcolor: mode === 'dark' ? 'rgba(59,130,246,0.06)' : 'rgba(59,130,246,0.04)' },
               }}
             >
-              <Search sx={{ fontSize: 16, color: 'text.disabled' }} />
               <Typography sx={{ fontSize: '13px', color: 'text.disabled', flex: 1 }}>Buscar...</Typography>
+              <Search sx={{ fontSize: 16, color: 'text.disabled' }} />
             </Box>
           )}
 
