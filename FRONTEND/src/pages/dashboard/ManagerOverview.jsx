@@ -289,7 +289,7 @@ const ManagerOverview = () => {
                     {/* Left: greeting + quick actions */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography sx={{ fontSize: '22px', fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}>
-                            {greet()}, {user?.name?.split(' ')[0] || 'Gestor'} 👋
+                            {greet()}, {user?.name?.split(' ')[0] || 'Gestor'}
                         </Typography>
                         <Typography sx={{ fontSize: '12px', color: textMuted, mt: 0.5 }}>
                             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}

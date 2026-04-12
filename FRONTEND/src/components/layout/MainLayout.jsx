@@ -298,7 +298,7 @@ const MainLayout = ({ children }) => {
           )}
 
           {/* Right Side Actions Wrapper */}
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end', flex: 1, ml: isMobile ? 'auto' : 2 }}>
+          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', justifyContent: 'flex-end', flex: 1, ml: isMobile ? 'auto' : 4 }}>
             {/* Theme Toggle */}
             <Tooltip title={mode === 'dark' ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}>
               <IconButton onClick={toggleTheme} className="top-bar-icon">
@@ -321,6 +321,7 @@ const MainLayout = ({ children }) => {
                 alignItems: 'center',
                 gap: { xs: 0, sm: 1.5 },
                 px: { xs: 0.5, sm: 1.5 },
+                ml: 1,
                 py: 0.75,
                 background: { xs: 'transparent', sm: mode === 'dark' ? '#1c2632' : 'transparent' },
                 border: { xs: 'none', sm: '1px solid' },
@@ -371,16 +372,14 @@ const MainLayout = ({ children }) => {
           PaperProps={{
             elevation: 0,
             sx: {
-              overflow: 'visible',
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.15))',
               mt: 1.5,
               width: 320,
-              maxHeight: 400, // Scrollable
+              maxHeight: 400,
               overflowY: 'auto',
-              borderRadius: 3,
-              '&:before': {
-                content: '""', display: 'block', position: 'absolute', top: 0, right: 14, width: 10, height: 10, bgcolor: 'background.paper', transform: 'translateY(-50%) rotate(45deg)', zIndex: 0,
-              },
+              borderRadius: '8px',
+              border: '1px solid',
+              borderColor: 'divider',
             },
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
