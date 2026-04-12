@@ -37,11 +37,11 @@
 |------------------|------------------------------------------------|
 | **ID**           | BUG-002                                        |
 | **Severidade**   | Alta                                           |
-| **Status**       | New                                            |
+| **Status**       | Resolved                                       |
 | **Modulo**       | Help Desk / Portal do Suporte                  |
 | **Historia**     | US-002                                         |
 | **Encontrado em**| 2026-04-12                                     |
-| **Resolvido em** |                                                |
+| **Resolvido em** | 2026-04-12                                     |
 
 **Passos para Reproduzir:**
 1. Acessar Portal do Suporte
@@ -52,7 +52,7 @@
 
 **Resultado Atual:** Mensagem "Nenhuma categoria com servicos disponivel no momento" exibida mesmo com catalogo cadastrado.
 
-**Correcao Aplicada:**
+**Correcao Aplicada:** Causa raiz: tabelas `ServiceCatalog` e `TicketCategory` nao existiam no schema `tenant_devcraft` (migrations nunca executadas). Solucao: executado `npm run deploy:tenants` que roda migrations + seed do catalogo ITIL em todos os tenants. Resultado: 24 servicos e 9 categorias criados.
 
 ---
 
