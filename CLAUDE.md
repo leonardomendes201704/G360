@@ -157,6 +157,30 @@ docs/backlog/
 3. **Atualizar o _INDEX.md** - Sempre que criar ou alterar status de um epico/historia, atualizar o indice geral.
 4. **Commits referenciando work items** - Incluir o ID do work item nas mensagens de commit quando aplicavel (ex: `feat(US-003): implementar filtro de orcamento por CC`).
 5. **Avaliar antes de criar** - Nem toda solicitacao precisa de backlog. Correcoes simples de uma linha, ajustes de texto ou consultas nao precisam de work items.
+6. **Documentar conclusao de tasks** - Ao concluir uma task ou user story, o agente DEVE atualizar o arquivo MD correspondente com:
+   - **Status** atualizado para "Resolved" ou "Closed"
+   - **Secao "Resolucao"** adicionada ao final do arquivo contendo:
+     - Descricao da solucao encontrada
+     - Causa raiz identificada (quando aplicavel)
+     - Arquivos alterados (caminho completo)
+     - Decisoes tecnicas tomadas e justificativas
+     - Riscos ou pontos de atencao pos-implementacao
+   - **Checklist de DoD** com itens marcados como concluidos `- [x]`
+   - **Data de conclusao** preenchida na tabela de metadados
+   - Para **Bugs**, atualizar o campo "Correcao Aplicada" no BUGS.md com descricao objetiva da correcao
+
+   Exemplo de secao de resolucao:
+   ```markdown
+   ## Resolucao
+   **Concluido em:** 2026-04-12
+   **Causa raiz:** O componente desmontava e remontava devido a navegacao com `useNavigate()` apos o POST.
+   **Solucao:** Substituido redirecionamento por atualizacao de estado local com feedback via Snackbar.
+   **Arquivos alterados:**
+   - `FRONTEND/src/pages/config/TenantForm.jsx` - Removido redirect, adicionado estado de sucesso
+   - `FRONTEND/src/components/shared/SaveButton.jsx` - Adicionado estado de loading
+   **Decisoes:** Optou-se por manter o usuario na mesma tela apos salvar para permitir edicoes subsequentes.
+   **Pontos de atencao:** Verificar se o mesmo padrao se aplica a outros formularios de cadastro.
+   ```
 
 ### Formato Azure DevOps
 

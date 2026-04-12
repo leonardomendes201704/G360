@@ -11,11 +11,11 @@
 |------------------|------------------------------------------------|
 | **ID**           | BUG-001                                        |
 | **Severidade**   | Alta                                           |
-| **Status**       | New                                            |
+| **Status**       | Resolved                                       |
 | **Modulo**       | Configuracao / Tenants                         |
 | **Historia**     | US-001                                         |
 | **Encontrado em**| 2026-04-12                                     |
-| **Resolvido em** |                                                |
+| **Resolvido em** | 2026-04-12                                     |
 
 **Passos para Reproduzir:**
 1. Acessar Configuracao > Tenants
@@ -27,7 +27,7 @@
 
 **Resultado Atual:** Tela pisca e limpa os dados, gerando falsa sensacao de perda de informacao.
 
-**Correcao Aplicada:**
+**Correcao Aplicada:** Adicionado loading state, feedback de sucesso, e reordenado fluxo para fechar modal somente apos dados serem atualizados. Corrigido useEffect que resetava campos durante animacao de fechamento. Arquivos: `TenantModal.jsx`, `TenantAdminPage.jsx`.
 
 ---
 

@@ -18,7 +18,7 @@
 
 | ID     | Titulo                                                      | Pontos | Prioridade | Status |
 |--------|-------------------------------------------------------------|--------|------------|--------|
-| US-001 | Corrigir comportamento de salvamento do cadastro de tenant  | 5      | Alta       | New    |
+| US-001 | Corrigir comportamento de salvamento do cadastro de tenant  | 5      | Alta       | Resolved |
 | US-002 | Corrigir impossibilidade de abrir chamado no Portal Suporte | 8      | Alta       | New    |
 | US-003 | Corrigir instabilidade em Aprovacoes ao navegar categorias  | 5      | Alta       | New    |
 | US-004 | Corrigir erro ao criar nova GMUD                            | 5      | Alta       | New    |
@@ -59,8 +59,8 @@
 | Total de Historias         | 17    |
 | Total de Story Points      | 83    |
 | Total de Bugs              | 4     |
-| Historias Concluidas       | 0     |
-| Bugs Resolvidos            | 0     |
+| Historias Concluidas       | 1     |
+| Bugs Resolvidos            | 1     |
 
 ## Proximos IDs Disponiveis
 

@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
     Dialog, DialogTitle, DialogContent, DialogActions,
-    Button, TextField, Typography, Box, Alert
+    Button, TextField, Typography, Box, Alert, CircularProgress
 } from '@mui/material';
 import tenantService from '../../services/tenant.service';
 
@@ -27,9 +27,15 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
     const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [error, setError] = React.useState('');
+    const [error, setError] = useState('');
+    const [saving, setSaving] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
+        if (!open) return;
+        setError('');
+        setSuccess(false);
+        setSaving(false);
         if (editData) {
             setValue('name', editData.name);
             setValue('slug', editData.slug);
@@ -44,18 +50,20 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
             }
             setValue('adminPassword', '');
         } else {
-            reset();
-            setValue('name', '');
-            setValue('slug', '');
-            setValue('adminName', '');
-            setValue('adminEmail', '');
-            setValue('adminPassword', '');
+            reset({
+                name: '',
+                slug: '',
+                adminName: '',
+                adminEmail: '',
+                adminPassword: '',
+            });
         }
     }, [editData, setValue, reset, open]);
 
     const onSubmit = async (data) => {
         try {
             setError('');
+            setSaving(true);
             if (editData) {
                 const updatePayload = {
                     name: data.name,
@@ -70,23 +78,30 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
             } else {
                 if (!data.adminEmail || !data.adminPassword) {
                     setError('Email e Senha do admin são obrigatórios para nova empresa.');
+                    setSaving(false);
                     return;
                 }
                 await tenantService.create(data);
             }
-            onSuccess();
-            onClose();
+            setSuccess(true);
+            await onSuccess();
+            setTimeout(() => {
+                onClose();
+            }, 600);
         } catch (err) {
             setError(err.response?.data?.error || 'Erro ao salvar');
+        } finally {
+            setSaving(false);
         }
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <Dialog open={open} onClose={saving ? undefined : onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{editData ? 'Editar Empresa' : 'Nova Empresa'}</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>
                     {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                    {success && <Alert severity="success" sx={{ mb: 2 }}>Empresa salva com sucesso!</Alert>}
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                         <Typography variant="subtitle1" fontWeight="bold">Dados da Empresa</Typography>
@@ -145,8 +160,15 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Cancelar</Button>
-                    <Button type="submit" variant="contained">Salvar</Button>
+                    <Button onClick={onClose} disabled={saving}>Cancelar</Button>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={saving || success}
+                        startIcon={saving ? <CircularProgress size={18} color="inherit" /> : null}
+                    >
+                        {saving ? 'Salvando...' : success ? 'Salvo!' : 'Salvar'}
+                    </Button>
                 </DialogActions>
             </form>
         </Dialog>

@@ -71,9 +71,8 @@ const TenantAdminPage = () => {
         try {
             await api.post('/tenants', formData);
             enqueueSnackbar('Tenant criado e provisionado com sucesso!', { variant: 'success' });
+            await Promise.all([fetchTenants(), fetchPoolStats()]);
             setCreateOpen(false);
-            fetchTenants();
-            fetchPoolStats();
         } catch (err) {
             const msg = err.response?.data?.message || 'Erro ao criar tenant.';
             enqueueSnackbar(msg, { variant: 'error' });
@@ -87,8 +86,8 @@ const TenantAdminPage = () => {
         try {
             await api.put(`/tenants/${id}`, formData);
             enqueueSnackbar('Tenant atualizado com sucesso!', { variant: 'success' });
+            await fetchTenants();
             setEditTenant(null);
-            fetchTenants();
         } catch (err) {
             const msg = err.response?.data?.message || 'Erro ao atualizar tenant.';
             enqueueSnackbar(msg, { variant: 'error' });
