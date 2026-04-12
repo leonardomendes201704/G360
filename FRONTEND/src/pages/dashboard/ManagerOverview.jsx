@@ -45,16 +45,25 @@ const loadWidgets = () => {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 const QA = ({ icon, label, route, color, navigate, onClick }) => (
     <Box onClick={onClick || (() => navigate(route))} sx={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
-        p: 1, borderRadius: '12px', cursor: 'pointer', width: 80, flexShrink: 0,
-        bgcolor: `${color}12`, border: `1px solid ${color}25`,
-        transition: 'all 0.17s',
-        '&:hover': { bgcolor: `${color}22`, transform: 'translateY(-2px)', boxShadow: `0 4px 12px ${color}25` }
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75,
+        cursor: 'pointer', flexShrink: 0, width: 88,
+        transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&:hover': {
+            transform: 'translateY(-15px)',
+            '& .qa-icon-box': {
+                boxShadow: `0 12px 28px ${color}50`,
+            }
+        }
     }}>
-        <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="material-icons-round" style={{ color, fontSize: '16px' }}>{icon}</span>
+        <Box className="qa-icon-box" sx={{
+            width: 64, height: 64, borderRadius: '16px', bgcolor: color,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: `0 4px 12px ${color}30`,
+        }}>
+            <span className="material-icons-round" style={{ color: '#ffffff', fontSize: '28px' }}>{icon}</span>
         </Box>
-        <Typography sx={{ fontSize: '9px', fontWeight: 600, color, textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>{label}</Typography>
+        <Typography sx={{ fontSize: '11px', fontWeight: 600, color, textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>{label}</Typography>
     </Box>
 );
 
