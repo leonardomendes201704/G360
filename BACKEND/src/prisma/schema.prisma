@@ -1,0 +1,1383 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Catálogo de Tenants — tabela raiz para multi-tenancy
+model Tenant {
+  id             String   @id @default(uuid()) @db.Uuid
+  name           String
+  slug           String   @unique
+  schemaName     String   @unique @map("schema_name")
+  isActive       Boolean  @default(true) @map("is_active")
+  plan           String?  @default("free")
+  maxUsers       Int?     @default(50) @map("max_users")
+  enabledModules Json?    @map("enabled_modules")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
+
+  @@map("tenants")
+}
+
+// Configurações Globais da Plataforma — schema public
+model GlobalSetting {
+  id          Int      @id @default(autoincrement())
+  category    String   @db.VarChar(50)
+  key         String   @db.VarChar(100)
+  value       String?  @default("")
+  valueType   String?  @default("STRING") @map("value_type") @db.VarChar(20)
+  label       String?  @db.VarChar(255)
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  @@unique([category, key])
+  @@map("global_settings")
+}
+
+model User {
+  id                   String               @id @default(uuid())
+  email                String               @unique
+  name                 String
+  password             String?
+  azureId              String?              @unique
+  avatar               String?
+  isActive             Boolean              @default(true)
+  lastLogin            DateTime?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  departmentId         String?
+  costCenterId         String?
+  authProvider         String               @default("LOCAL")
+  auditLogs            AuditLog[]
+  approvals            ChangeApprover[]
+  requestedChanges     ChangeRequest[]      @relation("ChangeRequester")
+  managedCostCenters   CostCenter[]         @relation("CostCenterManager")
+  directedDepartments  Department[]         @relation("DepartmentDirector")
+  knowledgeItems       KnowledgeBase[]
+  approvedMinutes      MeetingMinute[]
+  notifications        Notification[]
+  approvedProjects     Project[]            @relation("ProjectApprover")
+  createdProjects      Project[]            @relation("ProjectCreator")
+  managedProjects      Project[]            @relation("ProjectManager")
+  techLeadProjects     Project[]            @relation("ProjectTechLead")
+  followUpAssignments  ProjectFollowUp[]    @relation("FollowUpAssignee")
+  followUps            ProjectFollowUp[]
+  projectMembers       ProjectMember[]
+  assignedProjectTasks ProjectTask[]        @relation("ProjectTaskAssignee")
+  projectTaskComments  ProjectTaskComment[]
+  refreshTokens        RefreshToken[]
+  tasks                Task[]               @relation("TaskAssignee")
+  createdTasks         Task[]               @relation("TaskCreator")
+  ownedRisks           CorporateRisk[]      @relation("RiskOwner")
+  taskComments         TaskComment[]
+  costCenter           CostCenter?          @relation("UserCostCenter", fields: [costCenterId], references: [id])
+  department           Department?          @relation(fields: [departmentId], references: [id])
+  roles                Role[]               @relation("RoleToUser")
+  // Incident Relations
+  reportedIncidents    Incident[]           @relation("IncidentReporter")
+  assignedIncidents    Incident[]           @relation("IncidentAssignee")
+  incidentComments     IncidentComment[]
+  incidentHistory      IncidentHistory[]
+  taskTimeLogs         TaskTimeLog[]        @relation("TaskTimeLogs")
+
+  // Help Desk Relations
+  requestedTickets Ticket[]         @relation("TicketRequester")
+  assignedTickets  Ticket[]         @relation("TicketAssignee")
+  ticketMessages   TicketMessage[]
+  reportedProblems ProblemRequest[] @relation("ProblemRequester")
+  supportGroupMembers SupportGroupMember[]
+  // Preferências de notificação (JSON: canais, categorias, horário silencioso)
+  notificationPreferences Json?
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  isRevoked Boolean   @default(false)
+  revokedAt DateTime?
+  userAgent String?
+  ipAddress String?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Role {
+  id            String          @id @default(uuid())
+  name          String          @unique
+  description   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  permissions   Permission[]
+  users         User[]          @relation("RoleToUser")
+  approvalTiers ApprovalTier[]
+}
+
+/// Alçadas de aprovação por tipo de item, faixa de valor e perfil (Role).
+model ApprovalTier {
+  id          String   @id @default(uuid())
+  name        String
+  /// EXPENSE | PROJECT_COST (extensível)
+  entityType  String
+  roleId      String
+  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  minAmount   Decimal? @db.Decimal(18, 2)
+  maxAmount   Decimal? @db.Decimal(18, 2)
+  /// true = vê itens de toda a empresa na faixa; false = só CCs/projetos que o usuário gerencia
+  globalScope Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([entityType, isActive])
+}
+
+model Permission {
+  id     String @id @default(uuid())
+  module String
+  action String
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  @@unique([roleId, module, action])
+}
+
+model Department {
+  id          String          @id @default(uuid())
+  name        String
+  code        String          @unique
+  budget      Decimal?
+  parentId    String?
+  directorId  String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  costCenters CostCenter[]
+  director    User?           @relation("DepartmentDirector", fields: [directorId], references: [id])
+  parent      Department?     @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children    Department[]    @relation("DepartmentHierarchy")
+  projects    Project[]
+  users       User[]
+  risks       CorporateRisk[]
+}
+
+model CostCenter {
+  id             String              @id @default(uuid())
+  departmentId   String?
+  managerId      String?
+  code           String              @unique
+  name           String
+  isActive       Boolean             @default(true)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  accounts       AccountingAccount[]
+  assets         Asset[]
+  budgetItems    BudgetItem[]
+  contracts      Contract[]
+  department     Department?         @relation(fields: [departmentId], references: [id])
+  manager        User?               @relation("CostCenterManager", fields: [managerId], references: [id])
+  expenses       Expense[]
+  Project        Project[]
+  users          User[]              @relation("UserCostCenter")
+  corporateRisks CorporateRisk[]
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  action     String
+  module     String
+  entityId   String?
+  entityType String?
+  oldData    Json?
+  newData    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Supplier {
+  id               String            @id @default(uuid())
+  name             String
+  tradeName        String?
+  document         String            @unique
+  documentType     String
+  email            String?
+  phone            String?
+  address          String?
+  city             String?
+  state            String?
+  country          String?
+  zipCode          String?
+  classification   String
+  isActive         Boolean           @default(true)
+  bankName         String?
+  bankAgency       String?
+  bankAccount      String?
+  bankAccountType  String?
+  notes            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  category         String?           @default("TECNOLOGIA")
+  contactName      String?
+  rating           Int               @default(5)
+  status           String            @default("ATIVO")
+  assets           Asset[]
+  budgetItems      BudgetItem[]
+  contracts        Contract[]
+  expenses         Expense[]
+  projectCosts     ProjectCost[]
+  projectProposals ProjectProposal[]
+  risks            CorporateRisk[]
+}
+
+model Contract {
+  id               String               @id @default(uuid())
+  supplierId       String
+  costCenterId     String?
+  accountId        String?
+  number           String
+  description      String
+  type             String
+  value            Decimal
+  originalValue    Decimal?
+  monthlyValue     Decimal?
+  readjustmentRate Decimal?
+  signatureDate    DateTime?
+  startDate        DateTime
+  endDate          DateTime
+  originalEndDate  DateTime?
+  paymentTerms     String?
+  slaDetails       String?
+  status           String               @default("ACTIVE")
+  responsibleId    String?
+  alertDays        Int                  @default(30)
+  autoRenew        Boolean              @default(false)
+  notes            String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  assets           Asset[]
+  account          AccountingAccount?   @relation(fields: [accountId], references: [id])
+  costCenter       CostCenter?          @relation(fields: [costCenterId], references: [id])
+  supplier         Supplier             @relation(fields: [supplierId], references: [id])
+  addendums        ContractAddendum[]
+  attachments      ContractAttachment[]
+  expenses         Expense[]
+}
+
+model ContractAttachment {
+  id         String   @id @default(uuid())
+  contractId String
+  fileName   String
+  fileUrl    String
+  fileSize   Int
+  mimeType   String
+  type       String   @default("OUTROS")
+  uploadedBy String
+  createdAt  DateTime @default(now())
+  contract   Contract @relation(fields: [contractId], references: [id])
+}
+
+model ContractAddendum {
+  id            String    @id @default(uuid())
+  contractId    String
+  number        String
+  description   String
+  signatureDate DateTime
+  valueChange   Decimal?
+  newEndDate    DateTime?
+  fileUrl       String?
+  fileName      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  contract      Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model AssetCategory {
+  id                String   @id @default(uuid())
+  name              String
+  type              String
+  depreciationYears Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  assets            Asset[]
+}
+
+model Asset {
+  id               String             @id @default(uuid())
+  categoryId       String
+  supplierId       String?
+  contractId       String?
+  costCenterId     String?
+  code             String             @unique
+  name             String
+  description      String?
+  serialNumber     String?
+  status           String
+  acquisitionDate  DateTime?
+  acquisitionValue Decimal?
+  rentValue        Decimal?
+  currentValue     Decimal?
+  location         String?
+  assignedTo       String?
+  notes            String?
+  invoiceUrl       String?
+  invoiceName      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  category         AssetCategory      @relation(fields: [categoryId], references: [id])
+  contract         Contract?          @relation(fields: [contractId], references: [id])
+  costCenter       CostCenter?        @relation(fields: [costCenterId], references: [id])
+  supplier         Supplier?          @relation(fields: [supplierId], references: [id])
+  maintenances     AssetMaintenance[]
+  changes          ChangeRequest[]    @relation("AssetToChangeRequest")
+  incidents        Incident[]
+  risks            CorporateRisk[]
+  tickets          Ticket[]
+}
+
+model AssetMaintenance {
+  id          String    @id @default(uuid())
+  assetId     String
+  type        String
+  description String
+  cost        Decimal?
+  vendor      String?
+  startDate   DateTime
+  endDate     DateTime?
+  status      String
+  notes       String?
+  invoiceUrl  String?
+  invoiceName String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  asset       Asset     @relation(fields: [assetId], references: [id])
+}
+
+model SoftwareLicense {
+  id             String    @id @default(uuid())
+  name           String
+  vendor         String
+  licenseKey     String?
+  licenseType    String
+  quantity       Int       @default(1)
+  usedQuantity   Int       @default(0)
+  purchaseDate   DateTime?
+  expirationDate DateTime?
+  cost           Decimal?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model AccountingAccount {
+  id           String              @id @default(uuid())
+  code         String              @unique
+  name         String
+  type         String
+  parentId     String?
+  costCenterId String?
+  isActive     Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  parent       AccountingAccount?  @relation("AccountHierarchy", fields: [parentId], references: [id])
+  children     AccountingAccount[] @relation("AccountHierarchy")
+  costCenter   CostCenter?         @relation(fields: [costCenterId], references: [id])
+  budgetItems  BudgetItem[]
+  contracts    Contract[]
+  expenses     Expense[]
+}
+
+model FiscalYear {
+  id        String   @id @default(uuid())
+  year      Int      @unique
+  startDate DateTime
+  endDate   DateTime
+  isClosed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  budgets   Budget[]
+}
+
+model Budget {
+  id           String           @id @default(uuid())
+  fiscalYearId String
+  name         String
+  description  String?
+  version      Int              @default(1)
+  status       String           @default("DRAFT")
+  totalOpex    Decimal          @default(0)
+  totalCapex   Decimal          @default(0)
+  approvedBy   String?
+  approvedAt   DateTime?
+  notes        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  isOBZ        Boolean          @default(false)
+  type         String           @default("MIXED")
+  fiscalYear   FiscalYear       @relation(fields: [fiscalYearId], references: [id])
+  items        BudgetItem[]
+  scenarios    BudgetScenario[]
+}
+
+model BudgetScenario {
+  id             String               @id @default(uuid())
+  budgetId       String
+  name           String
+  description    String?
+  multiplier     Decimal              @default(1.0)
+  totalOpex      Decimal              @default(0)
+  totalCapex     Decimal              @default(0)
+  impactAnalysis String?
+  isSelected     Boolean              @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  budget         Budget               @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  items          BudgetScenarioItem[]
+}
+
+model BudgetScenarioItem {
+  id              String         @id @default(uuid())
+  scenarioId      String
+  originalItemId  String
+  jan             Decimal        @default(0)
+  feb             Decimal        @default(0)
+  mar             Decimal        @default(0)
+  apr             Decimal        @default(0)
+  may             Decimal        @default(0)
+  jun             Decimal        @default(0)
+  jul             Decimal        @default(0)
+  aug             Decimal        @default(0)
+  sep             Decimal        @default(0)
+  oct             Decimal        @default(0)
+  nov             Decimal        @default(0)
+  dec             Decimal        @default(0)
+  total           Decimal        @default(0)
+  adjustmentNotes String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  scenario        BudgetScenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+}
+
+model BudgetItem {
+  id                String            @id @default(uuid())
+  budgetId          String
+  accountId         String
+  costCenterId      String?
+  supplierId        String?
+  description       String?
+  type              String
+  jan               Decimal           @default(0)
+  feb               Decimal           @default(0)
+  mar               Decimal           @default(0)
+  apr               Decimal           @default(0)
+  may               Decimal           @default(0)
+  jun               Decimal           @default(0)
+  jul               Decimal           @default(0)
+  aug               Decimal           @default(0)
+  sep               Decimal           @default(0)
+  oct               Decimal           @default(0)
+  nov               Decimal           @default(0)
+  dec               Decimal           @default(0)
+  total             Decimal           @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  isNewExpense      Boolean           @default(true)
+  justification     String?
+  previousYearValue Decimal?
+  priority          String?
+  variancePercent   Decimal?
+  account           AccountingAccount @relation(fields: [accountId], references: [id])
+  budget            Budget            @relation(fields: [budgetId], references: [id])
+  costCenter        CostCenter?       @relation(fields: [costCenterId], references: [id])
+  supplier          Supplier?         @relation(fields: [supplierId], references: [id])
+}
+
+model Expense {
+  id                String             @id @default(uuid())
+  supplierId        String?
+  contractId        String?
+  accountId         String?
+  costCenterId      String
+  type              String
+  description       String
+  amount            Decimal
+  date              DateTime
+  dueDate           DateTime?
+  paymentDate       DateTime?
+  status            String             @default("PREVISTO")
+  invoiceNumber     String?
+  notes             String?
+  fileUrl           String?
+  fileName          String?
+  createdBy         String
+  approvedBy        String?
+  approvedAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  approvalNotes     String?
+  approvalStatus    String?
+  lessonsLearned    String?
+  preventiveActions String?
+  rootCause         String?
+  account           AccountingAccount? @relation(fields: [accountId], references: [id])
+  contract          Contract?          @relation(fields: [contractId], references: [id])
+  costCenter        CostCenter         @relation(fields: [costCenterId], references: [id])
+  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
+}
+
+model FreezeWindow {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id                 String            @id @default(uuid())
+  departmentId       String?
+  code               String            @unique
+  name               String
+  description        String?
+  type               String
+  status             String            @default("PLANNING")
+  priority           String            @default("MEDIUM")
+  startDate          DateTime?
+  endDate            DateTime?
+  actualStartDate    DateTime?
+  actualEndDate      DateTime?
+  budget             Decimal?
+  actualCost         Decimal?          @default(0)
+  progress           Int               @default(0)
+  managerId          String?
+  notes              String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  techLeadId         String?
+  approvalStatus     String?           @default("DRAFT")
+  approvedAt         DateTime?
+  approvedBy         String?
+  costCenterId       String?
+  rejectionReason    String?
+  requiresAdjustment Boolean?          @default(false)
+  area               String?
+  creatorId          String?
+  changes            ChangeRequest[]
+  minutes            MeetingMinute[]
+  approver           User?             @relation("ProjectApprover", fields: [approvedBy], references: [id])
+  costCenter         CostCenter?       @relation(fields: [costCenterId], references: [id])
+  creator            User?             @relation("ProjectCreator", fields: [creatorId], references: [id])
+  department         Department?       @relation(fields: [departmentId], references: [id])
+  manager            User?             @relation("ProjectManager", fields: [managerId], references: [id])
+  techLead           User?             @relation("ProjectTechLead", fields: [techLeadId], references: [id])
+  costs              ProjectCost[]
+  followUps          ProjectFollowUp[]
+  members            ProjectMember[]
+  proposals          ProjectProposal[]
+  risks              ProjectRisk[]
+  tasks              ProjectTask[]
+  tickets            Ticket[]
+}
+
+model ProjectTask {
+  id           String                  @id @default(uuid())
+  projectId    String
+  title        String
+  description  String?
+  status       String                  @default("TODO")
+  priority     String                  @default("MEDIUM")
+  storyPoints  Int?
+  assigneeId   String?
+  startDate    DateTime?
+  endDate      DateTime?
+  checklist    Json?
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  dependencies String[]
+  progress     Int                     @default(0)
+  assignee     User?                   @relation("ProjectTaskAssignee", fields: [assigneeId], references: [id])
+  project      Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachments  ProjectTaskAttachment[]
+  comments     ProjectTaskComment[]
+}
+
+model ProjectTaskComment {
+  id            String      @id @default(uuid())
+  projectTaskId String
+  userId        String
+  content       String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  projectTask   ProjectTask @relation(fields: [projectTaskId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id])
+}
+
+model ProjectTaskAttachment {
+  id            String      @id @default(uuid())
+  projectTaskId String
+  fileName      String
+  fileUrl       String
+  fileSize      Int
+  mimeType      String
+  uploadedBy    String
+  createdAt     DateTime    @default(now())
+  projectTask   ProjectTask @relation(fields: [projectTaskId], references: [id], onDelete: Cascade)
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  projectId String
+  userId    String
+  role      String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
+}
+
+model ProjectRisk {
+  id          String   @id @default(uuid())
+  projectId   String
+  description String
+  impact      String
+  probability String
+  status      String   @default("OPEN")
+  strategy    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    String?  @default("technical")
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectProposal {
+  id                 String        @id @default(uuid())
+  projectId          String?
+  supplierId         String
+  value              Decimal
+  isWinner           Boolean       @default(false)
+  isActive           Boolean       @default(true) // Soft delete flag
+  status             String        @default("RASCUNHO") // RASCUNHO, AGUARDANDO_APROVACAO, APROVADA, REJEITADA
+  category           String? // Categoria da proposta (ex: Hardware, Software, Serviço)
+  description        String? // Título/Descrição da proposta  
+  notes              String? // Observações adicionais
+  validity           DateTime? // Validade da proposta
+  fileUrl            String?
+  fileName           String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  costsGenerated     Boolean       @default(false)
+  paymentCondition   Json?
+  rejectionReason    String? // Motivo da rejeição
+  inactivationReason String? // Justificativa para inativação
+  inactivatedBy      String? // ID do usuário que inativou
+  inactivatedAt      DateTime? // Data da inativação
+  costs              ProjectCost[]
+  project            Project?      @relation(fields: [projectId], references: [id])
+  supplier           Supplier      @relation(fields: [supplierId], references: [id])
+}
+
+model MeetingMinute {
+  id                 String    @id @default(uuid())
+  projectId          String
+  title              String
+  date               DateTime
+  participants       String?
+  fileUrl            String
+  fileName           String
+  createdAt          DateTime  @default(now())
+  actions            Json?
+  approvedAt         DateTime?
+  approvedBy         String?
+  duration           String?
+  location           String?
+  status             String    @default("DRAFT")
+  topics             String[]
+  rejectionReason    String?
+  requiresAdjustment Boolean   @default(false)
+  approver           User?     @relation(fields: [approvedBy], references: [id])
+  project            Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectFollowUp {
+  id          String    @id @default(uuid())
+  projectId   String
+  authorId    String
+  date        DateTime
+  status      String
+  highlights  String    @default("")
+  risks       String?
+  nextSteps   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  assigneeId  String?
+  completedAt DateTime?
+  description String?
+  dueDate     DateTime?
+  meetingLink String?
+  priority    String    @default("MEDIUM")
+  title       String    @default("")
+  type        String    @default("TASK")
+  assignee    User?     @relation("FollowUpAssignee", fields: [assigneeId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectCost {
+  id                 String           @id @default(uuid())
+  projectId          String
+  description        String
+  type               String
+  amount             Decimal
+  date               DateTime
+  status             String           @default("PREVISTO")
+  supplierId         String?
+  invoiceNumber      String?
+  dueDate            DateTime?
+  paymentDate        DateTime?
+  fileUrl            String?
+  fileName           String?
+  notes              String?
+  createdBy          String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  approvedAt         DateTime?
+  approvedBy         String?
+  invoiceValue       Decimal?
+  proposalId         String?
+  sequenceNumber     Int?
+  rejectionReason    String?
+  requiresAdjustment Boolean          @default(false)
+  project            Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposal           ProjectProposal? @relation(fields: [proposalId], references: [id])
+  supplier           Supplier?        @relation(fields: [supplierId], references: [id])
+}
+
+model Task {
+  id          String           @id @default(uuid())
+  title       String
+  description String?
+  status      String           @default("TODO")
+  priority    String           @default("MEDIUM")
+  dueDate     DateTime?
+  assigneeId  String?
+  creatorId   String
+  isPersonal  Boolean          @default(false)
+  checklist   Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  assignee    User?            @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator     User             @relation("TaskCreator", fields: [creatorId], references: [id])
+  attachments TaskAttachment[]
+  riskId      String?
+  risk        CorporateRisk?   @relation("RiskMitigationTasks", fields: [riskId], references: [id])
+  comments    TaskComment[]
+  timeLogs    TaskTimeLog[]
+}
+
+model TaskComment {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model TaskAttachment {
+  id        String   @id @default(uuid())
+  taskId    String
+  fileName  String
+  fileUrl   String
+  fileSize  Int
+  mimeType  String
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model TaskTimeLog {
+  id        String    @id @default(uuid())
+  taskId    String
+  userId    String
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  duration  Int? // Duração em segundos (calculado ao parar)
+  notes     String?
+  createdAt DateTime  @default(now())
+  task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User      @relation("TaskTimeLogs", fields: [userId], references: [id])
+
+  @@index([taskId])
+  @@index([userId])
+}
+
+model ChangeRequest {
+  id                String             @id @default(uuid())
+  requesterId       String
+  code              String             @unique
+  title             String
+  description       String
+  justification     String
+  type              String
+  riskLevel         String
+  impact            String
+  status            String             @default("DRAFT")
+  scheduledStart    DateTime
+  scheduledEnd      DateTime
+  // Novos campos - Execução Real
+  actualStart       DateTime?
+  actualEnd         DateTime?
+  executionPlan     String?
+  backoutPlan       String?
+  prerequisites     String? // Pré-requisitos para execução
+  testPlan          String?
+  closureNotes      String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  projectId         String?
+  riskAssessment    Json?
+  // Novos campos - Integração com Incidentes
+  relatedIncidentId String?
+  // Campos PIR (Post-Implementation Review)
+  rootCause         String? // Causa raiz para GMUDs FAILED/CANCELLED
+  lessonsLearned    String? // Lições aprendidas
+  preventiveActions String? // Ações preventivas para evitar reincidência
+  affectedServices  AffectedService[]
+  approvers         ChangeApprover[]
+  attachments       ChangeAttachment[]
+  comments          ChangeComment[]
+  project           Project?           @relation(fields: [projectId], references: [id])
+  requester         User               @relation("ChangeRequester", fields: [requesterId], references: [id])
+  assets            Asset[]            @relation("AssetToChangeRequest")
+  relatedIncidents  Incident[]
+  tickets           Ticket[]
+}
+
+// Modelo para Templates de Mudança Padrão - Fase 4
+model ChangeTemplate {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+  type        String  @default("PADRAO") // NORMAL, PADRAO, EMERGENCIAL
+  riskLevel   String  @default("BAIXO")
+  impact      String  @default("MENOR")
+  category    String? // Categoria da mudança (Infra, App, DB, etc.)
+
+  // Templates pré-preenchidos
+  executionPlan String? // Plano de execução padrão
+  backoutPlan   String? // Plano de rollback padrão
+  testPlan      String? // Plano de testes padrão
+  prerequisites String? // Pré-requisitos padrão
+
+  // Configurações
+  defaultDuration Int @default(60) // Duração padrão em minutos
+
+  autoApprove Boolean @default(false) // Auto-aprovar mudanças padrão
+
+  // Metadados
+  createdBy  String
+  isActive   Boolean  @default(true)
+  usageCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ChangeAttachment {
+  id              String        @id @default(uuid())
+  changeRequestId String
+  fileName        String
+  fileUrl         String
+  fileSize        Int
+  mimeType        String
+  uploadedBy      String
+  createdAt       DateTime      @default(now())
+  changeRequest   ChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+}
+
+model ChangeApprover {
+  id              String        @id @default(uuid())
+  changeRequestId String
+  userId          String
+  role            String
+  status          String        @default("PENDING")
+  notes           String?
+  reviewedAt      DateTime?
+  updatedAt       DateTime      @updatedAt
+  changeRequest   ChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@unique([changeRequestId, userId])
+}
+
+model ChangeComment {
+  id              String        @id @default(uuid())
+  changeRequestId String
+  userId          String
+  content         String
+  createdAt       DateTime      @default(now())
+  changeRequest   ChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+}
+
+model AffectedService {
+  id              String        @id @default(uuid())
+  changeRequestId String
+  name            String
+  criticality     String
+  changeRequest   ChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  userId     String
+  title      String
+  message    String
+  isRead     Boolean  @default(false)
+  type       String   @default("INFO")
+  link       String?
+  // eventCode: TICKET_SLA_BREACH, APPROVAL_TIER_EXPENSE, etc.
+  eventCode  String?
+  entityType String?
+  entityId   String?
+  // dedupeKey: evita notificações repetidas em jobs
+  dedupeKey  String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dedupeKey])
+  @@index([userId, createdAt])
+}
+
+model Integration {
+  id        String    @id @default(uuid())
+  type      String    @unique
+  name      String
+  isEnabled Boolean   @default(false)
+  config    Json?
+  lastSync  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model KnowledgeCategory {
+  id          String          @id @default(uuid())
+  name        String          @unique
+  description String?
+  color       String          @default("#6366f1")
+  icon        String          @default("folder")
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  articles    KnowledgeBase[]
+}
+
+model KnowledgeBase {
+  id          String                    @id @default(uuid())
+  title       String
+  content     String?
+  categoryId  String?
+  category    KnowledgeCategory?        @relation(fields: [categoryId], references: [id])
+  tags        String[]
+  authorId    String
+  views       Int                       @default(0)
+  isActive    Boolean                   @default(true)
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+  author      User                      @relation(fields: [authorId], references: [id])
+  attachments KnowledgeBaseAttachment[]
+}
+
+model KnowledgeBaseAttachment {
+  id              String        @id @default(uuid())
+  knowledgeBaseId String
+  fileName        String
+  fileUrl         String
+  fileSize        Int
+  mimeType        String
+  uploadedBy      String
+  createdAt       DateTime      @default(now())
+  knowledgeBase   KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+}
+
+// =====================================================
+// MÓDULO DE GESTÃO DE INCIDENTES DE TI
+// =====================================================
+
+model IncidentCategory {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  slaResponse Int        @default(480) // Minutos para responder (default 8h)
+  slaResolve  Int        @default(1440) // Minutos para resolver (default 24h)
+  color       String     @default("#6366f1")
+  icon        String     @default("warning")
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  incidents   Incident[]
+}
+
+model Incident {
+  id          String @id @default(uuid())
+  code        String @unique // INC-2026-0001
+  title       String
+  description String
+
+  // Classificação ITIL
+  categoryId String
+  category   IncidentCategory @relation(fields: [categoryId], references: [id])
+  impact     String           @default("MEDIO") // BAIXO, MEDIO, ALTO, CRITICO
+  urgency    String           @default("MEDIA") // BAIXA, MEDIA, ALTA, CRITICA
+  priority   String           @default("P3") // Calculado: Impacto x Urgência (P1-P4)
+
+  // Status Flow
+  status String @default("OPEN") // OPEN, IN_PROGRESS, PENDING, RESOLVED, CLOSED
+
+  // Atribuição
+  reporterId String
+  reporter   User    @relation("IncidentReporter", fields: [reporterId], references: [id])
+  assigneeId String?
+  assignee   User?   @relation("IncidentAssignee", fields: [assigneeId], references: [id])
+
+  // SLA
+  slaResponseDue DateTime? // Prazo resposta
+  slaResolveDue  DateTime? // Prazo resolução
+  respondedAt    DateTime? // Quando foi respondido
+  resolvedAt     DateTime? // Quando foi resolvido
+  slaBreached    Boolean   @default(false)
+
+  // Diagnóstico
+  rootCause  String?
+  solution   String?
+  workaround String?
+
+  // Relacionamentos
+  relatedAssetId  String?
+  relatedAsset    Asset?         @relation(fields: [relatedAssetId], references: [id])
+  relatedChangeId String?
+  relatedChange   ChangeRequest? @relation(fields: [relatedChangeId], references: [id])
+
+  // Metadados
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  closedAt  DateTime?
+
+  // Relations
+  comments    IncidentComment[]
+  attachments IncidentAttachment[]
+  history     IncidentHistory[]
+}
+
+model IncidentComment {
+  id         String   @id @default(uuid())
+  incidentId String
+  userId     String
+  content    String
+  isInternal Boolean  @default(false) // Nota interna vs pública
+  createdAt  DateTime @default(now())
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model IncidentAttachment {
+  id         String   @id @default(uuid())
+  incidentId String
+  fileName   String
+  fileUrl    String
+  fileSize   Int
+  mimeType   String
+  uploadedBy String
+  createdAt  DateTime @default(now())
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+}
+
+model IncidentHistory {
+  id         String   @id @default(uuid())
+  incidentId String
+  userId     String
+  action     String // STATUS_CHANGE, ASSIGNMENT, ESCALATION, COMMENT, etc.
+  oldValue   String?
+  newValue   String?
+  createdAt  DateTime @default(now())
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+// Módulo de Riscos Corporativos (ERM)
+model CorporateRisk {
+  id          String @id @default(uuid())
+  code        String @unique // Ex: RISK-2024-001
+  title       String
+  description String
+  category    String // TI, SEGURANCA, COMPLIANCE, OPERACIONAL, FINANCEIRO
+
+  // Avaliação Quantitativa/Qualitativa
+  probability String // BAIXA, MEDIA, ALTA, MUITO_ALTA
+  impact      String // BAIXO, MEDIO, ALTO, CRITICO
+  severity    Int // Calculado (1-25)
+
+  status        String  @default("IDENTIFICADO") // IDENTIFICADO, EM_ANALISE, TRATAMENTO, MONITORAMENTO, ACEITO, FECHADO
+  treatmentType String? // MITIGAR, ACEITAR, TRANSFERIR, EVITAR
+
+  // Responsabilidade
+  ownerId String // Quem responde pelo risco (User)
+
+  // Contexto (Relacionamentos Opcionais)
+  departmentId String? // Risco departamental
+  costCenterId String? // Centro de custo / Área
+  assetId      String? // Risco ligado a um Ativo
+  supplierId   String? // Risco de Fornecedor
+
+  // Compliance
+  complianceStandard String? // Ex: ISO27001, LGPD, SOX
+  controlReference   String? // Ex: A.9.1.2
+
+  // Mitigação Real (Vínculo com Módulo de Tarefas Existente)
+  mitigationTasks Task[] @relation("RiskMitigationTasks")
+
+  owner      User        @relation("RiskOwner", fields: [ownerId], references: [id])
+  department Department? @relation(fields: [departmentId], references: [id])
+  costCenter CostCenter? @relation(fields: [costCenterId], references: [id])
+  asset      Asset?      @relation(fields: [assetId], references: [id])
+  supplier   Supplier?   @relation(fields: [supplierId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Controle de tentativas de login - Persistente (substitui armazenamento em memória)
+model LoginAttempt {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  attempts     Int       @default(0)
+  firstAttempt DateTime  @default(now())
+  lockedUntil  DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  @@index([email])
+}
+
+// ==========================================
+// MÓDULO DE HELP DESK (Service Desk)
+// ==========================================
+
+model Ticket {
+  id          String @id @default(uuid())
+  code        String @unique // Ex: HD-2026-0001
+  title       String
+  description String
+  status      String @default("OPEN") // OPEN, IN_PROGRESS, WAITING_USER, RESOLVED, CLOSED
+  priority    String @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+
+  // Categorização
+  categoryId String
+  category   TicketCategory  @relation(fields: [categoryId], references: [id])
+  serviceId  String?
+  service    ServiceCatalog? @relation(fields: [serviceId], references: [id])
+
+  // Fila / grupo N1–N2
+  supportGroupId String?       @map("support_group_id")
+  supportGroup   SupportGroup? @relation(fields: [supportGroupId], references: [id])
+
+  // Atribuição
+  requesterId String
+  requester   User    @relation("TicketRequester", fields: [requesterId], references: [id])
+  assigneeId  String?
+  assignee    User?   @relation("TicketAssignee", fields: [assigneeId], references: [id])
+
+  // SLA
+  slaMonitorId          String?
+  slaPolicy             SlaPolicy? @relation(fields: [slaMonitorId], references: [id])
+  slaResponseDue        DateTime?
+  slaResolveDue         DateTime?
+  respondedAt           DateTime?
+  resolvedAt            DateTime?
+  slaBreached           Boolean    @default(false)
+  slaPausedAt           DateTime?
+  slaTotalPausedMinutes Int        @default(0)
+
+  // Relacionamentos Cruzados (ITBM)
+  relatedAssetId  String?
+  relatedAsset    Asset?          @relation(fields: [relatedAssetId], references: [id])
+  relatedIncident String?
+  problemId       String?
+  problem         ProblemRequest? @relation(fields: [problemId], references: [id])
+  customAnswers   Json?           @default("{}")
+
+  // Relacionamentos de Integração L5 (Escalonamento)
+  linkedChangeId  String?
+  linkedChange    ChangeRequest? @relation(fields: [linkedChangeId], references: [id])
+  linkedProjectId String?
+  linkedProject   Project?       @relation(fields: [linkedProjectId], references: [id])
+
+  // CSAT (satisfação pós-resolução)
+  csatScore   Int?
+  csatComment String?   @db.Text
+  csatAt      DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  closedAt  DateTime?
+
+  messages    TicketMessage[]
+  attachments TicketAttachment[]
+}
+
+/// Sequência anual de códigos HD-AAAA-NNNN (evita colisão sob concorrência)
+model TicketCodeSequence {
+  year       Int @id
+  lastNumber Int @default(0)
+}
+
+/// Configuração única do Service Desk (por tenant)
+model HelpdeskConfig {
+  id                  Int      @id @default(1)
+  useBusinessCalendar Boolean  @default(true) @map("use_business_calendar")
+  /// Round-robin ao abrir chamado com grupo (se houver membros)
+  autoAssignOnCreate  Boolean  @default(true) @map("auto_assign_on_create")
+  /// { timezone, workdays, startMinutes, endMinutes, holidays?: string[] "YYYY-MM-DD" }
+  calendar            Json?
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("helpdesk_config")
+}
+
+model SupportGroup {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  slaPolicyId String?    @map("sla_policy_id")
+  slaPolicy   SlaPolicy? @relation(fields: [slaPolicyId], references: [id])
+  isActive    Boolean    @default(true) @map("is_active")
+  /// Próximo índice para atribuição round-robin entre membros
+  assignmentCursor Int      @default(0) @map("assignment_cursor")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  members SupportGroupMember[]
+  tickets Ticket[]
+
+  @@map("support_groups")
+}
+
+model SupportGroupMember {
+  id             String       @id @default(uuid())
+  supportGroupId String       @map("support_group_id")
+  userId         String       @map("user_id")
+  supportGroup   SupportGroup @relation(fields: [supportGroupId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@unique([supportGroupId, userId])
+  @@map("support_group_members")
+}
+
+model TicketMessage {
+  id         String   @id @default(uuid())
+  ticketId   String
+  userId     String
+  content    String
+  isInternal Boolean  @default(false) // Comentário visível só para Agentes
+  createdAt  DateTime @default(now())
+
+  ticket      Ticket             @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [id])
+  attachments TicketAttachment[]
+}
+
+model TicketAttachment {
+  id         String   @id @default(uuid())
+  messageId  String?
+  ticketId   String
+  fileName   String
+  fileUrl    String
+  fileSize   Int?
+  mimeType   String?
+  uploadedBy String
+  createdAt  DateTime @default(now())
+
+  ticket  Ticket         @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  message TicketMessage? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
+
+model TicketCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tickets  Ticket[]
+  services ServiceCatalog[]
+}
+
+model ServiceCatalog {
+  id          String         @id @default(uuid())
+  name        String
+  description String
+  icon        String?        @default("build")
+  categoryId  String
+  category    TicketCategory @relation(fields: [categoryId], references: [id])
+  slaPolicyId String?
+  slaPolicy   SlaPolicy?     @relation(fields: [slaPolicyId], references: [id])
+  formSchema  Json?          @default("{}") // JSON contendo o array de form fields customizados
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  tickets Ticket[]
+}
+
+model SlaPolicy {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String?
+  responseMinutes Int      @default(60) // SLA de Primeira Resposta (1h)
+  resolveMinutes  Int      @default(1440) // SLA de Solução (24h)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  services      ServiceCatalog[]
+  tickets       Ticket[]
+  supportGroups SupportGroup[]
+}
+
+model ProblemRequest {
+  id          String @id @default(uuid())
+  code        String @unique // Ex: PRB-2026-0001
+  title       String
+  description String
+  status      String @default("INVESTIGATING") // INVESTIGATING, IDENTIFIED, WORKAROUND, RESOLVED, CLOSED
+  priority    String @default("HIGH")
+
+  requesterId String
+  requester   User   @relation("ProblemRequester", fields: [requesterId], references: [id])
+
+  rootCause  String?
+  workaround String?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  resolvedAt DateTime?
+
+  // Relacionamento 1:N com Incidents (Tickets)
+  incidents Ticket[]
+}

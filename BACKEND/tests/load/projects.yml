@@ -1,0 +1,37 @@
+config:
+  target: "http://localhost:8500"
+  phases:
+    - duration: 120
+      arrivalRate: 10
+      name: "Sustained read load (Leitura frenética)"
+  payload:
+    path: "./users.csv"
+    fields:
+      - "email"
+      - "password"
+      - "tenantSlug"
+
+scenarios:
+  - name: "Paginacao Projetos com Filtros e Relacoes"
+    flow:
+      # Pega token
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+            tenantSlug: "{{ tenantSlug }}"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      # Bate na rota de Projetos simulando query de filtro
+      - get:
+          url: "/api/v1/projects?page=1&limit=50&status=ACTIVE"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      - think: 2
+      # Simulando o usuário mudando de página
+      - get:
+          url: "/api/v1/projects?page=2&limit=50"
+          headers:
+            Authorization: "Bearer {{ authToken }}"

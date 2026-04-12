@@ -1,0 +1,30 @@
+/* ProjectTeams Component Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar for team components */
+.team-members-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.team-members-list::-webkit-scrollbar-track {
+    background: #161d26;
+}
+
+.team-members-list::-webkit-scrollbar-thumb {
+    background: #1c2632;
+    border-radius: 4px;
+}
+
+.team-members-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(37, 99, 235, 0.3);
+}

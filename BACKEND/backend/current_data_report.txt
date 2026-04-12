@@ -1,0 +1,31 @@
+--- Current System Data & Ownership Report ---
+
+[PROJECTS] Total: 1
+ - Prt (PLANNING) | Mgr: LUCAS MUNIZ MACHADO | Dept: Administrativo Financeiro
+
+[TASKS] Total: 2
+ - Test Notification Task (TODO) | Assignee: Adm Global | Creator: Adm Global
+ - Audit Test Task (TODO) | Assignee: Unassigned | Creator: Adm Global
+
+[GMUDs] Total: 1
+ - GMUD-TEST-1765981102943: GMUD de Teste - Validação Visual (EXECUTED) | Requester: LUCAS MUNIZ MACHADO
+
+[CONTRACTS] Total: 1
+ - CTR-TI-0010002 (ACTIVE) | Supplier: Lucas Muniz Muniz | CC: Tecnologia da Informação
+
+[ASSETS] Total: 1
+ - G360-PROT: DRE de Clientes | CC: Tecnologia da Informação
+
+[EXPENSES] Total: 12
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação
+ - Projeto de testes (500.00) (PAGO) | CC: Tecnologia da Informação

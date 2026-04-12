@@ -1,0 +1,176 @@
+/* Organization Page Responsive Styles */
+
+/* Use specific class names to avoid conflicts with global styles */
+.org-page-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+}
+
+.org-page-header {
+    margin-bottom: 24px;
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(22, 29, 38, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.org-tabs-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    width: 100%;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #3f4a5a transparent;
+}
+
+.org-tabs-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.org-tabs-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.org-tabs-container::-webkit-scrollbar-thumb {
+    background: #3f4a5a;
+    border-radius: 2px;
+}
+
+.org-tab-button {
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    border: none;
+}
+
+.org-tab-button.active {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.org-tab-button.inactive {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #1c2632;
+    color: #94a3b8;
+}
+
+.org-tab-button:hover:not(.active) {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.org-content-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.org-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+body.light-premium-theme .org-page-header {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+body.light-premium-theme .org-tabs-container {
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+body.light-premium-theme .org-tabs-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+}
+
+body.light-premium-theme .org-tab-button.inactive {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: #f1f5f9;
+    color: #475569;
+}
+
+body.light-premium-theme .org-tab-button:hover:not(.active) {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .org-page-container {
+        padding: 12px !important;
+    }
+
+    .org-page-header {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .org-page-header .header-icon {
+        font-size: 28px !important;
+    }
+
+    .org-tabs-container {
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .org-tab-button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .org-tab-button .material-icons-round {
+        font-size: 14px !important;
+    }
+
+    .org-section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .org-section-header button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .org-page-container {
+        padding: 8px !important;
+    }
+
+    .org-page-header {
+        padding: 12px;
+    }
+
+    .org-tab-button {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}

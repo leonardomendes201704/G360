@@ -1,0 +1,52 @@
+/* AssetsPage.css - Responsive Styles */
+
+/* Layout principal controlado pelo MainLayout */
+
+/* ========================================
+   KPI Grid
+   ======================================== */
+.assets-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* ========================================
+   Charts Grid
+   ======================================== */
+.assets-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+/* ========================================
+   Responsive Breakpoints
+   ======================================== */
+@media (max-width: 1400px) {
+    .assets-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .assets-charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .assets-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .assets-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .assets-charts-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,1125 @@
+/* Dark Premium Theme - G360 Deep Navy Enterprise */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+    /* ============================================
+       BACKGROUNDS - Deep Navy Enterprise (Slate Scale)
+       ============================================ */
+    --dark-bg-primary: #0F172A;
+    /* Slate 900 - Background Base */
+    --dark-bg-secondary: #1E293B;
+    /* Slate 800 - Surface 1 (Cards/Sidebar) */
+    --dark-bg-tertiary: #334155;
+    /* Slate 700 - Surface 2 (Inputs/Hover) */
+    --dark-bg-card: linear-gradient(145deg, #1E293B 0%, #1a2332 100%);
+    --dark-bg-card-hover: linear-gradient(145deg, #273548 0%, #1E293B 100%);
+
+    /* ============================================
+       BORDERS
+       ============================================ */
+    --dark-border-subtle: #334155;
+    /* Slate 700 - 1px divisores */
+    --dark-border-glow: rgba(37, 99, 235, 0.3);
+
+    /* ============================================
+       TEXT - Contraste otimizado (sem white puro)
+       ============================================ */
+    --dark-text-primary: #F8FAFC;
+    /* Slate 50 - Títulos/Dados */
+    --dark-text-secondary: #94A3B8;
+    /* Slate 400 - Labels/Descrições */
+    --dark-text-muted: #475569;
+    /* Slate 600 - Desabilitado/Placeholder */
+
+    /* ============================================
+       ACCENTS - Cores Semânticas
+       ============================================ */
+    --dark-accent-primary: #2563EB;
+    /* Blue - Brand/Ação Principal */
+    --dark-accent-primary-soft: rgba(37, 99, 235, 0.15);
+    --dark-accent-success: #10B981;
+    /* Emerald - Tarefas/Conclusão */
+    --dark-accent-success-soft: rgba(16, 185, 129, 0.15);
+    --dark-accent-warning: #F59E0B;
+    /* Amber - Alertas/GMUDs */
+    --dark-accent-warning-soft: rgba(245, 158, 11, 0.15);
+    --dark-accent-danger: #EF4444;
+    /* Red - Erro/Crítico */
+    --dark-accent-danger-soft: rgba(239, 68, 68, 0.15);
+    --dark-accent-info: #0EA5E9;
+    /* Sky - Projetos/Neutro */
+    --dark-accent-info-soft: rgba(14, 165, 233, 0.15);
+
+    /* Legacy aliases (manter compatibilidade) */
+    --dark-accent-indigo: #2563EB;
+    --dark-accent-indigo-soft: rgba(37, 99, 235, 0.15);
+    --dark-accent-emerald: #10B981;
+    --dark-accent-emerald-soft: rgba(16, 185, 129, 0.15);
+    --dark-accent-amber: #F59E0B;
+    --dark-accent-amber-soft: rgba(245, 158, 11, 0.15);
+    --dark-accent-rose: #F43F5E;
+    --dark-accent-rose-soft: rgba(244, 63, 94, 0.15);
+    --dark-accent-cyan: #06B6D4;
+    --dark-accent-cyan-soft: rgba(6, 182, 212, 0.15);
+    --dark-accent-violet: #3B82F6;
+    --dark-accent-violet-soft: rgba(59, 130, 246, 0.15);
+
+    /* ============================================
+       SHADOWS
+       ============================================ */
+    --dark-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --dark-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --dark-shadow-glow: 0 0 40px rgba(37, 99, 235, 0.1);
+
+    /* ============================================
+       BORDER RADIUS - Sistema de Espaçamento
+       ============================================ */
+    --dark-radius-sm: 6px;
+    /* Botões/Inputs */
+    --dark-radius-md: 10px;
+    /* Cards pequenos */
+    --dark-radius-lg: 14px;
+    /* Cards grandes */
+    --dark-radius-xl: 16px;
+    /* Destacados */
+}
+
+/* Ambient Background Animation — DESATIVADA para visual mais profissional */
+
+/* Fade In Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* @keyframes pulse — DESATIVADA para visual mais sóbrio */
+
+/* Dark Theme Wrapper Class */
+.dark-premium-theme {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    background: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+    min-height: 100vh;
+    position: relative;
+    --modal-bg: #0f172a;
+    --modal-surface: #1c2632;
+    --modal-surface-alt: #151c25;
+    --modal-surface-subtle: rgba(255, 255, 255, 0.03);
+    --modal-surface-hover: rgba(255, 255, 255, 0.05);
+    --modal-border: rgba(255, 255, 255, 0.06);
+    --modal-border-strong: rgba(255, 255, 255, 0.08);
+    --modal-text: #f1f5f9;
+    --modal-text-strong: #f8fafc;
+    --modal-text-secondary: #94a3b8;
+    --modal-text-muted: #7f8ea3;
+    --modal-text-soft: #e2e8f0;
+    --modal-gradient: linear-gradient(145deg, #1a222d 0%, #151c25 100%);
+    --modal-header-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --modal-ink-soft: rgba(0, 0, 0, 0.2);
+    --modal-backdrop: rgba(0, 0, 0, 0.7);
+}
+
+/* Force dark backgrounds on all children */
+.dark-premium-theme * {
+    border-color: var(--dark-border-subtle) !important;
+}
+
+.dark-premium-theme .MuiPaper-root {
+    background: linear-gradient(145deg, #1a222d 0%, #151c25 100%) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Force padding on dark theme content */
+.page-content.dark-premium-theme {
+    padding: 32px !important;
+}
+
+/* EXCEÇÃO: Modais devem manter estilo claro */
+.dark-premium-theme .modal-overlay {
+    background: var(--modal-backdrop) !important;
+}
+
+.dark-premium-theme .modal-container {
+    background: var(--modal-gradient) !important;
+    color: var(--modal-text) !important;
+    max-width: 700px !important;
+    width: 90% !important;
+}
+
+.dark-premium-theme .modal-container.large {
+    max-width: 900px !important;
+}
+
+.dark-premium-theme .modal-header {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.dark-premium-theme .modal-body {
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
+
+.dark-premium-theme .modal-footer {
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+.dark-premium-theme .modal-overlay .MuiTextField-root,
+.dark-premium-theme .modal-overlay .MuiInputBase-root,
+.dark-premium-theme .modal-overlay .MuiFormControl-root {
+    background: transparent !important;
+}
+
+.dark-premium-theme .modal-overlay .MuiInputBase-input,
+.dark-premium-theme .modal-overlay .MuiSelect-select,
+.dark-premium-theme .modal-overlay input:not(.MuiInputBase-input),
+.dark-premium-theme .modal-overlay textarea:not(.MuiInputBase-input),
+.dark-premium-theme .modal-overlay select:not(.MuiSelect-select),
+.dark-premium-theme .modal-overlay .form-input,
+.dark-premium-theme .modal-overlay .form-select,
+.dark-premium-theme .modal-overlay .form-textarea,
+.dark-premium-theme .modal-overlay .input-with-icon input {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border-strong) !important;
+    border-radius: 8px !important;
+}
+
+/* Forca especificamente os campos MUI */
+.dark-premium-theme .modal-overlay .MuiTextField-root input,
+.dark-premium-theme .modal-overlay .MuiTextField-root textarea,
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-root,
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-input,
+.dark-premium-theme .modal-overlay .MuiInputBase-root input,
+.dark-premium-theme .modal-overlay .MuiInputBase-root textarea {
+    background: var(--modal-surface) !important;
+    background-color: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-notchedOutline {
+    border-color: var(--modal-border-strong) !important;
+}
+
+/* Modal input sizing/alignment */
+.dark-premium-theme .MuiDialog-root .MuiOutlinedInput-root,
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-root {
+    min-height: 48px !important;
+}
+
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-root {
+    border: none !important;
+}
+
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-notchedOutline {
+    border: 1px solid var(--modal-border-strong) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .MuiOutlinedInput-input,
+.dark-premium-theme .MuiDialog-root .MuiSelect-select,
+.dark-premium-theme .modal-overlay .MuiOutlinedInput-input,
+.dark-premium-theme .modal-overlay .MuiSelect-select {
+    padding: 12px 14px !important;
+    display: flex;
+    align-items: center;
+}
+
+.dark-premium-theme .modal-overlay label,
+.dark-premium-theme .modal-overlay .form-label,
+.dark-premium-theme .modal-overlay .MuiFormLabel-root,
+.dark-premium-theme .modal-overlay .MuiTypography-root,
+.dark-premium-theme .modal-overlay h2,
+.dark-premium-theme .modal-overlay p {
+    color: #64748b !important;
+}
+
+.dark-premium-theme .modal-overlay .modal-header-info h2 {
+    color: #1e293b !important;
+}
+
+.dark-premium-theme .modal-overlay .modal-icon {
+    background: #ecfdf5 !important;
+    color: #047857 !important;
+}
+
+
+.dark-premium-theme .MuiBox-root {
+    color: var(--dark-text-primary);
+}
+
+.dark-premium-theme .MuiTypography-root {
+    color: inherit;
+}
+
+/* Floating labels centered when empty (global) */
+.dark-premium-theme .MuiInputLabel-root:not(.MuiInputLabel-shrink) {
+    transform: translate(14px, 16px) scale(1) !important;
+    line-height: 1 !important;
+}
+
+.dark-premium-theme .MuiInputLabel-root.MuiInputLabel-shrink {
+    transform: translate(14px, -9px) scale(0.75) !important;
+}
+
+.dark-premium-theme .MuiInputLabel-sizeSmall:not(.MuiInputLabel-shrink) {
+    transform: translate(14px, 10px) scale(1) !important;
+}
+
+.dark-premium-theme .MuiInputLabel-sizeSmall.MuiInputLabel-shrink {
+    transform: translate(14px, -6px) scale(0.75) !important;
+}
+
+/* Ambient Background — REMOVIDO para visual mais profissional e corporativo */
+
+/* Card Style */
+.dark-premium-card {
+    background: var(--dark-bg-card);
+    border: 1px solid var(--dark-border-subtle);
+    border-radius: var(--dark-radius-lg);
+    transition: border-color 0.2s ease;
+}
+
+.dark-premium-card:hover {
+    border-color: var(--dark-border-glow);
+}
+
+/* Typography */
+.dark-title-display {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--dark-text-primary) 0%, var(--dark-text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark-label-uppercase {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--dark-text-muted);
+    font-weight: 600;
+}
+
+/* Gradient Avatars */
+.dark-avatar-gradient-primary {
+    background: linear-gradient(135deg, var(--dark-accent-indigo) 0%, var(--dark-accent-violet) 100%);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.dark-avatar-gradient-secondary {
+    background: linear-gradient(135deg, var(--dark-accent-emerald) 0%, var(--dark-accent-cyan) 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* KPI Card */
+.dark-kpi-card {
+    background: var(--dark-bg-card);
+    border: 1px solid var(--dark-border-subtle);
+    border-radius: var(--dark-radius-lg);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.dark-kpi-card:hover {
+    border-color: var(--dark-border-glow);
+}
+
+/* Button Styles */
+.dark-btn-secondary {
+    background: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border: 1px solid var(--dark-border-subtle);
+    transition: all 0.2s;
+}
+
+.dark-btn-secondary:hover {
+    background: var(--dark-bg-card-hover);
+    border-color: var(--dark-border-glow);
+}
+
+/* Timeline Bar */
+.dark-timeline-bar {
+    background: linear-gradient(90deg, var(--dark-accent-indigo), var(--dark-accent-violet));
+    border-radius: 6px;
+    transition: width 1s ease;
+}
+
+.dark-timeline-marker {
+    background: var(--dark-text-primary);
+    border: 3px solid var(--dark-accent-indigo);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+/* Tab Styles */
+.dark-tabs-container {
+    border-bottom: 1px solid var(--dark-border-subtle);
+}
+
+.dark-tab {
+    color: var(--dark-text-muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.dark-tab:hover {
+    color: var(--dark-text-secondary);
+}
+
+.dark-tab.active {
+    color: var(--dark-accent-indigo);
+    border-bottom-color: var(--dark-accent-indigo);
+}
+
+/* Custom Scrollbar for Dark Theme */
+.dark-premium-theme ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.dark-premium-theme ::-webkit-scrollbar-track {
+    background: var(--dark-bg-secondary);
+}
+
+.dark-premium-theme ::-webkit-scrollbar-thumb {
+    background: var(--dark-bg-tertiary);
+    border-radius: 4px;
+}
+
+.dark-premium-theme ::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-text-muted);
+}
+
+/* Animation Classes */
+.fade-in-up {
+    animation: fadeInUp 0.5s ease both;
+}
+
+.fade-in-up-delay-1 {
+    animation: fadeInUp 0.5s ease 0.1s both;
+}
+
+.fade-in-up-delay-2 {
+    animation: fadeInUp 0.5s ease 0.2s both;
+}
+
+.fade-in-up-delay-3 {
+    animation: fadeInUp 0.5s ease 0.3s both;
+}
+
+.fade-in-up-delay-4 {
+    animation: fadeInUp 0.5s ease 0.4s both;
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+/* ===============================================
+   DARK MODAL THEME (Global - works with portals)
+   =============================================== */
+.modal-overlay.dark-modal {
+    background: var(--modal-backdrop) !important;
+}
+
+.modal-overlay.dark-modal .modal-container {
+    background: var(--modal-gradient) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+    border-radius: 12px !important;
+}
+
+.modal-overlay.dark-modal .modal-header {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+    border-bottom: 1px solid var(--modal-border) !important;
+}
+
+.modal-overlay.dark-modal .modal-header-info h2 {
+    color: var(--modal-text) !important;
+}
+
+.modal-overlay.dark-modal .modal-header-info p {
+    color: var(--modal-text-muted) !important;
+}
+
+.modal-overlay.dark-modal .modal-icon {
+    background: rgba(37, 99, 235, 0.15) !important;
+    color: #2563eb !important;
+}
+
+.modal-overlay.dark-modal .modal-icon.gmud {
+    background: rgba(37, 99, 235, 0.15) !important;
+}
+
+.modal-overlay.dark-modal .modal-body {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+}
+
+.modal-overlay.dark-modal .modal-tabs {
+    border-bottom: 1px solid var(--modal-border) !important;
+    background: transparent !important;
+}
+
+.modal-overlay.dark-modal .modal-tab {
+    color: var(--modal-text-secondary) !important;
+    background: transparent !important;
+}
+
+.modal-overlay.dark-modal .modal-tab.active {
+    color: #2563eb !important;
+    border-bottom-color: #2563eb !important;
+}
+
+.modal-overlay.dark-modal .modal-tab:hover {
+    color: var(--modal-text) !important;
+    background: var(--modal-surface-hover) !important;
+}
+
+.modal-overlay.dark-modal .modal-footer {
+    background: var(--modal-surface-subtle) !important;
+    color: var(--modal-text) !important;
+    border-top: 1px solid var(--modal-border) !important;
+}
+
+.modal-overlay.dark-modal label,
+.modal-overlay.dark-modal .form-label {
+    color: var(--modal-text-secondary) !important;
+}
+
+.modal-overlay.dark-modal .form-label .required {
+    color: #f43f5e !important;
+}
+
+.modal-overlay.dark-modal input,
+.modal-overlay.dark-modal textarea,
+.modal-overlay.dark-modal select,
+.modal-overlay.dark-modal .form-input,
+.modal-overlay.dark-modal .form-select,
+.modal-overlay.dark-modal .form-textarea {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+    border-radius: 8px !important;
+}
+
+.modal-overlay.dark-modal input:focus,
+.modal-overlay.dark-modal textarea:focus,
+.modal-overlay.dark-modal select:focus {
+    border-color: #2563eb !important;
+    outline: none !important;
+}
+
+.modal-overlay.dark-modal input::placeholder,
+.modal-overlay.dark-modal textarea::placeholder {
+    color: var(--modal-text-muted) !important;
+}
+
+.modal-overlay.dark-modal .form-section {
+    background: transparent !important;
+}
+
+.modal-overlay.dark-modal h4 {
+    color: var(--modal-text) !important;
+}
+
+.modal-overlay.dark-modal .alert-info {
+    background: rgba(37, 99, 235, 0.1) !important;
+    color: var(--modal-text-secondary) !important;
+    border: 1px solid rgba(37, 99, 235, 0.2) !important;
+}
+
+.modal-overlay.dark-modal .btn-secondary {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text-secondary) !important;
+    border: 1px solid var(--modal-border) !important;
+}
+
+.modal-overlay.dark-modal .btn-secondary:hover {
+    background: var(--modal-surface-alt) !important;
+    color: var(--modal-text) !important;
+}
+
+.modal-overlay.dark-modal .btn-primary {
+    background: #2563eb !important;
+    color: white !important;
+    border: none !important;
+}
+
+.modal-overlay.dark-modal .modal-close {
+    color: var(--modal-text-muted) !important;
+}
+
+.modal-overlay.dark-modal .modal-close:hover {
+    color: var(--modal-text) !important;
+}
+
+/* FIX: Remove generic border from MUI Inputs to prevent "double box" effect */
+.modal-overlay.dark-modal .MuiInputBase-input,
+.dark-premium-theme .modal-overlay .MuiInputBase-input {
+    border: none !important;
+}
+
+/* ===============================================
+   DARK THEME: MUI Dialog-based Modals (ChangeModal)
+   These override the generic .dark-premium-theme .modal-*
+   rules that force white backgrounds.
+   =============================================== */
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-header {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+    border-bottom: none !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-header-info h2 {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-header-info p {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-icon {
+    background: rgba(37, 99, 235, 0.15) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-body {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-footer {
+    background: var(--modal-surface-subtle) !important;
+    color: var(--modal-text) !important;
+    border-top: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-close {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .modal-close:hover {
+    background: var(--modal-surface-hover) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner label,
+.dark-premium-theme .MuiDialog-root .change-modal-inner .form-label {
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .form-label .required {
+    color: #f43f5e !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner input,
+.dark-premium-theme .MuiDialog-root .change-modal-inner textarea,
+.dark-premium-theme .MuiDialog-root .change-modal-inner select,
+.dark-premium-theme .MuiDialog-root .change-modal-inner .form-input,
+.dark-premium-theme .MuiDialog-root .change-modal-inner .form-select,
+.dark-premium-theme .MuiDialog-root .change-modal-inner .form-textarea {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+    border-radius: 8px !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner input:focus,
+.dark-premium-theme .MuiDialog-root .change-modal-inner textarea:focus,
+.dark-premium-theme .MuiDialog-root .change-modal-inner select:focus {
+    border-color: #2563eb !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner input::placeholder,
+.dark-premium-theme .MuiDialog-root .change-modal-inner textarea::placeholder {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .section-title {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .section-title::after {
+    background: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .btn-secondary {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text-secondary) !important;
+    border: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .btn-secondary:hover {
+    background: var(--modal-surface-alt) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .btn-primary {
+    background: #2563eb !important;
+    color: white !important;
+    border: none !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .gmud-section {
+    background: var(--modal-surface-subtle) !important;
+    border-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .gmud-section-header {
+    border-bottom-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .change-modal-inner .gmud-section-title {
+    color: var(--modal-text) !important;
+}
+
+/* ===============================================
+   DARK THEME: IncidentModal + ContractModal
+   Same pattern as ChangeModal above.
+   =============================================== */
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-header,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-header {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-header-info h2,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-header-info h2 {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-header-info p,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-header-info p {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-body,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-body {
+    background: transparent !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-footer,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-footer {
+    background: var(--modal-surface-subtle) !important;
+    color: var(--modal-text) !important;
+    border-top: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-close,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-close {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-close:hover,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-close:hover {
+    background: var(--modal-surface-hover) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner label,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .form-label,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner label,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .form-label {
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner input,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner textarea,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner select,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .form-input,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .form-select,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .form-textarea,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner input,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner textarea,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner select,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .form-input,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .form-select,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .form-textarea {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+    border-radius: 8px !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner input:focus,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner textarea:focus,
+.dark-premium-theme .MuiDialog-root .incident-modal-inner select:focus,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner input:focus,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner textarea:focus,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner select:focus {
+    border-color: #2563eb !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-tabs,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-tabs {
+    background: transparent !important;
+    border-bottom: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-tab,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-tab {
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .modal-tab.active,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .modal-tab.active {
+    color: #2563eb !important;
+    border-bottom-color: #2563eb !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .section-title,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .section-title {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .section-title::after,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .section-title::after {
+    background: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .btn-secondary,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .btn-secondary {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text-secondary) !important;
+    border: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .incident-modal-inner .btn-primary,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .btn-primary {
+    background: #2563eb !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* ===============================================
+   DARK THEME: GlobalRiskModal (.modal-window inside MUI Dialog)
+   Override the global .dark-premium-theme .modal-header/body/footer
+   { background: #ffffff !important } rules that force white.
+   =============================================== */
+.dark-premium-theme .MuiDialog-root .modal-window {
+    background-color: var(--modal-bg) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-header {
+    background-color: var(--modal-surface-subtle) !important;
+    color: var(--modal-text) !important;
+    border-bottom: 1px solid var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-title {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-close {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-close:hover {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-body {
+    background-color: var(--modal-bg) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .modal-footer {
+    background-color: var(--modal-surface-subtle) !important;
+    color: var(--modal-text) !important;
+    border-top: 1px solid var(--modal-border) !important;
+}
+
+/* Stepper */
+.dark-premium-theme .MuiDialog-root .modal-window .stepper::before {
+    background-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .step {
+    background: var(--modal-surface-subtle) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .step-circle {
+    background-color: var(--modal-surface) !important;
+    border-color: var(--modal-border-strong) !important;
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .step.active .step-circle,
+.dark-premium-theme .MuiDialog-root .modal-window .step.completed .step-circle {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .step-label {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .step.active .step-label {
+    color: #818cf8 !important;
+}
+
+/* Form Controls */
+.dark-premium-theme .MuiDialog-root .modal-window .form-section-label {
+    color: var(--modal-text-muted) !important;
+    border-bottom-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .form-label {
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .form-control {
+    background-color: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .form-control:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .form-control:disabled,
+.dark-premium-theme .MuiDialog-root .modal-window .form-control[readonly] {
+    background-color: var(--modal-surface-subtle) !important;
+    color: var(--modal-text-muted) !important;
+}
+
+/* Buttons */
+.dark-premium-theme .MuiDialog-root .modal-window .btn-outline {
+    background-color: var(--modal-surface) !important;
+    border-color: var(--modal-border) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .btn-outline:hover {
+    background-color: var(--modal-surface-hover) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .btn-primary {
+    background-color: #2563eb !important;
+    color: white !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .btn-primary:hover {
+    background-color: #1d4ed8 !important;
+}
+
+/* Compliance Pills */
+.dark-premium-theme .MuiDialog-root .modal-window .compliance-pill {
+    background: var(--modal-surface) !important;
+    border-color: var(--modal-border) !important;
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .modal-window .compliance-pill.checked {
+    background: rgba(37, 99, 235, 0.15) !important;
+    border-color: #2563eb !important;
+    color: #818cf8 !important;
+}
+
+/* ===============================================
+   DARK THEME: ContractModal MUI Components
+   Target Accordion, TextField, inputs inside contract-modal-inner
+   =============================================== */
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiAccordion-root {
+    background-color: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+    border-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiAccordionSummary-root {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiAccordionDetails-root {
+    color: var(--modal-text) !important;
+}
+
+/* MUI TextFields inside ContractModal */
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTextField-root .MuiOutlinedInput-root,
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTextField-root .MuiInputBase-root {
+    background: var(--modal-surface) !important;
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTextField-root .MuiOutlinedInput-notchedOutline {
+    border-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTextField-root .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #2563eb !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiInputLabel-root {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiInputLabel-root.Mui-focused {
+    color: #818cf8 !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiInputAdornment-root {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiSelect-icon {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiFormHelperText-root {
+    color: var(--modal-text-muted) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiSwitch-root .MuiSwitch-track {
+    background-color: var(--modal-border-strong) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiFormControlLabel-label {
+    color: var(--modal-text) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiFormLabel-root {
+    color: var(--modal-text-secondary) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiRadio-root {
+    color: var(--modal-text-muted) !important;
+}
+
+/* Tables inside ContractModal */
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTableContainer-root {
+    background: var(--modal-surface) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTableHead-root .MuiTableCell-root {
+    background: var(--modal-surface-subtle) !important;
+    color: var(--modal-text-secondary) !important;
+    border-bottom-color: var(--modal-border) !important;
+}
+
+.dark-premium-theme .MuiDialog-root .contract-modal-inner .MuiTableBody-root .MuiTableCell-root {
+    color: var(--modal-text) !important;
+    border-bottom-color: var(--modal-border) !important;
+}
+
+/* ===============================================
+   GLOBAL MODAL RESPONSIVENESS FIXES
+   Ensures modals always fit in viewport with
+   visible footer/action buttons
+   =============================================== */
+
+/* All MUI Dialogs: constrain to viewport */
+.MuiDialog-root .MuiDialog-paper {
+    max-height: calc(100vh - 32px) !important;
+    margin: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Modal body areas: scrollable */
+.MuiDialog-root .modal-body,
+.MuiDialog-root .MuiDialogContent-root {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+}
+
+/* Modal header: never shrink */
+.MuiDialog-root .modal-header,
+.MuiDialog-root .MuiDialogTitle-root {
+    flex-shrink: 0 !important;
+}
+
+/* Modal footer: always visible at bottom */
+.MuiDialog-root .modal-footer,
+.MuiDialog-root .MuiDialogActions-root {
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 1 !important;
+}
+
+/* Inner modal containers: flex column */
+.MuiDialog-root .change-modal-inner,
+.MuiDialog-root .contract-modal-inner,
+.MuiDialog-root .incident-modal-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* ===============================================
+   RESPONSIVE: Small Screens (≤768px)
+   =============================================== */
+@media (max-width: 768px) {
+    .MuiDialog-root .MuiDialog-paper {
+        max-height: calc(100vh - 16px) !important;
+        margin: 8px !important;
+        width: calc(100% - 16px) !important;
+        max-width: none !important;
+        border-radius: 12px !important;
+    }
+
+    .MuiDialog-root .modal-header {
+        padding: 16px 20px !important;
+    }
+
+    .MuiDialog-root .modal-body {
+        padding: 20px !important;
+    }
+
+    .MuiDialog-root .modal-footer {
+        padding: 12px 20px !important;
+    }
+
+    /* Reduce accordion padding in modals */
+    .MuiDialog-root .MuiAccordionDetails-root {
+        padding: 12px !important;
+    }
+
+    /* Stack grid items vertically on small screens */
+    .MuiDialog-root .MuiGrid-container {
+        gap: 8px;
+    }
+}
+
+/* ===============================================
+   RESPONSIVE: Medium Screens (769px - 1366px)
+   =============================================== */
+@media (min-width: 769px) and (max-width: 1366px) {
+    .MuiDialog-root .MuiDialog-paper {
+        max-height: calc(100vh - 48px) !important;
+        margin: 24px !important;
+    }
+
+    .MuiDialog-root .modal-body {
+        padding: 24px !important;
+    }
+}

@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "description": "Matriz canônica module+action — espelha authorize() no backend e o modal de perfis.",
+  "modules": {
+    "HELPDESK": {
+      "label": "Help Desk / Chamados N1/N2",
+      "actions": [
+        { "key": "CREATE", "label": "Abrir chamado (portal / solicitante)" },
+        { "key": "READ", "label": "Ver próprios chamados e participar como solicitante/atribuído" },
+        { "key": "VIEW_QUEUE", "label": "Fila global de chamados (visão agente)" },
+        { "key": "VIEW_INTERNAL_NOTES", "label": "Ler notas internas dos técnicos" },
+        { "key": "MESSAGE", "label": "Responder chamado (mensagem pública)" },
+        { "key": "WRITE_INTERNAL_NOTES", "label": "Escrever notas internas (ocultas ao solicitante)" },
+        { "key": "UPDATE_STATUS", "label": "Alterar status do chamado e relógio de SLA (pausa/retomada)" },
+        { "key": "WRITE", "label": "Administrar catálogo, categorias e políticas de SLA" },
+        { "key": "DELETE", "label": "Excluir itens do catálogo / SLA" },
+        { "key": "ESCALATE_PROBLEM", "label": "Escalar chamado para gestão de problemas" },
+        { "key": "ESCALATE_CHANGE", "label": "Escalar chamado para RDM (mudança)" },
+        { "key": "ESCALATE_PROJECT", "label": "Gerar demanda de projeto a partir do chamado" }
+      ]
+    },
+    "INCIDENT": {
+      "label": "Incidentes ITIL",
+      "actions": [
+        { "key": "READ", "label": "Visualizar incidentes (escopo por centro de custo)" },
+        { "key": "WRITE", "label": "Criar, editar, atribuir, resolver e comentar" },
+        { "key": "DELETE", "label": "Excluir incidentes e anexos" },
+        { "key": "VIEW_ALL_CC", "label": "Ver incidentes de todos os centros de custo" },
+        { "key": "ESCALATE", "label": "Escalar incidente (fluxo de escalação)" }
+      ]
+    },
+    "PROBLEM": {
+      "label": "Gestão de problemas (ITIL)",
+      "actions": [
+        { "key": "READ", "label": "Listar e visualizar problemas" },
+        { "key": "DECLARE", "label": "Declarar novo problema" },
+        { "key": "MASS_RESOLUTION", "label": "Atualizar status em cascata" },
+        { "key": "LINK_ORPHANS", "label": "Vincular chamados órfãos ao problema" }
+      ]
+    },
+    "PROJECTS": {
+      "label": "Gestão de projetos (PPM)",
+      "actions": [
+        { "key": "READ", "label": "Visualizar projetos e artefatos" },
+        { "key": "CREATE", "label": "Criar projeto" },
+        { "key": "WRITE", "label": "Editar projeto, membros, atas, propostas, custos, follow-ups" },
+        { "key": "DELETE", "label": "Remover membros, riscos, atas, propostas, follow-ups, custos" },
+        { "key": "DELETE_PROJECT", "label": "Excluir projeto permanentemente" },
+        { "key": "APPROVE_BASELINE", "label": "Aprovar / rejeitar linha de base do projeto" },
+        { "key": "APPROVE_FINANCIAL", "label": "Aprovar / rejeitar custos financeiros do projeto" }
+      ]
+    },
+    "GMUD": {
+      "label": "Gestão de mudanças (RDM / CAB)",
+      "actions": [
+        { "key": "READ", "label": "Visualizar mudanças, anexos e métricas" },
+        { "key": "CREATE", "label": "Solicitar mudança (RFC)" },
+        { "key": "WRITE", "label": "Templates de mudança e aplicar template" },
+        { "key": "DELETE", "label": "Excluir solicitação de mudança ou template" },
+        { "key": "EDIT_CHANGE", "label": "Editar mudança em andamento" },
+        { "key": "SCHEDULE", "label": "Calendário, conflitos e janelas de congelamento" },
+        { "key": "APPROVE", "label": "Voto CAB / revisão / aprovadores" },
+        { "key": "ATTACH", "label": "Anexos da mudança" }
+      ]
+    },
+    "FINANCE": {
+      "label": "Finanças",
+      "actions": [
+        { "key": "READ", "label": "Visualizar orçamentos e exercícios" },
+        { "key": "VIEW_INVOICES", "label": "Listar e ver despesas / NF-e" },
+        { "key": "WRITE", "label": "Lançar despesas, aprovar orçamento, itens e duplicar" },
+        { "key": "DELETE", "label": "Excluir orçamento, itens e despesas" },
+        { "key": "EDIT_BUDGET", "label": "Criar e editar estrutura de orçamento" }
+      ]
+    },
+    "CONTRACTS": {
+      "label": "Contratos",
+      "actions": [
+        { "key": "READ", "label": "Visualizar contratos" },
+        { "key": "CREATE", "label": "Novo contrato" },
+        { "key": "EDIT_CONTRACT", "label": "Editar contrato" },
+        { "key": "ATTACH", "label": "Anexos do contrato" },
+        { "key": "ADDENDUM", "label": "Aditivos contratuais" },
+        { "key": "DELETE", "label": "Excluir contrato" }
+      ]
+    },
+    "SUPPLIERS": {
+      "label": "Fornecedores",
+      "actions": [
+        { "key": "READ", "label": "Visualizar fornecedores" },
+        { "key": "CREATE", "label": "Cadastrar fornecedor" },
+        { "key": "EDIT_SUPPLIER", "label": "Editar fornecedor" },
+        { "key": "DELETE", "label": "Excluir fornecedor" }
+      ]
+    },
+    "ASSETS": {
+      "label": "Ativos",
+      "actions": [
+        { "key": "READ", "label": "Visualizar ativos e manutenções" },
+        { "key": "CREATE", "label": "Cadastrar ativo" },
+        { "key": "EDIT_ASSET", "label": "Editar ativo" },
+        { "key": "MAINTAIN", "label": "Registrar e editar manutenções" },
+        { "key": "DELETE", "label": "Excluir ativo" }
+      ]
+    },
+    "TASKS": {
+      "label": "Tarefas",
+      "actions": [
+        { "key": "READ", "label": "Visualizar tarefas e relatório de tempo" },
+        { "key": "WRITE", "label": "Criar, editar, comentar, anexos e timer" },
+        { "key": "DELETE", "label": "Excluir tarefa, comentário ou anexo" }
+      ]
+    },
+    "KB": {
+      "label": "Base de conhecimento",
+      "actions": [
+        { "key": "READ", "label": "Ler artigos e dashboard" },
+        { "key": "CREATE", "label": "Criar artigo" },
+        { "key": "EDIT_ARTICLE", "label": "Editar artigo" },
+        { "key": "DELETE", "label": "Excluir artigo" }
+      ]
+    },
+    "RISKS": {
+      "label": "Riscos corporativos",
+      "actions": [
+        { "key": "READ", "label": "Visualizar riscos e heatmap" },
+        { "key": "CREATE", "label": "Registrar risco" },
+        { "key": "EDIT_RISK", "label": "Editar risco" },
+        { "key": "DELETE", "label": "Excluir risco" }
+      ]
+    },
+    "APPROVALS": {
+      "label": "Minhas aprovações (esteira)",
+      "actions": [
+        { "key": "READ", "label": "Ver pendências, histórico e detalhes" },
+        { "key": "WRITE", "label": "Aprovar ou rejeitar itens da esteira" },
+        { "key": "BYPASS_APPROVAL", "label": "Mesmo que WRITE hoje — reservado para políticas de bypass" }
+      ]
+    },
+    "CONFIG": {
+      "label": "Configurações / organização",
+      "actions": [
+        { "key": "READ", "label": "Ver organização, usuários e perfis" },
+        { "key": "WRITE", "label": "Criar e editar usuários, departamentos, centros de custo e perfis" },
+        { "key": "DELETE", "label": "Excluir usuários, departamentos, centros de custo e perfis" }
+      ]
+    },
+    "ACTIVITY_LOG": {
+      "label": "Atividade / auditoria",
+      "actions": [{ "key": "READ", "label": "Visualizar log de atividades" }]
+    },
+    "NOTIFICATIONS": {
+      "label": "Notificações in-app",
+      "actions": [
+        { "key": "READ", "label": "Listar notificações" },
+        { "key": "WRITE", "label": "Marcar como lidas" }
+      ]
+    },
+    "UPLOAD": {
+      "label": "Upload genérico (API /uploads)",
+      "actions": [{ "key": "WRITE", "label": "Enviar arquivo" }]
+    },
+    "SUPER_ADMIN": {
+      "label": "Plataforma (matriz)",
+      "actions": [
+        { "key": "ALL", "label": "Gestão de tenants (Super Admin global)" }
+      ]
+    }
+  }
+}

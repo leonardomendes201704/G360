@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Budget" ADD COLUMN     "isOBZ" BOOLEAN NOT NULL DEFAULT false;

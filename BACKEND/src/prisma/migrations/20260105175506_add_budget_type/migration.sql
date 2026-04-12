@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Budget" ADD COLUMN     "type" TEXT NOT NULL DEFAULT 'MIXED';

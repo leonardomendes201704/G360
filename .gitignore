@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+FRONTEND/dist/
+BACKEND/build/
+
+# Logs
+*.log
+logs/
+BACKEND/backend_dev.log
+BACKEND/backend_log.txt
+BACKEND/output.log
+
+# Coverage & test artifacts
+coverage/
+BACKEND/coverage/
+BACKEND/coverage_summary.txt
+BACKEND/test_output.txt
+FRONTEND/test-results/
+FRONTEND/test_results.txt
+FRONTEND/clean_test_results.txt
+FRONTEND/playwright-report/
+FRONTEND/videos-crud/
+FRONTEND/screenshots-audit/
+FRONTEND/pb_snaps.log
+FRONTEND/modal-error.png
+
+# Uploads
+BACKEND/uploads/
+
+# SSL private keys
+*.key
+*.pem
+
+# Database backups
+*.sql
+!**/migrations/*.sql
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

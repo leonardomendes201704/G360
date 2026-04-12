@@ -1,0 +1,928 @@
+/* Light Premium Theme - G360 Enterprise (Glass & Light) */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+    /* ============================================
+       BACKGROUNDS - Light Premium (White/Slate Scale)
+       ============================================ */
+    --light-bg-primary: #F8FAFC;
+    /* Slate 50  - Background Base */
+    --light-bg-secondary: #FFFFFF;
+    /* White     - Surface 1 (Cards/Sidebar) */
+    --light-bg-tertiary: #F1F5F9;
+    /* Slate 100 - Surface 2 (Inputs/Hover) */
+
+    /* Glass Effect Gradients */
+    --light-bg-card: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    --light-bg-card-hover: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
+
+    /* ============================================
+       BORDERS
+       ============================================ */
+    --light-border-subtle: #E2E8F0;
+    /* Slate 200 - Divisores suaves */
+    --light-border-glow: rgba(37, 99, 235, 0.4);
+    /* Indigo Glow para foco/hover */
+
+    /* ============================================
+       TEXT
+       ============================================ */
+    --light-text-primary: #0F172A;
+    /* Slate 900 - Títulos Forte */
+    --light-text-secondary: #475569;
+    /* Slate 600 - Descrições */
+    --light-text-muted: #94A3B8;
+    /* Slate 400 - Desabilitado */
+
+    /* ============================================
+       ACCENTS - Cores Semânticas (Mais vibrantes no fundo claro)
+       ============================================ */
+    --light-accent-primary: #2563EB;
+    /* Blue 600 - Brand Principal */
+    --light-accent-primary-soft: rgba(37, 99, 235, 0.1);
+
+    --light-accent-success: #059669;
+    /* Emerald 600 */
+    --light-accent-success-soft: rgba(5, 150, 105, 0.1);
+
+    --light-accent-warning: #D97706;
+    /* Amber 600 */
+    --light-accent-warning-soft: rgba(217, 119, 6, 0.1);
+
+    --light-accent-danger: #DC2626;
+    /* Red 600 */
+    --light-accent-danger-soft: rgba(220, 38, 38, 0.1);
+
+    --light-accent-info: #0284C7;
+    /* Sky 600 */
+    --light-accent-info-soft: rgba(2, 132, 199, 0.1);
+
+    /* ============================================
+       SHADOWS - Suaves e coloridas (Premium Feel)
+       ============================================ */
+    --light-shadow-original: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Sombra base sutil */
+
+    /* Sombras Difusas Coloridas */
+    --light-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+    --light-shadow-hover: 0 10px 20px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(37, 99, 235, 0.1);
+    /* Indigo hint */
+    --light-shadow-glow: 0 0 15px rgba(37, 99, 235, 0.15);
+
+    /* ============================================
+       BORDER RADIUS (Mantido consistente)
+       ============================================ */
+    --light-radius-sm: 6px;
+    --light-radius-md: 10px;
+    --light-radius-lg: 14px;
+    --light-radius-xl: 16px;
+}
+
+/* Light Theme Wrapper Class */
+body.light-premium-theme,
+.light-premium-theme {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    background: var(--light-bg-primary) !important;
+    color: var(--light-text-primary) !important;
+    min-height: 100vh;
+    position: relative;
+    --modal-bg: #ffffff;
+    --modal-surface: #f1f5f9;
+    --modal-surface-alt: #e2e8f0;
+    --modal-surface-subtle: #f8fafc;
+    --modal-surface-hover: rgba(15, 23, 42, 0.06);
+    --modal-border: #cbd5e1;
+    --modal-border-strong: #64748b;
+    --modal-text: #0f172a;
+    --modal-text-strong: #0b1220;
+    --modal-text-secondary: #475569;
+    --modal-text-muted: #64748b;
+    --modal-text-soft: #334155;
+    --modal-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    --modal-header-gradient: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    --modal-ink-soft: rgba(15, 23, 42, 0.06);
+    --modal-backdrop: rgba(15, 23, 42, 0.35);
+}
+
+/* Force Light overrides on specific children */
+.light-premium-theme * {
+    border-color: var(--light-border-subtle);
+}
+
+/* MUI Paper overrides via CSS */
+.light-premium-theme .MuiPaper-root {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+    box-shadow: var(--light-shadow-card) !important;
+    border: 1px solid var(--light-border-subtle) !important;
+}
+
+/* Hover effects for cards */
+.light-premium-theme .MuiPaper-root:hover {
+    box-shadow: var(--light-shadow-hover) !important;
+}
+
+/* Page Content Background */
+.page-content.light-premium-theme {
+    padding: 32px !important;
+    background: var(--light-bg-primary) !important;
+}
+
+/* ===============================================
+   GLOBAL ELEMENT OVERRIDES FOR LIGHT THEME
+   =============================================== */
+
+/* Override dark inline backgrounds in light mode */
+.light-premium-theme [style*="background: linear-gradient(145deg, #1a222d"],
+.light-premium-theme [style*="background: rgba(22, 29, 38"] {
+    background: var(--light-bg-card) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* Force Box/Paper Cards */
+.light-premium-theme .MuiBox-root[style*="background: linear"],
+.light-premium-theme .MuiBox-root[style*="background: rgba"] {
+    /* Intentionally empty: Override is applied by JavaScript component */
+    color: inherit;
+}
+
+/* MuiTableCell */
+.light-premium-theme .MuiTableCell-root {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* MuiChip */
+.light-premium-theme .MuiChip-root {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* ===============================================
+   LIGHT MODAL THEME
+   =============================================== */
+.modal-overlay.light-modal {
+    background: var(--modal-backdrop) !important;
+    backdrop-filter: blur(8px) !important;
+    /* Glass effect overlay */
+}
+
+.modal-overlay.light-modal .modal-container {
+    background: var(--modal-gradient) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--modal-border) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.modal-overlay.light-modal .modal-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--modal-border) !important;
+}
+
+.modal-overlay.light-modal .modal-footer {
+    background: var(--modal-surface-subtle) !important;
+    border-top: 1px solid var(--modal-border) !important;
+}
+
+/* Inputs */
+.light-premium-theme input,
+.light-premium-theme textarea,
+.light-premium-theme select,
+.light-premium-theme .MuiOutlinedInput-root {
+    background: #FFFFFF !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* Modal input sizing/alignment */
+.light-premium-theme .MuiDialog-root .MuiOutlinedInput-root {
+    min-height: 48px !important;
+}
+
+.light-premium-theme .modal-overlay .MuiOutlinedInput-root {
+    border: none !important;
+}
+
+.light-premium-theme .modal-overlay .MuiOutlinedInput-notchedOutline {
+    border: 1px solid var(--modal-border-strong) !important;
+}
+
+.light-premium-theme .MuiDialog-root .MuiOutlinedInput-input,
+.light-premium-theme .MuiDialog-root .MuiSelect-select {
+    padding: 12px 14px !important;
+    display: flex;
+    align-items: center;
+}
+
+.light-premium-theme .MuiOutlinedInput-notchedOutline {
+    border-color: var(--modal-border-strong) !important;
+}
+
+.light-premium-theme .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--light-accent-primary) !important;
+}
+
+.light-premium-theme input:focus,
+.light-premium-theme .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--light-accent-primary) !important;
+    box-shadow: none !important;
+}
+
+/* Floating labels centered when empty (global) */
+.light-premium-theme .MuiInputLabel-root:not(.MuiInputLabel-shrink) {
+    transform: translate(14px, 16px) scale(1) !important;
+    line-height: 1 !important;
+}
+
+.light-premium-theme .MuiInputLabel-root.MuiInputLabel-shrink {
+    transform: translate(14px, -9px) scale(0.75) !important;
+}
+
+.light-premium-theme .MuiInputLabel-sizeSmall:not(.MuiInputLabel-shrink) {
+    transform: translate(14px, 10px) scale(1) !important;
+}
+
+.light-premium-theme .MuiInputLabel-sizeSmall.MuiInputLabel-shrink {
+    transform: translate(14px, -6px) scale(0.75) !important;
+}
+
+/* Standard (underline) inputs */
+.light-premium-theme .MuiInput-underline:before {
+    border-bottom: 1px solid var(--modal-border-strong) !important;
+}
+
+.light-premium-theme .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: 1px solid var(--light-accent-primary) !important;
+}
+
+.light-premium-theme .MuiInput-underline:after {
+    border-bottom: 2px solid var(--light-accent-primary) !important;
+}
+
+/* Buttons */
+.light-premium-theme .MuiButton-containedSecondary,
+.light-premium-theme .btn-secondary {
+    background: #F1F5F9 !important;
+    color: #475569 !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+.light-premium-theme .MuiButton-containedSecondary:hover,
+.light-premium-theme .btn-secondary:hover {
+    background: #E2E8F0 !important;
+    color: #1E293B !important;
+}
+
+/* Typography Gradient for Light Mode */
+.light-title-display {
+    background: linear-gradient(135deg, #1E293B 0%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* MUI Dialog */
+.light-premium-theme .MuiDialog-paper {
+    background: #FFFFFF !important;
+    color: var(--light-text-primary) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+/* Menu and Select Dropdowns */
+.light-premium-theme .MuiMenu-paper,
+.light-premium-theme .MuiSelect-paper,
+.light-premium-theme .MuiPopover-paper {
+    background: #FFFFFF !important;
+    color: var(--light-text-primary) !important;
+    box-shadow: var(--light-shadow-hover) !important;
+    border: 1px solid var(--light-border-subtle) !important;
+}
+
+.light-premium-theme .MuiMenuItem-root {
+    color: var(--light-text-primary) !important;
+}
+
+.light-premium-theme .MuiMenuItem-root:hover {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* ===============================================
+   COMPREHENSIVE PAGE ELEMENT OVERRIDES
+   =============================================== */
+
+/* Override all dark rgba backgrounds for page sections */
+.light-premium-theme [style*="background: rgba(22, 29, 38"],
+.light-premium-theme [style*="background: linear-gradient(145deg, #1a222d"],
+.light-premium-theme [style*="background: #1c2632"] {
+    background: var(--light-bg-secondary) !important;
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* Table header backgrounds */
+.light-premium-theme tr[style*="background: #1c2632"],
+.light-premium-theme thead tr {
+    background: var(--light-bg-tertiary) !important;
+}
+
+.light-premium-theme thead th,
+.light-premium-theme th[style*="color: #64748b"] {
+    color: var(--light-text-secondary) !important;
+    background: var(--light-bg-tertiary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Table body row hovers */
+.light-premium-theme tbody tr:hover {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Table cell borders and text */
+.light-premium-theme td[style*="borderBottom: 1px solid rgba(255, 255, 255"],
+.light-premium-theme th[style*="borderBottom: 1px solid rgba(255, 255, 255"],
+.light-premium-theme td,
+.light-premium-theme th {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Override dark text colors */
+.light-premium-theme [style*="color: #f1f5f9"],
+.light-premium-theme [style*="color: #e0e0e0"],
+.light-premium-theme [style*="color: white"] {
+    color: var(--light-text-primary) !important;
+}
+
+.light-premium-theme [style*="color: #64748b"],
+.light-premium-theme [style*="color: #94a3b8"] {
+    color: var(--light-text-secondary) !important;
+}
+
+.light-premium-theme [style*="color: #9ca3af"] {
+    color: var(--light-text-muted) !important;
+}
+
+/* Input label colors */
+.light-premium-theme .MuiInputLabel-root,
+.light-premium-theme label[style*="color: #9"] {
+    color: var(--light-text-secondary) !important;
+}
+
+/* Native select elements */
+.light-premium-theme select {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+.light-premium-theme select option {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* Search input containers */
+.light-premium-theme [style*="background: #1c2632"][style*="border-radius"] {
+    background: var(--light-bg-secondary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+.light-premium-theme input[style*="background: transparent"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* Action buttons in tables */
+.light-premium-theme .MuiIconButton-root[style*="border: 1px solid rgba(255, 255, 255"],
+.light-premium-theme .MuiIconButton-root {
+    border-color: var(--light-border-subtle) !important;
+}
+
+.light-premium-theme .MuiIconButton-root:hover {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Filter and Card box borders */
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.06)"],
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.08)"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* KPI/Stat Cards styling */
+.light-premium-theme .MuiBox-root[style*="cursor: pointer"][style*="transition"] {
+    background: var(--light-bg-secondary) !important;
+}
+
+/* View toggle buttons */
+.light-premium-theme button[style*="background: transparent"][style*="color: #94a3b8"] {
+    color: var(--light-text-secondary) !important;
+}
+
+.light-premium-theme [style*="background: rgba(0,0,0,0.2)"],
+.light-premium-theme [style*="background: rgba(0, 0, 0, 0.2)"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Empty state text */
+.light-premium-theme [style*="color: #64748b"][style*="fontSize"] {
+    color: var(--light-text-muted) !important;
+}
+
+/* Progress bars background */
+.light-premium-theme [style*="background: rgba(255,255,255,0.05)"],
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.05)"] {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Input placeholders */
+.light-premium-theme input::placeholder {
+    color: var(--light-text-muted) !important;
+}
+
+/* MUI Select icon */
+.light-premium-theme .MuiSelect-icon {
+    color: var(--light-text-secondary) !important;
+}
+
+/* Collapse borders */
+.light-premium-theme [style*="borderBottom: 1px solid rgba(255, 255, 255, 0.08)"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* ===============================================
+   MODAL/DIALOG OVERRIDES FOR LIGHT THEME
+   =============================================== */
+
+/* Modal overlay backdrop - keep dark for focus effect */
+.light-premium-theme [style*="background: rgba(0, 0, 0, 0.7)"] {
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Modal container backgrounds */
+.light-premium-theme [style*="background: #0f172a"],
+.light-premium-theme [style*="background: linear-gradient(135deg, #1e293b"] {
+    background: var(--light-bg-secondary) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Modal headers */
+.light-premium-theme [style*="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%)"] {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Modal inner containers and sections */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.02)"],
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.03)"],
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.05)"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Modal text/label colors */
+.light-premium-theme [style*="color: rgba(255, 255, 255, 0.7)"],
+.light-premium-theme [style*="color: rgba(255, 255, 255, 0.8)"] {
+    color: var(--light-text-secondary) !important;
+}
+
+.light-premium-theme [style*="color: rgba(255, 255, 255, 0.5)"],
+.light-premium-theme [style*="color: rgba(255, 255, 255, 0.4)"],
+.light-premium-theme [style*="color: rgba(255, 255, 255, 0.35)"] {
+    color: var(--light-text-muted) !important;
+}
+
+.light-premium-theme [style*="color: #ffffff"],
+.light-premium-theme [style*="color: white"],
+.light-premium-theme [style*="color: #cbd5e1"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* Modal input fields */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.05)"][style*="border: 1px solid rgba(255, 255, 255"] {
+    background: var(--light-bg-secondary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Modal buttons with dark backgrounds */
+.light-premium-theme button[style*="background: #1e293b"],
+.light-premium-theme [style*="background: #334155"] {
+    background: var(--light-bg-tertiary) !important;
+    color: var(--light-text-primary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+.light-premium-theme button[style*="background: #1e293b"]:hover {
+    background: var(--light-border-subtle) !important;
+}
+
+/* Modal close button */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.05)"][style*="border-radius: 8px"] {
+    background: var(--light-bg-tertiary) !important;
+    color: var(--light-text-secondary) !important;
+}
+
+/* Tab active indicator stays blue, inactive tabs text */
+.light-premium-theme button[style*="color: rgba(255, 255, 255, 0.5)"] {
+    color: var(--light-text-muted) !important;
+}
+
+/* Comment/attachment boxes in modals */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.03)"][style*="border-radius"] {
+    background: var(--light-bg-tertiary) !important;
+    border: 1px solid var(--light-border-subtle) !important;
+}
+
+/* Modal borders */
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.08)"],
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.1)"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Checklist items */
+.light-premium-theme [style*="border: 2px solid rgba(255, 255, 255, 0.3)"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Priority buttons unselected */
+.light-premium-theme button[style*="background: rgba(255, 255, 255, 0.05)"][style*="color: rgba(255"] {
+    background: var(--light-bg-tertiary) !important;
+    color: var(--light-text-secondary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Box shadow overrides for modals */
+.light-premium-theme [style*="boxShadow: 0 25px 50px"] {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Delete/action buttons stay red on hover */
+.light-premium-theme button[style*="color: #ef4444"] {
+    color: #ef4444 !important;
+}
+
+/* MUI Dialog specific overrides */
+.light-premium-theme .MuiDialog-paper {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+.light-premium-theme .MuiDialogTitle-root {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+    border-bottom: 1px solid var(--light-border-subtle) !important;
+}
+
+.light-premium-theme .MuiDialogContent-root {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+}
+
+.light-premium-theme .MuiDialogActions-root {
+    background: var(--light-bg-tertiary) !important;
+    border-top: 1px solid var(--light-border-subtle) !important;
+}
+
+/* Scrollbar in modals for light theme */
+.light-premium-theme [style*=":-webkit-scrollbar-thumb"] {
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===============================================
+   PROJECT DETAILS PAGE OVERRIDES
+   =============================================== */
+
+/* Project Header - back button and action buttons with #1c2632 */
+.light-premium-theme [style*="background: #1c2632"][style*="border-radius"] {
+    background: var(--light-bg-secondary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Tabs navigation border and hover states */
+.light-premium-theme [style*="borderBottom: 1px solid rgba(255, 255, 255, 0.06)"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.03)"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Project loading screen */
+.light-premium-theme [style*="background: #0f172a"][style*="height: 100vh"] {
+    background: var(--light-bg-primary) !important;
+}
+
+/* Locked overlay for pending approval */
+.light-premium-theme [style*="background: rgba(15, 23, 42, 0.6)"] {
+    background: rgba(255, 255, 255, 0.7) !important;
+}
+
+.light-premium-theme [style*="background: #1e293b"][style*="border: 1px solid rgba(245"] {
+    background: var(--light-bg-secondary) !important;
+}
+
+/* Tab content areas */
+.light-premium-theme .fade-in-up {
+    color: var(--light-text-primary);
+}
+
+/* KPI cards in project details */
+.light-premium-theme [style*="background: linear-gradient"][style*="borderRadius: '12px'"],
+.light-premium-theme [style*="background: linear-gradient(145deg"] {
+    background: var(--light-bg-secondary) !important;
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* Icon containers with colored backgrounds - keep colored */
+/* These are intentional accent colors, not theme colors */
+
+/* Project code badge */
+.light-premium-theme [style*="background: #1c2632"][style*="fontFamily: monospace"] {
+    background: var(--light-bg-tertiary) !important;
+    color: var(--light-text-secondary) !important;
+}
+
+/* Tab active and inactive colors */
+.light-premium-theme [style*="color: #64748b"][style*="cursor: pointer"] {
+    color: var(--light-text-secondary) !important;
+}
+
+/* Project info cards */
+.light-premium-theme [style*="background: linear-gradient(145deg, #161d26"] {
+    background: var(--light-bg-secondary) !important;
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* Stats/KPI value text should still be dark/readable */
+.light-premium-theme [style*="fontSize: '32px'"][style*="fontWeight"],
+.light-premium-theme [style*="fontSize: '28px'"][style*="fontWeight"],
+.light-premium-theme [style*="fontSize: '24px'"][style*="fontWeight"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* Progress bars container */
+.light-premium-theme [style*="background: rgba(0, 0, 0, 0.3)"] {
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Cards with boxShadow containing black rgba */
+.light-premium-theme [style*="boxShadow: 0"][style*="rgba(0, 0, 0, 0."] {
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* Quick action buttons */
+.light-premium-theme [style*="background: rgba(37, 99, 235, 0.1)"][style*="cursor: pointer"] {
+    background: rgba(37, 99, 235, 0.08) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* ===============================================
+   GLOBAL DARK PATTERN OVERRIDES (All Modules)
+   Captura todos os padrões de cores dark hardcoded
+   =============================================== */
+
+/* --- BACKGROUND PATTERNS --- */
+
+/* Primary dark backgrounds */
+.light-premium-theme [style*="background: #161d26"],
+.light-premium-theme [style*="background:#161d26"],
+.light-premium-theme [style*="background: #0f1419"],
+.light-premium-theme [style*="background:#0f1419"],
+.light-premium-theme [style*="background: #151c25"],
+.light-premium-theme [style*="background:#151c25"] {
+    background: var(--light-bg-secondary) !important;
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Secondary dark backgrounds */
+.light-premium-theme [style*="background: #1c2632"],
+.light-premium-theme [style*="background:#1c2632"],
+.light-premium-theme [style*="background: #1e293b"],
+.light-premium-theme [style*="background:#1e293b"],
+.light-premium-theme [style*="background: #0f172a"],
+.light-premium-theme [style*="background:#0f172a"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Translucent dark backgrounds */
+.light-premium-theme [style*="background: rgba(22, 29, 38"],
+.light-premium-theme [style*="background:rgba(22, 29, 38"],
+.light-premium-theme [style*="background: rgba(15, 23, 42"],
+.light-premium-theme [style*="background:rgba(15, 23, 42"] {
+    background: var(--light-bg-secondary) !important;
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* Gradient dark backgrounds */
+.light-premium-theme [style*="background: linear-gradient(145deg, #1a222d"],
+.light-premium-theme [style*="background: linear-gradient(145deg, #161d26"],
+.light-premium-theme [style*="background: linear-gradient(135deg, #1e293b"] {
+    background: var(--light-bg-card) !important;
+    box-shadow: var(--light-shadow-card) !important;
+}
+
+/* --- TEXT COLOR PATTERNS --- */
+
+/* Primary light text on dark -> dark text on light */
+.light-premium-theme [style*="color: #f1f5f9"],
+.light-premium-theme [style*="color:#f1f5f9"],
+.light-premium-theme [style*="color: #f8fafc"],
+.light-premium-theme [style*="color:#f8fafc"],
+.light-premium-theme [style*="color: #e2e8f0"],
+.light-premium-theme [style*="color:#e2e8f0"],
+.light-premium-theme [style*="color: #cbd5e1"],
+.light-premium-theme [style*="color:#cbd5e1"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* Secondary text colors */
+.light-premium-theme [style*="color: #94a3b8"],
+.light-premium-theme [style*="color:#94a3b8"],
+.light-premium-theme [style*="color: #9ca3af"],
+.light-premium-theme [style*="color:#9ca3af"] {
+    color: var(--light-text-secondary) !important;
+}
+
+/* Muted text colors */
+.light-premium-theme [style*="color: #64748b"],
+.light-premium-theme [style*="color:#64748b"] {
+    color: var(--light-text-muted) !important;
+}
+
+/* --- BORDER PATTERNS --- */
+
+/* Dark translucent borders */
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.0"],
+.light-premium-theme [style*="border: 1px solid rgba(255, 255, 255, 0.1"],
+.light-premium-theme [style*="border:1px solid rgba(255, 255, 255, 0.0"],
+.light-premium-theme [style*="borderBottom: 1px solid rgba(255, 255, 255, 0.0"],
+.light-premium-theme [style*="border-bottom: 1px solid rgba(255, 255, 255, 0.0"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Dashed borders for empty states */
+.light-premium-theme [style*="border: 2px dashed rgba(255, 255, 255"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* --- KANBAN SPECIFIC --- */
+
+/* Kanban column containers */
+.light-premium-theme .MuiBox-root[style*="background: #161d26"][style*="borderRadius: 16px"],
+.light-premium-theme .MuiBox-root[style*="background: #161d26"][style*="border-radius: 16px"] {
+    background: var(--light-bg-secondary) !important;
+    border: 1px solid var(--light-border-subtle) !important;
+}
+
+/* Empty state placeholders in kanban */
+.light-premium-theme [style*="background: #1c2632"][style*="borderRadius: 16px"],
+.light-premium-theme [style*="background: #1c2632"][style*="border-radius: 16px"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* --- SCROLLBAR OVERRIDES --- */
+
+.light-premium-theme *::-webkit-scrollbar-track {
+    background: var(--light-bg-tertiary) !important;
+}
+
+.light-premium-theme *::-webkit-scrollbar-thumb {
+    background: #cbd5e1 !important;
+    border-radius: 4px !important;
+}
+
+.light-premium-theme *::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8 !important;
+}
+
+/* --- FILTER BAR PATTERNS --- */
+
+/* Filter section backgrounds */
+.light-premium-theme [style*="backdropFilter: blur"][style*="background: rgba(22"],
+.light-premium-theme [style*="backdrop-filter: blur"][style*="background: rgba(22"] {
+    background: var(--light-bg-secondary) !important;
+    backdrop-filter: none !important;
+}
+
+/* Select dropdowns with dark styling */
+.light-premium-theme .MuiSelect-select[style*="background: #1c2632"],
+.light-premium-theme [style*="bgcolor: '#1c2632'"] {
+    background: var(--light-bg-secondary) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* --- VIEW TOGGLE BUTTONS --- */
+
+.light-premium-theme button[style*="background: #1c2632"],
+.light-premium-theme button[style*="background:#1c2632"] {
+    background: var(--light-bg-tertiary) !important;
+    border-color: var(--light-border-subtle) !important;
+    color: var(--light-text-secondary) !important;
+}
+
+.light-premium-theme button[style*="background: #1c2632"]:hover {
+    background: var(--light-border-subtle) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* Active toggle state (indigo) - keep colored but lighter */
+.light-premium-theme button[style*="background: rgba(37, 99, 235, 0.15)"] {
+    background: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* --- KPI CARDS UNIVERSAL --- */
+
+/* KPI icon containers */
+.light-premium-theme [style*="borderRadius: 14px"][style*="display: flex"][style*="alignItems: center"] {
+    /* Keep accent colors but ensure readability - no override needed */
+    box-sizing: border-box;
+}
+
+/* KPI labels */
+.light-premium-theme [style*="textTransform: uppercase"][style*="letterSpacing"] {
+    color: var(--light-text-secondary) !important;
+}
+
+/* KPI values */
+.light-premium-theme [style*="fontSize: 22px"][style*="fontWeight: 700"],
+.light-premium-theme [style*="fontSize: '22px'"][style*="fontWeight"],
+.light-premium-theme [style*="fontSize: 26px"][style*="fontWeight: 700"],
+.light-premium-theme [style*="fontSize: '26px'"][style*="fontWeight"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* --- TABLE PATTERNS --- */
+
+/* Dark table headers */
+.light-premium-theme tr[style*="background: #1c2632"],
+.light-premium-theme tr[style*="background:#1c2632"],
+.light-premium-theme [style*="background: #161d26"] tr {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* Table cell text */
+.light-premium-theme td[style*="color: #f1f5f9"],
+.light-premium-theme td[style*="color: #e2e8f0"] {
+    color: var(--light-text-primary) !important;
+}
+
+/* --- DONUT CHART CENTERS --- */
+
+.light-premium-theme [style*="background: linear-gradient(145deg, #1a222d 0%, #151c25 100%)"] {
+    background: var(--light-bg-secondary) !important;
+}
+
+/* --- CARDS UNIVERSAL --- */
+
+/* Cards with subtle borders */
+.light-premium-theme .MuiPaper-root[style*="border: 1px solid rgba(255, 255, 255"] {
+    border-color: var(--light-border-subtle) !important;
+}
+
+/* Cards with dark backgrounds */
+.light-premium-theme .MuiPaper-root[style*="background: linear-gradient"],
+.light-premium-theme .MuiPaper-root[style*="background: #1"] {
+    background: var(--light-bg-secondary) !important;
+}
+
+/* --- DASHBOARD SPECIFIC --- */
+
+/* Dashboard cards/widgets */
+.light-premium-theme [style*="background: #0f1419"],
+.light-premium-theme [style*="background: #0f172a"] {
+    background: var(--light-bg-primary) !important;
+}
+
+/* Activity feed items */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.02)"],
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.03)"],
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.05)"] {
+    background: var(--light-bg-tertiary) !important;
+}
+
+/* --- INCIDENT/GMUD MODULE --- */
+
+/* Status timeline indicators remain colored */
+
+/* Priority badges - already have appropriate colors */
+
+/* --- FINANCE MODULE --- */
+
+/* Budget progress bars background */
+.light-premium-theme [style*="background: #1c2632"][style*="borderRadius: 2"],
+.light-premium-theme [style*="background: #1c2632"][style*="border-radius: 2"] {
+    background: #e2e8f0 !important;
+}
+
+/* --- MODAL SPECIFIC ADDITIONS --- */
+
+/* Modal section headers */
+.light-premium-theme [style*="textTransform: uppercase"][style*="color: rgba(255, 255, 255, 0.5)"] {
+    color: var(--light-text-muted) !important;
+}
+
+/* Attachment/file boxes */
+.light-premium-theme [style*="background: rgba(255, 255, 255, 0.03)"][style*="borderRadius"] {
+    background: var(--light-bg-tertiary) !important;
+    border: 1px solid var(--light-border-subtle) !important;
+}
+
+/* ===============================================
+   END GLOBAL DARK PATTERN OVERRIDES
+   =============================================== */

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat /c/Leonardo/Labs/ITBMp/ITBMp/.github/workflows/*.yml)",
+      "Bash(psql:*)",
+      "Bash(\"/c/Program Files/PostgreSQL/17/bin/psql\" -U postgres -c \"SELECT version\\(\\);\")",
+      "Bash(\"/c/Program Files/PostgreSQL/16/bin/psql\" -U postgres -c \"SELECT version\\(\\);\")",
+      "Bash(\"/c/Program Files/PostgreSQL/15/bin/psql\" -U postgres -c \"SELECT version\\(\\);\")",
+      "Bash(/c/Program Files/PostgreSQL/18/bin/psql:*)",
+      "Bash(PGPASSWORD='@FelipeL89*' /c/Program Files/PostgreSQL/18/bin/psql:*)",
+      "Bash(PGPASSWORD='' /c/Program Files/PostgreSQL/18/bin/psql:*)",
+      "Bash(PGPASSWORD='postgres' /c/Program Files/PostgreSQL/18/bin/psql:*)",
+      "Bash(net stop:*)",
+      "Bash(net start:*)",
+      "Bash(/c/Program Files/PostgreSQL/18/bin/pg_ctl stop:*)",
+      "Bash(powershell:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx prisma:*)",
+      "Bash(ls \"C:/Leonardo/Labs/ITBMp/ITBMp/BACKEND/.env\"*)",
+      "Bash(ls \"C:/Leonardo/Labs/ITBMp/ITBMp/FRONTEND/.env\"*)",
+      "Bash(node -e \"require\\('@prisma/client'\\)\")",
+      "Bash(taskkill //F //PID 22916)",
+      "Bash(taskkill //F //PID 16644)"
+    ]
+  }
+}

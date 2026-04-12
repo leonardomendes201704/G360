@@ -1,0 +1,314 @@
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Box, Typography, Button, IconButton } from '@mui/material';
+import { useSnackbar } from 'notistack';
+
+import DepartmentModal from '../../components/modals/DepartmentModal';
+import CostCenterModal from '../../components/modals/CostCenterModal';
+import IntegrationsTab from '../../components/config/IntegrationsTab';
+import UsersTab from '../../components/config/UsersTab';
+import RolesTab from '../../components/config/RolesTab';
+import TenantsTab from '../../components/config/TenantsTab';
+import FiscalYearTab from '../../components/config/FiscalYearTab';
+import FreezeWindowsTab from '../../components/admin/FreezeWindowsTab';
+import CabMembersTab from '../../components/admin/CabMembersTab';
+import ApprovalTiersTab from '../../components/config/ApprovalTiersTab';
+import ServiceDeskConfigSection from '../../components/config/ServiceDeskConfigSection';
+
+import ConfirmDialog from '../../components/common/ConfirmDialog';
+
+import departmentService from '../../services/department.service';
+import costCenterService from '../../services/cost-center.service';
+import { getErrorMessage } from '../../utils/errorUtils';
+import { AuthContext } from '../../contexts/AuthContext';
+import './OrganizationPage.css';
+import { useOrgThemeStyles } from './useOrgThemeStyles';
+
+// Aba de Diretorias
+const DepartmentsTab = () => {
+  const { textPrimary, textMuted, cardStyle, tableHeaderStyle, tableCellStyle, actionBtnStyle, rowHoverBg } = useOrgThemeStyles();
+  const [departments, setDepartments] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const loadData = async () => {
+    try {
+      const data = await departmentService.getAll();
+      setDepartments(data);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, 'Erro ao carregar departamentos.'), { variant: 'error' });
+    }
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  const handleEdit = (dept) => { setEditData(dept); setModalOpen(true); };
+  const handleAdd = () => { setEditData(null); setModalOpen(true); };
+  const handleDeleteClick = (id) => { setDeleteId(id); setConfirmOpen(true); };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await departmentService.delete(deleteId);
+      loadData();
+      enqueueSnackbar('Diretoria excluida com sucesso.', { variant: 'success' });
+      setConfirmOpen(false);
+      setDeleteId(null);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, 'Erro ao excluir diretoria.'), { variant: 'error' });
+    }
+  };
+
+  return (
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
+        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Diretorias & Departamentos</Typography>
+        <Button onClick={handleAdd} sx={{
+          padding: '10px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, textTransform: 'none',
+          background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
+          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', flexShrink: 0,
+          '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
+        }} startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>add</span>}>
+          Nova Diretoria
+        </Button>
+      </Box>
+
+      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
+        <Box sx={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={tableHeaderStyle}>Codigo</th>
+                <th style={tableHeaderStyle}>Nome</th>
+                <th style={tableHeaderStyle}>Diretor</th>
+                <th style={tableHeaderStyle}>CCs Vinculados</th>
+                <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Acoes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {departments.length === 0 ? (
+                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px' }}>
+                  <span className="material-icons-round" style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}>corporate_fare</span>
+                  <Typography sx={{ color: textMuted, fontSize: '16px', mb: 1 }}>Nenhuma diretoria cadastrada</Typography>
+                  <Typography sx={{ color: textMuted, fontSize: '14px' }}>Clique em "Nova Diretoria" para comecar</Typography>
+                </td></tr>
+              ) : departments.map((dept) => (
+                <tr key={dept.id} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = rowHoverBg} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                  <td style={tableCellStyle}><strong style={{ color: textPrimary }}>{dept.code}</strong></td>
+                  <td style={tableCellStyle}>{dept.name}</td>
+                  <td style={tableCellStyle}>{dept.director?.name || <span style={{ color: textMuted }}>Nao definido</span>}</td>
+                  <td style={tableCellStyle}>{dept._count?.costCenters || 0}</td>
+                  <td style={{ ...tableCellStyle, textAlign: 'right' }}>
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                      <IconButton onClick={() => handleEdit(dept)} sx={actionBtnStyle('edit')}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
+                      <IconButton onClick={() => handleDeleteClick(dept.id)} sx={actionBtnStyle('delete')}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
+                    </Box>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Box>
+      </Box>
+      <DepartmentModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={loadData} editData={editData} />
+      <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Diretoria" content="Tem certeza que deseja excluir esta diretoria?" />
+    </>
+  );
+};
+
+// Aba de Centros de Custo
+const CostCentersTab = () => {
+  const { textPrimary, textMuted, cardStyle, tableHeaderStyle, tableCellStyle, actionBtnStyle, rowHoverBg } = useOrgThemeStyles();
+  const [ccs, setCcs] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const loadData = async () => {
+    try { const data = await costCenterService.getAll(); setCcs(data); }
+    catch (error) { enqueueSnackbar(getErrorMessage(error, 'Erro ao carregar centros de custo.'), { variant: 'error' }); }
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  const handleEdit = (item) => { setEditData(item); setModalOpen(true); };
+  const handleAdd = () => { setEditData(null); setModalOpen(true); };
+  const handleDeleteClick = (id) => { setDeleteId(id); setConfirmOpen(true); };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteId) return;
+    try { await costCenterService.delete(deleteId); loadData(); enqueueSnackbar('Centro de Custo excluido.', { variant: 'success' }); setConfirmOpen(false); setDeleteId(null); }
+    catch (error) { enqueueSnackbar(getErrorMessage(error, 'Erro ao excluir.'), { variant: 'error' }); }
+  };
+
+  const formatCurrency = (v) => v ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v) : '-';
+
+  return (
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography sx={{ fontSize: '24px', fontWeight: 600, color: textPrimary }}>Centros de Custo</Typography>
+        <Button onClick={handleAdd} sx={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
+          Novo Centro de Custo
+        </Button>
+      </Box>
+
+      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
+        <Box sx={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead><tr>
+              <th style={tableHeaderStyle}>Codigo</th>
+              <th style={tableHeaderStyle}>Nome</th>
+              <th style={tableHeaderStyle}>Diretoria</th>
+              <th style={tableHeaderStyle}>Gestor Responsavel</th>
+              <th style={tableHeaderStyle}>Orcamento Anual</th>
+              <th style={tableHeaderStyle}>Status</th>
+              <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Acoes</th>
+            </tr></thead>
+            <tbody>
+              {ccs.length === 0 ? (
+                <tr><td colSpan={7} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px' }}>
+                  <span className="material-icons-round" style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}>account_balance</span>
+                  <Typography sx={{ color: textMuted, fontSize: '16px' }}>Nenhum centro de custo cadastrado</Typography>
+                </td></tr>
+              ) : ccs.map((cc) => (
+                <tr key={cc.id} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = rowHoverBg} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                  <td style={tableCellStyle}><strong style={{ color: textPrimary }}>{cc.code}</strong></td>
+                  <td style={tableCellStyle}>{cc.name}</td>
+                  <td style={tableCellStyle}>{cc.department?.name || '-'}</td>
+                  <td style={tableCellStyle}>{cc.manager?.name || <span style={{ color: textMuted }}>Nao definido</span>}</td>
+                  <td style={tableCellStyle}>{formatCurrency(cc.annualBudget)}</td>
+                  <td style={tableCellStyle}>
+                    <span style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, background: cc.isActive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)', color: cc.isActive ? '#10b981' : '#64748b' }}>{cc.isActive ? 'Ativo' : 'Inativo'}</span>
+                  </td>
+                  <td style={{ ...tableCellStyle, textAlign: 'right' }}>
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                      <IconButton onClick={() => handleEdit(cc)} sx={actionBtnStyle('edit')}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
+                      <IconButton onClick={() => handleDeleteClick(cc.id)} sx={actionBtnStyle('delete')}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
+                    </Box>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Box>
+      </Box>
+      <CostCenterModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={loadData} editData={editData} />
+      <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Centro de Custo" content="Tem certeza que deseja excluir este centro de custo?" />
+    </>
+  );
+};
+
+// Pagina Principal
+const OrganizationPage = () => {
+  const { user } = useContext(AuthContext);
+  const { textPrimary, textMuted } = useOrgThemeStyles();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const roles = user?.roles || (user?.role ? [user.role] : []);
+  const isGlobalSuperAdmin = roles.some(r => r.name === 'Super Admin') && user?.schema === 'public';
+  
+  const [activeTab, setActiveTab] = useState(isGlobalSuperAdmin ? 'tenants' : 'diretorias');
+
+  const tabs = isGlobalSuperAdmin ? [
+    { id: 'tenants', label: 'Gestao de Empresas', icon: 'domain' }
+  ] : [
+    { id: 'diretorias', label: 'Diretorias', icon: 'corporate_fare' },
+    { id: 'centros-custo', label: 'Centros de Custo', icon: 'account_balance' },
+    { id: 'usuarios', label: 'Usuarios', icon: 'people' },
+    { id: 'perfis', label: 'Perfis de Acesso', icon: 'shield' },
+    { id: 'fiscal', label: 'Ano Fiscal', icon: 'calendar_today' },
+    { id: 'integracoes', label: 'Integracoes', icon: 'sync' },
+    { id: 'freeze', label: 'Freeze Windows', icon: 'lock_clock' },
+    { id: 'cab', label: 'Membros CAB', icon: 'groups' },
+    { id: 'alcadas', label: 'Alçadas de aprovação', icon: 'rule' },
+    { id: 'servicedesk', label: 'Service Desk', icon: 'support_agent' },
+  ];
+
+  useEffect(() => {
+    if (isGlobalSuperAdmin) return;
+    const t = searchParams.get('tab');
+    if (t === 'servicedesk') setActiveTab('servicedesk');
+  }, [searchParams, isGlobalSuperAdmin]);
+
+  const handleOrgTabClick = useCallback((id) => {
+    setActiveTab(id);
+    if (isGlobalSuperAdmin) return;
+    if (id === 'servicedesk') {
+      setSearchParams((prev) => {
+        const n = new URLSearchParams(prev);
+        n.set('tab', 'servicedesk');
+        if (!n.get('sd')) n.set('sd', 'expediente');
+        return n;
+      }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  }, [isGlobalSuperAdmin, setSearchParams]);
+
+  const renderContent = () => {
+    if (isGlobalSuperAdmin && activeTab === 'tenants') return <TenantsTab />;
+    switch (activeTab) {
+      case 'diretorias': return <DepartmentsTab />;
+      case 'centros-custo': return <CostCentersTab />;
+      case 'usuarios': return <UsersTab />;
+      case 'perfis': return <RolesTab />;
+      case 'fiscal': return <FiscalYearTab />;
+      case 'integracoes': return <IntegrationsTab />;
+      case 'freeze': return <FreezeWindowsTab />;
+      case 'cab': return <CabMembersTab />;
+      case 'alcadas': return <ApprovalTiersTab />;
+      case 'servicedesk': return <ServiceDeskConfigSection />;
+
+      default: return <DepartmentsTab />;
+    }
+  };
+
+  return (
+    <div className="org-page-container">
+      {/* Page Header */}
+      <div className="org-page-header">
+        <span className="material-icons-round header-icon" style={{ fontSize: '36px', color: '#3b82f6' }}>settings</span>
+        <Box>
+          <Typography sx={{
+            fontSize: '20px',
+            fontWeight: 600,
+            color: textPrimary,
+            mb: 0.5
+          }}>
+            Estrutura Organizacional & Configuracoes
+          </Typography>
+          <Typography sx={{ color: textMuted, fontSize: '15px' }}>
+            Departamentos, custos, usuários, integrações e configurações do Service Desk
+          </Typography>
+        </Box>
+      </div>
+
+      {/* Tabs Container */}
+      <div className="org-tabs-container">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleOrgTabClick(tab.id)}
+            className={`org-tab-button ${activeTab === tab.id ? 'active' : 'inactive'}`}
+          >
+            <span className="material-icons-round" style={{ fontSize: '16px' }}>{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content - Rendered directly, no wrapper card */}
+      <div className="org-content-wrapper">
+        {renderContent()}
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationPage;
+

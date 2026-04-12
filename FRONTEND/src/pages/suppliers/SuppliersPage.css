@@ -1,0 +1,45 @@
+/* SuppliersPage.css - Responsive Styles */
+
+/* Layout principal controlado pelo MainLayout */
+
+/* ========================================
+   Filter Grid
+   ======================================== */
+.suppliers-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* ========================================
+   Stats Grid
+   ======================================== */
+.suppliers-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+/* ========================================
+   Responsive Breakpoints
+   ======================================== */
+@media (max-width: 1400px) {
+    .suppliers-filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .suppliers-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .suppliers-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .suppliers-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

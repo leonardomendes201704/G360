@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>G360 / ITBM — Documentação por módulo e integração</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --border: rgba(148, 163, 184, 0.2);
+      --code-bg: #0c1222;
+      --nav-w: 280px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, "Cascadia Code", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: var(--nav-w) 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.doc-nav {
+        position: relative;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+    nav.doc-nav {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 1.25rem 1rem 2rem;
+      background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);
+      border-right: 1px solid var(--border);
+      z-index: 10;
+    }
+    nav.doc-nav h1 {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    nav.doc-nav .meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    #nav-search {
+      width: 100%;
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--code-bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    #nav-search::placeholder { color: var(--muted); }
+    nav.doc-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    nav.doc-nav li { margin: 0.15rem 0; }
+    nav.doc-nav a {
+      display: block;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    nav.doc-nav a:hover, nav.doc-nav a:focus {
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    nav.doc-nav a.active {
+      color: var(--accent);
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.15);
+    }
+    nav.doc-nav .nav-group {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 1rem 0 0.4rem;
+      padding-left: 0.5rem;
+    }
+    main.doc-main {
+      padding: 2rem 2.5rem 4rem;
+      max-width: 900px;
+    }
+    main.doc-main > section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 1.5rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      color: #e2e8f0;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.6rem;
+      color: var(--accent);
+    }
+    p { margin: 0.65rem 0; color: #cbd5e1; }
+    ul, ol { margin: 0.5rem 0 0.5rem 1.25rem; color: #cbd5e1; }
+    li { margin: 0.35rem 0; }
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(129, 140, 248, 0.2);
+      color: #c4b5fd;
+      margin-right: 0.35rem;
+      vertical-align: middle;
+    }
+    code, .api-path {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: #7dd3fc;
+    }
+    .api-path { color: #86efac; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+    }
+    .hero-intro {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(129, 140, 248, 0.12));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .hero-intro p { margin: 0.5rem 0 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.75rem 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+    }
+    th { background: var(--surface); color: var(--accent); }
+    .mermaid-wrap {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+    .print-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2rem;
+    }
+    h3.sub-rn {
+      color: #fbbf24;
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+    h3.sub-manual {
+      color: #34d399;
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+    .rn-box, .manual-box {
+      border-left: 3px solid;
+      padding: 0.75rem 0 0.75rem 1rem;
+      margin: 0.5rem 0 1.25rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 0 8px 8px 0;
+    }
+    .rn-box { border-left-color: #fbbf24; }
+    .manual-box { border-left-color: #34d399; }
+    .rn-box ol, .manual-box ol { margin-top: 0.35rem; }
+    .rn-id {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: #fcd34d;
+      margin-right: 0.35rem;
+    }
+    kbd {
+      font-family: var(--mono);
+      font-size: 0.8em;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+    @media print {
+      nav.doc-nav { display: none; }
+      .layout { grid-template-columns: 1fr; }
+      main.doc-main { max-width: none; }
+    }
+    /* Secção embutida: conteúdo de DOCUMENTACAO.md */
+    .doc-md-section {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(56, 189, 248, 0.35);
+      scroll-margin-top: 1.5rem;
+    }
+    .doc-md-banner {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .doc-md-banner-text {
+      margin: 0.5rem 0 0 !important;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+    .doc-md-content {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem 2rem;
+      overflow-x: auto;
+    }
+    .doc-md-content h2.doc-md-title {
+      font-size: 1.35rem;
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .doc-md-content h2:not(.doc-md-title) {
+      font-size: 1.15rem;
+      margin-top: 1.75rem;
+      padding-bottom: 0.35rem;
+    }
+    .doc-md-content h3 {
+      font-size: 1rem;
+      margin-top: 1.25rem;
+      color: #a5b4fc;
+    }
+    .doc-md-content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+      opacity: 0.75;
+    }
+    .doc-md-content em {
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="doc-nav" aria-label="Índice">
+      <h1>G360 / ITBM</h1>
+      <div class="meta">Módulos + integração + <strong>regras de negócio</strong> + <strong>manual de uso</strong> + <strong>segurança e governança</strong>.<br />Stack: React 19 + Vite 6 · Express · PostgreSQL · Prisma 5.</div>
+      <input type="search" id="nav-search" placeholder="Filtrar seções…" autocomplete="off" />
+      <div class="nav-group">Introdução</div>
+      <ul id="nav-list">
+        <li><a href="#visao">Visão geral</a></li>
+        <li><a href="#auth">Autenticação e multi-tenant</a></li>
+        <li><a href="#seguranca">Segurança, auditoria e governança</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#projetos">Projetos (PPM)</a></li>
+        <li><a href="#tarefas">Tarefas</a></li>
+        <li><a href="#gmud">Gestão de mudança (GMUD)</a></li>
+        <li><a href="#incidentes">Incidentes (ITIL)</a></li>
+        <li><a href="#helpdesk">Help Desk e Service Desk</a></li>
+        <li><a href="#ativos">Ativos e licenças</a></li>
+        <li><a href="#fornecedores">Fornecedores</a></li>
+        <li><a href="#contratos">Contratos</a></li>
+        <li><a href="#financeiro">Financeiro</a></li>
+        <li><a href="#riscos">Riscos corporativos</a></li>
+        <li><a href="#kb">Base de conhecimento</a></li>
+        <li><a href="#aprovacoes">Aprovações</a></li>
+        <li><a href="#organizacao">Organização (CONFIG)</a></li>
+        <li><a href="#plataforma">Plataforma e auditoria</a></li>
+        <li><a href="#notificacoes">Notificações</a></li>
+        <li><a href="#integracao">Integração entre módulos</a></li>
+        <div class="nav-group">Referência</div>
+        <li><a href="#documentacao-md">Documentação técnica (DOCUMENTACAO.md)</a></li>
+      </ul>
+    </nav>
+    <main class="doc-main">
+      <div class="hero-intro" id="visao">
+        <span class="tag">Documento único</span>
+        <h2 style="border: none; padding: 0; margin: 0.5rem 0 0;">Visão geral da plataforma</h2>
+        <p>
+          O <strong>ITBM</strong> (produto comercial <strong>G360 Enterprise</strong>) é uma plataforma de gestão empresarial
+          <strong>multi-tenant</strong>: cada cliente possui schema PostgreSQL dedicado; o catálogo de tenants e configurações globais ficam no schema <code>public</code>.
+        </p>
+        <p>
+          A API REST é servida em <span class="api-path">/api/v1</span> (Express). O frontend (React 19, Vite 6, MUI 7) consome essa API com
+          <code>Authorization: Bearer</code> e, quando aplicável, <code>X-Tenant-Slug</code>. O Prisma resolve o cliente correto por tenant em cada requisição.
+        </p>
+        <p>
+          <strong>RBAC:</strong> perfis possuem permissões <code>módulo + ação</code> (ex.: <code>HELPDESK/READ</code>). Perfis administrativos podem ignorar checagens finas.
+          <strong>Escopo:</strong> gestores veem dados dos centros de custo sob sua responsabilidade; demais usuários, em geral, apenas o próprio escopo (ver <code>access-scope</code> no backend).
+        </p>
+        <p>
+          <strong>Governança:</strong> trilho de auditoria (<code>AuditLog</code>), sanitização de dados sensíveis, export CSV para compliance, retenção configurável, rate limit por utilizador quando autenticado,
+          e notificações em tempo real via <strong>SSE</strong> com JWT dedicado (não usar o access token na query string).
+        </p>
+        <p>
+          Em cada módulo abaixo, <strong style="color:#fbbf24">Regras de negócio</strong> descrevem o comportamento implementado no backend (validações, SLAs, transições).
+          <strong style="color:#34d399">Manual de funcionamento</strong> orienta o utilizador ou administrador (passos na UI).
+          Os identificadores <span class="rn-id">RN-XXX-NN</span> facilitam rastreio; a referência canónica técnica continua em <code>DOCUMENTACAO.md</code> e em <code>BACKEND/src/services</code>.
+        </p>
+      </div>
+
+      <section id="auth">
+        <h2>Autenticação, sessão e multi-tenant</h2>
+        <h3>Função</h3>
+        <p>Identificar o usuário, emitir JWT (com <code>schemaName</code> do tenant), refresh token e aplicar middleware de tenant em todas as rotas protegidas.</p>
+        <h3>Frontend</h3>
+        <p>Páginas de login e callback Azure (quando habilitado); armazenamento de tokens e slug; interceptor Axios para refresh em 401.</p>
+        <h3>Backend</h3>
+        <p>
+          Rotas em <span class="api-path">/api/v1/auth</span>,
+          <span class="api-path">/users</span>,
+          <span class="api-path">/roles</span>,
+          <span class="api-path">/tenants</span> (administração de empresas no contexto autorizado).
+        </p>
+        <h3>Segurança</h3>
+        <ul>
+          <li>Helmet, CORS, rate limit em <code>/api</code>, sanitização de body (XSS).</li>
+          <li>Resolução de tenant: JWT → header <code>x-tenant-slug</code> → fallback.</li>
+          <li><span class="api-path">POST /auth/stream-token</span> (Bearer) — emite JWT curto <code>purpose=sse</code> para <strong>EventSource</strong> em notificações.</li>
+          <li><span class="api-path">PATCH /auth/me/notification-preferences</span> — preferências de canais/categorias (JSON em <code>User</code>).</li>
+        </ul>
+        <h3>RBAC (módulos relacionados)</h3>
+        <p><code>CONFIG</code> (usuários/organização), <code>SUPER_ADMIN</code> (plataforma global quando aplicável).</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-AUTH-01</span> Cada requisição autenticada deve carregar JWT válido; o token inclui o <code>schemaName</code> do tenant para o Prisma apontar ao schema PostgreSQL correcto.</p>
+          <p><span class="rn-id">RN-AUTH-02</span> Resolução de tenant: JWT → cabeçalho <code>X-Tenant-Slug</code> → cliente padrão (<code>public</code>) quando aplicável.</p>
+          <p><span class="rn-id">RN-AUTH-03</span> Em 401, o frontend renova o access token via refresh token; sessão inválida redirecciona ao login.</p>
+          <p><span class="rn-id">RN-AUTH-04</span> Super Admin no contexto <code>public</code> acede ao menu de plataforma (tenants); dentro de um tenant, mantém bypass de permissões conforme perfil.</p>
+          <p><span class="rn-id">RN-AUTH-05</span> Eventos de sessão gravados em <code>AuditLog</code> (módulo <code>AUTH</code>): <code>AUTH_LOGIN</code> (local/Azure/LDAP), <code>AUTH_REFRESH</code>, <code>AUTH_LOGOUT</code> — sem expor segredos no <code>newData</code>.</p>
+          <p><span class="rn-id">RN-AUTH-06</span> O stream SSE de notificações só aceita na query <code>?token=</code> um JWT com <code>purpose: 'sse'</code> emitido por <code>POST /auth/stream-token</code>; o access token completo não deve ser usado na URL.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Abrir o URL da aplicação e, se necessário, escolher o tenant (slug) acordado com a organização.</li>
+            <li>Autenticar com credenciais locais ou fluxo Azure AD, conforme o ambiente.</li>
+            <li>Após o login, o menu lateral mostra apenas módulos para os quais o seu perfil tem permissão de leitura (ou equivalente).</li>
+            <li>Para terminar sessão, use <strong>Sair</strong> no menu do utilizador (canto superior).</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="seguranca">
+        <h2>Segurança, auditoria e governança</h2>
+        <h3>Função</h3>
+        <p>
+          Proteção em camadas (HTTP, limite de pedidos, sanitização), trilho de auditoria para alterações e eventos de sessão,
+          exportação para compliance e política de retenção de registos históricos.
+        </p>
+        <h3>Backend (ficheiros de referência)</h3>
+        <ul>
+          <li><code>middlewares/audit.middleware.js</code> — registo após resposta 2xx; derivação de ação HTTP; integração com <code>audit-sanitize.util.js</code>.</li>
+          <li><code>utils/audit-log-scope.util.js</code> — mesmo escopo RBAC para listagem e export de <code>AuditLog</code>.</li>
+          <li><code>middlewares/rate-limit.middleware.js</code> — <code>loginLimiter</code>, <code>globalLimiter</code> (chave por utilizador JWT ou IP), <code>strictLimiter</code>, <code>referenceLimiter</code>.</li>
+          <li><code>middlewares/security-logger.middleware.js</code> — eventos 401/403/429 via Winston.</li>
+          <li><code>services/cron.service.js</code> — pruning de <code>AuditLog</code> (agendamento diário).</li>
+        </ul>
+        <h3>API</h3>
+        <p>
+          <span class="api-path">GET /audit-logs</span> — listagem paginada; filtros <code>module</code>, <code>start</code>, <code>end</code>.<br />
+          <span class="api-path">GET /audit-logs/export</span> — CSV (mesmos filtros; limite máximo configurável por ambiente).<br />
+          Permissão: <code>ACTIVITY_LOG</code> / <code>READ</code>.
+        </p>
+        <h3>Variáveis de ambiente (auditoria)</h3>
+        <ul>
+          <li><code>AUDIT_LOG_RETENTION_DAYS</code> — dias a manter (default 365; <code>0</code> não apaga via job).</li>
+          <li><code>AUDIT_LOG_RETENTION_DISABLED=true</code> — desliga o job de pruning.</li>
+          <li><code>AUDIT_LOG_EXPORT_MAX</code> — máximo de linhas no CSV export.</li>
+          <li><code>JWT_SSE_EXPIRES_IN</code> — TTL do token só para SSE (ex.: <code>10m</code>).</li>
+          <li><code>RATE_LIMIT_BYPASS=true</code> — testes de carga (sem limites).</li>
+        </ul>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-SEC-01</span> O middleware <code>audit()</code> só grava quando existem <code>req.user.userId</code> e <code>req.prisma</code>; payloads sensíveis são mascarados antes de persistir.</p>
+          <p><span class="rn-id">RN-SEC-02</span> <code>res.json</code> e <code>res.send</code> são intercetados de forma a evitar <strong>duplicar</strong> linhas de auditoria quando o Express encadeia ambos.</p>
+          <p><span class="rn-id">RN-SEC-03</span> Chamados e problemas (Help Desk) registam mutações com módulos <code>HELPDESK</code> e <code>PROBLEM</code> respectivamente.</p>
+          <p><span class="rn-id">RN-SEC-04</span> O limite global de API usa chave <code>uid:&lt;userId&gt;</code> quando o Bearer é válido, reduzindo colisão entre utilizadores no mesmo IP.</p>
+          <p><span class="rn-id">RN-SEC-05</span> Export CSV inclui BOM UTF-8 e colunas para análise forense; o escopo de linhas segue o mesmo critério de gestor/equipa que a listagem.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Administradores de compliance: use <strong>Atividades / auditoria</strong> no front (<code>/activities</code>) e o export CSV quando precisar de ficheiro externo.</li>
+            <li>Defina <code>AUDIT_LOG_RETENTION_DAYS</code> em função da política da organização e requisitos legais.</li>
+            <li>Em incidentes de segurança, cruze <code>logs/security.log</code> e <code>logs/app.log</code> (Winston) com entradas de <code>AuditLog</code> no PostgreSQL.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="dashboard">
+        <h2>Dashboard</h2>
+        <h3>Função</h3>
+        <p>Visão geral operacional e atalhos; agrega métricas de diversos domínios.</p>
+        <h3>Frontend</h3>
+        <p><code>/dashboard</code> via <code>DashboardRouter</code>; existe também demo <code>/modern-dashboard</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/api/v1/dashboard</span> — KPIs e resumos conforme implementação do serviço.</p>
+        <h3>Integrações</h3>
+        <p>Command palette (⌘K), notificações no topo; não substitui módulos especializados.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-DASH-01</span> Os dados apresentados são agregados pela API <code>/dashboard</code>; não alteram registos de outros módulos por si só.</p>
+          <p><span class="rn-id">RN-DASH-02</span> A visibilidade dos números segue o mesmo escopo RBAC e de centro de custo dos módulos de origem.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>No menu, aceda a <strong>Visão Geral</strong> / <code>/dashboard</code>.</li>
+            <li>Utilize cartões e atalhos para saltar para incidentes, projetos, financeiro, etc.</li>
+            <li>Prima <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>K</kbd> para abrir a paleta de comandos e navegar rapidamente.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="projetos">
+        <h2>Projetos (PPM)</h2>
+        <h3>Função</h3>
+        <p>Portfólio: projetos com departamento, centro de custo, gerente, tech lead, aprovações, custos, propostas, riscos de projeto, atas, follow-ups, tarefas de projeto.</p>
+        <h3>Frontend</h3>
+        <p>
+          <code>/projects</code>, <code>/projects/:id</code>, <code>/projects/portfolio</code>, <code>/projects/team-status-report</code>.
+        </p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/projects</span>,
+          <span class="api-path">/project-tasks</span>.
+        </p>
+        <h3>Regras relevantes</h3>
+        <ul>
+          <li>Fluxos de aprovação de baseline e custos (ligação à esteira de aprovações).</li>
+          <li>Propostas e custos com estados (rascunho → aprovação).</li>
+          <li>Escopo de dados pode respeitar centro de custo / perfil.</li>
+        </ul>
+        <h3>RBAC</h3>
+        <p>Módulo <code>PROJECTS</code>: READ, CREATE, WRITE, DELETE, DELETE_PROJECT, APPROVE_BASELINE, APPROVE_FINANCIAL.</p>
+        <h3>Ligações</h3>
+        <p>GMUD opcional por projeto; tickets podem referenciar projeto; financeiro via centro de custo e custos.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-PRJ-01</span> Projetos estão ligados a departamento, centro de custo, gerente e tech lead; custos e propostas podem exigir aprovação na esteira (<code>/approvals</code>).</p>
+          <p><span class="rn-id">RN-PRJ-02</span> Listagens e detalhes podem ser filtrados por <strong>access-scope</strong>: administradores sem filtro de CC; gestores veem utilizadores dos CC que gerem; restantes, escopo próprio.</p>
+          <p><span class="rn-id">RN-PRJ-03</span> GMUD pode ser associada ao projeto (<code>projectId</code>); tickets podem referenciar <code>linkedProjectId</code> para rastreio de demanda.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li><strong>Lista:</strong> em <code>/projects</code> consulte o portfólio; use filtros conforme a UI.</li>
+            <li><strong>Novo projeto:</strong> crie o registo, preencha dados de negócio, CC e responsáveis.</li>
+            <li><strong>Detalhe:</strong> em <code>/projects/:id</code> registe membros, atas, follow-ups, propostas, custos e riscos do projeto.</li>
+            <li><strong>Aprovações:</strong> quando o estado pedir aprovação de baseline ou financeiro, o aprovador trata em <strong>Minhas Aprovações</strong>.</li>
+            <li><strong>Relatórios:</strong> use <code>/projects/portfolio</code> ou <code>/projects/team-status-report</code> para visões consolidadas.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="tarefas">
+        <h2>Tarefas (módulo TASKS)</h2>
+        <h3>Função</h3>
+        <p>Tarefas pessoais ou de trabalho com checklist, comentários, anexos, time logs e timer flutuante na UI.</p>
+        <h3>Frontend</h3>
+        <p><code>/tasks</code>, <code>/tasks/:id</code>, <code>/tasks/time-report</code>; <code>TaskTimerContext</code> + <code>FloatingTimer</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/tasks</span>.</p>
+        <h3>Regras</h3>
+        <p>Vínculo opcional com risco corporativo (<code>riskId</code>) para tarefas de mitigação.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>TASKS</code>: READ, WRITE, DELETE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-TSK-01</span> Tarefas suportam checklist (JSON), comentários, anexos e <strong>time logs</strong> para apuramento de tempo.</p>
+          <p><span class="rn-id">RN-TSK-02</span> Associação opcional a risco corporativo (<code>riskId</code>): a tarefa passa a fazer parte do plano de mitigação desse risco.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Aceda a <code>/tasks</code> para ver a sua lista ou tarefas atribuídas.</li>
+            <li>Abra uma tarefa (ou <code>/tasks/:id</code>) para editar, comentar e registar tempo.</li>
+            <li>Use o <strong>timer flutuante</strong> (ícone no ecrã) para contabilizar tempo enquanto trabalha; o estado sincroniza com o contexto global.</li>
+            <li>Para relatórios de horas, utilize <code>/tasks/time-report</code>.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="gmud">
+        <h2>Gestão de mudança (GMUD / RDM)</h2>
+        <h3>Função</h3>
+        <p>RFC, questionário de risco, aprovadores (CAB), serviços/ativos afetados, calendário, janelas de congelamento, PIR ao falhar/cancelar.</p>
+        <h3>Frontend</h3>
+        <p><code>/changes</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/changes</span>,
+          <span class="api-path">/change-templates</span>,
+          <span class="api-path">/freeze-windows</span>.
+        </p>
+        <h3>Regras</h3>
+        <ul>
+          <li><code>riskAssessment</code> alimenta nível de risco calculado.</li>
+          <li>Mudanças não emergenciais não podem violar <strong>FreezeWindow</strong> ativa.</li>
+          <li>Transição para FAILED/CANCELLED após estados operacionais exige causa raiz e lições aprendidas (PIR).</li>
+          <li>Vínculo com incidentes e tickets (escalação).</li>
+        </ul>
+        <h3>RBAC</h3>
+        <p>Módulo <code>GMUD</code>: READ, CREATE, WRITE, DELETE, EDIT_CHANGE, SCHEDULE, APPROVE, ATTACH.</p>
+        <h3>Jobs</h3>
+        <p>Cron de SLA de tickets interage com operações de TI; GMUD usa dados de schedule conflict conforme serviço.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-GMUD-01</span> O nível de risco é calculado a partir do questionário <code>riskAssessment</code> (produção, downtime, testes, rollback): pontuação agregada → BAIXO / MEDIO / ALTO / CRITICO.</p>
+          <p><span class="rn-id">RN-GMUD-02</span> Mudanças com tipo diferente de <strong>EMERGENCIAL</strong> não podem ter janela agendada sobreposta a uma <strong>FreezeWindow</strong> activa (validação em criação e actualização).</p>
+          <p><span class="rn-id">RN-GMUD-03</span> PIR: ao passar para <code>FAILED</code> ou <code>CANCELLED</code> depois de estados operacionais (<code>APPROVED</code>, <code>APPROVED_WAITING_EXECUTION</code>, <code>EXECUTED</code>), são obrigatórios <strong>causa raiz</strong> e <strong>lições aprendidas</strong>.</p>
+          <p><span class="rn-id">RN-GMUD-04</span> Estados válidos incluem rascunho, aprovação, execução, rejeição, revisão solicitada, etc., conforme validador Yup no backend.</p>
+          <p><span class="rn-id">RN-GMUD-05</span> Ligação a incidentes (<code>relatedIncidentId</code>) e tickets para rastreio de causa e escalação.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Em <code>/changes</code>, crie uma nova RFC ou use um <strong>template</strong> (se disponível para o seu perfil).</li>
+            <li>Preencha justificativa, impacto, tipo, datas planeadas e questionário de risco.</li>
+            <li>Submeta para aprovação; aprovadores (CAB) registam voto e comentários.</li>
+            <li>Respeite o calendário: o sistema bloqueia agendamento em períodos de congelamento (exceto emergencial).</li>
+            <li>Após execução, preencha planos de execução/teste e encerramento; se a mudança falhar ou for cancelada após aprovação/execução, preencha o <strong>PIR</strong> (causa raiz e lições aprendidas).</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="incidentes">
+        <h2>Incidentes (ITIL)</h2>
+        <h3>Função</h3>
+        <p>Registro de incidentes com prioridade (impacto × urgência), SLA de resposta/resolução, histórico, comentários, anexos.</p>
+        <h3>Frontend</h3>
+        <p><code>/incidents</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/incidents</span>.</p>
+        <h3>Integrações</h3>
+        <p>Ativo relacionado; mudança relacionada; base de conhecimento no processo operacional.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>INCIDENT</code>: READ, WRITE, DELETE, VIEW_ALL_CC, ESCALATE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-INC-01</span> A prioridade (P1–P4) é calculada pela matriz <strong>Impacto × Urgência</strong> (valores normalizados para maiúsculas); combinação desconhecida assume P3.</p>
+          <p><span class="rn-id">RN-INC-02</span> SLA: P1 — resposta 60 min / resolução 240 min; P2 — 240/480; P3 — 480/1440; P4 — 1440/4320 (minutos a partir da criação).</p>
+          <p><span class="rn-id">RN-INC-03</span> Violação de SLA: se não houver <code>respondedAt</code> e o tempo actual ultrapassar <code>slaResponseDue</code>, ou se não resolvido e ultrapassar <code>slaResolveDue</code>, considera-se violação na lógica de verificação.</p>
+          <p><span class="rn-id">RN-INC-04</span> Código único gerado pelo repositório; colisão implica nova tentativa.</p>
+          <p><span class="rn-id">RN-INC-05</span> Histórico de alterações e auditoria registados na criação e eventos relevantes.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Aceda a <code>/incidents</code> e registe um novo incidente com título, descrição, categoria e classificação de <strong>impacto</strong> e <strong>urgência</strong>.</li>
+            <li>O sistema calcula a prioridade e os prazos de SLA; acompanhe o relógio na lista ou detalhe.</li>
+            <li>Associe opcionalmente <strong>ativo</strong> ou <strong>mudança</strong> relacionada para contexto de CMDB/RDM.</li>
+            <li>Atualize estado, responsável e comentários até resolução; use escalação conforme processo interno (permissão <code>ESCALATE</code>).</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="helpdesk">
+        <h2>Help Desk, Portal, Service Desk e problemas</h2>
+        <h3>Função</h3>
+        <p>
+          <strong>Portal</strong> (<code>/portal</code>): solicitante abre chamados via catálogo (wizard), acompanha lista. <strong>Service Desk</strong> (<code>/servicedesk</code>): fila do agente, detalhes, mensagens, SLA.
+          <strong>Catálogo</strong> (<code>/servicedesk/catalog</code>): serviços, categorias, formulários JSON (<code>formSchema</code>). <strong>Problemas ITIL</strong> (<code>/servicedesk/problems</code>): Problem Management.
+        </p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/tickets</span>,
+          <span class="api-path">/service-catalog</span>,
+          <span class="api-path">/sla-policies</span>,
+          <span class="api-path">/problems</span>,
+          <span class="api-path">/helpdesk-config</span>,
+          <span class="api-path">/support-groups</span>.
+        </p>
+        <h3>Entidades-chave</h3>
+        <ul>
+          <li><strong>Ticket:</strong> categoria, serviço, respostas customizadas, SLA, pausa (<code>slaPausedAt</code>, minutos pausados), mensagens, vínculos (ativo, projeto, mudança, problema).</li>
+          <li><strong>ServiceCatalog / SlaPolicy:</strong> definem tempos e formulários dinâmicos.</li>
+        </ul>
+        <h3>Automação</h3>
+        <p>Cron (~5 min) verifica SLA; IMAP para e-mails de resposta em tickets (quando configurado).</p>
+        <h3>RBAC</h3>
+        <p>Módulos <code>HELPDESK</code> (ações CREATE, VIEW_QUEUE, UPDATE_STATUS, escalações, etc.) e <code>PROBLEM</code> (READ, DECLARE, MASS_RESOLUTION, LINK_ORPHANS).</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-HD-01</span> Código do chamado: formato <code>HD-AAAA-NNNN</code>, sequência atómica por ano (PostgreSQL).</p>
+          <p><span class="rn-id">RN-HD-02</span> SLA: minutos de resposta/resolução vêm, por ordem, da política ligada ao <strong>serviço do catálogo</strong>, depois ao <strong>grupo de suporte</strong>, senão tabela fallback por prioridade (LOW/MEDIUM/HIGH/URGENT).</p>
+          <p><span class="rn-id">RN-HD-03</span> Calendário de SLA: se a configuração do helpdesk activar calendário de negócio, os prazos usam horário útil; caso contrário, minutos de relógio.</p>
+          <p><span class="rn-id">RN-HD-04</span> Ao criar com <code>supportGroupId</code>, se <code>autoAssignOnCreate</code> estiver activo (config), atribuição <strong>round-robin</strong> entre membros do grupo.</p>
+          <p><span class="rn-id">RN-HD-05</span> Estado <code>WAITING_USER</code>: ao entrar, regista <code>slaPausedAt</code>; ao sair, acumula minutos pausados e <strong>desloca</strong> <code>slaResponseDue</code> e <code>slaResolveDue</code> pelo tempo pausado.</p>
+          <p><span class="rn-id">RN-HD-06</span> <code>RESOLVED</code>/<code>CLOSED</code>: define <code>resolvedAt</code> na primeira resolução; <code>CLOSED</code> também define <code>closedAt</code>.</p>
+          <p><span class="rn-id">RN-HD-07</span> Cron (~5 min): chamados OPEN/IN_PROGRESS com SLA vencido e ainda sem resposta/resolução marcam <code>slaBreached</code> e notificam o assignee.</p>
+          <p><span class="rn-id">RN-HD-08</span> Portal: listagem como solicitante filtra por <code>requesterId</code>; fila de agente exige permissões HELPDESK adequadas.</p>
+          <p><span class="rn-id">RN-HD-09</span> <strong>Problemas (ITIL):</strong> módulo <code>PROBLEM</code> — permissões DECLARE, MASS_RESOLUTION, LINK_ORPHANS para gestão de causa raiz e vínculo de tickets órfãos (ver API <code>/problems</code>).</p>
+          <p><span class="rn-id">RN-HD-10</span> <strong>Auditoria:</strong> operações mutáveis em <code>/tickets</code> e <code>/problems</code> geram entradas em <code>AuditLog</code> (middleware <code>audit</code>) com dados sanitizados.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <p><strong>Solicitante — Portal (<code>/portal</code>)</strong></p>
+          <ol>
+            <li>Clique em <strong>Novo ticket</strong>.</li>
+            <li>Escolha a <strong>categoria</strong> (passo 1) e o <strong>serviço</strong> (passo 2); use a busca para filtrar.</li>
+            <li>Preencha título, descrição, campos obrigatórios do formulário do serviço, ativo opcional e grupo de atendimento se aplicável.</li>
+            <li>Submeta; receberá e-mail (se configurado) com link para <code>/portal/tickets/:id</code>.</li>
+            <li>Acompanhe a tabela <strong>Meus Chamados</strong>; abra o detalhe para ler mensagens da equipa.</li>
+          </ol>
+          <p><strong>Agente — Service Desk (<code>/servicedesk</code>)</strong></p>
+          <ol>
+            <li>Visualize a fila global; assuma ou filtre por grupo/atribuído.</li>
+            <li>Actualize estado (OPEN → IN_PROGRESS → WAITING_USER / RESOLVED / CLOSED) conforme o processo.</li>
+            <li>Use <strong>aguardando utilizador</strong> quando precisar de informação do solicitante — o SLA pausa até retomar.</li>
+            <li>Mensagens internas vs públicas: respeite permissões <code>VIEW_INTERNAL_NOTES</code> / <code>WRITE_INTERNAL_NOTES</code>.</li>
+            <li>Escale para problema, mudança ou projeto através das acções de escalação (permissões específicas).</li>
+          </ol>
+          <p><strong>Administrador do catálogo (<code>/servicedesk/catalog</code>)</strong></p>
+          <ol>
+            <li>Mantenha categorias, serviços, políticas de SLA e formulários JSON (<code>formSchema</code>) alinhados ao catálogo ITIL da organização.</li>
+            <li>Configure grupos de suporte e membros para a atribuição round-robin.</li>
+          </ol>
+          <p><strong>Gestão de problemas (<code>/servicedesk/problems</code>)</strong></p>
+          <ol>
+            <li>Declare problemas conhecidos e associe tickets relacionados (causa comum).</li>
+            <li>Use resolução em massa e vinculação de órfãos conforme permissões <code>PROBLEM</code>.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="ativos">
+        <h2>Ativos e licenças de software</h2>
+        <h3>Função</h3>
+        <p>Inventário por categorias; manutenções; vínculo com fornecedor, contrato, centro de custo. Licenças com quantidade, uso e vencimento.</p>
+        <h3>Frontend</h3>
+        <p>Página de ativos; licenças via fluxos da API (conforme UI).</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/asset-categories</span>,
+          <span class="api-path">/assets</span>,
+          <span class="api-path">/software-licenses</span>.
+        </p>
+        <h3>Jobs</h3>
+        <p>Alertas de vencimento de licenças/contratos (cron diário, alinhado a contratos).</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>ASSETS</code>: READ, CREATE, EDIT_ASSET, MAINTAIN, DELETE.</p>
+        <h3>Ligações</h3>
+        <p>Incidentes, tickets, GMUD, riscos corporativos (N:N onde modelado).</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-AST-01</span> Ativos podem referenciar fornecedor, contrato e centro de custo; manutenções registam histórico operacional.</p>
+          <p><span class="rn-id">RN-AST-02</span> Licenças de software: quantidade vs utilização e datas de expiração; jobs de rotina podem gerar alertas de vencimento (alinhado a contratos/licenças).</p>
+          <p><span class="rn-id">RN-AST-03</span> Relações com incidentes, tickets e GMUDs permitem rastreio de impacto em CMDB.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Aceda a <code>/assets</code> e utilize categorias para organizar o inventário.</li>
+            <li>Crie ou edite ativos com dados técnicos, localização, vínculos financeiros e fornecedor.</li>
+            <li>Registe manutenções preventivas/correctivas quando o perfil tiver <code>MAINTAIN</code>.</li>
+            <li>Gira licenças na mesma área funcional (UI/API) para controlar seats e vencimentos.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="fornecedores">
+        <h2>Fornecedores</h2>
+        <h3>Função</h3>
+        <p>Cadastro corporativo, classificação, status, avaliação, dados bancários opcionais.</p>
+        <h3>Frontend</h3>
+        <p><code>/suppliers</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/suppliers</span>.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>SUPPLIERS</code>: READ, CREATE, EDIT_SUPPLIER, DELETE.</p>
+        <h3>Ligações</h3>
+        <p>Contratos, despesas, orçamento, ativos, propostas de projeto, riscos.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-SUP-01</span> Fornecedor é entidade mestre para contratos, despesas e referência em ativos/riscos; exclusão pode estar condicionada a vínculos existentes (validar no serviço).</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Em <code>/suppliers</code>, cadastre razão social, documentos, classificação e nota quando aplicável.</li>
+            <li>Mantenha status (activo/inactivo) para controlar novas vinculações.</li>
+            <li>Associe o fornecedor ao criar contratos ou lançar despesas.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="contratos">
+        <h2>Contratos</h2>
+        <h3>Função</h3>
+        <p>Contratos com fornecedor, centro de custo, conta; aditivos; anexos; alertas antes do vencimento (<code>alertDays</code>).</p>
+        <h3>Frontend</h3>
+        <p><code>/contracts</code>, <code>/contracts/:id</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/contracts</span>.</p>
+        <h3>Jobs</h3>
+        <p>Notificações a gestores (via departamento do CC) em 30, 15 e 7 dias (contratos ACTIVE).</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>CONTRACTS</code>: READ, CREATE, EDIT_CONTRACT, ATTACH, ADDENDUM, DELETE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-CTR-01</span> Contratos activos disparam notificações automáticas aos gestores (via departamento do centro de custo) aos <strong>30, 15 e 7 dias</strong> do fim da vigência.</p>
+          <p><span class="rn-id">RN-CTR-02</span> Aditivos (<code>ContractAddendum</code>) e anexos mantêm histórico legal e financeiro.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Em <code>/contracts</code> crie o contrato ligando fornecedor, centro de custo e conta contábil.</li>
+            <li>Defina datas, valor, renovação e dias de alerta (<code>alertDays</code>).</li>
+            <li>No detalhe <code>/contracts/:id</code>, anexe documentos e registe aditivos.</li>
+            <li>Acompanhe notificações na campainha quando se aproximar o vencimento.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="financeiro">
+        <h2>Financeiro e orçamento</h2>
+        <h3>Função</h3>
+        <p>Exercícios fiscais, orçamentos OPEX/CAPEX, itens mensais, despesas com fluxo de aprovação, comparação de orçamentos, dashboard financeiro.</p>
+        <h3>Frontend</h3>
+        <p><code>/finance</code>, <code>/finance/budget/:id</code>, <code>/finance/compare</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/accounts</span>,
+          <span class="api-path">/fiscal-years</span>,
+          <span class="api-path">/budgets</span>,
+          <span class="api-path">/budget-comparison</span>,
+          <span class="api-path">/expenses</span>,
+          <span class="api-path">/finance-dashboard</span>.
+        </p>
+        <h3>Regras</h3>
+        <p>Fechamento de exercício; escopo frequentemente restrito a papel FINANCE + centro de custo.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>FINANCE</code>: READ, VIEW_INVOICES, WRITE, DELETE, EDIT_BUDGET.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-FIN-01</span> Exercícios fiscais podem ser fechados (<code>isClosed</code>), impedindo alterações indevidas em períodos encerrados.</p>
+          <p><span class="rn-id">RN-FIN-02</span> Orçamentos possuem itens mensais OPEX/CAPEX; cenários e comparação entre orçamentos em <code>/budget-comparison</code>.</p>
+          <p><span class="rn-id">RN-FIN-03</span> Despesas podem integrar fluxo de aprovação na esteira; perfis <strong>Finance</strong> entram em regras de escopo específicas onde implementado.</p>
+          <p><span class="rn-id">RN-FIN-04</span> Escopo por centro de custo: gestores veem dados dos CC geridos; admins amplos sem filtro de CC.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Configure o exercício e contas em <code>/finance</code> (e rotas de contas/exercício conforme menu).</li>
+            <li>Crie ou edite orçamentos e preencha a grelha mensal de valores.</li>
+            <li>Lance despesas (NF-e, fornecedor, aprovação) e acompanhe estados até pagamento.</li>
+            <li>Use <code>/finance/compare</code> para comparar versões/cenários de orçamento.</li>
+            <li>Consulte o dashboard financeiro para KPIs consolidados.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="riscos">
+        <h2>Riscos corporativos (ERM)</h2>
+        <h3>Função</h3>
+        <p>Registro de riscos com probabilidade, impacto, tratamento, dono, departamento, centro de custo, ativo, fornecedor, compliance.</p>
+        <h3>Frontend</h3>
+        <p><code>/risks</code>.</p>
+        <h3>Backend</h3>
+        <p><span class="api-path">/corporate-risks</span>.</p>
+        <h3>Ligações</h3>
+        <p>Tarefas de mitigação via <code>Task.riskId</code>; integração com ativos e fornecedores.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>RISKS</code>: READ, CREATE, EDIT_RISK, DELETE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-RISK-01</span> Risco corporativo agrega probabilidade, impacto, tratamento, dono, departamento, CC, ativo, fornecedor e normas de compliance.</p>
+          <p><span class="rn-id">RN-RISK-02</span> Tarefas do módulo TASKS podem referenciar <code>riskId</code> como acções de mitigação rastreáveis.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Em <code>/risks</code> registe novos riscos e classifique severidade.</li>
+            <li>Atribua dono e plano de tratamento; ligue a ativos ou fornecedores quando relevante.</li>
+            <li>Crie tarefas de mitigação ligadas ao risco para acompanhamento no módulo de Tarefas.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="kb">
+        <h2>Base de conhecimento</h2>
+        <h3>Função</h3>
+        <p>Artigos por categoria, tags, anexos, visualizações; suporte a deflexão no portal (sugestão de artigos ao digitar título).</p>
+        <h3>Frontend</h3>
+        <p><code>/knowledge</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/knowledge-base</span>,
+          <span class="api-path">/knowledge-categories</span>.
+        </p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>KB</code>: READ, CREATE, EDIT_ARTICLE, DELETE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-KB-01</span> Artigos possuem categoria, tags, anexos e contador de visualizações.</p>
+          <p><span class="rn-id">RN-KB-02</span> No portal de suporte, ao digitar o título do chamado, a API de conhecimento pode sugerir artigos para <strong>deflexão</strong> (reduzir chamados duplicados).</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Aceda a <code>/knowledge</code> para pesquisar e ler artigos.</li>
+            <li>Autores com permissão <code>CREATE</code> publicam novos artigos e escolhem categoria/tags.</li>
+            <li>Mantenha conteúdo actualizado após incidentes resolvidos (boa prática ITIL).</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="aprovacoes">
+        <h2>Aprovações (esteira)</h2>
+        <h3>Função</h3>
+        <p>Consolida pendências do usuário (projetos, propostas, despesas, GMUD, etc.) conforme regras dos serviços de approval.</p>
+        <h3>Frontend</h3>
+        <p><code>/approvals</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/approvals</span>,
+          <span class="api-path">/approval-tiers</span>.
+        </p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>APPROVALS</code>: READ, WRITE, BYPASS_APPROVAL.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-APR-01</span> A esteira agrega pendências de múltiplos domínios (ex.: propostas e custos de projeto, despesas, GMUD) conforme implementação dos serviços de <code>approval</code>.</p>
+          <p><span class="rn-id">RN-APR-02</span> Níveis de aprovação podem ser configurados via <code>/approval-tiers</code> (política organizacional).</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Abra <code>/approvals</code> para ver tudo o que aguarda a sua decisão.</li>
+            <li>Abra cada item, leia contexto e anexos e escolha <strong>Aprovar</strong> ou <strong>Rejeitar</strong> (com comentário quando obrigatório).</li>
+            <li>O sistema notifica solicitantes e actualiza o estado da entidade de origem.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="organizacao">
+        <h2>Organização (CONFIG)</h2>
+        <h3>Função</h3>
+        <p>Departamentos (hierarquia), centros de custo, usuários e perfis no tenant — base para escopo de acesso e alocação financeira.</p>
+        <h3>Frontend</h3>
+        <p><code>/config/organization</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/departments</span>,
+          <span class="api-path">/cost-centers</span>,
+          <span class="api-path">/users</span>,
+          <span class="api-path">/roles</span>.
+        </p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>CONFIG</code>: READ, WRITE, DELETE.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-ORG-01</span> Departamentos suportam hierarquia e director; centros de custo podem ter gestor (<code>managerId</code>) usado em <strong>access-scope</strong>.</p>
+          <p><span class="rn-id">RN-ORG-02</span> Utilizadores possuem <code>costCenterId</code> e perfis (roles); combinação define o que vê em incidentes, financeiro, projetos, etc.</p>
+          <p><span class="rn-id">RN-ORG-03</span> Papéis administrativos (Super Admin, Admin, Company Admin) têm escopo global de dados no tenant.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Em <code>/config/organization</code> mantenha a árvore de departamentos e centros de custo.</li>
+            <li>Crie utilizadores, associe ao CC e atribua perfis adequados ao cargo.</li>
+            <li>Alterações aqui reflectem-se imediatamente nas permissões e filtros dos restantes módulos.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="plataforma">
+        <h2>Plataforma, tenants e auditoria</h2>
+        <h3>Função</h3>
+        <p>
+          <strong>Tenants:</strong> empresas, schema, plano, limites, módulos habilitados (<code>enabledModules</code>).
+          <strong>Configurações globais:</strong> chave/valor no schema <code>public</code>.
+          <strong>Audit log:</strong> trilha de ações (módulo, entidade, diff JSON).
+          <strong>Retenção e export:</strong> job diário remove registos antigos conforme política; export CSV para compliance.
+        </p>
+        <h3>Frontend</h3>
+        <p><code>/config/tenants</code>, <code>/config/global</code>, <code>/activities</code>.</p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">/tenants</span>,
+          <span class="api-path">/global-settings</span>,
+          <span class="api-path">/audit-logs</span> (listagem),
+          <span class="api-path">/audit-logs/export</span> (CSV).
+        </p>
+        <h3>RBAC</h3>
+        <p><code>SUPER_ADMIN</code> para gestão de tenants global; <code>ACTIVITY_LOG</code> / <code>READ</code> para leitura e export de auditoria.</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-PLAT-01</span> Tenant: schema dedicado, plano, <code>maxUsers</code>, <code>enabledModules</code> (JSON) controlam o que a empresa pode usar.</p>
+          <p><span class="rn-id">RN-PLAT-02</span> <code>GlobalSetting</code> no schema <code>public</code> guarda pares categoria/chave/valor para parâmetros da plataforma.</p>
+          <p><span class="rn-id">RN-PLAT-03</span> <code>AuditLog</code> regista acção, módulo, tipo de entidade, ID e diff JSON para compliance.</p>
+          <p><span class="rn-id">RN-PLAT-04</span> <strong>Retenção:</strong> cron diário (madrugada) apaga registos mais antigos que <code>AUDIT_LOG_RETENTION_DAYS</code> (default 365), salvo desactivação explícita.</p>
+          <p><span class="rn-id">RN-PLAT-05</span> <strong>Export CSV:</strong> mesmos filtros de escopo que a listagem; limite máximo de linhas configurável (<code>AUDIT_LOG_EXPORT_MAX</code>).</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li><strong>Super Admin global:</strong> em <code>/config/tenants</code> provisione empresas, active/desactive módulos e ajuste limites.</li>
+            <li><strong>Configurações globais:</strong> <code>/config/global</code> para chaves administrativas da plataforma.</li>
+            <li><strong>Auditoria:</strong> <code>/activities</code> para consultar trilha de acções (filtrar por módulo/data conforme UI); use o endpoint de <strong>export</strong> quando precisar de ficheiro para arquivo externo.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="notificacoes">
+        <h2>Notificações in-app</h2>
+        <h3>Função</h3>
+        <p>
+          Campainha no layout principal, <strong>Server-Sent Events (SSE)</strong> para push leve, <strong>polling</strong> de fallback,
+          preferências por utilizador, e-mail em vários fluxos de negócio; link opcional para rota (ex.: contrato a vencer, transição de workflow).
+        </p>
+        <h3>Backend</h3>
+        <p>
+          <span class="api-path">GET /notifications</span> — lista e contagem não lida (com filtro de permissão por <code>link</code>).<br />
+          <span class="api-path">PUT /notifications/:id/read</span>, <span class="api-path">PUT /notifications/read-all</span> — marcar lidas.<br />
+          <span class="api-path">GET /notifications/stream</span> — SSE (<code>text/event-stream</code>); autenticação via <code>?token=</code> com JWT <code>purpose=sse</code> obtido em <span class="api-path">POST /auth/stream-token</span>.<br />
+          <span class="api-path">PATCH /auth/me/notification-preferences</span> — grava JSON de preferências no utilizador.
+        </p>
+        <h3>Frontend</h3>
+        <p><code>MainLayout</code> obtém o URL do stream via <code>POST /auth/stream-token</code> e abre <code>EventSource</code>; se o stream falhar, mantém polling periódico.</p>
+        <h3>RBAC</h3>
+        <p>Módulo <code>NOTIFICATIONS</code>: <code>READ</code> (lista e stream), <code>WRITE</code> (marcar lidas).</p>
+        <h3 class="sub-rn">Regras de negócio</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-NOT-01</span> Notificações são criadas por serviços (SLA de ticket, vencimento de contrato, workflows); podem incluir <code>link</code> para rota interna.</p>
+          <p><span class="rn-id">RN-NOT-02</span> O layout principal faz <strong>polling</strong> periódico (ex.: ~60 s) para actualizar contagem; com SSE activo reduz dependência só do polling.</p>
+          <p><span class="rn-id">RN-NOT-03</span> O hub SSE em memória notifica o utilizador no tenant correcto; não expor o access token completo na query — usar o fluxo <code>stream-token</code>.</p>
+          <p><span class="rn-id">RN-NOT-04</span> Preferências de notificação (canais, categorias, horário silencioso) persistem no campo JSON <code>notificationPreferences</code> do utilizador.</p>
+        </div>
+        <h3 class="sub-manual">Manual de funcionamento</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Clique no ícone de <strong>campainha</strong> para ver pré-visualização das últimas notificações.</li>
+            <li>Use <strong>Marcar todas como lidas</strong> ou abra o modal <strong>Ver todas</strong>.</li>
+            <li>Clique num item com link para navegar directamente ao chamado, contrato, etc.</li>
+            <li>Configure preferências de notificação no perfil quando a UI o expuser (API <code>/auth/me/notification-preferences</code>).</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="integracao">
+        <h2>Integração entre módulos</h2>
+        <p>
+          Abaixo, visão de como os domínios se apoiam uns nos outros. Os dados compartilhados passam por entidades com FKs ou tabelas de junção no Prisma;
+          regras de negócio ficam nos <em>services</em> do backend e permissões no RBAC.
+        </p>
+
+        <h3 class="sub-rn">Regras de negócio transversais</h3>
+        <div class="rn-box">
+          <p><span class="rn-id">RN-X-01</span> <strong>RBAC:</strong> cada rota da API invoca <code>authorize('MÓDULO','AÇÃO')</code> (ou equivalente); a matriz canónica está em <code>rbac-matrix.json</code>.</p>
+          <p><span class="rn-id">RN-X-02</span> <strong>Escopo:</strong> <code>getUserAccessScope</code> determina CCs acessíveis; administradores do tenant não são filtrados por CC; gestores veem utilizadores dos CC que gerem.</p>
+          <p><span class="rn-id">RN-X-03</span> <strong>Multi-tenant:</strong> todas as operações de negócio usam o cliente Prisma do schema do tenant corrente (excepto rotas explicitamente globais).</p>
+          <p><span class="rn-id">RN-X-04</span> <strong>Anexos:</strong> módulos utilizam <code>/uploads</code> com permissão <code>UPLOAD/WRITE</code> onde aplicável.</p>
+          <p><span class="rn-id">RN-X-05</span> <strong>E-mail:</strong> templates (ex.: abertura de ticket) dependem de <code>MailService</code> e configuração SMTP/integração no tenant.</p>
+          <p><span class="rn-id">RN-X-06</span> <strong>Auditoria:</strong> operações mutáveis em rotas com <code>audit()</code> geram <code>AuditLog</code> com dados sanitizados; eventos de login/refresh/logout usam caminho dedicado no controller de auth.</p>
+          <p><span class="rn-id">RN-X-07</span> <strong>Rate limit:</strong> limite global por utilizador autenticado (JWT) ou IP; login limitado por email para mitigar brute-force.</p>
+          <p><span class="rn-id">RN-X-08</span> <strong>SSE:</strong> notificações em tempo real usam JWT de curta duração com <code>purpose: 'sse'</code>, não o access token na URL.</p>
+          <p><span class="rn-id">RN-X-09</span> <strong>Jobs:</strong> cron em instância única (PM2); inclui SLA de tickets, e-mail IMAP, vencimentos e <strong>pruning de auditoria</strong>.</p>
+          <p><span class="rn-id">RN-X-10</span> <strong>Integrações:</strong> <code>/integrations</code> (LDAP, e-mail, Azure) e <code>/reference</code> para dados de apoio à UI; testes de conectividade conforme controlador.</p>
+        </div>
+        <h3 class="sub-manual">Manual transversal (boa prática)</h3>
+        <div class="manual-box">
+          <ol>
+            <li>Garanta que utilizadores têm <strong>perfil e centro de custo</strong> correctos antes de operar módulos sensíveis (financeiro, incidentes).</li>
+            <li>Use <strong>vínculos</strong> (ativo, projeto, mudança) nos chamados e incidentes para relatórios e root cause consistentes.</li>
+            <li>Para mudanças que afectam produção, alinhe <strong>GMUD</strong>, <strong>janelas de congelamento</strong> e comunicação aos solicitantes no <strong>Service Desk</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top: 0;">Fluxos transversais</h3>
+          <table>
+            <thead>
+              <tr><th>Origem</th><th>Destino / uso</th><th>Exemplo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Organização (CC, dept, usuário)</td><td>Todos os módulos com escopo</td><td>Filtro de incidentes, despesas, projetos</td></tr>
+              <tr><td>Ativos</td><td>Incidentes, tickets, GMUD, riscos</td><td>CMDB como referência</td></tr>
+              <tr><td>Fornecedores</td><td>Contratos, despesas, ativos</td><td>Cadeia de compras</td></tr>
+              <tr><td>Contratos</td><td>Ativos, alertas, financeiro</td><td>Vigência e custo</td></tr>
+              <tr><td>Projetos</td><td>GMUD, tickets, financeiro</td><td>Demanda e custo alocado</td></tr>
+              <tr><td>Tickets</td><td>Problemas, mudanças, projetos</td><td>Escalação ITIL</td></tr>
+              <tr><td>Incidentes</td><td>GMUD, conhecimento</td><td>Correção definitiva vs workaround</td></tr>
+              <tr><td>Riscos</td><td>Tarefas</td><td>Mitigação operacional</td></tr>
+              <tr><td>Aprovações</td><td>Projetos, financeiro, GMUD</td><td>Governança única</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Diagrama (visão de dependências)</h3>
+        <div class="mermaid-wrap">
+          <div class="mermaid">
+flowchart TB
+  subgraph core["Núcleo"]
+    AUTH[Auth / Tenant / Users]
+    ORG[Dept / CC / Roles]
+  end
+  subgraph ops["Operações de TI"]
+    HD[Help Desk / Tickets]
+    PB[Problemas]
+    INC[Incidentes]
+    GMUD[GMUD]
+    KB[Base de Conhecimento]
+  end
+  subgraph asset["Ativos"]
+    AST[Ativos / Manutenções]
+    LIC[Licenças]
+  end
+  subgraph corp["Corporativo"]
+    FIN[Financeiro / Orçamento]
+    CTR[Contratos]
+    SUP[Fornecedores]
+    RSK[Riscos ERM]
+  end
+  subgraph proj["Projetos"]
+    PRJ[Projetos PPM]
+    TSK[Tarefas]
+  end
+  AUTH --> ORG
+  ORG --> PRJ
+  ORG --> FIN
+  ORG --> INC
+  AST --> HD
+  AST --> INC
+  AST --> GMUD
+  AST --> RSK
+  SUP --> CTR
+  SUP --> FIN
+  CTR --> AST
+  FIN --> CTR
+  PRJ --> GMUD
+  PRJ --> HD
+  PRJ --> FIN
+  GMUD --> INC
+  GMUD --> HD
+  HD --> PB
+  HD --> GMUD
+  INC --> KB
+  RSK --> TSK
+          </div>
+        </div>
+
+        <h3>Infraestrutura compartilhada</h3>
+        <ul>
+          <li><span class="api-path">/uploads</span> — anexos em vários módulos (RBAC <code>UPLOAD</code>).</li>
+          <li><span class="api-path">/integrations</span> — LDAP, e-mail, Microsoft Graph conforme configuração.</li>
+          <li><span class="api-path">/reference</span> — dados de referência para formulários.</li>
+          <li>Swagger em <code>/api/docs</code> (ambiente não produtivo).</li>
+        </ul>
+
+        <h3>Cron (resumo)</h3>
+        <table>
+          <thead>
+            <tr><th>Agenda</th><th>Função</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Diário ~03:30</td><td>Retenção de <code>AuditLog</code> (configurável)</td></tr>
+            <tr><td>Diário 08:00</td><td>Alertas de vencimento de contratos e licenças</td></tr>
+            <tr><td>A cada 5 min</td><td>Monitorização de SLA de tickets (estouro, notificações)</td></tr>
+            <tr><td>A cada 1 min</td><td>IMAP — processamento de e-mails de resposta (inbound)</td></tr>
+          </tbody>
+        </table>
+
+        <p class="print-hint">
+          Este arquivo é autossuficiente (HTML + CSS + JS). Abra no navegador. Para PDF, use Imprimir → Salvar como PDF.
+          A documentação técnica completa (<code>DOCUMENTACAO.md</code>) está também na secção <a href="#documentacao-md">Documentação técnica (referência)</a> abaixo. Matriz de permissões: <code>rbac-matrix.json</code>.
+          As regras de negócio reflectem o código na data de revisão; após alterações relevantes no backend, actualize os identificadores RN-* correspondentes.
+        </p>
+      </section>
+      <section id="documentacao-md" class="doc-md-section" aria-label="Documentação técnica DOCUMENTACAO.md">
+        <div class="doc-md-banner">
+          <span class="tag">DOCUMENTACAO.md</span>
+          <p class="doc-md-banner-text">
+            Cópia integral do ficheiro <code>DOCUMENTACAO.md</code> na raiz do repositório, convertida para HTML e embutida neste arquivo para consulta offline num único documento.
+            Para atualizar após editar o Markdown: na raiz do projecto execute <code>node docs/sync-documentacao-html.js</code> (usa o <code>marked</code> do <code>BACKEND</code>).
+          </p>
+        </div>
+        <div class="doc-md-content">
+<h2 class="doc-md-title">G360 / ITBM — Documentação do sistema</h2>
+<p>Plataforma de gestão empresarial <strong>multi-tenant</strong> (nome do pacote backend: <strong>g360-backend</strong>; pasta do repositório: <strong>ITBM</strong>). Este documento consolida arquitetura, segurança, API, jobs, variáveis de ambiente, módulos de negócio e referências técnicas — <strong>alinhado ao código</strong> em <code>BACKEND/</code> e <code>FRONTEND/</code>.</p>
+<p><strong>Documentação complementar:</strong> <code>docs/documentacao-modulos-itbm.html</code> (manual por módulo, regras RN-* e diagramas; <strong>inclui uma cópia integral deste <code>.md</code></strong> na secção «Documentação técnica», no mesmo ficheiro HTML). Para voltar a gerar essa secção a partir deste ficheiro: <code>node docs/sync-documentacao-html.js</code> na raiz do repositório. <strong>Matriz RBAC:</strong> <code>rbac-matrix.json</code>. <strong>Exploração de API:</strong> Swagger em <code>/api/docs</code> (apenas fora de produção).</p>
+<hr>
+<h2>1. Visão geral da arquitetura</h2>
+<table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Tecnologia</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Frontend</td>
+<td>React 19, Vite 6, React Router 6</td>
+<td>SPA: Material UI 7, Emotion, Tailwind 4 (PostCSS), axios</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Node.js, Express 4</td>
+<td>API REST sob prefixo <strong><code>/api/v1</code></strong></td>
+</tr>
+<tr>
+<td>Banco</td>
+<td>PostgreSQL</td>
+<td>Schema <strong><code>public</code></strong>: catálogo de tenants e configurações globais; <strong>um schema por tenant</strong> para dados de negócio</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>Prisma 5</td>
+<td><code>BACKEND/src/prisma/schema.prisma</code></td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>JWT (access) + refresh token (BD)</td>
+<td>Header <code>Authorization: Bearer</code>; opcional <code>X-Tenant-Slug</code></td>
+</tr>
+<tr>
+<td>Docs API</td>
+<td>Swagger UI</td>
+<td><code>/api/docs</code> e <code>/api/docs.json</code> se <code>NODE_ENV !== &#39;production&#39;</code></td>
+</tr>
+</tbody></table>
+<p>Fluxo típico: o cliente envia JWT; <code>tenant-resolver</code> (global em <code>/api</code>) resolve <code>req.prisma</code> para o schema do tenant; <code>authMiddleware</code> nas rotas protegidas; <code>authorize()</code> aplica <code>rbac-matrix.json</code>; serviços aplicam <strong>escopo</strong> (<code>access-scope.js</code>) onde implementado.</p>
+<hr>
+<h2>2. Stack tecnológica (versões de referência)</h2>
+<h3>2.1 Backend (<code>BACKEND/package.json</code>)</h3>
+<ul>
+<li><strong>Core:</strong> <code>express</code>, <code>express-async-errors</code>, <code>cors</code>, <code>helmet</code>, <code>morgan</code>, <code>dotenv</code></li>
+<li><strong>Dados:</strong> <code>@prisma/client</code>, <code>pg</code></li>
+<li><strong>Auth / segurança:</strong> <code>jsonwebtoken</code>, <code>bcryptjs</code>, <code>express-rate-limit</code></li>
+<li><strong>Integrações:</strong> <code>@azure/msal-node</code>, <code>@microsoft/microsoft-graph-client</code>, <code>ldapjs</code>, <code>nodemailer</code>, <code>imapflow</code>, <code>mailparser</code></li>
+<li><strong>Utilitários:</strong> <code>yup</code>, <code>multer</code>, <code>xlsx</code>, <code>marked</code>, <code>luxon</code>, <code>node-cron</code>, <code>winston</code>, <code>swagger-jsdoc</code>, <code>swagger-ui-express</code>, <code>isomorphic-dompurify</code>, <code>file-type</code>, <code>selfsigned</code></li>
+<li><strong>Entrada:</strong> <code>src/app.js</code> — HTTPS opcional (certificados em <code>BACKEND/src/certs</code>)</li>
+</ul>
+<h3>2.2 Frontend (<code>FRONTEND/package.json</code>)</h3>
+<ul>
+<li><strong>Build:</strong> Vite 6, <code>@vitejs/plugin-react</code></li>
+<li><strong>UI:</strong> <code>@mui/material</code>, <code>@mui/x-data-grid</code>, <code>@mui/x-date-pickers</code>, <code>@mui/x-charts</code>, <code>recharts</code>, <code>react-big-calendar</code>, <code>gantt-task-react</code></li>
+<li><strong>Form / dados:</strong> <code>react-hook-form</code>, <code>@hookform/resolvers</code>, <code>yup</code>, <code>formik</code>, <code>axios</code>, <code>jwt-decode</code>, <code>lodash</code>, <code>date-fns</code></li>
+<li><strong>UX:</strong> <code>notistack</code>, <code>@hello-pangea/dnd</code>, <code>@dnd-kit/*</code>, <code>lucide-react</code>, <code>react-quill-new</code>, <code>jspdf</code>, <code>jspdf-autotable</code></li>
+<li><strong>Testes:</strong> Vitest, Testing Library, Playwright (E2E)</li>
+</ul>
+<hr>
+<h2>3. Estrutura relevante do repositório</h2>
+<table>
+<thead>
+<tr>
+<th>Caminho</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BACKEND/src/app.js</code></td>
+<td>Express: Helmet, CORS, rate limit global, <code>securityLogger</code>, <code>tenantResolver</code>, rotas, health, uploads estáticos</td>
+</tr>
+<tr>
+<td><code>BACKEND/src/routes/</code></td>
+<td>Definição REST por domínio; agregado em <code>routes/index.js</code></td>
+</tr>
+<tr>
+<td><code>BACKEND/src/middlewares/</code></td>
+<td><code>auth</code>, <code>permission</code> (<code>authorize</code>), <code>tenant-resolver</code>, <code>audit</code>, <code>sanitize</code>, <code>rate-limit</code>, <code>security-logger</code>, <code>error-handler</code>, uploads</td>
+</tr>
+<tr>
+<td><code>BACKEND/src/services/</code></td>
+<td>Regras de negócio e orquestração</td>
+</tr>
+<tr>
+<td><code>BACKEND/src/repositories/</code></td>
+<td>Acesso a dados Prisma</td>
+</tr>
+<tr>
+<td><code>BACKEND/src/utils/</code></td>
+<td><code>access-scope</code>, <code>audit-sanitize</code>, <code>audit-log-scope</code>, <code>permission-check</code>, <code>notification-prefs</code>, <code>notification-sse-hub</code>, etc.</td>
+</tr>
+<tr>
+<td><code>BACKEND/src/jobs/</code></td>
+<td>Jobs auxiliares (ex.: notificações)</td>
+</tr>
+<tr>
+<td><code>FRONTEND/src/</code></td>
+<td>Páginas, componentes, contextos (<code>AuthContext</code>, <code>ThemeContext</code>, <code>TaskTimerContext</code>), serviços API</td>
+</tr>
+<tr>
+<td><code>rbac-matrix.json</code></td>
+<td>Módulos e ações canónicos para UI e backend</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Multi-tenant e resolução de tenant</h2>
+<ul>
+<li><strong>Catálogo:</strong> modelo <code>Tenant</code> no schema <code>public</code> (slug, <code>schemaName</code>, plano, <code>enabledModules</code>, etc.).</li>
+<li><strong><code>tenantResolver()</code> (rotas autenticadas):</strong> prioridade — payload JWT (<code>schemaName</code> / <code>tenantSlug</code>) → decodificar <code>Authorization: Bearer</code> se ainda não houver <code>req.user</code> → <strong>GET com <code>?token=</code></strong> apenas para JWT com <code>purpose: &#39;sse&#39;</code> (SSE de notificações) → header <code>x-tenant-slug</code> → cliente Prisma padrão.</li>
+<li><strong><code>tenantResolverPublic()</code>:</strong> login/Azure/LDAP — tenant por <code>tenantSlug</code> no body/params/header.</li>
+<li><strong><code>tenantResolverAdmin()</code>:</strong> operações de super-admin no catálogo (<code>req.prisma</code> = client público).</li>
+</ul>
+<hr>
+<h2>5. Segurança, governança e conformidade</h2>
+<h3>5.1 Autenticação</h3>
+<ul>
+<li><strong>Login:</strong> local (email/senha), <strong>Azure AD</strong> (MSAL), <strong>LDAP</strong> — conforme rotas em <code>/auth/login</code>, <code>/auth/azure</code>, <code>/auth/ldap</code>.</li>
+<li><strong>Tokens:</strong> access JWT (payload: <code>userId</code>, <code>email</code>, <code>roles</code>, <code>tenantSlug</code>, <code>schemaName</code>); refresh armazenado na tabela <code>RefreshToken</code> com revogação no logout.</li>
+<li><strong>Endpoints públicos:</strong> <code>POST /auth/login</code>, <code>/auth/azure</code>, <code>/auth/ldap</code>, <code>/auth/refresh</code>, <code>/auth/logout</code>, <code>GET /auth/azure-config/:tenantSlug</code>.</li>
+<li><strong>Endpoints autenticados:</strong> <code>POST /auth/stream-token</code>, <code>GET /auth/me</code>, <code>PATCH /auth/me/notification-preferences</code>.</li>
+<li><strong>Auditoria de sessão (AuditLog, módulo <code>AUTH</code>):</strong> eventos <code>AUTH_LOGIN</code>, <code>AUTH_REFRESH</code>, <code>AUTH_LOGOUT</code> gravados no controller (login bem-sucedido por canal LOCAL/AZURE/LDAP; refresh e logout após validação do refresh token). Não dependem do middleware <code>audit()</code> em rotas sem JWT completo.</li>
+</ul>
+<h3>5.2 Rate limiting (<code>rate-limit.middleware.js</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Limiter</th>
+<th>Uso típico</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>loginLimiter</code></td>
+<td><code>/auth/login</code>, Azure, LDAP</td>
+<td>Chave por <strong>email</strong> no body; limite reforçado em produção</td>
+</tr>
+<tr>
+<td><code>globalLimiter</code></td>
+<td>Todas as rotas <code>/api</code></td>
+<td>Chave <strong><code>uid:&lt;userId&gt;</code></strong> se Bearer JWT válido; senão IP. Health <code>GET /api/health</code> é ignorado</td>
+</tr>
+<tr>
+<td><code>strictLimiter</code></td>
+<td>Operações sensíveis (ex.: refresh)</td>
+<td>Limite mais baixo</td>
+</tr>
+<tr>
+<td><code>referenceLimiter</code></td>
+<td>Endpoints de referência leves</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><code>RATE_LIMIT_BYPASS=true</code> desativa limites para testes de carga.</p>
+<h3>5.3 Proteção HTTP e payload</h3>
+<ul>
+<li><strong>Helmet:</strong> CSP, HSTS, <code>noSniff</code>, <code>hidePoweredBy</code>, <code>Referrer-Policy</code>, <code>Permissions-Policy</code>.</li>
+<li><strong>CORS:</strong> origens em desenvolvimento (localhost e IPs privados); em produção <code>ALLOWED_ORIGINS</code> (lista separada por vírgulas).</li>
+<li><strong>Sanitização global:</strong> middleware <code>sanitize</code> em <code>req.body</code> (mitigação XSS).</li>
+<li><strong>Limites de body:</strong> JSON/urlencoded 100kb em <code>app.js</code>.</li>
+</ul>
+<h3>5.4 Logging de segurança</h3>
+<ul>
+<li><strong><code>securityLogger</code>:</strong> em respostas <strong>401, 403, 429</strong> regista evento via <strong>Winston</strong> (<code>logger.warn</code> com <code>category: &#39;SECURITY&#39;</code>), incluindo IP, método, path, utilizador quando existir.</li>
+<li><strong>Funções auxiliares:</strong> <code>logFailedLogin</code>, <code>logBlockedUpload</code>, <code>writeSecurityLog</code> — mesmo canal (sem duplicar <code>appendFile</code> manual).</li>
+</ul>
+<h3>5.5 Auditoria de dados (AuditLog)</h3>
+<ul>
+<li><strong>Middleware <code>audit(module, action?)</code>:</strong> interceta <code>res.json</code> / <code>res.send</code> em sucesso 2xx; deriva ação (POST→CREATE, PUT/PATCH→UPDATE, DELETE→DELETE, GET→READ) se omitida; grava <code>oldData</code>/<code>newData</code> <strong>sanitizados</strong> (<code>audit-sanitize.util.js</code> — passwords, tokens, emails mascarados, profundidade limitada).</li>
+<li><strong>Requisito:</strong> <code>req.user.userId</code> e <code>req.prisma</code>; sem utilizador autenticado não grava (evita linhas inválidas).</li>
+<li><strong>Entidade:</strong> <code>entityId</code> obtido de <code>req.params</code> (<code>id</code>, <code>ticketId</code>, <code>minuteId</code>, <code>costId</code>, etc.) ou corpo.</li>
+<li><strong>Rotas com auditoria:</strong> dezenas de módulos; <strong>Help Desk</strong> (<code>HELPDESK</code>) e <strong>Problemas</strong> (<code>PROBLEM</code>) incluem mutações; ver <code>ticket.routes.js</code> e <code>problem.routes.js</code>.</li>
+<li><strong>Listagem / export:</strong> <code>GET /audit-logs</code> e <code>GET /audit-logs/export</code> (CSV) com <strong>mesmo filtro RBAC</strong> que a listagem (<code>audit-log-scope.util.js</code>). Export: limite <code>AUDIT_LOG_EXPORT_MAX</code> (default 10 000, máx. 100 000), BOM UTF-8.</li>
+<li><strong>Retenção:</strong> cron diário <strong>03:30</strong> — remove registos com <code>createdAt</code> anterior a <strong>N dias</strong> (<code>AUDIT_LOG_RETENTION_DAYS</code>, default <strong>365</strong>). Desativar pruning: <code>AUDIT_LOG_RETENTION_DAYS=0</code> ou <code>AUDIT_LOG_RETENTION_DISABLED=true</code>.</li>
+</ul>
+<h3>5.6 Notificações em tempo real (SSE)</h3>
+<ul>
+<li><strong><code>GET /notifications/stream</code>:</strong> Server-Sent Events; <strong>não</strong> envia o access token completo na query.</li>
+<li><strong>Fluxo:</strong> cliente autenticado chama <strong><code>POST /auth/stream-token</code></strong> → recebe JWT de curta duração com <strong><code>purpose: &#39;sse&#39;</code></strong> → <code>EventSource</code> usa <code>?token=&lt;sse_jwt&gt;</code>.</li>
+<li><strong>Expiração SSE:</strong> <code>JWT_SSE_EXPIRES_IN</code> (ex.: <code>10m</code>).</li>
+<li><strong>Tenant:</strong> <code>tenant-resolver</code> valida o token SSE e preenche <code>req.user</code> para <code>authorize(&#39;NOTIFICATIONS&#39;, &#39;READ&#39;)</code>.</li>
+</ul>
+<h3>5.7 RBAC e escopo</h3>
+<ul>
+<li><strong>Matriz:</strong> <code>rbac-matrix.json</code> — módulos <code>HELPDESK</code>, <code>INCIDENT</code>, <code>PROBLEM</code>, <code>PROJECTS</code>, <code>GMUD</code>, <code>FINANCE</code>, <code>CONTRACTS</code>, <code>SUPPLIERS</code>, <code>ASSETS</code>, <code>TASKS</code>, <code>KB</code>, <code>RISKS</code>, <code>APPROVALS</code>, <code>CONFIG</code>, <code>ACTIVITY_LOG</code>, <code>NOTIFICATIONS</code>, <code>UPLOAD</code>, <code>SUPER_ADMIN</code>, etc.</li>
+<li><strong><code>authorize(module, action)</code>:</strong> carrega utilizador com permissões e verifica par <code>module</code>+<code>action</code>.</li>
+<li><strong>Escopo (<code>getUserAccessScope</code> / <code>access-scope.js</code>):</strong> administradores globais; gestores por departamentos/centros geridos; restantes escopo próprio — aplicado em listagens (ex.: notificações com links, audit log para não-super-admin).</li>
+</ul>
+<hr>
+<h2>6. Variáveis de ambiente (referência)</h2>
+<table>
+<thead>
+<tr>
+<th>Variável</th>
+<th>Função</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DATABASE_URL</code></td>
+<td>PostgreSQL (com schema default ou <code>?schema=public</code>)</td>
+</tr>
+<tr>
+<td><code>JWT_SECRET</code></td>
+<td>Assinatura HS256 dos JWT</td>
+</tr>
+<tr>
+<td><code>JWT_EXPIRES_IN</code></td>
+<td>TTL do access token (ex.: <code>15m</code>)</td>
+</tr>
+<tr>
+<td><code>JWT_SSE_EXPIRES_IN</code></td>
+<td>TTL do token só para SSE (ex.: <code>10m</code>)</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>Redirects e links em e-mails (ex.: <code>/tasks/:id</code>)</td>
+</tr>
+<tr>
+<td><code>ALLOWED_ORIGINS</code></td>
+<td>CORS em produção (lista separada por vírgulas)</td>
+</tr>
+<tr>
+<td><code>NODE_ENV</code></td>
+<td><code>production</code> desativa Swagger; afeta nível de log</td>
+</tr>
+<tr>
+<td><code>PORT</code></td>
+<td>Porta HTTP(S) do backend (default <strong>8500</strong>)</td>
+</tr>
+<tr>
+<td><code>RATE_LIMIT_BYPASS</code></td>
+<td><code>true</code> relaxa rate limits</td>
+</tr>
+<tr>
+<td><code>DEV_HTTP</code></td>
+<td>HTTP para testes</td>
+</tr>
+<tr>
+<td><code>NODE_APP_INSTANCE</code></td>
+<td>PM2: apenas instância <strong>0</strong> executa crons</td>
+</tr>
+<tr>
+<td><code>AUDIT_LOG_RETENTION_DAYS</code></td>
+<td>Dias de retenção de <code>AuditLog</code> (0 = não apagar via job)</td>
+</tr>
+<tr>
+<td><code>AUDIT_LOG_RETENTION_DISABLED</code></td>
+<td><code>true</code> desliga o job de pruning</td>
+</tr>
+<tr>
+<td><code>AUDIT_LOG_EXPORT_MAX</code></td>
+<td>Máximo de linhas no CSV de audit</td>
+</tr>
+</tbody></table>
+<p>Variáveis adicionais podem existir para SMTP, Azure, LDAP e testes (ver <code>.env</code> local).</p>
+<hr>
+<h2>7. Domínios da API (<code>/api/v1</code>)</h2>
+<p>Definidos em <code>BACKEND/src/routes/index.js</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Prefixo</th>
+<th>Domínio</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/auth</code></td>
+<td>Login, refresh, logout, me, stream-token, preferências de notificação</td>
+</tr>
+<tr>
+<td><code>/tenants</code></td>
+<td>Administração de empresas (super-admin)</td>
+</tr>
+<tr>
+<td><code>/users</code>, <code>/roles</code></td>
+<td>Utilizadores e perfis</td>
+</tr>
+<tr>
+<td><code>/departments</code>, <code>/cost-centers</code>, <code>/suppliers</code></td>
+<td>Organização e fornecedores</td>
+</tr>
+<tr>
+<td><code>/accounts</code>, <code>/fiscal-years</code>, <code>/budgets</code>, <code>/budget-comparison</code>, <code>/expenses</code>, <code>/contracts</code>, <code>/finance-dashboard</code></td>
+<td>Financeiro</td>
+</tr>
+<tr>
+<td><code>/asset-categories</code>, <code>/assets</code>, <code>/software-licenses</code></td>
+<td>Ativos e licenças</td>
+</tr>
+<tr>
+<td><code>/projects</code>, <code>/project-tasks</code>, <code>/tasks</code></td>
+<td>Projetos e tarefas</td>
+</tr>
+<tr>
+<td><code>/changes</code>, <code>/change-templates</code>, <code>/freeze-windows</code></td>
+<td>GMUD</td>
+</tr>
+<tr>
+<td><code>/incidents</code></td>
+<td>Incidentes</td>
+</tr>
+<tr>
+<td><code>/tickets</code>, <code>/service-catalog</code>, <code>/sla-policies</code>, <code>/problems</code>, <code>/helpdesk-config</code>, <code>/support-groups</code></td>
+<td>Help Desk</td>
+</tr>
+<tr>
+<td><code>/corporate-risks</code>, <code>/approvals</code>, <code>/approval-tiers</code>, <code>/audit-logs</code></td>
+<td>Riscos, aprovações, auditoria</td>
+</tr>
+<tr>
+<td><code>/knowledge-base</code>, <code>/knowledge-categories</code></td>
+<td>Base de conhecimento</td>
+</tr>
+<tr>
+<td><code>/notifications</code></td>
+<td>Lista, marcar lidas, <strong>stream</strong> SSE</td>
+</tr>
+<tr>
+<td><code>/dashboard</code>, <code>/integrations</code>, <code>/uploads</code>, <code>/reference</code>, <code>/global-settings</code></td>
+<td>Dashboard, integrações, ficheiros, referência, settings globais</td>
+</tr>
+</tbody></table>
+<p><strong>Estáticos:</strong> <code>GET /uploads/...</code> servidos pelo Express. <strong>Health:</strong> <code>GET /api/health</code>, <code>GET /api/v1/health</code>.</p>
+<hr>
+<h2>8. Jobs agendados (<code>CronService</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Agenda (cron)</th>
+<th>Função</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>30 3 * * *</code></td>
+<td>Pruning de <strong>AuditLog</strong> por tenant (retenção configurável)</td>
+</tr>
+<tr>
+<td><code>0 8 * * *</code></td>
+<td>Vencimento de <strong>contratos</strong> e <strong>licenças</strong> (alertas)</td>
+</tr>
+<tr>
+<td><code>*/5 * * * *</code></td>
+<td><strong>SLA de tickets</strong> — deteção de estouro, notificações</td>
+</tr>
+<tr>
+<td><code>* * * * *</code></td>
+<td><strong>IMAP</strong> — processamento de e-mails de resposta (inbound)</td>
+</tr>
+</tbody></table>
+<p>Apenas <strong>uma instância</strong> (PM2 <code>NODE_APP_INSTANCE</code> 0 ou indefinido) agenda tarefas.</p>
+<hr>
+<h2>9. Módulos funcionais (resumo de negócio)</h2>
+<h3>9.1 Autenticação e sessão</h3>
+<ul>
+<li>LocalStorage típico: <code>g360_token</code>, <code>g360_refresh_token</code>, <code>g360_user</code>, <code>g360_tenant_slug</code>.</li>
+<li>Interceptor axios: refresh em 401; anexar <code>X-Tenant-Slug</code> quando aplicável.</li>
+</ul>
+<h3>9.2 Dashboard</h3>
+<ul>
+<li><code>DashboardRouter</code>, API <code>/dashboard</code> — KPIs conforme serviço.</li>
+</ul>
+<h3>9.3 Projetos (PPM)</h3>
+<ul>
+<li>Propostas, custos, atas, follow-ups, membros, vínculos com tickets/GMUD; aprovações na esteira.</li>
+</ul>
+<h3>9.4 Tarefas (<code>TASKS</code>)</h3>
+<ul>
+<li>Checklist, comentários, anexos, time logs, timer flutuante; <code>riskId</code> opcional (mitigação ERM).</li>
+</ul>
+<h3>9.5 GMUD</h3>
+<ul>
+<li>RFC, risco, CAB, freeze windows, PIR; ligação a incidentes e tickets.</li>
+</ul>
+<h3>9.6 Incidentes (ITIL)</h3>
+<ul>
+<li>Prioridade, SLA, histórico, comentários, anexos; vínculos a ativos e mudanças.</li>
+</ul>
+<h3>9.7 Help Desk</h3>
+<ul>
+<li>Portal <code>/portal</code>, Service Desk <code>/servicedesk</code>, catálogo, políticas SLA, grupos, métricas, export CSV de fila; <strong>auditoria</strong> em mutações de tickets e problemas.</li>
+</ul>
+<h3>9.8 Ativos e licenças</h3>
+<ul>
+<li>Manutenções, vínculos CMDB; alertas de licença (cron).</li>
+</ul>
+<h3>9.9 Fornecedores e contratos</h3>
+<ul>
+<li>Cadastro; contratos com aditivos, anexos, alertas 30/15/7 dias.</li>
+</ul>
+<h3>9.10 Financeiro</h3>
+<ul>
+<li>Exercícios, orçamentos, despesas, comparação, dashboard financeiro.</li>
+</ul>
+<h3>9.11 Riscos corporativos (ERM)</h3>
+<ul>
+<li>Heatmap, tratamento, ligação a tarefas de mitigação.</li>
+</ul>
+<h3>9.12 Base de conhecimento</h3>
+<ul>
+<li>Categorias, artigos, deflexão no portal quando implementado.</li>
+</ul>
+<h3>9.13 Aprovações</h3>
+<ul>
+<li><code>/approvals</code> — consolida pendências; <code>/approval-tiers</code> — níveis configuráveis.</li>
+</ul>
+<h3>9.14 Organização (CONFIG)</h3>
+<ul>
+<li>Departamentos, centros de custo, utilizadores, perfis, import Azure (quando habilitado).</li>
+</ul>
+<h3>9.15 Plataforma e auditoria</h3>
+<ul>
+<li>Tenants, global settings, <strong>log de atividades</strong> (<code>/activities</code> no frontend) com API <code>/audit-logs</code> + <strong>export CSV</strong>.</li>
+</ul>
+<h3>9.16 Notificações</h3>
+<ul>
+<li>In-app, e-mail em muitos fluxos; <strong>SSE</strong> com token dedicado; preferências <code>PATCH /auth/me/notification-preferences</code>; polling de fallback no layout.</li>
+</ul>
+<hr>
+<h2>10. Integrações técnicas</h2>
+<ul>
+<li><strong>LDAP:</strong> <code>Integration</code> tipo LDAP + <code>LdapService</code>; login <code>/auth/ldap</code>.</li>
+<li><strong>Azure AD:</strong> integração em BD + MSAL; login <code>/auth/azure</code>; <code>GET /auth/azure-config/:tenantSlug</code>.</li>
+<li><strong>E-mail:</strong> <code>MailService</code> / templates; notificações podem disparar envio.</li>
+<li><strong>IMAP:</strong> <code>InboundEmailService</code> + cron para respostas ligadas a tickets (quando configurado).</li>
+<li><strong><code>/integrations</code>:</strong> atualização e teste de integrações por tipo (CONFIG).</li>
+</ul>
+<hr>
+<h2>11. Redirecionamentos e legado</h2>
+<ul>
+<li><code>GET /tasks/:id</code> no backend redireciona <strong>301</strong> para <code>FRONTEND_URL/tasks/:id</code>.</li>
+</ul>
+<hr>
+<h2>12. Testes e qualidade</h2>
+<ul>
+<li><strong>Backend:</strong> Jest, Supertest; config separada para integração (<code>jest-integration.config.js</code>); carga opcional (Artillery).</li>
+<li><strong>Frontend:</strong> Vitest + Testing Library; Playwright para E2E.</li>
+</ul>
+<hr>
+<h2>13. Implantação e base de dados</h2>
+<p>Comandos principais (ver também scripts npm em <code>BACKEND/package.json</code>):</p>
+<ul>
+<li><code>npm run prisma:generate</code></li>
+<li><code>npx prisma migrate deploy</code> (por schema se necessário)</li>
+<li><strong><code>npm run deploy:tenants</code></strong> — migrations em todos os tenants + seed idempotente do catálogo ITIL</li>
+<li><code>npm run seed</code>, <code>seed:catalog</code>, <code>seed:catalog:all</code> conforme necessidade</li>
+<li>Provisionamento de tenant: <code>node src/scripts/provision-tenant.js</code> (quando aplicável)</li>
+</ul>
+<p><strong>Scripts operacionais:</strong> o directório <code>BACKEND/src/scripts/</code> contém utilitários de manutenção (migração multi-tenant, seeds parciais, diagnóstico RBAC, integrações, resets controlados, certificados, etc.). <strong>Reveja o código e o comentário de cada script antes de executar</strong> — não fazem parte do fluxo normal da API em runtime.</p>
+<hr>
+<h2>14. Frontend — mapa de rotas (SPA)</h2>
+<p>Definidas em <code>FRONTEND/src/App.jsx</code>. Rotas públicas: <code>/login</code>, <code>/auth/callback</code>. Demais rotas passam por <code>PrivateRoute</code> (layout <code>MainLayout</code> + <code>FloatingTimer</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Rota</th>
+<th>Área</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/</code>, <code>/dashboard</code></td>
+<td>Redirecionamento e dashboard (<code>DashboardRouter</code>)</td>
+</tr>
+<tr>
+<td><code>/modern-dashboard</code></td>
+<td>Dashboard alternativo (demo)</td>
+</tr>
+<tr>
+<td><code>/projects</code>, <code>/projects/portfolio</code>, <code>/projects/team-status-report</code>, <code>/projects/:id</code></td>
+<td>Projetos</td>
+</tr>
+<tr>
+<td><code>/tasks</code>, <code>/tasks/time-report</code>, <code>/tasks/:id</code></td>
+<td>Tarefas</td>
+</tr>
+<tr>
+<td><code>/knowledge</code></td>
+<td>Base de conhecimento</td>
+</tr>
+<tr>
+<td><code>/changes</code></td>
+<td>GMUD</td>
+</tr>
+<tr>
+<td><code>/incidents</code></td>
+<td>Incidentes</td>
+</tr>
+<tr>
+<td><code>/assets</code></td>
+<td>Ativos</td>
+</tr>
+<tr>
+<td><code>/risks</code></td>
+<td>Riscos corporativos</td>
+</tr>
+<tr>
+<td><code>/suppliers</code></td>
+<td>Fornecedores</td>
+</tr>
+<tr>
+<td><code>/contracts</code>, <code>/contracts/:id</code></td>
+<td>Contratos</td>
+</tr>
+<tr>
+<td><code>/finance</code>, <code>/finance/budget/:id</code>, <code>/finance/compare</code></td>
+<td>Financeiro</td>
+</tr>
+<tr>
+<td><code>/activities</code></td>
+<td>Log de atividades / auditoria (UI)</td>
+</tr>
+<tr>
+<td><code>/approvals</code></td>
+<td>Minhas aprovações</td>
+</tr>
+<tr>
+<td><code>/config/organization</code>, <code>/config/tenants</code>, <code>/config/global</code></td>
+<td>Organização, tenants, settings globais</td>
+</tr>
+<tr>
+<td><code>/portal</code>, <code>/portal/tickets/:id</code></td>
+<td>Portal do solicitante</td>
+</tr>
+<tr>
+<td><code>/servicedesk</code>, <code>/servicedesk/settings</code>, <code>/servicedesk/catalog</code>, <code>/servicedesk/problems</code></td>
+<td>Service Desk, catálogo, problemas</td>
+</tr>
+</tbody></table>
+<p>Qualquer outro path cai no fallback para <code>/login</code>.</p>
+<hr>
+<h2>15. Nomenclatura</h2>
+<ul>
+<li>Repositório <strong>ITBM</strong>; npm backend <strong>g360-backend</strong>; UI <strong>G360 Enterprise</strong>. Tratar como um produto com nomes legados coexistindo.</li>
+</ul>
+<hr>
+<p><em>Última revisão alinhada ao código-fonte: rotas backend e frontend, middlewares de segurança, auditoria, SSE, rate limits, cron e export de compliance. Para detalhes de endpoint por rota, use Swagger (<code>/api/docs</code>) ou os ficheiros <code>BACKEND/src/routes/*.routes.js</code>.</em></p>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    (function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        securityLevel: 'loose',
+        flowchart: { curve: 'basis', padding: 12 }
+      });
+    })();
+
+    (function () {
+      var search = document.getElementById('nav-search');
+      var links = document.querySelectorAll('#nav-list a');
+      function filterNav() {
+        var q = (search.value || '').toLowerCase();
+        links.forEach(function (a) {
+          var li = a.parentElement;
+          var t = a.textContent.toLowerCase();
+          li.style.display = !q || t.indexOf(q) !== -1 ? '' : 'none';
+        });
+      }
+      search.addEventListener('input', filterNav);
+
+      var sections = document.querySelectorAll('main.doc-main section, main.doc-main .hero-intro');
+      function updateActive() {
+        var id = '';
+        sections.forEach(function (sec) {
+          var r = sec.getBoundingClientRect();
+          if (r.top <= 120) id = sec.id;
+        });
+        links.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+      window.addEventListener('scroll', updateActive, { passive: true });
+      updateActive();
+    })();
+  </script>
+</body>
+</html>

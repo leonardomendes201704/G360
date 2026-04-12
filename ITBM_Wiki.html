@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITBM - Wiki de Documentação</title>
+    <!-- Modern Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-body: #f1f5f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border: #e2e8f0;
+            --sidebar-width: 340px;
+            --nav-hover: #f8fafc;
+            --nav-active: #eff6ff;
+            --nav-active-text: #1d4ed8;
+            --nav-active-icon: #3b82f6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            
+            /* Typography */
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme with Glassmorphism hints */
+            --bg-body: #0b1120;
+            --bg-sidebar: #111827;
+            --bg-card: #1f2937;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border: rgba(255, 255, 255, 0.1);
+            --nav-hover: rgba(255, 255, 255, 0.03);
+            --nav-active: rgba(59, 130, 246, 0.1);
+            --nav-active-text: #60a5fa;
+            --nav-active-icon: #3b82f6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+        }
+
+        .sidebar-header {
+            padding: 28px 24px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-main), var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        .theme-toggle {
+            background: var(--nav-hover);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05) rotate(10deg);
+            background-color: var(--border);
+        }
+
+        .nav-menu {
+            overflow-y: auto;
+            padding: 20px 16px;
+            flex: 1;
+        }
+
+        .nav-menu::-webkit-scrollbar { width: 4px; }
+        .nav-menu::-webkit-scrollbar-track { background: transparent; }
+        .nav-menu::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: 10px; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            margin-bottom: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background-color: var(--nav-hover);
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background-color: var(--nav-active);
+            color: var(--nav-active-text);
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background-color: var(--nav-hover);
+            color: var(--text-muted);
+            margin-right: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.4s ease;
+        }
+
+        .nav-link.active .nav-icon {
+            background-color: var(--nav-active-icon);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .wiki-section {
+            display: none;
+            padding: 40px;
+            max-width: 950px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .wiki-section.active {
+            display: block;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 56px;
+            box-shadow: var(--shadow-lg);
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle top gradient line on card */
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #10b981, var(--accent));
+        }
+
+        /* Markdown Rendering Styles */
+        .wiki-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 32px;
+            color: var(--text-main);
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .wiki-content h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 48px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+        }
+
+        .wiki-content h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background-color: var(--accent);
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+
+        .wiki-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 36px;
+            margin-bottom: 14px;
+            color: var(--text-main);
+        }
+
+        .wiki-content p {
+            font-size: 1.05rem;
+            line-height: 1.75;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+
+        .wiki-content ul, .wiki-content ol {
+            margin-bottom: 28px;
+            padding-left: 24px;
+            color: var(--text-muted);
+            line-height: 1.75;
+            font-size: 1.05rem;
+        }
+
+        .wiki-content li { margin-bottom: 10px; }
+        .wiki-content li::marker { color: var(--accent); font-weight: bold; }
+        .wiki-content strong { color: var(--text-main); font-weight: 600; }
+
+        .wiki-content code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: var(--nav-hover);
+            color: #ef4444; /* Modern red/pink tint for code */
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            border: 1px solid var(--border);
+        }
+        
+        [data-theme="dark"] .wiki-content code {
+            color: #fca5a5;
+        }
+
+        .wiki-content hr {
+            height: 1px;
+            background-color: var(--border);
+            border: none;
+            margin: 48px 0;
+        }
+
+        .wiki-content blockquote {
+            position: relative;
+            padding: 24px 32px;
+            margin: 32px 0;
+            background-color: var(--nav-hover);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-style: italic;
+        }
+
+        .wiki-content blockquote::after {
+            content: '"';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 3rem;
+            color: var(--accent);
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        .wiki-content blockquote p:last-child { margin-bottom: 0; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .wiki-section { padding: 32px; }
+            .content-card { padding: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 50vh;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .sidebar-header { padding: 16px 20px; }
+            .wiki-section { padding: 16px; }
+            .content-card { padding: 24px; }
+            .wiki-content h1 { font-size: 2rem; }
+            .nav-menu { padding: 10px; }
+            .nav-link { padding: 10px 12px; margin-bottom: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>ITBM Wiki</h2>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+        <nav class="nav-menu" id="nav-menu">
+            
+        <a href="#section-1" class="nav-link active" data-target="section-1">
+            <span class="nav-icon">1</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Serviços de TI (ITSM)</span>
+        </a>
+    
+        <a href="#section-2" class="nav-link " data-target="section-2">
+            <span class="nav-icon">2</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Ativos e Configuração (CMDB)</span>
+        </a>
+    
+        <a href="#section-3" class="nav-link " data-target="section-3">
+            <span class="nav-icon">3</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Mudanças e Aprovações</span>
+        </a>
+    
+        <a href="#section-4" class="nav-link " data-target="section-4">
+            <span class="nav-icon">4</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Projetos e Tarefas (PPM)</span>
+        </a>
+    
+        <a href="#section-5" class="nav-link " data-target="section-5">
+            <span class="nav-icon">5</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão Financeira (ITBM Finance)</span>
+        </a>
+    
+        <a href="#section-6" class="nav-link " data-target="section-6">
+            <span class="nav-icon">6</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Fornecedores e Contratos</span>
+        </a>
+    
+        <a href="#section-7" class="nav-link " data-target="section-7">
+            <span class="nav-icon">7</span>
+            <span class="nav-text" style="flex:1;">Módulo: Gestão de Conhecimento e Riscos</span>
+        </a>
+    
+        <a href="#section-8" class="nav-link " data-target="section-8">
+            <span class="nav-icon">8</span>
+            <span class="nav-text" style="flex:1;">Módulo: Administração e Configuração Global</span>
+        </a>
+    
+        <a href="#section-9" class="nav-link " data-target="section-9">
+            <span class="nav-icon">9</span>
+            <span class="nav-text" style="flex:1;">Módulo: Dashboards e Relatórios</span>
+        </a>
+    
+        <a href="#section-10" class="nav-link " data-target="section-10">
+            <span class="nav-icon">10</span>
+            <span class="nav-text" style="flex:1;">Módulo Central: Inter-relacionamento dos Módulos ITBM</span>
+        </a>
+    
+        </nav>
+    </aside>
+
+    <main class="main-content" id="main-content">
+        
+        <section id="section-1" class="wiki-section active">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Serviços de TI (ITSM)</h1>
+<h2>1. Visão Geral</h2>
+<p>O módulo de Gestão de Serviços de TI (ITSM) é o coração do portal de atendimento (Helpdesk e Servicedesk). Ele é responsável por conectar os usuários finais (Requisitantes) à equipe de TI (Agentes) através de requisições, incidentes e problemas. Este módulo abrange desde a simples abertura de um ticket no Portal até o escalonamento complexo para problemas, mudanças ou projetos.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<p>O módulo está subdividido em 4 partes principais:</p>
+<h3>2.1 Helpdesk / Servicedesk (Tickets)</h3>
+<p>Gerencia as interações de primeiro nível, como chamados gerais ou requisições de serviço.</p>
+<ul>
+<li><strong>Criação de Tickets:</strong> Permite que usuários finais abram chamados escolhendo uma Categoria e um Serviço específico do catálogo. É possível informar prioridade e anexar ativos ou incidentes relacionados.</li>
+<li><strong>Listagem e Filtros:</strong> Lista chamados. O sistema diferencia visualizações: Agentes (e Admins) conseguem ver todos os chamados da operação, enquanto Requisitantes veem apenas os de sua autoria.</li>
+<li><strong>Mensageria e Anotações Internas:</strong> Troca de mensagens no chamado. Agentes podem enviar notas internas (isInternal) invisíveis para o requisitante.</li>
+<li><strong>Mudança de Status:</strong> Avanço do chamado pelos status <code>OPEN</code>, <code>IN_PROGRESS</code>, <code>WAITING_USER</code>, <code>RESOLVED</code>, e <code>CLOSED</code>.</li>
+<li><strong>Escalonamento:</strong> Um ticket pode evoluir (ser escalonado) para um Problema, uma Mudança ou até um Projeto.</li>
+</ul>
+<h3>2.2 Gestão de Incidentes</h3>
+<p>Lida com interrupções indesejadas dos serviços de TI, visando restabelecer a operação rapidamente.</p>
+<ul>
+<li><strong>Gestão Completa (CRUD) de Incidentes:</strong> Criação, edição, visualização e deleção.</li>
+<li><strong>Atribuição (Assign):</strong> Repassar o incidente para responsáveis específicos.</li>
+<li><strong>Resolução e Fechamento:</strong> Registrar solução (<code>solution</code>) e a causa raiz (<code>rootCause</code>).</li>
+<li><strong>Escalonamento de Incidentes:</strong> Rotação de níveis ou justificativas de escalonamento.</li>
+<li><strong>Comentários e Anexos:</strong> Registro histórico, upload de arquivos (<code>uploadAttachment</code>) e histórico (audit/log) do incidente.</li>
+<li><strong>Categorização de Incidentes:</strong> Criação e gestão das categorias específicas para incidentes.</li>
+<li><strong>KPIs (Indicadores):</strong> Coleta de métricas e status e SLA (breached ou não).</li>
+</ul>
+<h3>2.3 Gestão de Problemas</h3>
+<p>Usada para investigar as causas raízes de um ou mais incidentes recorrentes.</p>
+<ul>
+<li><strong>Gestão Completa (CRUD) de Problemas:</strong> Título, descrição, e prioridade (default <code>HIGH</code>).</li>
+<li><strong>Análise Final:</strong> Atualização de status em paralelo a registro de <code>rootCause</code> (causa raiz) e <code>workaround</code> (contorno).</li>
+<li><strong>Vínculo com Tickets:</strong> Vinculação de um Problema a incidentes/tickets específicos (<code>linkIncident</code>).</li>
+</ul>
+<h3>2.4 Catálogo de Serviços</h3>
+<p>Define o portfólio do que a TI entrega para a empresa.</p>
+<ul>
+<li><strong>Gestão de Categorias:</strong> Organização hierárquica ou linear dos tipos de serviço.</li>
+<li><strong>Gestão de Serviços:</strong> Cadastro e configuração de itens do catálogo disponíveis para o usuário final solicitar via ticket.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Portal do Usuário (Requisitante) - <code>PortalPage.jsx</code></h3>
+<ol>
+<li><strong>Acessando o Portal:</strong> O usuário loga no sistema e cai em seu portal principal.</li>
+<li><strong>Navegando no Catálogo:</strong> O usuário pode pesquisar ou clicar nas categorias do Catálogo de Serviços.</li>
+<li><strong>Abertura de Chamado:</strong> Ao selecionar um serviço, o portal exibe um formulário de abertura pedindo Título, Descrição, Prioridade, Respostas Customizadas (se houver) e possivelmente relacionando um Equipamento (Ativo).</li>
+<li><strong>Detalhes do Ticket (<code>TicketDetails.jsx</code>):</strong> Para acompanhar chamados abertos, o usuário clica sobre o chamado, lê e envia mensagens à TI, ou envia anexos.</li>
+</ol>
+<h3>3.2 Painel do Agente - <code>ServiceDeskDashboard.jsx</code> e <code>IncidentsPage.jsx</code></h3>
+<ol>
+<li><strong>Página de Atendimento Inicial:</strong> O Agente visualiza um dashboard ou a fila principal de Tickets/Incidentes.</li>
+<li><strong>Triagem:</strong> O agente avalia os chamados recém-chegados, os categoriza e os <strong>Atribui</strong> a si mesmo ou outro colaborador.</li>
+<li><strong>Ações no Ticket / Incidente:</strong> <ul>
+<li>Ao abrir um chamado, pode enviar uma nota interna visível só para outros agentes.</li>
+<li>Pode alterar o status para <code>IN_PROGRESS</code>.</li>
+<li>Pode vincular relatórios, analisar KPIs.</li>
+</ul>
+</li>
+<li><strong>Escalonamento:</strong><ul>
+<li>Se um chamado se revelar muito complexo ou repetitivo, o Agente usa o botão de &quot;Criar Problema&quot; originado deste chamado.</li>
+<li>Se precisar alterar infraestrutura, pode &quot;Criar Mudança&quot;.</li>
+</ul>
+</li>
+<li><strong>Encerramento:</strong> Ao descobrir a solução ou aplicar o workaround, o agente informa a resposta, mudando o status para <code>RESOLVED</code> ou <code>CLOSED</code>.</li>
+</ol>
+<h3>3.3 Administração do Catálogo - <code>CatalogAdmin.jsx</code></h3>
+<ol>
+<li><strong>Acesso:</strong> Somente perfis de gestor/admin de TI acessam.</li>
+<li><strong>Configuração:</strong> O gestor cria categorias de serviço (ex: &quot;Sistemas&quot;, &quot;Rede&quot;, &quot;Hardware&quot;).</li>
+<li><strong>Inclusão de Serviços:</strong> Dentro de hardware, cadastra itens como &quot;Solicitação de Teclado&quot; ou &quot;Manutenção de Notebook&quot;. Isso moldará o menu do <code>PortalPage</code> para o usuário comum.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>ticket.controller.js</code></li>
+<li><code>incident.controller.js</code></li>
+<li><code>problem.controller.js</code></li>
+<li><code>service-catalog.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Rotas:</strong> A verificação se o usuário logado é <code>ADMIN</code>, <code>AGENT</code> ou <code>REQUESTER</code> determina o comportamento passivo ou ativo dos endpoints, particularmente no índice de tickets e em quem pode postar notas internas (<code>isInternal</code>). O uso de <code>multer</code> ou similar suporta anexos (<code>req.file</code>).</li>
+<li><strong>Validação:</strong> Usa <code>yup</code> massivamente para garantir consistência de payload na criação e atualização de todos esses registros.</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-2" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Ativos e Configuração (CMDB)</h1>
+<h2>1. Visão Geral</h2>
+<p>O módulo de Gestão de Ativos ou CMDB (Configuration Management Database) é responsável pelo registro, controle e ciclo de vida de todo o inventário tecnológico da empresa (hardwares e softwares). Ele proporciona visibilidade sobre quem está usando o quê, quanto custou e quando precisará ser trocado ou manutenido.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<p>O módulo está dividido em quatro pilares fundamentais:</p>
+<h3>2.1 Gestão de Ativos (Equipamentos)</h3>
+<p>Controla o hardware físico e instâncias principais.</p>
+<ul>
+<li><strong>Cadastro Detalhado:</strong> Registro de código/patrimônio, nome, categoria, fornecedor, centro de custo, número de série, localização (location) e pra quem está atribuído (<code>assignedTo</code>).</li>
+<li><strong>Aspectos Financeiros:</strong> Grava valores de aquisição (<code>acquisitionValue</code>), data de aquisição, contratos relacionados, aluguéis (<code>rentValue</code>) e armazena comprovantes fiscais (<code>invoiceUrl</code>).</li>
+<li><strong>Controle de Status:</strong> Um ativo pode estar <code>PROPRIO</code>, <code>LOCADO</code>, em <code>MANUTENCAO</code> ou <code>DESATIVADO</code>.</li>
+</ul>
+<h3>2.2 Gestão de Categorias (Asset Categories)</h3>
+<p>Estrutura organizacional dos ativos.</p>
+<ul>
+<li><strong>Tipagem:</strong> Distinção entre HARDWARE e SOFTWARE.</li>
+<li><strong>Depreciação:</strong> Define os anos esperados de vida útil e taxa de depreciação de uma categoria inteira (<code>depreciationYears</code>).</li>
+</ul>
+<h3>2.3 Gestão de Licenças de Software</h3>
+<p>Gerencia os softwares adquiridos ou assinados pela organização.</p>
+<ul>
+<li><strong>Cadastro de Licenças:</strong> Registra nome do software, fabricante (ex: Microsoft, Adobe), e a chave (<code>licenseKey</code>).</li>
+<li><strong>Tipos de Licença:</strong> Suporta modelos <code>PERPETUA</code>, <code>ASSINATURA</code>, <code>OEM</code> e <code>VOLUME</code>.</li>
+<li><strong>Acompanhamento de Vencimentos:</strong> Guarda a data de compra e a data de expiração (<code>expirationDate</code>), bem como custo envolvido e quantidade adquirida.</li>
+</ul>
+<h3>2.4 Gestão de Manutenção</h3>
+<p>Registra o histórico de intervenções feitas nos hardwares.</p>
+<ul>
+<li><strong>Registro de Eventos:</strong> Tipo, descrição, datas (início), custos e prestador de serviço (<code>vendor</code>).</li>
+<li><strong>Anexos:</strong> Armazenamento de notas ou orçamentos de manutenção (<code>invoiceUrl</code>).</li>
+<li><strong>Status da Manutenção:</strong> Acompanhamento se está <code>AGENDADO</code> ou finalizado.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Portal Administrativo de Ativos - <code>AssetsPage.jsx</code></h3>
+<ol>
+<li><strong>Acessando Ativos:</strong> O administrador ou analista acessa o menu de Ativos/CMDB no frontend. A tela exibirá a lista principal de equipamentos.</li>
+<li><strong>Criando Categoria:</strong> Antes de cadastrar equipamentos, clique nas configurações do CMDB para criar categorias como &quot;Notebooks&quot;, &quot;Monitores&quot; e definir sua vida útil em anos (opcional).</li>
+<li><strong>Adicionando um Novo Ativo:</strong> <ul>
+<li>Clique em &quot;Novo Ativo&quot;.</li>
+<li>Preencha o Patrimônio, número de série e escolha se é &quot;Próprio&quot; ou &quot;Locado&quot;.</li>
+<li>Se possuir a nota fiscal em mãos, insira os valores de aquisição e aponte os anexos.</li>
+<li>Designe a um colaborador preenchendo o campo de atribuição (<code>assignedTo</code>), que ajudará no tracking de inventário.</li>
+</ul>
+</li>
+<li><strong>Agendando uma Manutenção:</strong><ul>
+<li>Na listagem de ativos, clique no ativo que apresentou problema.</li>
+<li>Navegue até a aba/sessão &quot;Manutenções&quot; e clique em adicionar.</li>
+<li>Preencha os dados da assistência técnica, data e estimativa de custo. Isso mudará/pode mudar o uso daquele ativo temporariamente.</li>
+</ul>
+</li>
+<li><strong>Cadastrando Softwares:</strong><ul>
+<li>Troque para a aba/visor de &quot;Licenças de Software&quot;.</li>
+<li>Insira o lote comprado (ex: 20 licenças Office 365) definindo a expiração para não perder o prazo de renovação e manter a conformidade (compliance).</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>asset.controller.js</code></li>
+<li><code>asset-category.controller.js</code></li>
+<li><code>asset-maintenance.controller.js</code></li>
+<li><code>software-license.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Isolamento de Dados:</strong> As manutenções e licenças possuem validação rigorosa de <em>Tenant</em> (<code>tenantId</code> no Backend), garantindo que um cliente B2B da plataforma não enxergue o parque de máquinas de outro cliente.</li>
+<li><strong>Cascatismo:</strong> A manutenção está hierarquicamente atrelada a um Ativo ID (rota <code>/assets/:id/maintenances</code>). Um equipamento deletado (caso permitido pela regra de negócios) invalidaria atrelamentos.</li>
+<li><strong>Relacionamentos (Links):</strong> Recomenda-se atrelar Incidentes de ITSM ao CMDB preenchendo o <code>relatedAssetId</code> lá no ticket, fechando o escopo operacional.</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-3" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Mudanças e Aprovações</h1>
+<h2>1. Visão Geral</h2>
+<p>O Módulo de Gestão de Mudanças (GMUD) visa garantir que qualquer alteração no ambiente de TI seja feita de forma controlada, minimizando riscos e paradas não planejadas (downtimes). O componente de <strong>Aprovações</strong> é transversal a todo o sistema ITBM, atuando como a central unificada onde os gestores aprovam não apenas as mudanças, mas também despesas, fechamentos de projetos, atas, etc.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Gestão de Mudanças (Change Requests - GMUD)</h3>
+<p>Permite documentar, planejar e executar alterações na infraestrutura ou software.</p>
+<ul>
+<li><strong>Criação e Classificação:</strong> O responsável cadastra uma GMUD definindo Título, Justificativa, Tipo (<code>NORMAL</code>, <code>PADRAO</code>, <code>EMERGENCIAL</code>), Nível de Risco e Impacto.</li>
+<li><strong>Planejamento de Risco e Rollback:</strong> Durante a criação, exige-se o plano de retorno (<code>backoutPlan</code>) e as datas agendadas para a mudança.</li>
+<li><strong>Prevenção de Conflitos de Agenda:</strong> Rotinas de Governança (<code>checkConflicts</code>) verificam automaticamente se a nova GMUD bate em uma data onde já existam outras GMUDs críticas agendadas ou se esbarra em uma janela de congelamento.</li>
+<li><strong>Calendário Mestre (<code>getForwardSchedule</code>):</strong> O FSC (Forward Schedule of Changes) permite aos analistas visualizarem em um calendário os próximos 30 dias de GMUDs.</li>
+<li><strong>Métricas e PIR (Post Implementation Review):</strong> Coleta da taxa de sucesso e relatórios pós-implementação de todas as GMUDs.</li>
+<li><strong>Templates de GMUD:</strong> Agiliza a rotina preenchendo automaticamente o formulário para as chamadas Mudanças Padrão (rotineiras e de baixo risco).</li>
+</ul>
+<h3>2.2 Janelas de Congelamento (Freeze Windows)</h3>
+<p>Garante a estabilidade do sistema em períodos críticos da empresa.</p>
+<ul>
+<li><strong>Definição de Períodos Restritos:</strong> Permite aos administradores criar janelas de tempo em que as mudanças (que não sejam emergenciais) são bloqueadas para evitar indisponibilidades durante, por exemplo, o fechamento contábil.</li>
+</ul>
+<h3>2.3 Central de Aprovações Genérica</h3>
+<p>Uma ferramenta unificada para os tomadores de decisão atuarem.</p>
+<ul>
+<li><strong>Painel de Pendências (<code>getCounts</code> / <code>getPending</code>):</strong> Consolida para o usuário (Gestores, Diretores ou CAB) o que ele tem a aprovar, segregando as contagens por: <code>expenses</code> (despesas), <code>projectCosts</code>, <code>minutes</code> (atas de reunião), <code>proposals</code> (propostas de projetos) e claro, as opções nativas como projetos em aprovação comercial ou o comitê CAB de <code>gmuds</code>.</li>
+<li><strong>Análise e Decisão:</strong> O painel extrai o <code>getDetail</code> da entidade relacionada e dá os controles de <code>approve</code> ou <code>reject</code>.</li>
+<li><strong>Trilha de Auditoria:</strong> Quase todas as tomadas de decisão são registradas num audit log com data e responsável.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Painel de Solicitação de GMUD - <code>ChangeRequestsPage.jsx</code></h3>
+<ol>
+<li><strong>Nova Solicitação:</strong> Clique em &quot;Nova Mudança&quot;. Alternativamente, selecione &quot;Usar Template&quot; para carregar informações pré-aprovadas.</li>
+<li><strong>Preenchimento:</strong> Detalhe exaustivamente o que vai ser feito, justifique a mudança e informe qual será o plano de reversão caso tudo dê errado.</li>
+<li><strong>Checagem de Agendas:</strong> Determine as datas e clique em &quot;Validar Agenda&quot;. O sistema alertará se esbarrar num Freeze Window ou dia de alta concorrência.</li>
+<li><strong>Alvos da GMUD (CMDB e Projetos):</strong> Selecione os hardwares (Ativos) e o Projeto correspondente que serão impactados pela alteração.</li>
+<li><strong>Comitê:</strong> Ao salvar, se o tipo for &quot;NORMAL&quot;, o fluxo entrará em &quot;Pendente Governança / Aprovação&quot;.</li>
+</ol>
+<h3>3.2 Minhas Aprovações - <code>MyApprovalsPage.jsx</code></h3>
+<ol>
+<li><strong>Revisão Diária do Gestor:</strong> O colaborador responsável entra e clica em <strong>&quot;Aprovações&quot;</strong>.</li>
+<li><strong>Visualizar Itens Pendentes:</strong> Ele verá abas/cards agrupando os itens (Projetos, Custos, Mudanças que ele faz parte do comitê - CAB).</li>
+<li><strong>Analisando a GMUD:</strong> Ao selecionar uma GMUD, o sistema trará os detalhes desenhados no CMDB de risco e impacto. O aprovador pode inserir seus comentários e clicar em &quot;Aprovar&quot; ou solicitar ajustes (devolvendo ao criador).</li>
+<li><strong>Outras Aprovações:</strong> Se o Gestor for Diretor Financeiro, verá os centros de custos subordinados a ele, podendo aprovar despesas na mesma tela de fluxo ágil.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>change-request.controller.js</code> e <code>change-template.controller.js</code></li>
+<li><code>freeze-window.controller.js</code></li>
+<li><code>approval.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Flexibilidade da Central de Aprovação (<code>ApprovalController</code>):</strong> Este controlador funciona como um Adapter/Facade. Ele intercepta as requisições (<code>/api/approvals/pending/:type</code>), e através de um formato dinâmico (com base no tipo passado no parâmetro, ex: <code>projectCost</code>, <code>expense</code>, <code>minute</code>), ele mapeia para a tabela certa (como a tabela <code>Expense</code>, <code>MeetingMinute</code>, <code>ChangeRequest</code>) processando a ação e enviando de volta aos serviços que alteram o status nas devidas tabelas primárias.</li>
+<li><strong>Relacionamento GMUD-Ativos:</strong> Array <code>assetIds</code> que estabelece o impacto direto ao parque tecnológico avaliado no capítulo de CMDB.</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-4" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Projetos e Tarefas (PPM)</h1>
+<h2>1. Visão Geral</h2>
+<p>O módulo de Project Portfolio Management (PPM) engloba a concepção, o acompanhamento e o controle financeiro dos Projetos de TI da organização. Ele vai muito além do simples Kanban, abarcando desde a aprovação orçamentária de um projeto até a execução no nível mais detalhado (horas trabalhadas, tarefas e atas de reunião).</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Gestão do Portfólio (Projetos)</h3>
+<p>Controla o macrociclo de execução.</p>
+<ul>
+<li><strong>Ciclo de Aprovação Comercial:</strong> Projetos podem nascer em status como &quot;Rascunho&quot; e serem enviados para aprovação corporativa (<code>submitForApproval</code>, <code>approveProject</code>, <code>rejectProject</code>).</li>
+<li><strong>Gestão de Membros:</strong> Inclusão, edição e remoção de colaboradores alocados ao projeto, com definição de seus respectivos papéis.</li>
+<li><strong>Painéis Financeiros (Custos e Propostas):</strong> Integrado nativamente à Gestão Financeira. Projetos guardam relatórios de custos (<code>ProjectCost</code>) e centralizam a concorrência de propostas de fornecedores (<code>ProjectProposal</code>), podendo gerar custos a partir de propostas vencedoras.</li>
+<li><strong>Atas de Reunião (Minutes) e Riscos:</strong> O projeto unifica o histórico de acompanhamento com logs de atas que podem exigir aprovações (<code>submitMinute</code>, <code>approveMinute</code>), além de catalogar riscos operacionais específicos daquele projeto.</li>
+</ul>
+<h3>2.2 Gestão de Tarefas (Task Management)</h3>
+<p>É a execução micro do cronograma do projeto.</p>
+<ul>
+<li><strong>Criação e Atualização de Tarefas (<code>ProjectTask</code>):</strong> Permite fatiar um projeto em <em>n</em> atividades com responsáveis diretos.</li>
+<li><strong>Kanban / Listas:</strong> Organização visual para que a equipe saiba exatamente o que fazer hoje e o que está atrasado.</li>
+</ul>
+<h3>2.3 Timesheets / Apontamento de Horas (Task Time)</h3>
+<p>Ferramenta para medir a eficiência e alocação de tempo por usuário.</p>
+<ul>
+<li><strong>Timer de Tarefas:</strong> Cada colaborador responsável pode dar <code>start</code> em um cronômetro ao começar a executar e <code>stop</code> ao terminar, acumulando duração gasta no ticket.</li>
+<li><strong>Bloqueio de Sessões Simultâneas:</strong> O sistema não permite que o usuário assinale trabalho realativo em duas tarefas projetificadas simultaneamente.</li>
+<li><strong>Relatórios de Horas:</strong> O gestor pode emitir relatórios ou exportar relatórios em <code>.csv</code> ou <code>.xlsx</code> de horas trabalhadas segmentado por usuário ou projeto.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Portfólio de Projetos - <code>ProjectsListPage.jsx</code> / <code>PortfolioDashboard.jsx</code></h3>
+<ol>
+<li><strong>Visualização Macro:</strong> O Gestor de PMO vê o <em>Portfolio Dashboard</em>, onde há resumos por status, orçamentos previstos vs. realizados, e healthscore do portfólio.</li>
+<li><strong>Criação de um Projeto:</strong><ul>
+<li>Em <em>Projetos</em>, clicar em &quot;Novo&quot;.</li>
+<li>Definir Nome, Descrição e atrelar ao Centro de Custos.</li>
+<li>Definir Orçamento preliminar. Na criação, o projeto normalmente nasce em Rascunho, necessitando clicar em &quot;Enviar para Aprovação&quot;.</li>
+</ul>
+</li>
+<li><strong>Gerenciamento do Projeto - <code>ProjectDetailsPage.jsx</code>:</strong><ul>
+<li>Após aprovado (via módulo central de Aprovações), clique no projeto para detalhá-lo.</li>
+<li>A página exibe abas para Membros, Tarefas, Propostas Comerciais, Custos/Realizado, Riscos e Atas de Reunião.</li>
+<li>O gerente adiciona os Desenvolvedores e Analistas na aba &quot;Membros&quot;.</li>
+</ul>
+</li>
+</ol>
+<h3>3.2 Tarefas Diárias e Timesheet - <code>Tasks</code></h3>
+<ol>
+<li><strong>Criando Atividades:</strong> Na aba ou página de tarefas do projeto, o gerente estipula a atividade e atrela um responsável (<code>assignee</code>).</li>
+<li><strong>Execução pelo Colaborador:</strong><ul>
+<li>O membro loga na plataforma. Seu foco primário normalmente será o portal de tarefas.</li>
+<li>Ao puxar uma tarefa para fazer, clica em &quot;Iniciar Timer&quot; (<code>start</code>). O relógio fica em execução.</li>
+<li>Ao suspender atividade para o almoço ou conclusão, clica em Parar (<code>stop</code>) opcionalmente adicionando notas descritivas.</li>
+</ul>
+</li>
+<li><strong>Relatórios da Supervisão - <code>TeamProjectsStatusReport.jsx</code>:</strong> Os gestores de TI avaliam a volumetria exportando os relatórios em MS Excel para cruzar custo/hora do projeto contra a verba alocada inicialmente.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Arquitetura Facade:</strong> A rota primária <code>/projects/:id/...</code> no Backend consome um controlador massivo reescrito como fachada (<code>project-details.controller.js</code>), que por sua vez direciona a controladores específicos (<code>project-cost.controller</code>, <code>project-minute.controller</code>, etc) com base na área detalhada. Isso ajuda a manter O Código <em>Clean</em> sem quebrar retrocompatibilidade de frontend.</li>
+<li><strong>Task Time Log:</strong> O cálculo de tempo (<code>duration</code>) se dá por <code>Data Fim - Data Inicio</code>. Como há validação robusta que busca a presença nula de <code>endedAt</code> (indicando um cronômetro rodando), evita-se injeção de horas duplicadas (<code>activeSession</code>).</li>
+<li><strong>Exportação:</strong> Rotinas dinâmicas montam cabeçalhos tabulares para gerar downloads binários diretos (mimetype <code>vnd.ms-excel</code> ou CSV BOM).</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-5" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão Financeira (ITBM Finance)</h1>
+<h2>1. Visão Geral</h2>
+<p>O módulo Gestão Financeira transforma a área de TI de um &quot;centro de dor ou custo&quot; numa área estratégica com visibilidade total do orçamento. Ele gerencia onde e como a verba de TI está sendo gasta, validando despesas recorrentes e projetos novos sob o guarda-chuva de Orçamentos Base Zero (OBZ) e previsões anuais, integrando forte governança junto à Gestão de Centros de Custo.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Anos Fiscais e Centros de Custo</h3>
+<p>A estrutura de base financeira para agrupar despesas.</p>
+<ul>
+<li><strong>Anos Fiscais (<code>FiscalYear</code>):</strong> Define a régua temporal do orçamento anual (Ex: Ano Fiscal 2024 de Jan a Dez).</li>
+<li><strong>Centros de Custo (<code>CostCenter</code>):</strong> Mapeamento hierárquico das áreas/departamentos. Contam com um gestor responsável (<code>managerId</code>), que será crucial nos fluxos de aprovação de despesas.</li>
+</ul>
+<h3>2.2 Planejamento Orçamentário (Budgets)</h3>
+<p>Planeja o Capex (Investimento) e Opex (Despesa Operacional).</p>
+<ul>
+<li><strong>Orçamentos:</strong> Um orçamento (OBZ, Tradicional ou Misto) é criado para um Ano Fiscal. Contém itens orçamentários mes a mes (Jan..Dec).</li>
+<li><strong>Aprovação de Orçamento:</strong> O planejamento orçamentário nasce livre e depois precisa ser Aprovado (<code>approve</code>), servindo depois como base inalienável para aceitar ou rejeitar despesas.</li>
+<li><strong>Integração Massiva (<code>importItems</code>):</strong> Capacidade de fazer upload/importação de planilhas de orçamentos (CSV/Excel) diretamente para os itens do mês a mês.</li>
+<li><strong>Cenários do Orçamento (<code>BudgetScenarios</code>):</strong> Funcionalidade avançada para projetar situações macroeconômicas. O gestor pode testar simulações de cortes bruscos (&quot;Cenário Restritivo de 15%&quot;) via um fator multiplicador, ou personalizando itens. </li>
+<li><strong>Análise de Impacto e Comparação:</strong> Analise comparativa &quot;lado a lado&quot; (<code>BudgetComparisonPage</code>) entre duas visões de cenários antes de decidir qual Orçamento aprovar (<code>selectScenario</code>).</li>
+<li><strong>Insights:</strong> Geração de análises e resumos baseados nos resultados e prospecções financeiras inseridas.</li>
+</ul>
+<h3>2.3 Gestão de Despesas (Expenses)</h3>
+<p>Registro do realizado e previsto a pagar, consumindo recursos dos orçamentos mensais/anuais.</p>
+<ul>
+<li><strong>Trava Regulatória:</strong> É impeditivo inserir uma despesa sem que exista um ano fiscal correspondente com um orçamento aprovado (<code>APPROVED</code>).</li>
+<li><strong>Detalhamento da Despesa:</strong> Cadastra-se o tipo (OPEX, CAPEX, EQUIPAMENTO, SERVICO, etc), o valor base, centro de custo atrelado, Fornecedor e Contrato. Aceita upload de comprovantes ou NFs (<code>fileUrl</code>).</li>
+<li><strong>Status Rigoroso para Pagamentos:</strong> Uma despesa marcada como <code>PAGO</code> (ou <code>REALIZADO</code>) obriga legalmente a presença de data de vencimento e número de Nota Fiscal/Fatura (<code>invoiceNumber</code>).</li>
+<li><strong>Fluxo de Aprovação:</strong> O membro cadastra a despesa como <code>PREVISTO</code> e clica em enviar para aprovação. O Gestor (Manager) logado ao Centro de Custo em questão recebe notificação e julga a despesa viável ou não pelo menu <em>&quot;Minhas Aprovações&quot;</em>.</li>
+</ul>
+<h3>2.4 DRE e Dashboards</h3>
+<ul>
+<li>Resumos completos do financeiro, mostrando um Demonstrativo de Resultados consolidado (DREPage) ou Painéis Gerenciais (<code>FinanceDashboard</code>) onde previstos e realizados (Budget vs Actuals) se encontram mês a mês.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Construindo a Base Orçamentária</h3>
+<ol>
+<li><strong>Configuração Inicial:</strong> O administrador deve primeiro acessar as engrenagens de &quot;Configurações Globais&quot; ou &quot;Financeiro -&gt; Cadastros&quot; e garantir a existência do &quot;Ano Fiscal&quot; vigente e os &quot;Centros de Custo&quot;.</li>
+<li><strong>Elaborando o Budget - <code>FinancePage.jsx</code>:</strong><ul>
+<li>Crie um &quot;Novo Orçamento&quot;, escolhendo a metodologia (OBZ = Justificativa Base Zero a cada linha).</li>
+<li>Entre no orçamento recém-criado (<code>BudgetDetailsPage</code>). Importe o CSV da diretoria ou lance linha a linha selecionando a Conta Contábil e o gasto mês a mês.</li>
+</ul>
+</li>
+<li><strong>Gerando Cenários e Aprovando:</strong><ul>
+<li>Com medo de cortes na corporação, crie um cenário alternativo de &quot;-10% usando multiplicador&quot;. </li>
+<li>Se o cenário se validar, incorpore as reduções e promova a Aprovação do Orçamento via submissão corporativa.</li>
+</ul>
+</li>
+</ol>
+<h3>3.2 Lançamento Contínuo de Despesas</h3>
+<ol>
+<li><strong>Nova Despesa - <code>ExpensesPage.jsx</code>:</strong> Um líder de setor assina um novo serviço pontual de nuvem.</li>
+<li><strong>Cadastro:</strong> Ele clica em lançar despesa em &quot;Janeiro&quot;, informa R$ 500, aloca ao Centro de Custo &quot;Infraestrutura&quot; como OPEX, e informa &quot;Aguardando Aprovação&quot;.</li>
+<li><strong>Decisão do Custodiante:</strong> O gerente do CC &quot;Infraestrutura&quot; analisa na &quot;Central de Aprovações&quot; e autoriza o gasto preventivo.</li>
+<li><strong>Fechamento e Pagamento:</strong> Ao fim do mês, ao receber a NF deste serviço, retorna-se na despesa, anexa-se o PDF da nota, insere-se os dados legais e evolui o card para <code>PAGO</code>.</li>
+<li><strong>Acompanhamento no DRE:</strong> Semanalmente ou mensalmente o CIO acessará o <code>DREPage</code> para averiguar o percentual consumido do orçamento desenhado em <code>3.1</code>.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>budget.controller.js</code> e <code>budget-scenario.controller.js</code></li>
+<li><code>expense.controller.js</code> e <code>cost-center.controller.js</code></li>
+<li><code>fiscal-year.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Validações Fortes e Segurança:</strong> O bloqueio para lançar <em>Expenses</em> sem aprovação em <code>budget.controller.js</code> impõe compliance arquitetural. Isso minimiza o risco do front-end injetar lixo numa tabela num ano que a empresa não planejou gastar (ou não gerou provisão).</li>
+<li><strong>Hierarquia de CC:</strong> A amarração ocorre no sentido: <code>User</code> -&gt; lança <code>Expense</code> atrelada a -&gt; <code>CostCenter</code> o qual possui -&gt; <code>managerId</code> -&gt; que então aprova a transação.</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-6" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Fornecedores e Contratos</h1>
+<h2>1. Visão Geral</h2>
+<p>O módulo garante que todos os parceiros de negócios (Fornecedores) e seus vínculos jurídicos/comerciais (Contratos) com a TI sejam fáceis de rastrear. Além de ser um simples cadastro, o módulo realiza o versionamento e controle financeiro de aditivos contratuais, refletindo diretamente no módulo de CMDB (quando compramos ativos) e Financeiro.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Gestão de Fornecedores (Suppliers)</h3>
+<p>O repositório unificado de parceiros B2B.</p>
+<ul>
+<li><strong>Cadastro Completo:</strong> CNPJ ou CPF ou Internacional, Razão Social, Nome Fantasia, Dados Bancários, Endereços, E-mails e Telefones.</li>
+<li><strong>Classificação de Risco:</strong> Fornecedores podem ser categorizados por relevância em <code>CRITICO</code>, <code>ESTRATEGICO</code>, <code>OPERACIONAL</code> ou <code>OUTROS</code>, ajudando na priorização de pagamentos.</li>
+</ul>
+<h3>2.2 Gestão de Contratos (Contracts)</h3>
+<p>Registra o compromisso assumido com um Fornecedor.</p>
+<ul>
+<li><strong>Cadastro Detalhado:</strong> Tipo de contrato, Vigência (Data Início e Fim), Valor Mensal ou Valor Total (<code>value</code>), e taxa de reajuste.</li>
+<li><strong>Avisos Prévios:</strong> Configuração de quantos dias de alerta (<code>alertDays</code>) o sistema precisará notificar antes do encerramento (renovação automática baseando-se em <code>autoRenew</code>).</li>
+<li><strong>Vinculações:</strong> Um contrato é sempre atrelado a um Fornecedor. Opcionalmente (mas recomendado), o usuário vincula qual a Conta Contábil (<code>accountId</code>) e o Centro de Custo provedor (<code>costCenterId</code>).</li>
+<li><strong>Anexos e Documentos Jurídicos:</strong> Na aba de detalhes, pode-se enviar os PDFs dos contratos assinados para evitar perda do histórico (<code>uploadAttachment</code>).</li>
+</ul>
+<h3>2.3 Gestão de Aditivos (Addendums)</h3>
+<p>Ferramenta para renegociação e mudanças no meio do contrato.</p>
+<ul>
+<li><strong>Criação de Aditivo:</strong> Semelhante a uma <em>time-travel</em>, o sistema sempre tira uma cópia fotográfica (snapshot) do valor original e da data fim original do contrato antes do primeiro aditivo (<code>originalValue</code>, <code>originalEndDate</code>).</li>
+<li><strong>Recálculo Automático (<code>_recalculateContract</code>):</strong> Ao inserir um aditivo mudando o valor, o sistema reprocessa toda a pilha e atesta o novo valor consolidado <code>value = originalValue + logDeAumentos</code>. Se deletado um aditivo, ele subtrai instantaneamente recuperando o cenário anterior.</li>
+<li><strong>Notificação:</strong> Causa a criação de um aviso (notificação UI) para o gestor do departamento para informá-lo que o contrato atrelado teve renovação/ajuste.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Cadastrando Fornecedores - <code>SuppliersPage.jsx</code></h3>
+<ol>
+<li>O Administrador acessa o menu lateral &quot;Fornecedores&quot;.</li>
+<li>Clica em &quot;Novo Fornecedor&quot; e preenche os dados. O CNPJ deve ser formatado corretamente.</li>
+<li>Se desejar, define a classificação &quot;Crítico&quot; se ele fornecer um ERP, por exemplo.</li>
+</ol>
+<h3>3.2 Lançando um Contrato Novo - <code>ContractsPage.jsx</code></h3>
+<ol>
+<li>O Administrador acessa a aba &quot;Contratos&quot;. Ele deve selecionar primeiro um Fornecedor previamente cadastrado.</li>
+<li>Clicando em &quot;Novo Contrato&quot;, insere as datas em que a TI passará a se sujeitar à prestadora, atrelando valores de custo.</li>
+<li>Se um Ativo (Módulo CMDB) está sendo alocado (Locação de Notebooks), ao criar o Ativo, o mesmo pode ser linkado ao Contrato, gerando rastreabilidade <em>bottom-up</em>.</li>
+</ol>
+<h3>3.3 Registrando Renovação / Aditivos - <code>ContractDetailsPage.jsx</code></h3>
+<ol>
+<li>Na lista de Contratos, clique naquele que completou 12 meses e passará por reajuste IPCA.</li>
+<li>Entre na seção &quot;Aditivos&quot; e preencha &quot;Nova Data Final&quot; (se renovou mais prazo) ou &quot;Adição de Valor&quot; (se reajustou valor mensal ou global).</li>
+<li>Envie o novo arquivo (PDF) assinado pelo representante comercial anexado ao Aditivo.</li>
+<li>O valor principal do contrato automaticamente exibirá o cômputo (Valor Original + Aditivo).</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>supplier.controller.js</code></li>
+<li><code>contract.controller.js</code></li>
+<li><code>contract-details.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Replay Arquitetural (<code>_recalculateContract</code>):</strong> No Aditivo, a função faz um replay histórico em ordem crescente de assinaturas de adendos somando os valores em loop for <code>contract.addendums</code>. Isso garante que anomalias não corrompam permanentemente a linha de base de preços pagos pela empresa.</li>
+<li><strong>Link com Notificações:</strong> Quando um contrato é adotivado, o serviço de notificação manda um aviso usando os identificadores lógicos do Gestor cujo Departamento é listado sobre o Centro de Custo da despesa/contrato em voga (caso preenchido).</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-7" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Gestão de Conhecimento e Riscos</h1>
+<h2>1. Visão Geral</h2>
+<p>Este módulo foca na inteligência coletiva e mitigação de ameaças à operação. De um lado, a <strong>Base de Conhecimento</strong> (KB) permite criar artigos, guias de troubleshooting e tutoriais acessíveis a Agentes e Requisitantes. Por outro lado, a <strong>Gestão de Riscos Corporativos</strong> mapeia fragilidades, probabilidades de incidentes (Heatmap) e quem seria atingido.</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Base de Conhecimento (Knowledge Base - KB)</h3>
+<p>Central de documentações e artigos da TI.</p>
+<ul>
+<li><strong>Estruturação por Categorias:</strong> Como um wiki, os artigos são indexados em categorias (<code>KnowledgeCategory</code>). Ex: Redes, Impressoras, ERP.</li>
+<li><strong>Redação e Editoração:</strong> Agentes e Administradores podem criar artigos escrevendo diretamente num editor e atrelando arquivos/imagens ou PDFs (<code>uploadAttachment</code>).</li>
+<li><strong>Engajamento e Status Dashboards (<code>getDashboardStats</code>):</strong> Métricas que mostram quais artigos são mais úteis, mais lidos e estatísticas em geral para que os criadores de conteúdo na TI saibam que áreas precisam de documentação de apoio.</li>
+<li><strong>Restrição de Acesso:</strong> Certos artigos são internos (apenas perfil <code>AGENT</code>), ideais para manuais de senhas e processos restritos, enquantos outros são públicos para &quot;Self-Service IT&quot;.</li>
+</ul>
+<h3>2.2 Gestão de Riscos Corporativos</h3>
+<p>Garante governança, compliance e visibilidade no mapa de perigos operacionais.</p>
+<ul>
+<li><strong>Matriz de Risco (Heatmap):</strong> Funcionalidade crucial (<code>getHeatmapMetrics</code>) que avalia todos os riscos baseando-se em sua Probabilidade x Impacto. Isso plota um quadrante visual de Prioridade Alta (Ex: Queimar um servidor central) vs Prioridade Baixa.</li>
+<li><strong>Cadastro do Risco (<code>CorporateRisk</code>):</strong> Mapeamento do risco por si só (ex: &quot;Falta de Nobreak no Data Center&quot;), seu status, mitigação planejada (o que fazer se ocorrer) e a qual departamento/CC este risco está exposto.</li>
+<li><strong>Isolamento B2B:</strong> Em ambientes multi-tenant, os riscos de uma filial não trombam com as tratativas de risco de outra caso o usuário filtre o acesso.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Portal do Usuário - <code>KnowledgeBasePage.jsx</code></h3>
+<ol>
+<li><strong>Self Service:</strong> O funcionário loga no portal da empresa buscando como configurar a VPN.</li>
+<li>Em vez de abrir um chamado cego, ele pode buscar os artigos na página &quot;Base de Conhecimento&quot;.</li>
+<li><strong>Agente (IT):</strong> Acessará o mesmo painel, com o privilégio de clicar em &quot;Criar Novo Artigo&quot;, podendo colocar labels internas exclusivas para sua equipe, definindo processos de SLA.</li>
+</ol>
+<h3>3.2 Painel de Riscos Corporativos - <code>RisksPage.jsx</code></h3>
+<ol>
+<li><strong>Mapeamento Preventivo (Reunião do Comitê de TI):</strong> O gestor acessa o painel &quot;Riscos&quot;.</li>
+<li>Ele cadastra um novo risco de &quot;Obsolescência da Telefonia PABX&quot;, marca a severidade (Custo Financeiro e Impacto Operacional) e insere o plano de mitigação (&quot;Substituir por nuvem até dezembro&quot;).</li>
+<li>O software compõe um mapa de calor. Quando esse gestor for pedir um aumento de investimento (Capex via Módulo Financeiro), ele usará este mapa impresso ou extraído para justificar à diretoria a alocação de verba.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>knowledge-base.controller.js</code> e <code>knowledge-category.controller.js</code></li>
+<li><code>corporate-risk.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Exclusão de Arquivos Físicos:</strong> O módulo KB limpa do servidor anexos antigos quando seus respectivos artigos são apagados via <code>fs.unlinkSync()</code>, não inflando o disco desnecessariamente.</li>
+<li><strong>Integração Front End e Escalonamento:</strong> Costuma-se atrelar links do KB no topo das descrições de Tickets ou Problemas, onde o agente resolve o incidente e já clica num botão &quot;Gerar Artigo de KB&quot; herdando as notas de resolução do incidente (uma ponte comum de ITSM).</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-8" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Administração e Configuração Global</h1>
+<h2>1. Visão Geral</h2>
+<p>Este é o módulo arquitetural de base de toda a plataforma de ITSM/ITBM. Ele não representa um processo de negócio da TI, mas governa quem pode acessar o sistema (SSO/LDAP), quais permissões possui (RBAC), assegura separação de dados entre blocos de empresas (Arquitetura Multi-Tenant) e dita o controle de nível de serviço (SLA).</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Autenticação e Autorização (Auth &amp; Users)</h3>
+<p>Controla a porta de entrada.</p>
+<ul>
+<li><strong>Integração Corporativa:</strong> O portal aceita Login por e-mail e senha padrão, Login via <code>LDAP/Active Directory</code> e Single Sign-On via <code>Azure AD</code>. As conexões são testáveis nas configurações globais (<code>integration.controller</code>).</li>
+<li><strong>Resolução de Usuário:</strong> Ao digitar um email, se esse email existir em mais de um <em>Tenant</em>, o sistema é inteligente para sugerir uma tela de seleção ofuscada para que o usuário direcione qual empresa quer acessar.</li>
+<li><strong>Perfis (Roles):</strong> Controlado via Role-Based Access Control (RBAC). Um usuário possui perfis (Ex: <code>Super Admin</code>, <code>Gestor</code>, <code>Requisitante</code>) que impactam diretamente nas rotas que a API libera para ele.</li>
+</ul>
+<h3>2.2 Arquitetura Multi-Tenant</h3>
+<p>Permite que o ITBM rode em modo SaaS B2B ou num modelo Holding/Filiais para grandes grupos empresariais.</p>
+<ul>
+<li><strong>Isolamento de Banco de Dados (<code>schema</code>):</strong> Cada Tenant roda em um schema dedicado do banco de dados relacional. Por mais que o painel de Super Admin veja todos os tenants (<code>TenantManager</code>), o usuário final logado no tenant Y jamais lerá incidentes do tenant X acidentalmente.</li>
+<li><strong>Limite de Planos:</strong> Evita abusos de licença checando no momento de cadastro de usuário (<code>user.controller</code>) se o plano atual do tenant permite novas contratações (<code>tenant.maxUsers</code>).</li>
+</ul>
+<h3>2.3 Políticas de SLA</h3>
+<p>A base matemática dos &quot;prazos&quot;.</p>
+<ul>
+<li>Permite que Administradores criem rótulos de prioridade (Ex: SLA Crítico: 1 hora, SLA Médio: 12 horas).</li>
+<li>Quando atrelado a Incidentes (Módulo 1) e Categorias, serve como cronômetro automático para alertar violações em painéis operacionais.</li>
+</ul>
+<h3>2.4 Logs de Auditoria (Audit Trail)</h3>
+<p>Ferramenta para <em>Compliance</em> focado na segurança.</p>
+<ul>
+<li>Qualquer requisição POST, PUT e DELETE deixa um rastro inalterável (<code>AuditLog</code>).</li>
+<li><strong>Filtro Hierárquico Inteligente:</strong> Um Diretor que visualiza o Log de Auditoria verá os rastros digitais que sua equipe disparou baseado na lotação dos Centros de Custo (<code>user.directedDepartments</code>), mas não os de outros departamentos. O <code>Super Admin</code> vê a auditoria total da empresa.</li>
+</ul>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Painéis Administrativos e de Configuração:</h3>
+<ol>
+<li><strong>Ativando SSO no Azure AD:</strong><ul>
+<li>Acesse o menu <code>Integrações</code>. Edite a conexão com Azure providenciando as Chaves (Client ID, Redirect URI e Tenant ID Microsoft) baseados no painel real da nuvem corporativa. </li>
+<li>Salve a configuração do banco. A partir deste ponto, o botão &quot;Login com Microsoft Azure&quot; na tela de login será habilitado e roteado corretamente.</li>
+</ul>
+</li>
+<li><strong>Definindo Novos Requisitos de SLA:</strong><ul>
+<li>Acesse <code>Configurações -&gt; Políticas SLA</code>. </li>
+<li>Crie um novo rótulo (Ticket VIP e defina tempo de 30 minutos de resposta). Retorne ao Catálogo de Serviços e vincule essa política ao serviço que exige a prioridade VIP.</li>
+</ul>
+</li>
+<li><strong>Auditando Ações:</strong> Acesse a tela de Logs de Auditoria. É possível cruzar relatórios e identificar &quot;Quem aprovou a GMUD-0291?&quot;, verificando data hora e usuário submetido pela tabela central.</li>
+</ol>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores Principais:</strong> <code>auth</code>, <code>tenant</code>, <code>user</code>, <code>audit-log</code>, <code>integration</code> e <code>sla-policy</code>.</li>
+<li><strong>Tenant Resolver Admin:</strong> Uma função &quot;facade&quot; na rota para garantir que quando um master administrator acesse os endpoints de controle total de <code>tenant.controller</code>, o Prisma client seja guiado ao esquema público do Postgres (catálogo primário do Node.js) em vez de ir ao esquema isolado de cliente.</li>
+<li><strong>LDAP Binding:</strong> Para que usuários legados não precisem duplicar perfis, o backend usa a biblioteca ldap client no <code>LdapService</code> que fará <em>binding</em> e, com base no sucesso, despacha JWT gerando um usuário local on-the-fly (<code>AuthService.generateToken</code>).</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-9" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo: Dashboards e Relatórios</h1>
+<h2>1. Visão Geral</h2>
+<p>Este módulo funciona como o principal agregador de valor para os executivos e gestores da área de TI. Em vez de operar dados brutos, ele os compila na forma de gráficos unificados, indicadores de performance (KPIs) e resumos financeiros. Ele herda inteligência diretamente de <em>ITSM</em>, <em>PPM</em> e <em>Finance</em> respeitando a segurança do RBAC (cada gestor vê os dados de seus liderados/centros de custo).</p>
+<h2>2. Componentes e Funcionalidades</h2>
+<h3>2.1 Dashboard do Portal (Página Inicial)</h3>
+<p>Painel unificado multi-funcional (dependendo do perfil logado).</p>
+<ul>
+<li><strong>Visão Super Admin (<code>getSuperAdminStats</code>):</strong> Destinado à cúpula da Holding. Mostra quantos Tenants estão ativos, total de usuários do plano e indicadores de consumo globais.</li>
+<li><strong>Visão Gestor/Analítico (<code>getManagerAnalytics</code>):</strong> Cruza 5 eixos matemáticos nos últimos 30 dias a 6 meses:<ol>
+<li>Tendência de Incidentes (Criados vs Fechados).</li>
+<li>Distribuição das Tarefas da equipe.</li>
+<li>Matriz global de Riscos corporativos.</li>
+<li>Curva de Despesas do centro de custo.</li>
+<li>Status do portfólio de projetos sob seu chapéu.</li>
+</ol>
+</li>
+<li><strong>Visão Colaborador (<code>getCollaboratorStats</code>):</strong> Indicadores simples dos &quot;Meus Chamados Abertos&quot;, &quot;Minhas Tarefas&quot;, com viés puramente operacional.</li>
+<li><strong>Feed de Atividades (<code>getActivityFeed</code>):</strong> Funciona com uma auditoria social. Mostra tudo que a equipe está fazendo em formato de rede cronológica (logou no sistema, resolveu ticket, estourou um SLA).</li>
+</ul>
+<h3>2.2 Dashboard Financeiro (DRE e Performance)</h3>
+<p>A lente voltada ao fluxo de caixa de tecnologia.</p>
+<ul>
+<li><strong>DRE (Demonstrativo do Resultado do Exercício):</strong> Um relatório em formato DRE para o Budget x Realizado agrupado por Contas Contábeis num ano específico.</li>
+<li><strong>Budget Overview &amp; Mês a Mês:</strong> O módulo desenha as curvas de previsto vs realizado (<code>MonthlyEvolution</code>), separando por Centro de Custo, Fornecedores ou agrupados em visões avançadas.</li>
+<li><strong>Insights Preditivos:</strong> O FinanceDashboard possui serviços autônomos (<code>getInsights</code>) que examinam e alertam preventivamente sobre estouro de budgets.</li>
+</ul>
+<hr>
+<h2>3. Como Usar (Passo a Passo)</h2>
+<h3>3.1 Consultando a visão Gerencial - <code>Dashboard.jsx</code></h3>
+<ol>
+<li>O Gestor acessa o &quot;Dashboard Principal&quot; ou a &quot;Página Inicial&quot; do Painel de Agentes (Painel Administrativo).</li>
+<li>O sistema imediatamente calcula o RBAC (buscando a quais Departamentos este gerente pertence). </li>
+<li>Os gráficos de linhas de tendências carregarão limitados aos usuários do centro de custo dele, formando um farol de calor visual perfeito para reuniões de <em>Daily</em> e <em>Status Report</em>.</li>
+</ol>
+<h3>3.2 Analisando o Fechamento de Mês Comercial - <code>DREPage.jsx</code> / <code>FinanceDashboard.jsx</code></h3>
+<ol>
+<li>O CIO, no penúltimo dia útil do mês, abre o Dashboard Financeiro.</li>
+<li>Seleciona o Centro de Custo da área &quot;Software and Services&quot;. </li>
+<li>Ele visualiza o quadro de barras onde a barra &quot;Realizado&quot; (notas faturadas via Módulo ITBM) já se projeta perigosa perante o Orçado Anual (Budget Aprovado).</li>
+<li>Do balanço consolidado, pode exportar a apresentação para as esferas financeiras da corporação.</li>
+</ol>
+<hr>
+<h2>4. Aspectos Técnicos Relacionados</h2>
+<ul>
+<li><strong>Controladores (Backend):</strong><ul>
+<li><code>dashboard.controller.js</code></li>
+<li><code>finance-dashboard.controller.js</code></li>
+</ul>
+</li>
+<li><strong>Filtro Avançado de Contexto (Scope):</strong> A inteligência mais complexa está na função utilitária <code>getUserAccessScope</code> que o controller invoca ates de rodar a Query. O sistema mapeia <code>accessibleCostCenterIds</code> e só soma faturas atreladas a esta listagem.</li>
+<li><strong>Mapeamento Circular (<code>dayMap</code> / <code>monthMap</code>):</strong> Arrays nativos do Node montam dias passados até o dia atual no formato ISO preenchendo zeros de valores ausentes, assegurando que o Frontend renderize perfeitamente o eixo X nas bibliotecas de Chart (como Recharts/Chart.js) mesmo quando não houve vendas/incidentes em um dia específico da última semana.</li>
+</ul>
+
+            </div>
+        </section>
+    
+        <section id="section-10" class="wiki-section ">
+            <div class="wiki-content content-card">
+                <h1>Módulo Central: Inter-relacionamento dos Módulos ITBM</h1>
+<p>A plataforma ITBM (IT Business Management) opera em um modelo centralizado onde a maioria dos ecossistemas compartilham informações bi-direcionais, rompendo os silos de dados de TI.</p>
+<p>Este documento explica como os 9 módulos conversam entre si, partindo do nível Operacional até a camada Dinheiro/Gestão.</p>
+<h2>1. O Triângulo de Ouro do Atendimento (ITSM + CMDB + Fornecedores)</h2>
+<p>A espinha dorsal rotineira da TI depende intimamente de três áreas se alavancando.</p>
+<ul>
+<li><strong>ITSM e CMDB:</strong> Quando o Helpdesk atende um chamado (Ticket ou Incidente), o requerente ou o agente pode vincular um Ativo Específico ao ticket. Se o chamado se torna um <code>Problem</code> (ITSM), a equipe rastreará o histórico de manutenção desse Ativo para detectar desgaste (CMDB).</li>
+<li><strong>CMDB e Fornecedores/Contratos:</strong> Ao comprar ou registrar uma nova Máquina ou Licença no CMDB, ela é conectada a um ID de <code>Supplier</code> e um <code>Contract</code> (Locação de Hardwares de Mês a Mês, por exemplo).</li>
+<li><strong>Contratos e Financeiro (ITBM Finance):</strong> Quando o contrato de aluguel dos notebooks (CMDB) vira o mês, ele consome via uma <code>Expense</code> o Orçamento (<code>Budget</code>) que o CIO defendeu para a diretoria.</li>
+</ul>
+<h2>2. O Hub de Aprovações (O Guardião de Todos os Módulos)</h2>
+<p>Diferente de sistemas legados que possuem botões dispersos &quot;Aprova/Rejeita&quot; para cada funcionalidade solta no banco, o ITBM possui uma Central Universal de Aprovações (<code>approval.controller.js</code>).
+Diversos módulos enviam fluxos assíncronos para ele:</p>
+<ul>
+<li><strong>Financeiro (Despesas):</strong> Se uma requisição passar do teto do Centro de Custo, o gerente será notificado aqui.</li>
+<li><strong>Projetos (PPM):</strong> A &quot;Proposal&quot; (Proposta de compra dentro de um projeto) aguarda a chancela do PMO. A &quot;Minute&quot; (Ata de reunião) submetida precisa ser dada como &quot;Lida e Aprovada&quot;. O próprio Projeto precisa ser aceito corporativamente em fase de Concepção.</li>
+<li><strong>Mudanças (GMUDs):</strong> A janela de risco exige que CAB (<em>Change Advisory Board</em>), ou seja, múltiplos aprovadores entrem no Painel Central e apliquem a sua assinatura de aprovação.</li>
+</ul>
+<h2>3. Gestão de Mudanças (GMUD) como Catalisador de Incidentes e Projetos</h2>
+<p>Mudanças pesadas nunca ocorrem num vácuo, elas afetam as duas pontas da operação:</p>
+<ul>
+<li><strong>ITSM -&gt; Mudança:</strong> Se um <em>Problem</em> não conseguiu ser corrigido via configuração manual, a equipe engatilha a criação de uma <strong>Mudança</strong> (Release de Novo Código ou Troca de Switch) a partir dele.</li>
+<li><strong>Mudanças -&gt; Riscos Corporativos:</strong> Se a GMUD for muito crítica e estiver atrelada a atualizar a versão do Banco de Dados do ERP, ela dialoga com o módulo de Gestão de Riscos, registrando probabilidades de Down-time.</li>
+<li><strong>Mudanças -&gt; CMDB (Assets):</strong> A Mudança geralmente afeta CIs (Configuration Items), exigindo relatar qual Asset foi impactado e qual o teste a ser feito.</li>
+</ul>
+<h2>4. Custos Compartilhados (PPM + ITBM Finance)</h2>
+<p>Tanto projetos pontuais (PPM) quanto manutenção orgânica (Finance) cruzam o mesmo trilho de dinheiro e horas.</p>
+<ul>
+<li><strong>Apontamento de Horas (Task Time):</strong> No PPM, se um desenvolvedor consumiu <em>120 horas</em> implementando um novo sistema, seu custo fixo-hora compõe um <code>Project Cost</code> indireto (OPEX/CAPEX a depender se foi Desenvolvimento ou Sustentação).</li>
+<li><strong>Impacto no Budget:</strong> Despesas pontuais submetidas num Projeto (Ex: Compra do domínio URL) nascem a partir do Projeto mas refletem legalmente consumindo a cota orçamentária pré-paga no painel do Diretor (<code>BudgetScenarios</code> x FinanceDashboard).</li>
+</ul>
+<h2>5. Arquitetura Transversal (Autenticação, RBAC e Multi-Tenant)</h2>
+<p>Toda solicitação em qualquer das camadas acima é envolta no <em>Middlewere</em> Global de Tenant e Roles.</p>
+<ul>
+<li><strong>Identidade e Visibilidade (Roles + Hierarchy):</strong> Quando o gerente acessa &quot;Dashboards&quot;, ele não enxerga todos os incidentes abertos, e sim apenas os dos departamentos sob sua gerência (<code>directedDepartments</code>). Além disso, as rotas de manipulação do Financeiro bloqueiam requisições de modificação (PUT/DELETE) feitas por perfis como <code>Requester</code> (Requisitantes).</li>
+<li><strong>Auditoria Restrita:</strong> Se houve vazamento ou aprovação indevida de compras, o Módulo Global de Auditoria unifica todos os disparos em uma tabela central que o C-Level pode interrogar no módulo de <code>Global Configuration</code>.</li>
+</ul>
+<h2>Conclusão de Arquitetura</h2>
+<p>O sistema ITBM foi codificado de modo maduro. Suas tabelas no SQL Prisma estão conectadas rigidamente, impedindo criação de filhos sem pai. Essa centralização evita redundância permitindo que gestores emitam o <code>Corporate DRE</code> confiando que não foram cadastrados computadores (CMDB) ou licenças que deixaram de ser cobrados nos meses consecutivos (Contratos -&gt; Despesas).</p>
+
+            </div>
+        </section>
+    
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.wiki-section');
+            const mainContent = document.getElementById('main-content');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    link.classList.add('active');
+                    
+                    const targetId = link.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // Trigger reflow for animation restart
+                    targetSection.style.animation = 'none';
+                    targetSection.offsetHeight;
+                    targetSection.style.animation = null;
+                    
+                    targetSection.classList.add('active');
+                    mainContent.scrollTop = 0;
+                });
+            });
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+
+            const savedTheme = localStorage.getItem('itbm-wiki-theme') || 'dark';
+            htmlElement.setAttribute('data-theme', savedTheme);
+            updateIcons(savedTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('itbm-wiki-theme', newTheme);
+                updateIcons(newTheme);
+            });
+
+            function updateIcons(theme) {
+                if (theme === 'dark') {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                } else {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

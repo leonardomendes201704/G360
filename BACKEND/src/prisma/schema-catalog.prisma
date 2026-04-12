@@ -1,0 +1,27 @@
+// Schema Prisma para o Catálogo de Tenants (schema "public")
+// Este schema é separado do schema principal e gerencia apenas
+// os metadados dos tenants (empresas) registradas no sistema.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/catalog-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id         String   @id @default(uuid())
+  name       String                        // "Empresa Alpha Ltda"
+  slug       String   @unique              // "empresa-alpha"
+  schemaName String   @unique @map("schema_name") // "tenant_empresa_alpha"
+  isActive   Boolean  @default(true) @map("is_active")
+  plan       String   @default("STANDARD") // STANDARD, PREMIUM, ENTERPRISE
+  maxUsers   Int      @default(50) @map("max_users")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("tenants")
+}
