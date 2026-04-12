@@ -9,7 +9,7 @@
 |--------|-------------------------------------------|--------|------------|--------|-----------|------------|
 | EP-001 | Correcoes Criticas Funcionais             | Fase 1 | Alta       | Closed | 4         | -          |
 | EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | Closed | 5         | EP-001     |
-| EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | New    | 4         | EP-002     |
+| EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | Closed | 4         | EP-002     |
 | EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | New    | 4         | EP-002, EP-003 |
 
 ## Historias por Epico
@@ -37,10 +37,10 @@
 
 | ID     | Titulo                                                   | Pontos | Prioridade | Status |
 |--------|----------------------------------------------------------|--------|------------|--------|
-| US-010 | Padronizar contraste de botoes em todo o sistema          | 3      | Baixa      | New    |
-| US-011 | Revisar visual do submenu do usuario                      | 3      | Media      | New    |
-| US-012 | Padronizar searchbar com icone de lupa                    | 1      | Baixa      | New    |
-| US-013 | Aplicar componentes padrao nas telas dos modulos          | 13     | Alta       | New    |
+| US-010 | Padronizar contraste de botoes em todo o sistema          | 3      | Baixa      | Resolved |
+| US-011 | Revisar visual do submenu do usuario                      | 3      | Media      | Resolved |
+| US-012 | Padronizar searchbar com icone de lupa                    | 1      | Baixa      | Resolved |
+| US-013 | Aplicar componentes padrao nas telas dos modulos          | 13     | Alta       | Resolved |
 
 ### EP-004 - Melhorias de UX - Dashboard e Modulos
 
@@ -59,7 +59,7 @@
 | Total de Historias         | 17    |
 | Total de Story Points      | 83    |
 | Total de Bugs              | 4     |
-| Historias Concluidas       | 9     |
+| Historias Concluidas       | 13    |
 | Bugs Resolvidos            | 4     |
 
 ## Proximos IDs Disponiveis

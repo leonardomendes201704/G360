@@ -7,6 +7,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-12]
 
+### Fixed
+- **US-010:** Corrigido contraste de botoes no tema light. CSS global `color: var(--light-text-primary) !important` sobrepunha `color: white` de botoes. Adicionada regra CSS para garantir texto branco em botoes contained/primarios.
+  - `FRONTEND/src/styles/lightPremiumTheme.css`
+
+### Changed
+- **US-011:** Reduzido arredondamento do submenu do usuario (borderRadius 3→2), adicionada borda e largura minima ajustada (180→200px).
+  - `FRONTEND/src/components/layout/MainLayout.jsx`
+- **US-012:** Searchbar ja possuia icone de lupa (`<Search>` do MUI Icons) — validado sem necessidade de alteracao.
+- **US-013:** Piloto de aplicacao dos componentes padrao concluido em MyApprovalsPage (EP-002). Rollout completo nas demais telas sera incremental.
+
 ### Added
 - **US-005:** Componente `StandardGrid` — tabela padronizada com busca, ordenacao, paginacao e acoes por linha
   - `FRONTEND/src/components/common/StandardGrid.jsx`

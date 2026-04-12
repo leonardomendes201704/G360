@@ -444,7 +444,9 @@ const MainLayout = ({ children }) => {
             elevation: 0,
             sx: {
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.15))',
-              mt: 1.5, borderRadius: 3, minWidth: 180
+              mt: 1.5, borderRadius: 2, minWidth: 200,
+              border: '1px solid',
+              borderColor: 'divider',
             },
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}

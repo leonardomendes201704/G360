@@ -923,6 +923,25 @@ body.light-premium-theme,
     border: 1px solid var(--light-border-subtle) !important;
 }
 
+/* --- BUTTON CONTRAST FIX (US-010) --- */
+
+/* Garantir texto branco em botoes com background de cor primaria */
+.light-premium-theme button[style*="background: #2563eb"],
+.light-premium-theme button[style*="background:#2563eb"],
+.light-premium-theme button[style*="background: rgb(37, 99, 235)"],
+.light-premium-theme button[style*="background: linear-gradient(135deg, #2563eb"],
+.light-premium-theme .MuiButton-contained,
+.light-premium-theme .MuiButton-containedPrimary {
+    color: #ffffff !important;
+}
+
+/* Garantir texto branco em botoes nativos com color: white que sao sobrescritos */
+.light-premium-theme button[style*="color: white"],
+.light-premium-theme button[style*="color: #fff"],
+.light-premium-theme button[style*="color: #ffffff"] {
+    color: #ffffff !important;
+}
+
 /* ===============================================
    END GLOBAL DARK PATTERN OVERRIDES
    =============================================== */
