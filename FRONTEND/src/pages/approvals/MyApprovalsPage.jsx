@@ -6,6 +6,9 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import approvalService from '../../services/approval.service';
 import ApprovalDetailsModal from '../../components/modals/ApprovalDetailsModal';
 import EmptyState from '../../components/common/EmptyState';
+import LoadingOverlay from '../../components/common/LoadingOverlay';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 const formatCurrency = (val) => val ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val) : '-';
 const formatDate = (date) => date ? new Date(date).toLocaleDateString('pt-BR') : '-';
@@ -183,44 +186,28 @@ const MyApprovalsPage = () => {
                 </Box>
             </Paper>
 
-            {/* Summary Cards */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 2, mb: 4 }}>
+            {/* Summary Cards — usando StatsCard + KpiGrid padrao */}
+            <KpiGrid minWidth="150px">
                 {[
-                    { key: 'expenses', label: 'Despesas', icon: 'payments', color: '#2563eb' },
-                    { key: 'projectCosts', label: 'Custos Projeto', icon: 'folder', color: '#3b82f6' },
-                    { key: 'minutes', label: 'Atas', icon: 'description', color: '#06b6d4' },
-                    { key: 'gmuds', label: 'GMUDs', icon: 'build', color: '#f59e0b' },
-                    { key: 'projects', label: 'Projetos', icon: 'work', color: '#10b981' },
-                    { key: 'proposals', label: 'Propostas', icon: 'handshake', color: '#ec4899' },
-                    { key: 'budgets', label: 'Orçamentos', icon: 'account_balance', color: '#8b5cf6' },
+                    { key: 'expenses', label: 'Despesas', iconName: 'payments', hexColor: '#2563eb' },
+                    { key: 'projectCosts', label: 'Custos Projeto', iconName: 'folder', hexColor: '#3b82f6' },
+                    { key: 'minutes', label: 'Atas', iconName: 'description', hexColor: '#06b6d4' },
+                    { key: 'gmuds', label: 'GMUDs', iconName: 'build', hexColor: '#f59e0b' },
+                    { key: 'projects', label: 'Projetos', iconName: 'work', hexColor: '#10b981' },
+                    { key: 'proposals', label: 'Propostas', iconName: 'handshake', hexColor: '#ec4899' },
+                    { key: 'budgets', label: 'Orçamentos', iconName: 'account_balance', hexColor: '#8b5cf6' },
                 ].map((card) => (
-                    <Paper
+                    <StatsCard
                         key={card.key}
-                        onClick={(e) => { e.preventDefault(); setActiveTab(card.key); }}
-                        sx={{
-                            p: 2.5, cursor: 'pointer', transition: 'all 0.2s',
-                            bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
-                            border: '1px solid',
-                            borderColor: activeTab === card.key ? card.color : borderColor,
-                            borderRadius: '16px',
-                            boxShadow: mode === 'dark' ? 'none' : '0 2px 4px rgba(0,0,0,0.05)',
-                            '&:hover': { transform: 'translateY(-2px)', borderColor: card.color }
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box sx={{ width: 48, height: 48, borderRadius: 2, background: `${card.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="material-icons-round" style={{ color: card.color, fontSize: 24 }}>{card.icon}</span>
-                            </Box>
-                            <Box>
-                                <Typography sx={{ fontSize: 28, fontWeight: 700, color: counts[card.key] > 0 ? card.color : textSecondary }}>
-                                    {counts[card.key]}
-                                </Typography>
-                                <Typography sx={{ fontSize: 12, color: textMuted }}>{card.label}</Typography>
-                            </Box>
-                        </Box>
-                    </Paper>
+                        title={card.label}
+                        value={counts[card.key]}
+                        iconName={card.iconName}
+                        hexColor={card.hexColor}
+                        active={activeTab === card.key}
+                        onClick={() => setActiveTab(card.key)}
+                    />
                 ))}
-            </Box>
+            </KpiGrid>
 
             {/* Tabs */}
             <Box sx={{ display: 'flex', gap: 1, mb: 3, borderBottom: `1px solid ${borderColor}`, pb: 2, flexWrap: 'wrap' }}>
@@ -251,17 +238,7 @@ const MyApprovalsPage = () => {
 
             {/* Items List */}
             <Paper sx={{ ...cardStyle, position: 'relative', minHeight: 300 }}>
-                {(loading || switching) && (
-                    <Box sx={{
-                        position: 'absolute', inset: 0, zIndex: 2,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        bgcolor: mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
-                        borderRadius: 'inherit',
-                        transition: 'opacity 0.2s',
-                    }}>
-                        <CircularProgress sx={{ color: '#2563eb' }} />
-                    </Box>
-                )}
+                <LoadingOverlay loading={loading || switching} />
                 {items.length === 0 && !loading && !switching ? (
                     <EmptyState
                         icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>check_circle</span>}

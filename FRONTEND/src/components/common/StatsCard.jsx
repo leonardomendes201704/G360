@@ -8,12 +8,15 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  * 
  * @param {string} title - Título do KPI (ex: "Receita Total")
  * @param {string|number} value - Valor principal
- * @param {ReactNode} icon - Ícone do Material UI
+ * @param {ReactNode} icon - Ícone do Material UI (componente)
+ * @param {string} iconName - Nome do Material Icon (string, ex: 'payments') — alternativa a icon
  * @param {string} color - Cor temática ('primary', 'success', 'warning', 'error', 'info')
+ * @param {string} hexColor - Cor hex direta (sobrepoe color quando fornecida)
  * @param {object} trend - Objeto de tendência { value: number, label: string, type: 'up'|'down'|'neutral' }
  * @param {boolean} active - Se true, aplica um destaque visual (borda/sombra)
+ * @param {function} onClick - Handler de clique (torna o card interativo)
  */
-const StatsCard = ({ title, value, icon, color = 'primary', trend, active = false }) => {
+const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, active = false, onClick }) => {
 
     // Mapeamento de cores para backgrounds suaves
     const bgColors = {
@@ -32,13 +35,18 @@ const StatsCard = ({ title, value, icon, color = 'primary', trend, active = fals
         info: '#0369a1',    // sky-700
     };
 
-    const mainColor = textColors[color] || textColors.primary;
-    const bgColor = bgColors[color] || bgColors.primary;
+    const mainColor = hexColor || textColors[color] || textColors.primary;
+    const bgColor = hexColor ? `${hexColor}20` : bgColors[color] || bgColors.primary;
+
+    const iconElement = iconName
+        ? <span className="material-icons-round" style={{ fontSize: 22, color: mainColor }}>{iconName}</span>
+        : icon;
 
     return (
         <Paper
             elevation={0}
             variant="outlined"
+            onClick={onClick}
             sx={{
                 p: 3,
                 borderRadius: 4,
@@ -47,9 +55,10 @@ const StatsCard = ({ title, value, icon, color = 'primary', trend, active = fals
                 transition: 'all 0.2s ease-in-out',
                 position: 'relative',
                 overflow: 'hidden',
+                cursor: onClick ? 'pointer' : 'default',
                 boxShadow: active ? `0 4px 20px ${bgColor}` : 'none',
                 '&:hover': {
-                    transform: 'translateY(-4px)',
+                    transform: 'translateY(-2px)',
                     boxShadow: '0 12px 24px rgba(0,0,0,0.05)',
                     borderColor: active ? mainColor : '#e2e8f0'
                 }
@@ -85,7 +94,7 @@ const StatsCard = ({ title, value, icon, color = 'primary', trend, active = fals
                         justifyContent: 'center',
                     }}
                 >
-                    {icon}
+                    {iconElement}
                 </Box>
             </Box>
 

@@ -7,6 +7,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-12]
 
+### Added
+- **US-005:** Componente `StandardGrid` — tabela padronizada com busca, ordenacao, paginacao e acoes por linha
+  - `FRONTEND/src/components/common/StandardGrid.jsx`
+- **US-006:** Componente `KpiGrid` + adaptacao do `StatsCard` existente com suporte a `onClick`, `iconName` e `hexColor`
+  - `FRONTEND/src/components/common/KpiGrid.jsx`
+  - `FRONTEND/src/components/common/StatsCard.jsx` (editado)
+- **US-007:** Componente `FilterDrawer` — painel off-canvas lateral para filtros com MUI Drawer
+  - `FRONTEND/src/components/common/FilterDrawer.jsx`
+- **US-008:** Componente `LoadingOverlay` — overlay semi-transparente reutilizavel com spinner
+  - `FRONTEND/src/components/common/LoadingOverlay.jsx`
+- **US-009:** Componente `StandardModal` — wrapper padronizado do MUI Dialog com header, footer e loading
+  - `FRONTEND/src/components/common/StandardModal.jsx`
+
+### Changed
+- **MyApprovalsPage** refatorada como piloto: KPIs inline substituidos por `StatsCard` + `KpiGrid`, overlay inline substituido por `LoadingOverlay`
+  - `FRONTEND/src/pages/approvals/MyApprovalsPage.jsx`
+
 ### Fixed
 - **US-004/BUG-004:** Corrigido erro ao clicar em "Nova GMUD". Dois bugs: (1) `projectService.getAll()` retornava objeto paginado `{data, meta}` sendo tratado como array — causava `TypeError: projectsList.map is not a function`. (2) Guard `if (!open || !mounted)` no ChangeModal criava deadlock impedindo modal de abrir.
   - `FRONTEND/src/components/modals/ChangeModal.jsx`

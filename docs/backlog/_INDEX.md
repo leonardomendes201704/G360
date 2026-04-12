@@ -8,7 +8,7 @@
 | ID     | Titulo                                    | Fase   | Prioridade | Status | Historias | Depende de |
 |--------|-------------------------------------------|--------|------------|--------|-----------|------------|
 | EP-001 | Correcoes Criticas Funcionais             | Fase 1 | Alta       | Closed | 4         | -          |
-| EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | New    | 5         | EP-001     |
+| EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | Closed | 5         | EP-001     |
 | EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | New    | 4         | EP-002     |
 | EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | New    | 4         | EP-002, EP-003 |
 
@@ -27,11 +27,11 @@
 
 | ID     | Titulo                                        | Pontos | Prioridade | Status |
 |--------|-----------------------------------------------|--------|------------|--------|
-| US-005 | Criar componente de Grid padrao reutilizavel   | 13     | Alta       | New    |
-| US-006 | Criar componente de Bloco de KPI padrao        | 5      | Alta       | New    |
-| US-007 | Criar componente Off-canvas de filtros          | 5      | Media      | New    |
-| US-008 | Criar componente Overlay de loading             | 3      | Media      | New    |
-| US-009 | Criar componente Modal padrao                   | 5      | Media      | New    |
+| US-005 | Criar componente de Grid padrao reutilizavel   | 13     | Alta       | Resolved |
+| US-006 | Criar componente de Bloco de KPI padrao        | 5      | Alta       | Resolved |
+| US-007 | Criar componente Off-canvas de filtros          | 5      | Media      | Resolved |
+| US-008 | Criar componente Overlay de loading             | 3      | Media      | Resolved |
+| US-009 | Criar componente Modal padrao                   | 5      | Media      | Resolved |
 
 ### EP-003 - Padronizacao Visual e Identidade
 
@@ -59,7 +59,7 @@
 | Total de Historias         | 17    |
 | Total de Story Points      | 83    |
 | Total de Bugs              | 4     |
-| Historias Concluidas       | 4     |
+| Historias Concluidas       | 9     |
 | Bugs Resolvidos            | 4     |
 
 ## Proximos IDs Disponiveis
