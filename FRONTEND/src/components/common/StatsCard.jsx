@@ -34,8 +34,8 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
     const mainColor = hexColor || colorMap[color] || colorMap.primary;
 
     const iconElement = iconName
-        ? <span className="material-icons-round" style={{ fontSize: 28, color: '#ffffff' }}>{iconName}</span>
-        : icon ? React.cloneElement(icon, { style: { fontSize: 28, color: '#ffffff' } }) : null;
+        ? <span className="material-icons-round" style={{ fontSize: 42, color: '#ffffff' }}>{iconName}</span>
+        : icon ? React.cloneElement(icon, { style: { fontSize: 42, color: '#ffffff' } }) : null;
 
     return (
         <Paper
@@ -44,7 +44,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             sx={{
                 borderRadius: '6px',
                 border: active ? `1px solid ${mainColor}` : '1px solid rgba(0,0,0,0.08)',
-                height: '100%',
+                aspectRatio: '1',
                 transition: 'all 0.2s ease-in-out',
                 position: 'relative',
                 overflow: 'hidden',
@@ -61,7 +61,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             {accentBar && (
                 <Box
                     sx={{
-                        height: 40,
+                        height: 56,
                         bgcolor: mainColor,
                         display: 'flex',
                         alignItems: 'center',
