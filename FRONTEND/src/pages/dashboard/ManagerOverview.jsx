@@ -45,15 +45,15 @@ const loadWidgets = () => {
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-const QA = ({ icon, label, route, color, navigate, onClick }) => (
+const QA = ({ icon, label, route, color, navigate, onClick, isDark }) => (
     <Box onClick={onClick || (() => navigate(route))} sx={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         cursor: 'pointer', flexShrink: 0, width: 96,
         borderRadius: '6px', overflow: 'hidden',
-        border: '1px solid rgba(0,0,0,0.06)',
-        bgcolor: '#ffffff',
+        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.06)',
+        bgcolor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
         transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        boxShadow: isDark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
         '&:hover': {
             transform: 'translateY(-8px)',
             boxShadow: `0 12px 24px ${color}35`,
@@ -66,9 +66,9 @@ const QA = ({ icon, label, route, color, navigate, onClick }) => (
         }}>
             <span className="material-icons-round" style={{ color: '#ffffff', fontSize: '32px' }}>{icon}</span>
         </Box>
-        {/* Base branca com label */}
-        <Box sx={{ width: '100%', py: 0.75, bgcolor: '#ffffff' }}>
-            <Typography sx={{ fontSize: '11px', fontWeight: 700, color, textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>{label}</Typography>
+        {/* Base com label */}
+        <Box sx={{ width: '100%', py: 0.75, bgcolor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff' }}>
+            <Typography sx={{ fontSize: '11px', fontWeight: 700, color: isDark ? '#e2e8f0' : color, textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>{label}</Typography>
         </Box>
     </Box>
 );
@@ -295,12 +295,12 @@ const ManagerOverview = () => {
                             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1, mt: 1.5, flexWrap: 'nowrap', overflowX: 'auto' }}>
-                            <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} />
-                            <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} />
-                            <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} />
-                            <QA icon="warning" label="Incidente" onClick={() => setIsIncidentOpen(true)} color="#f59e0b" navigate={navigate} />
-                            <QA icon="description" label="Contratos" route="/contracts" color="#10b981" navigate={navigate} />
-                            <QA icon="request_quote" label="Despesa" onClick={() => setIsExpenseOpen(true)} color="#f43f5e" navigate={navigate} />
+                            <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} isDark={isDark} />
+                            <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} isDark={isDark} />
+                            <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} isDark={isDark} />
+                            <QA icon="warning" label="Incidente" onClick={() => setIsIncidentOpen(true)} color="#f59e0b" navigate={navigate} isDark={isDark} />
+                            <QA icon="description" label="Contratos" route="/contracts" color="#10b981" navigate={navigate} isDark={isDark} />
+                            <QA icon="request_quote" label="Despesa" onClick={() => setIsExpenseOpen(true)} color="#f43f5e" navigate={navigate} isDark={isDark} />
                         </Box>
                     </Box>
 
@@ -310,9 +310,10 @@ const ManagerOverview = () => {
                             onClick={() => setScoreInfoOpen(true)}
                             sx={{
                                 textAlign: 'center', minWidth: 155, px: 2, py: '9px',
-                                bgcolor: '#ffffff', borderRadius: '16px',
-                                border: '1px solid rgba(0,0,0,0.08)',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                                bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#ffffff',
+                                borderRadius: '16px',
+                                border: isDark ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(0,0,0,0.08)',
+                                boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.06)',
                                 cursor: 'pointer',
                                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                                 transition: 'all 0.2s',
@@ -322,7 +323,7 @@ const ManagerOverview = () => {
                             <Box sx={{ position: 'relative', width: 115, height: 115, mx: 'auto', mb: 0.5 }}>
                                 <svg width="115" height="115" style={{ transform: 'rotate(-90deg)' }}>
                                     <circle cx="57.5" cy="57.5" r="48" fill="none"
-                                        stroke="rgba(0,0,0,0.06)"
+                                        stroke={isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)'}
                                         strokeWidth="8" />
                                     <circle cx="57.5" cy="57.5" r="48" fill="none"
                                         stroke={healthColor} strokeWidth="8"
