@@ -302,7 +302,7 @@ const ManagerOverview = () => {
                         <Box
                             onClick={() => setScoreInfoOpen(true)}
                             sx={{
-                                textAlign: 'center', minWidth: 155, px: 2, py: 0.5,
+                                textAlign: 'center', minWidth: 155, px: 2, py: '9px',
                                 bgcolor: '#ffffff', borderRadius: '16px',
                                 border: '1px solid rgba(0,0,0,0.08)',
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
@@ -637,7 +637,7 @@ const ManagerOverview = () => {
                     </Box>
                 </DialogTitle>
                 <DialogContent sx={{ pt: 1 }}>
-                    <Typography sx={{ fontSize: 14, color: textPrimary, mb: 2, lineHeight: 1.7 }}>
+                    <Typography sx={{ fontSize: 14, color: textPrimary, mb: 2, mt: '5px', lineHeight: 1.7 }}>
                         O Score de Saúde Geral é uma métrica composta que reflete a performance operacional
                         do seu time em tempo real, variando de <strong>0 a 100 pontos</strong>.
                     </Typography>
