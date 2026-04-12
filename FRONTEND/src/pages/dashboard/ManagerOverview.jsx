@@ -302,7 +302,7 @@ const ManagerOverview = () => {
                         <Box
                             onClick={() => setScoreInfoOpen(true)}
                             sx={{
-                                textAlign: 'center', minWidth: 140, px: 2.5, py: 1,
+                                textAlign: 'center', minWidth: 155, px: 2, py: 0.5,
                                 bgcolor: '#ffffff', borderRadius: '16px',
                                 border: '1px solid rgba(0,0,0,0.08)',
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
@@ -312,27 +312,27 @@ const ManagerOverview = () => {
                                 '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.1)', transform: 'translateY(-2px)' },
                             }}
                         >
-                            <Box sx={{ position: 'relative', width: 95, height: 95, mx: 'auto', mb: 0.5 }}>
-                                <svg width="95" height="95" style={{ transform: 'rotate(-90deg)' }}>
-                                    <circle cx="47.5" cy="47.5" r="38" fill="none"
+                            <Box sx={{ position: 'relative', width: 115, height: 115, mx: 'auto', mb: 0.5 }}>
+                                <svg width="115" height="115" style={{ transform: 'rotate(-90deg)' }}>
+                                    <circle cx="57.5" cy="57.5" r="48" fill="none"
                                         stroke="rgba(0,0,0,0.06)"
-                                        strokeWidth="7" />
-                                    <circle cx="47.5" cy="47.5" r="38" fill="none"
-                                        stroke={healthColor} strokeWidth="7"
-                                        strokeDasharray={`${2 * Math.PI * 38}`}
-                                        strokeDashoffset={`${2 * Math.PI * 38 * (1 - (healthScore || 0) / 100)}`}
+                                        strokeWidth="8" />
+                                    <circle cx="57.5" cy="57.5" r="48" fill="none"
+                                        stroke={healthColor} strokeWidth="8"
+                                        strokeDasharray={`${2 * Math.PI * 48}`}
+                                        strokeDashoffset={`${2 * Math.PI * 48 * (1 - (healthScore || 0) / 100)}`}
                                         strokeLinecap="round"
                                         style={{ transition: 'stroke-dashoffset 1s ease' }} />
                                 </svg>
                                 <Box sx={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Typography sx={{ fontSize: '26px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
+                                    <Typography sx={{ fontSize: '32px', fontWeight: 800, color: healthColor, lineHeight: 1 }}>
                                         {healthScore ?? 0}
                                     </Typography>
-                                    <Typography sx={{ fontSize: '9px', color: '#94a3b8', fontWeight: 600, mt: 0.25 }}>SCORE</Typography>
+                                    <Typography sx={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, mt: 0.25 }}>SCORE</Typography>
                                 </Box>
                             </Box>
-                            <Typography sx={{ fontSize: '13px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
-                            <Typography sx={{ fontSize: '11px', color: '#94a3b8' }}>Saúde Geral</Typography>
+                            <Typography sx={{ fontSize: '14px', fontWeight: 700, color: healthColor }}>{healthLabel}</Typography>
+                            <Typography sx={{ fontSize: '12px', color: '#94a3b8' }}>Saúde Geral</Typography>
                         </Box>
                         <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                     </Box>
