@@ -22,7 +22,7 @@ const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3 }) => (
             gap,
             mb,
             '& > *': {
-                aspectRatio: '1',
+                maxHeight: '180px',
             }
         }}
     >
