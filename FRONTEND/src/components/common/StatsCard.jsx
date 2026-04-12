@@ -4,131 +4,134 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
 
 /**
  * StatsCard Component
- * Card padronizado para exibição de KPIs e métricas.
- * 
- * @param {string} title - Título do KPI (ex: "Receita Total")
+ * Card padronizado para exibicao de KPIs e metricas.
+ *
+ * Layout: barra colorida no topo com icone branco + corpo branco com valor e titulo.
+ * Linha fina colorida no rodape como accent.
+ *
+ * @param {string} title - Titulo do KPI (ex: "Despesas Pendentes")
  * @param {string|number} value - Valor principal
- * @param {ReactNode} icon - Ícone do Material UI (componente)
- * @param {string} iconName - Nome do Material Icon (string, ex: 'payments') — alternativa a icon
- * @param {string} color - Cor temática ('primary', 'success', 'warning', 'error', 'info')
- * @param {string} hexColor - Cor hex direta (sobrepoe color quando fornecida)
- * @param {object} trend - Objeto de tendência { value: number, label: string, type: 'up'|'down'|'neutral' }
- * @param {string} subtitle - Texto auxiliar exibido abaixo do valor (ex: "SLA OK", "0 atrasadas")
- * @param {boolean} accentBar - Se true, exibe barra colorida no topo do card (sempre visivel, nao apenas quando active)
- * @param {boolean} active - Se true, aplica um destaque visual (borda/sombra)
- * @param {function} onClick - Handler de clique (torna o card interativo)
+ * @param {ReactNode} icon - Icone do Material UI (componente)
+ * @param {string} iconName - Nome do Material Icon (string, ex: 'payments')
+ * @param {string} color - Cor tematica ('primary', 'success', 'warning', 'error', 'info')
+ * @param {string} hexColor - Cor hex direta (sobrepoe color)
+ * @param {object} trend - { value: number, label: string, type: 'up'|'down'|'neutral' }
+ * @param {string} subtitle - Texto auxiliar abaixo do titulo
+ * @param {boolean} accentBar - Exibe barra colorida no topo com icone (padrao: true)
+ * @param {boolean} active - Destaque visual (borda colorida)
+ * @param {function} onClick - Handler de clique
  */
-const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = false, active = false, onClick }) => {
+const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = true, active = false, onClick }) => {
 
-    // Mapeamento de cores para backgrounds suaves
-    const bgColors = {
-        primary: '#e0e7ff', // indigo-100
-        success: '#dcfce7', // green-100
-        warning: '#fef3c7', // amber-100
-        error: '#fee2e2',   // red-100
-        info: '#e0f2fe',    // sky-100
+    const colorMap = {
+        primary: '#2563eb',
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444',
+        info: '#0284c7',
     };
 
-    const textColors = {
-        primary: '#1e40af', // indigo-700
-        success: '#15803d', // green-700
-        warning: '#b45309', // amber-700
-        error: '#b91c1c',   // red-700
-        info: '#0369a1',    // sky-700
-    };
-
-    const mainColor = hexColor || textColors[color] || textColors.primary;
-    const bgColor = hexColor ? `${hexColor}20` : bgColors[color] || bgColors.primary;
+    const mainColor = hexColor || colorMap[color] || colorMap.primary;
 
     const iconElement = iconName
-        ? <span className="material-icons-round" style={{ fontSize: 22, color: mainColor }}>{iconName}</span>
-        : icon;
+        ? <span className="material-icons-round" style={{ fontSize: 22, color: '#ffffff' }}>{iconName}</span>
+        : icon ? React.cloneElement(icon, { style: { fontSize: 22, color: '#ffffff' } }) : null;
 
     return (
         <Paper
             elevation={0}
-            variant="outlined"
             onClick={onClick}
             sx={{
-                p: 3,
-                borderRadius: 4,
-                border: active ? `1px solid ${mainColor}` : '1px solid #f1f5f9',
+                borderRadius: '6px',
+                border: active ? `1px solid ${mainColor}` : '1px solid rgba(0,0,0,0.08)',
                 height: '100%',
                 transition: 'all 0.2s ease-in-out',
                 position: 'relative',
                 overflow: 'hidden',
                 cursor: onClick ? 'pointer' : 'default',
-                boxShadow: active ? `0 4px 20px ${bgColor}` : 'none',
+                bgcolor: '#ffffff',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                 '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 12px 24px rgba(0,0,0,0.05)',
-                    borderColor: active ? mainColor : '#e2e8f0'
+                    transform: onClick ? 'translateY(-2px)' : 'none',
+                    boxShadow: onClick ? '0 8px 24px rgba(0,0,0,0.08)' : '0 1px 3px rgba(0,0,0,0.06)',
                 }
             }}
         >
-            {/* Barra colorida no topo (accentBar = sempre, active = so quando ativo) */}
-            {(accentBar || active) && (
+            {/* Barra colorida no topo com icone */}
+            {accentBar && (
                 <Box
                     sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '3px',
-                        bgcolor: mainColor
-                    }}
-                />
-            )}
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                <Typography variant="subtitle2" sx={{ color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.75rem' }}>
-                    {title}
-                </Typography>
-                <Box
-                    sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 3,
-                        bgcolor: bgColor,
-                        color: mainColor,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        height: '6px',
+                        bgcolor: mainColor,
+                        position: 'relative',
                     }}
                 >
-                    {iconElement}
+                    {iconElement && (
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: '-12px',
+                                right: 12,
+                                width: 40,
+                                height: 40,
+                                borderRadius: '8px',
+                                bgcolor: mainColor,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: `0 2px 8px ${mainColor}40`,
+                            }}
+                        >
+                            {iconElement}
+                        </Box>
+                    )}
                 </Box>
+            )}
+
+            {/* Corpo */}
+            <Box sx={{ p: 2, pt: accentBar ? 2.5 : 2 }}>
+                {/* Valor */}
+                <Typography sx={{ fontSize: '28px', fontWeight: 800, color: '#0f172a', lineHeight: 1, mb: 0.5 }}>
+                    {value}
+                </Typography>
+
+                {/* Titulo */}
+                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#334155', mb: subtitle ? 0.25 : 0 }}>
+                    {title}
+                </Typography>
+
+                {/* Subtitle */}
+                {subtitle && (
+                    <Typography sx={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }}>
+                        {subtitle}
+                    </Typography>
+                )}
+
+                {/* Trend */}
+                {trend && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.75 }}>
+                        <Chip
+                            size="small"
+                            icon={trend.type === 'up' ? <TrendingUp /> : trend.type === 'down' ? <TrendingDown /> : <Remove />}
+                            label={`${trend.value}%`}
+                            sx={{
+                                height: 22,
+                                bgcolor: trend.type === 'up' ? '#dcfce7' : trend.type === 'down' ? '#fee2e2' : '#f1f5f9',
+                                color: trend.type === 'up' ? '#166534' : trend.type === 'down' ? '#991b1b' : '#64748b',
+                                fontWeight: 700,
+                                fontSize: '11px',
+                                '& .MuiChip-icon': { fontSize: '14px', color: 'inherit' }
+                            }}
+                        />
+                        <Typography sx={{ fontSize: '10px', color: '#94a3b8', fontWeight: 500 }}>
+                            {trend.label || 'vs anterior'}
+                        </Typography>
+                    </Box>
+                )}
             </Box>
 
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e293b', mb: subtitle ? 0.25 : 1, letterSpacing: '-1px' }}>
-                {value}
-            </Typography>
-
-            {subtitle && (
-                <Typography sx={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500, mb: trend ? 0.75 : 0 }}>
-                    {subtitle}
-                </Typography>
-            )}
-
-            {trend && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Chip
-                        size="small"
-                        icon={trend.type === 'up' ? <TrendingUp /> : trend.type === 'down' ? <TrendingDown /> : <Remove />}
-                        label={`${trend.value}%`}
-                        sx={{
-                            height: 24,
-                            bgcolor: trend.type === 'up' ? '#dcfce7' : trend.type === 'down' ? '#fee2e2' : '#f1f5f9',
-                            color: trend.type === 'up' ? '#166534' : trend.type === 'down' ? '#991b1b' : '#64748b',
-                            fontWeight: 700,
-                            '& .MuiChip-icon': { fontSize: '16px', color: 'inherit' }
-                        }}
-                    />
-                    <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 500 }}>
-                        {trend.label || 'vs mês anterior'}
-                    </Typography>
-                </Box>
-            )}
+            {/* Linha fina colorida no rodape */}
+            <Box sx={{ height: '3px', bgcolor: mainColor }} />
         </Paper>
     );
 };
