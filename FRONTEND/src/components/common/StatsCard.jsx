@@ -78,7 +78,7 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             {/* Corpo */}
             <Box sx={{ p: 2, pt: accentBar ? 2.5 : 2, flex: 1 }}>
                 {/* Valor */}
-                <Typography sx={{ fontSize: '28px', fontWeight: 800, color: '#0f172a', lineHeight: 1, mb: 0.5 }}>
+                <Typography sx={{ fontSize: '36px', fontWeight: 800, color: '#0f172a', lineHeight: 1, mb: 0.5 }}>
                     {value}
                 </Typography>
 
