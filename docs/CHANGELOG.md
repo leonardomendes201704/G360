@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — domínio Riscos:** `RiskModal` (`detail`, `loading`, salvar `contained`/`error`), `RiskViewModal` (`detail`; `RiskViewBadge` e `RiskViewField` no âmbito do módulo), `GlobalRiskModal` (`wide`; stepper + formulário HTML/CSS legado no corpo; rodapé MUI Cancelar / Voltar / Próximo / Concluir).
+  - `FRONTEND/src/components/modals/RiskModal.jsx`
+  - `FRONTEND/src/components/modals/RiskViewModal.jsx`
+  - `FRONTEND/src/components/modals/GlobalRiskModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — ITSM / mudanças:** `ChangeModal` e `ChangeViewModal` migrados para `StandardModal` (`wide`, ícone `sync`); formulário GMUD com rodapé em botões MUI (wizard: voltar/próximo/criar; rascunho: salvar); leitura com abas e lifecycle; `ConfirmDialog` permanece irmão do shell; `ChangeViewDataField` componente estático.
   - `FRONTEND/src/components/modals/ChangeModal.jsx`
   - `FRONTEND/src/components/modals/ChangeViewModal.jsx`

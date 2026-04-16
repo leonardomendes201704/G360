@@ -5,8 +5,9 @@ import { getReferenceUsers } from '../../services/reference.service';
 import { getDepartments } from '../../services/department.service';
 import { getCostCenters } from '../../services/cost-center.service';
 import { getAssets } from '../../services/asset.service';
-import { Box, Dialog } from '@mui/material';
-import { Close, Check, Lock } from '@mui/icons-material';
+import { Box, Button, CircularProgress } from '@mui/material';
+import { Check, Lock } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
 
 // CSS from riscos.html
 const modalStyles = `
@@ -288,52 +289,69 @@ const GlobalRiskModal = ({ open, onClose, onSave, riskToEdit, viewMode = false }
     };
 
     return (
-        <Dialog
+        <StandardModal
             open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                className: 'transparent-paper',
-                sx: {
-                    background: 'transparent !important',
-                    backgroundColor: 'transparent !important',
-                    backgroundImage: 'none !important',
-                    boxShadow: 'none !important',
-                    border: 'none !important',
-                    borderRadius: '0 !important',
-                    overflow: 'visible',
-                    padding: 0,
-                    margin: 0,
-                    maxHeight: '90vh',
-                }
+            title={riskToEdit ? 'Editar Risco' : 'Novo Registro de Risco'}
+            subtitle="Identificação e avaliação em duas etapas"
+            icon="policy"
+            size="wide"
+            loading={loading}
+            contentSx={{
+                p: 0,
+                pt: 0,
             }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(2px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.4)'
-                }
-            }}
+            footer={
+                <Box
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: 1,
+                    }}
+                >
+                    <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                        Cancelar
+                    </Button>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {activeStep > 1 && (
+                            <Button variant="outlined" onClick={() => setActiveStep((prev) => prev - 1)} disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                Voltar
+                            </Button>
+                        )}
+                        {activeStep < 2 ? (
+                            <Button variant="contained" onClick={() => setActiveStep((prev) => prev + 1)} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                Próximo
+                            </Button>
+                        ) : (
+                            !viewMode && (
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSave}
+                                    disabled={loading}
+                                    sx={{ textTransform: 'none', fontWeight: 600, minWidth: 120 }}
+                                    startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                                >
+                                    {loading ? 'Salvando...' : 'Concluir'}
+                                </Button>
+                            )
+                        )}
+                    </Box>
+                </Box>
+            }
         >
             <style>{modalStyles}</style>
-            <div className="modal-window" style={{ position: 'relative' }}>
-
-                {/* Close button — absolute top-right corner */}
-                <button className="modal-close" onClick={onClose} style={{
-                    position: 'absolute', top: 12, right: 12, zIndex: 10,
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--modal-text-muted, #9ca3af)',
-                    width: 32, height: 32, borderRadius: '50%',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'background 0.2s',
-                }}>
-                    <Close sx={{ fontSize: 20 }} />
-                </button>
-
-                {/* Header */}
-                <div className="modal-header">
-                    <div className="modal-top-row">
-                        <h3 className="modal-title">{riskToEdit ? 'Editar Risco' : 'Novo Registro de Risco'}</h3>
-                    </div>
+            <Box sx={{ maxWidth: 700, mx: 'auto', width: '100%' }}>
+                <Box
+                    sx={{
+                        px: 2,
+                        py: 2,
+                        bgcolor: 'var(--modal-surface-subtle, #f8fafc)',
+                        borderBottom: '1px solid var(--modal-border, #e5e7eb)',
+                    }}
+                >
                     <div className="stepper">
                         <div className={`step ${activeStep === 1 ? 'active' : 'completed'}`} onClick={() => setActiveStep(1)} style={{ cursor: 'pointer' }}>
                             <div className="step-circle">{activeStep > 1 ? <Check sx={{ fontSize: 14 }} /> : '1'}</div>
@@ -344,9 +362,8 @@ const GlobalRiskModal = ({ open, onClose, onSave, riskToEdit, viewMode = false }
                             <div className="step-label">AVALIAÇÃO</div>
                         </div>
                     </div>
-                </div>
+                </Box>
 
-                {/* Body */}
                 <div className="modal-body">
                     {/* Step 1 */}
                     <div className={`wizard-step ${activeStep === 1 ? 'active' : ''}`}>
@@ -545,28 +562,8 @@ const GlobalRiskModal = ({ open, onClose, onSave, riskToEdit, viewMode = false }
                         </div>
                     </div>
                 </div>
-
-                {/* Footer */}
-                <div className="modal-footer">
-                    <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {activeStep > 1 && (
-                            <button className="btn btn-outline" onClick={() => setActiveStep(prev => prev - 1)}>Voltar</button>
-                        )}
-
-                        {activeStep < 2 ? (
-                            <button className="btn btn-primary" onClick={() => setActiveStep(prev => prev + 1)}>Próximo</button>
-                        ) : (
-                            !viewMode && (
-                                <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
-                                    {loading ? 'Salvando...' : 'Concluir'}
-                                </button>
-                            )
-                        )}
-                    </div>
-                </div>
-            </div>
-        </Dialog>
+            </Box>
+        </StandardModal>
     );
 };
 

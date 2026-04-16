@@ -46,7 +46,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 21 | `ExpenseModal.jsx` |
 | 22 | `FiscalYearModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 23 | `FollowUpModal.jsx` — migrado `StandardModal` (US-022) |
-| 24 | `GlobalRiskModal.jsx` |
+| 24 | `GlobalRiskModal.jsx` — migrado `StandardModal` (US-022 riscos; `wide`; wizard + CSS legado no corpo) |
 | 25 | `IncidentCreateModal.jsx` |
 | 26 | `IncidentModal.jsx` (inclui dialog de escalonamento) |
 | 27 | `IncidentViewModal.jsx` |
@@ -60,8 +60,8 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 35 | `ProjectTaskModal.jsx` — migrado `StandardModal` (US-022; `data-testid` no Paper) |
 | 36 | `ProposalModal.jsx` (dialog principal + dialog “nova categoria”) |
 | 37 | `RescheduleModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
-| 38 | `RiskModal.jsx` |
-| 39 | `RiskViewModal.jsx` |
+| 38 | `RiskModal.jsx` — migrado `StandardModal` (US-022; `detail`; primário `error`) |
+| 39 | `RiskViewModal.jsx` — migrado `StandardModal` (US-022; `detail`; `RiskViewBadge` / `RiskViewField` extraídos) |
 | 40 | `RoleModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 41 | `SmtpConfigModal.jsx` — migrado `StandardModal` (pós-US-022) |
 | 42 | `SubmitExpenseModal.jsx` |

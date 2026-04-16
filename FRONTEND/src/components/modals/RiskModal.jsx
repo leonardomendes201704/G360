@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { createRisk, updateRisk } from '../../services/project-details.service';
 import {
-  Box, Typography, TextField, Select, MenuItem, Button, IconButton, Dialog, Autocomplete
+  Box, Typography, TextField, Select, MenuItem, Button, Autocomplete
 } from '@mui/material';
-import { Warning, Close, Bolt, Flag, TrackChanges } from '@mui/icons-material';
+import { Bolt, Flag, TrackChanges } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
 
 const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = false }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const [formData, setFormData] = useState({
     description: '',
@@ -19,11 +19,6 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
     strategy: '',
     category: 'technical'
   });
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
 
   useEffect(() => {
     if (open) {
@@ -71,87 +66,42 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
   };
 
   return (
-    <Dialog
+    <StandardModal
       open={open}
       onClose={onClose}
-      maxWidth={false}
-      PaperProps={{
-        sx: {
-          width: '100%',
-          maxWidth: '680px',
-          maxHeight: '90vh',
-          background: 'var(--modal-bg)',
-          borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--modal-surface-hover)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          color: 'var(--modal-text)',
-        }
-      }}
-      BackdropProps={{
-        sx: {
-          backdropFilter: 'blur(4px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)'
-        }
-      }}
-    >
-      {/* Header */}
-      <Box sx={{
-        padding: '24px 24px 20px 24px',
-        borderBottom: '1px solid var(--modal-border-strong)',
-        background: 'var(--modal-header-gradient)'
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-            <Box sx={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #f43f5e 0%, #f97316 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)'
-            }}>
-              <Warning sx={{ color: 'var(--modal-text)', fontSize: '24px' }} />
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                {viewMode ? 'Visualizar Risco' : (riskToEdit ? 'Editar Risco' : 'Novo Risco')}
-              </Typography>
-              <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                {viewMode ? 'Detalhes do risco registrado' : 'Registre um risco identificado no projeto'}
-              </Typography>
-            </Box>
-          </Box>
-          <IconButton
-            onClick={onClose}
-            sx={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              background: 'var(--modal-surface-hover)',
-              color: 'var(--modal-text-muted)',
-              '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-            }}
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </Box>
-      </Box>
-
-      {/* Content */}
-      <Box sx={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '24px',
+      title={viewMode ? 'Visualizar Risco' : (riskToEdit ? 'Editar Risco' : 'Novo Risco')}
+      subtitle={viewMode ? 'Detalhes do risco registrado' : 'Registre um risco identificado no projeto'}
+      icon="warning"
+      size="detail"
+      loading={loading}
+      footer={
+        <>
+          <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+            {viewMode ? 'Fechar' : 'Cancelar'}
+          </Button>
+          {!viewMode && (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleSave}
+              disabled={loading}
+              sx={{ textTransform: 'none', fontWeight: 600 }}
+            >
+              Salvar
+            </Button>
+          )}
+        </>
+      }
+      contentSx={{
+        px: 3,
         background: 'var(--modal-bg)',
         '&::-webkit-scrollbar': { width: '6px' },
         '&::-webkit-scrollbar-track': { background: 'transparent' },
         '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
         '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
-      }}>
+      }}
+    >
+      <Box>
         {/* Descrição do Risco */}
         <Box sx={{ mb: 2.5 }}>
           <Typography sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 }}>
@@ -504,58 +454,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
           </Box>
         </Box>
       </Box>
-
-      {/* Footer */}
-      <Box sx={{
-        padding: '16px 24px',
-        borderTop: '1px solid var(--modal-border-strong)',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: 2,
-        background: 'var(--modal-surface-subtle)'
-      }}>
-        <Button
-          onClick={onClose}
-          sx={{
-            color: 'var(--modal-text-secondary)',
-            fontSize: '14px',
-            fontWeight: 500,
-            textTransform: 'none',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            '&:hover': { background: 'var(--modal-surface-hover)' }
-          }}
-        >
-          {viewMode ? 'Fechar' : 'Cancelar'}
-        </Button>
-        {!viewMode && (
-          <Button
-            onClick={handleSave}
-            disabled={loading}
-            sx={{
-              background: 'linear-gradient(135deg, #f43f5e 0%, #f97316 100%)',
-              color: 'var(--modal-text)',
-              fontSize: '14px',
-              fontWeight: 600,
-              textTransform: 'none',
-              padding: '10px 24px',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #dc2626 0%, #ea580c 100%)',
-                boxShadow: '0 6px 16px rgba(244, 63, 94, 0.4)'
-              },
-              '&:disabled': {
-                background: 'var(--modal-border-strong)',
-                color: 'var(--modal-text-muted)'
-              }
-            }}
-          >
-            ✓ Salvar
-          </Button>
-        )}
-      </Box>
-    </Dialog>
+    </StandardModal>
   );
 };
 
