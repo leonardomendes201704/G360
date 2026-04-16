@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
     Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Checkbox, TextField, MenuItem, CircularProgress, Typography, Box, Alert
 } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import integrationService from '../../services/integration.service';
 import userService from '../../services/user.service';
 import roleService from '../../services/role.service';
@@ -17,7 +17,7 @@ const UserImportModal = ({ open, onClose, onSuccess }) => {
     const [selectedRole, setSelectedRole] = useState('');
     const [roles, setRoles] = useState([]);
     const [error, setError] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(''); // Restore search term if it was there or add it back
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (open) {
@@ -31,11 +31,9 @@ const UserImportModal = ({ open, onClose, onSuccess }) => {
         setAzureUsers([]);
         setSelectedUsers([]);
         try {
-            // Carregar Perfis
             const rolesData = await roleService.getAll();
             setRoles(rolesData);
 
-            // Carregar Usuários do Azure
             const result = await integrationService.testConnection('AZURE');
             if (result && result.success && result.users) {
                 setAzureUsers(result.users);
@@ -72,19 +70,18 @@ const UserImportModal = ({ open, onClose, onSuccess }) => {
         setImporting(true);
         setError(null);
         try {
-            // Filtrar usuários selecionados e montar payload
             const usersToImport = azureUsers
                 .filter(u => selectedUsers.includes(u.id))
                 .map(u => ({
                     name: u.displayName,
-                    email: u.userPrincipalName, // Assume UPN is email
+                    email: u.userPrincipalName,
                     azureId: u.id,
                     roleId: selectedRole || undefined
                 }));
 
             await userService.importAzureUsers(usersToImport);
 
-            onSuccess(); // Recarrega lista pai
+            onSuccess();
             onClose();
         } catch (err) {
             console.error(err);
@@ -100,109 +97,126 @@ const UserImportModal = ({ open, onClose, onSuccess }) => {
     );
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>Importar Usuários do Azure AD</DialogTitle>
-            <DialogContent dividers>
-                {loading ? (
-                    <Box display="flex" justifyContent="center" p={3}>
-                        <CircularProgress />
-                    </Box>
-                ) : error ? (
-                    <Alert severity="error">{error}</Alert>
-                ) : (
-                    <>
-                        <Box mb={2}>
-                            <Typography variant="body2" gutterBottom>
-                                Selecione os usuários para importar ou atualizar. Os usuários existentes serão vinculados.
-                            </Typography>
-                        </Box>
-
-                        <Box mb={3} display="flex" gap={2}>
-                            <TextField
-                                label="Buscar por Nome ou Email"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                fullWidth
-                                placeholder="Digite para filtrar..."
-                            />
-                            <TextField
-                                select
-                                label="Atribuir Perfil (Role)"
-                                value={selectedRole}
-                                onChange={(e) => setSelectedRole(e.target.value)}
-                                fullWidth
-                                helperText="Opcional"
-                            >
-                                <MenuItem value=""><em>Nenhum</em></MenuItem>
-                                {roles.map(r => (
-                                    <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
-                                ))}
-                            </TextField>
-                        </Box>
-
-                        <TableContainer sx={{ maxHeight: 400 }}>
-                            <Table stickyHeader size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                indeterminate={selectedUsers.length > 0 && selectedUsers.length < azureUsers.length}
-                                                checked={azureUsers.length > 0 && selectedUsers.length === azureUsers.length}
-                                                onChange={handleSelectAll}
-                                            />
-                                        </TableCell>
-                                        <TableCell>Nome</TableCell>
-                                        <TableCell>Email (UPN)</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {filteredUsers.map((user) => {
-                                        const isSelected = selectedUsers.indexOf(user.id) !== -1;
-                                        return (
-                                            <TableRow
-                                                hover
-                                                onClick={(event) => handleSelectUser({ target: { checked: !isSelected } }, user.id)}
-                                                role="checkbox"
-                                                aria-checked={isSelected}
-                                                tabIndex={-1}
-                                                key={user.id}
-                                                selected={isSelected}
-                                                style={{ cursor: 'pointer' }}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox checked={isSelected} />
-                                                </TableCell>
-                                                <TableCell>{user.displayName}</TableCell>
-                                                <TableCell>{user.userPrincipalName}</TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                    {azureUsers.length === 0 && (
-                                        <TableRow>
-                                            <TableCell colSpan={3} align="center">Nenhum usuário encontrado no Azure.</TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                            {selectedUsers.length} usuário(s) selecionado(s).
-                        </Typography>
-                    </>
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} disabled={importing}>Cancelar</Button>
-                <Button
-                    onClick={handleImport}
-                    variant="contained"
-                    color="primary"
-                    disabled={importing || loading || selectedUsers.length === 0}
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title="Importar usuários do Azure AD"
+            subtitle="Contas do Microsoft Entra ID"
+            icon="cloud_upload"
+            size="detail"
+            loading={importing}
+            footer={
+                <Box
+                    data-testid="user-import-modal-footer"
+                    sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'flex-end', width: '100%' }}
                 >
-                    {importing ? <CircularProgress size={24} color="inherit" /> : 'Importar Selecionados'}
-                </Button>
-            </DialogActions>
-        </Dialog>
+                    <Button type="button" onClick={onClose} disabled={importing}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={handleImport}
+                        variant="contained"
+                        color="primary"
+                        disabled={importing || loading || selectedUsers.length === 0}
+                        startIcon={importing ? <CircularProgress size={18} color="inherit" /> : null}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >
+                        {importing ? 'Importando…' : 'Importar selecionados'}
+                    </Button>
+                </Box>
+            }
+        >
+            {loading ? (
+                <Box display="flex" justifyContent="center" p={3}>
+                    <CircularProgress />
+                </Box>
+            ) : error ? (
+                <Alert severity="error">{error}</Alert>
+            ) : (
+                <>
+                    <Box mb={2}>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                            Selecione os usuários para importar ou atualizar. Os usuários existentes serão vinculados.
+                        </Typography>
+                    </Box>
+
+                    <Box mb={3} display="flex" gap={2} flexWrap="wrap">
+                        <TextField
+                            label="Buscar por nome ou e-mail"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            fullWidth
+                            sx={{ flex: '1 1 200px', minWidth: 0 }}
+                            placeholder="Digite para filtrar…"
+                        />
+                        <TextField
+                            select
+                            label="Atribuir perfil"
+                            value={selectedRole}
+                            onChange={(e) => setSelectedRole(e.target.value)}
+                            fullWidth
+                            sx={{ flex: '1 1 200px', minWidth: 0 }}
+                            helperText="Opcional"
+                        >
+                            <MenuItem value=""><em>Nenhum</em></MenuItem>
+                            {roles.map(r => (
+                                <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+
+                    <TableContainer sx={{ maxHeight: 400, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                        <Table stickyHeader size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            indeterminate={selectedUsers.length > 0 && selectedUsers.length < azureUsers.length}
+                                            checked={azureUsers.length > 0 && selectedUsers.length === azureUsers.length}
+                                            onChange={handleSelectAll}
+                                        />
+                                    </TableCell>
+                                    <TableCell>Nome</TableCell>
+                                    <TableCell>E-mail (UPN)</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredUsers.map((user) => {
+                                    const isSelected = selectedUsers.indexOf(user.id) !== -1;
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onClick={(event) => handleSelectUser({ target: { checked: !isSelected } }, user.id)}
+                                            role="checkbox"
+                                            aria-checked={isSelected}
+                                            tabIndex={-1}
+                                            key={user.id}
+                                            selected={isSelected}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <TableCell padding="checkbox">
+                                                <Checkbox checked={isSelected} />
+                                            </TableCell>
+                                            <TableCell>{user.displayName}</TableCell>
+                                            <TableCell>{user.userPrincipalName}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {azureUsers.length === 0 && (
+                                    <TableRow>
+                                        <TableCell colSpan={3} align="center">Nenhum usuário encontrado no Azure.</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Typography variant="caption" display="block" sx={{ mt: 1 }} color="text.secondary">
+                        {selectedUsers.length} usuário(s) selecionado(s).
+                    </Typography>
+                </>
+            )}
+        </StandardModal>
     );
 };
 

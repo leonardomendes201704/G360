@@ -7,6 +7,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Changed
+- **US-022 / EP-008:** `UserImportModal` migrado para `StandardModal` (importação Azure AD na aba Usuários; `size="detail"`; `loading` durante importação; `data-testid="user-import-modal-footer"`).
+  - `FRONTEND/src/components/modals/UserImportModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
 ### Docs
 - **Diário de trabalho (fora do Git):** orientação para entradas em prosa legível em **pt-BR** (`D:\Leonardo\Diario\README.md`); regra `.cursor/rules/work-diary.mdc` e secção em `CLAUDE.md` / `docs/trabalho-diario/README.md` alinhadas (título e texto humanos; vocabulário brasileiro: atualizar, registro, usuário, tela, arquivo; changelog do repositório mantém o detalhe técnico).
 

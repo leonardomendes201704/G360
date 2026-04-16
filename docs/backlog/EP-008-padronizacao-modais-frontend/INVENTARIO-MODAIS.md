@@ -70,7 +70,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 45 | `TaskModal.jsx` |
 | 46 | `TeamModal.jsx` |
 | 47 | `TenantModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
-| 48 | `UserImportModal.jsx` |
+| 48 | `UserImportModal.jsx` — migrado `StandardModal` (US-022, aba Usuários) |
 | 49 | `UserModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 
 *Nota:* `ProjectEditForm.jsx` e `ProjectCreationWizard.jsx` nao usam `Dialog` directamente (formularios auxiliares).
