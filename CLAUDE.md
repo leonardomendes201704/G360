@@ -169,6 +169,12 @@ docs/backlog/
    - **Data de conclusao** preenchida na tabela de metadados
    - Para **Bugs**, atualizar o campo "Correcao Aplicada" no BUGS.md com descricao objetiva da correcao
 
+7. **Commit e push ao concluir** — Sempre que uma **task**, **historia**, **bug** ou solicitacao com **alteracoes no repositorio** for concluida, o agente DEVE:
+   - Garantir `docs/CHANGELOG.md` atualizado na mesma entrega quando houver mudanca de produto ou documentacao relevante (ja exigido abaixo).
+   - Executar **`git commit`** com mensagem no formato do projeto (incluir ID US/BUG/Epic quando aplicavel).
+   - Executar **`git push`** para o remoto do branch atual.
+   Excecoes: o usuario pedir explicitamente para nao commitar/push; ou impossibilidade tecnica (sem credenciais, sem rede) — nesse caso registar no chat o que ficou pendente.
+
    Exemplo de secao de resolucao:
    ```markdown
    ## Resolucao
@@ -199,10 +205,11 @@ Os arquivos MD foram projetados para facilitar copy-paste no Azure DevOps:
    b. Criar User Stories com Tasks
    c. Atualizar _INDEX.md
    d. Iniciar implementacao atualizando status
-   e. Ao finalizar, marcar como Resolved
+   e. Ao finalizar, marcar como Resolved (e documentar Resolucao quando aplicavel)
+   f. Commit + push (ver regra 7 em Regras de Gestao)
 4. SE NAO justifica:
    a. Executar diretamente
-   b. Registrar como nota no commit
+   b. CHANGELOG se aplicavel, depois commit + push ao concluir a entrega
 ```
 
 ### Changelog
@@ -238,13 +245,13 @@ O agente DEVE manter um arquivo `docs/CHANGELOG.md` atualizado a cada commit. O 
 
 ### Diario de trabalho
 
-O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega material no repositorio (codigo, testes, resolucao documentada de backlog/US/BUG, etc.) em `docs/trabalho-diario/`, para controle de horas e rastreabilidade. Ver `docs/trabalho-diario/README.md` para formato e exemplos.
+O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega material no repositorio (codigo, testes, resolucao documentada de backlog/US/BUG, etc.) no **diario central**, fora do Git: **`D:\Leonardo\Diario\diary.md`**. Formato alinhado ao VisionAssets (blocos **Quando** / **Projeto** / **Titulo**, `(timezone: local)` = horario local da maquina). Convencoes: `D:\Leonardo\Diario\README.md`. Ponte no repo: `docs/trabalho-diario/README.md`.
 
 **Regras:**
 
-1. Ao **concluir** uma solicitacao com entrega material, **acrescentar** uma entrada ao final do arquivo do dia `docs/trabalho-diario/YYYY-MM-DD.md` (data do encerramento da entrega).
-2. Se o arquivo do dia **nao existir**, cria-lo com a primeira entrada.
-3. Cada entrada deve ter **data e hora**, **titulo**, **descricao** (incluir principais arquivos e testes quando houver) e **Projeto** (padrao: **G360**, salvo outro nome indicado pelo usuario). Incluir **ID** de US/BUG quando existir.
+1. Ao **concluir** uma solicitacao com entrega material, **inserir** uma entrada no **topo** da lista em `D:\Leonardo\Diario\diary.md` (apos cabecalho/nota, antes da primeira entrada existente), para ordem **descendente** por data/hora (nao usar `docs/trabalho-diario/diary.md` como destino canónico).
+2. Se `D:\Leonardo\Diario\diary.md` **nao existir**, criar a pasta `D:\Leonardo\Diario\`, o `README.md` de convencoes e o `diary.md` com cabecalho minimo, depois acrescentar a entrada.
+3. Cada entrada deve ter **Quando** (ISO com timezone), **Projeto** (padrao **G360**, salvo outro nome indicado pelo usuario), **Titulo** e paragrafo descritivo; incluir **Work item** US/BUG no texto quando existir.
 4. Perguntas puramente informativas **sem** alteracao no repositorio: entrada **nao** obrigatoria; se o usuario pedir registro, registrar.
 5. O diario **nao substitui** `docs/CHANGELOG.md` em commits com mudancas de produto — manter ambos quando aplicavel.
 
@@ -278,3 +285,5 @@ tipo(escopo): descricao curta
 Tipos: feat, fix, docs, refactor, test, chore, style, perf
 Escopo: modulo ou work item (ex: feat(helpdesk): ..., fix(US-012): ...)
 ```
+
+Apos **cada task ou entrega concluida** com mudancas no repo: **commit** + **push** (diretriz obrigatoria; ver **Regras de Gestao** item 7).

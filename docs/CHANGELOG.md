@@ -7,6 +7,57 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Changed
+- **US-022 / EP-008 (encerrados):** `ConfirmDialog` passa a usar `StandardModal`; lote 2 financeiro (`BudgetModal`, `AccountModal`, `CostCenterModal`); `FreezeWindowsTab` sem `Dialog` inline; inventario e backlog actualizados.
+  - `FRONTEND/src/components/common/ConfirmDialog.jsx`
+  - `FRONTEND/src/components/modals/BudgetModal.jsx`
+  - `FRONTEND/src/components/modals/AccountModal.jsx`
+  - `FRONTEND/src/components/modals/CostCenterModal.jsx`
+  - `FRONTEND/src/components/admin/FreezeWindowsTab.jsx`
+  - `docs/patterns/modal-shell.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/EPIC.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/US-022-padronizacao-modais-shell-e-migracao.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+  - `docs/backlog/_INDEX.md`
+
+### Docs
+- **CLAUDE.md:** diretriz obrigatória — ao concluir task ou entrega com alterações no repositório, **`git commit`** + **`git push`** (Regras de Gestão §7; fluxo de trabalho).
+- **Diário de trabalho:** destino canónico outra vez **`D:\Leonardo\Diario\diary.md`**; `CLAUDE.md`, `.cursor/rules/work-diary.mdc` e `docs/trabalho-diario/README.md` atualizados; `docs/trabalho-diario/diary.md` no repo passa a ser nota de redirecionamento.
+
+### Fixed
+- **`StandardModal`:** `DialogContent` com `padding-top` explícito (`spacing(3) !important`) para contrariar o reset do MUI após `DialogTitle`, evitando cortar labels de campos (ex.: LDAP **Porta**).
+- **`StandardModal`:** `padding-bottom` do corpo com `calc(spacing(2) + 5px)` para mais respiro acima do footer.
+
+### Changed
+- **`StandardModal`:** botões do array `actions` sem gradiente no último botão — `contained` + `primary` do tema (`textTransform: none`, `fontWeight: 600`).
+- **`StandardModal`:** layout em coluna com corpo scrollável e rodapé fixo; presets `size` (`form`/`detail`/`wide`/`xl`); prop `footer` para ações customizadas; raio `--g360-radius-modal`; `aria-labelledby`.
+  - `FRONTEND/src/components/common/StandardModal.jsx`
+- **`LdapConfigModal`:** passa a usar `StandardModal`; formulário com `footer` assimétrico (testar conexão + cancelar/salvar).
+  - `FRONTEND/src/components/modals/LdapConfigModal.jsx`
+- **`IntegrationsTab`:** cartão **AD Local (LDAP)** abre o `LdapConfigModal` (integração visível na aba Integrações).
+  - `FRONTEND/src/components/config/IntegrationsTab.jsx`
+- **US-022 (lote 1):** `NotificationsModal` e `RescheduleModal` migrados para `StandardModal` (cabeçalho + corpo scroll + footer).
+  - `FRONTEND/src/components/modals/NotificationsModal.jsx`
+  - `FRONTEND/src/components/modals/RescheduleModal.jsx`
+- **US-022 (lote 1):** `DepartmentModal` migrado para `StandardModal` (formulário diretoria / `OrganizationPage`).
+  - `FRONTEND/src/components/modals/DepartmentModal.jsx`
+
+### Added
+- **Testes** `StandardModal`: `FRONTEND/src/components/common/__tests__/StandardModal.test.jsx`
+- **Padrão** `docs/patterns/modal-shell.md` — API, presets, validação manual e comando Vitest.
+
+### Docs
+- **EP-008 / US-022 — Padronização de modais (frontend):** épico, inventário de `Dialog`/modais no `FRONTEND`, PBI/US com tasks e boas práticas em `docs/backlog/EP-008-padronizacao-modais-frontend/`.
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/EPIC.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/US-022-padronizacao-modais-shell-e-migracao.md`
+  - `docs/backlog/_INDEX.md`
+- **Diário de trabalho no repositório:** registo de tarefas em `docs/trabalho-diario/diary.md` (versionado); `docs/trabalho-diario/README.md`, `CLAUDE.md` e `.cursor/rules/work-diary.mdc` alinhados — o diário como projeto à parte não substitui o registo no G360.
+  - `docs/trabalho-diario/diary.md`
+  - `docs/trabalho-diario/README.md`
+  - `CLAUDE.md`
+  - `.cursor/rules/work-diary.mdc`
+
 ### Added
 - **Seed 3 áreas (workflow E2E):** três departamentos + centros de custo, gestores e colaboradores, projeto + tarefa de projeto + tarefa operacional + incidente + risco (owner = colaborador) + ativo + GMUD + despesa; script `npm run seed:three-areas:all` em todos os tenants. E2E `e2e/three-areas-isolation.spec.ts` (projetos por gestor; incidentes/riscos por colaborador TI). `data-testid="risks-view-list"` na página de riscos para alternar para lista.
   - `BACKEND/src/scripts/seed-three-areas-workflow.js`
@@ -19,14 +70,6 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `BACKEND/src/scripts/seed-suppliers.js`
   - `BACKEND/src/scripts/seed-suppliers-all-tenants.js`
   - `BACKEND/package.json` (script `seed:suppliers:all`)
-
-### Docs
-- Diario de trabalho para controle de horas: pasta `docs/trabalho-diario/` com `README.md` (convencao, template, exemplos); `CLAUDE.md` atualizado com regras obrigatorias de registro ao concluir entregas materiais; primeiro registro do dia em `2026-04-16.md`.
-  - `docs/trabalho-diario/README.md`
-  - `docs/trabalho-diario/2026-04-16.md`
-  - `CLAUDE.md`
-- Registro **retroativo** do trabalho de 2026-04-15 no diario (fonte: secao `[2026-04-15]` do changelog; horarios nao disponiveis).
-  - `docs/trabalho-diario/2026-04-15.md`
 
 ---
 
