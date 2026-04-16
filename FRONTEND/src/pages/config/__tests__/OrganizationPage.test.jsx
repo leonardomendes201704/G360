@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import OrganizationPage from '../OrganizationPage';
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -32,13 +33,15 @@ vi.mock('../../../components/common/ConfirmDialog', () => ({ default: () => <div
 const renderWithProviders = (ui, role = 'Admin') => {
     const mockUser = { id: 'u1', name: 'Admin', role: { name: role }, schema: 'public' };
     return render(
-        <SnackbarProvider>
-            <AuthContext.Provider value={{ user: mockUser, hasPermission: () => true }}>
-                <ThemeContext.Provider value={{ mode: 'light' }}>
-                    {ui}
-                </ThemeContext.Provider>
-            </AuthContext.Provider>
-        </SnackbarProvider>
+        <MemoryRouter>
+            <SnackbarProvider>
+                <AuthContext.Provider value={{ user: mockUser, hasPermission: () => true }}>
+                    <ThemeContext.Provider value={{ mode: 'light' }}>
+                        {ui}
+                    </ThemeContext.Provider>
+                </AuthContext.Provider>
+            </SnackbarProvider>
+        </MemoryRouter>
     );
 };
 

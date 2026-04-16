@@ -1,0 +1,29 @@
+---
+description: Ao concluir tarefas no G360, registar entrada no diário central D:\Leonardo\Diario\diary.md (formato VisionAssets).
+alwaysApply: true
+---
+
+# Diário de trabalho (G360)
+
+Quando **concluíres uma tarefa** com entregável no repositório G360, **insere** em **`D:\Leonardo\Diario\diary.md`** uma entrada **no topo da lista** (após cabeçalho/nota, antes da primeira entrada `---`), no formato abaixo (igual ao VisionAssets), para manter **data/hora descendente**.
+
+- O registo **canónico** é **fora** do Git deste projeto (`D:\Leonardo\Diario\`).
+- Se o ficheiro ou pasta não existir, cria `D:\Leonardo\Diario\` e segue o `README.md` desse diretório.
+
+## Formato
+
+```markdown
+---
+
+**Quando:** YYYY-MM-DDTHH:mm (timezone: local)
+**Projeto:** G360
+**Título:** <uma linha>
+
+<parágrafo: o que foi feito; paths relativos ao repo se útil>
+```
+
+Opcional: mencionar US-xxx / BUG-xxx no texto.
+
+## Exceções
+
+- Consultas sem alterações ao código: só regista se o utilizador pedir.

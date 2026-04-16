@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Button, IconButton, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Switch, FormControlLabel } from '@mui/material';
+import { Box, Button, IconButton, Typography, TextField, Switch, FormControlLabel } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -187,24 +188,73 @@ const FreezeWindowsTab = () => {
                     </Box>
                 </Box>
 
-                <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: cardBg, border: cardBorder, borderRadius: '16px' } }}>
-                    <DialogTitle sx={{ color: textPrimary, borderBottom: cardBorder }}>{editingId ? 'Editar Janela' : 'Nova Janela de Congelamento'}</DialogTitle>
-                    <DialogContent>
-                        <Box display="flex" flexDirection="column" gap={2} pt={2}>
-                            <TextField label="Nome do Evento" fullWidth value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} sx={inputSx} />
-                            <TextField label="Descricao / Modulos Afetados" fullWidth multiline rows={2} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} sx={inputSx} />
-                            <Box display="flex" gap={2}>
-                                <DatePicker label="Data Inicio" value={formData.startDate} onChange={(v) => setFormData({ ...formData, startDate: v })} slotProps={{ textField: { fullWidth: true, sx: inputSx } }} />
-                                <DatePicker label="Data Fim" value={formData.endDate} onChange={(v) => setFormData({ ...formData, endDate: v })} slotProps={{ textField: { fullWidth: true, sx: inputSx } }} />
-                            </Box>
-                            <FormControlLabel control={<Switch checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} />} label="Janela Ativa" sx={{ color: textSecondary }} />
+                <StandardModal
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    title={editingId ? 'Editar janela' : 'Nova janela de congelamento'}
+                    subtitle="Período e módulos afetados"
+                    icon="lock_clock"
+                    size="form"
+                    footer={
+                        <>
+                            <Button type="button" onClick={() => setOpenModal(false)} sx={{ color: textSecondary }}>
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => void handleSave()}
+                                sx={{ textTransform: 'none', fontWeight: 600 }}
+                            >
+                                Salvar
+                            </Button>
+                        </>
+                    }
+                >
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <TextField
+                            label="Nome do evento"
+                            fullWidth
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            sx={inputSx}
+                        />
+                        <TextField
+                            label="Descrição / módulos afetados"
+                            fullWidth
+                            multiline
+                            rows={2}
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            sx={inputSx}
+                        />
+                        <Box display="flex" gap={2} flexDirection={{ xs: 'column', sm: 'row' }}>
+                            <DatePicker
+                                label="Data início"
+                                value={formData.startDate}
+                                onChange={(v) => setFormData({ ...formData, startDate: v })}
+                                slotProps={{ textField: { fullWidth: true, sx: inputSx } }}
+                            />
+                            <DatePicker
+                                label="Data fim"
+                                value={formData.endDate}
+                                onChange={(v) => setFormData({ ...formData, endDate: v })}
+                                slotProps={{ textField: { fullWidth: true, sx: inputSx } }}
+                            />
                         </Box>
-                    </DialogContent>
-                    <DialogActions sx={{ borderTop: cardBorder, p: 2 }}>
-                        <Button onClick={() => setOpenModal(false)} sx={{ color: textSecondary }}>Cancelar</Button>
-                        <Button onClick={handleSave} sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', borderRadius: '8px', px: 3 }}>Salvar</Button>
-                    </DialogActions>
-                </Dialog>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={formData.isActive}
+                                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                                />
+                            }
+                            label="Janela ativa"
+                            sx={{ color: textSecondary }}
+                        />
+                    </Box>
+                </StandardModal>
             </>
         </LocalizationProvider>
     );

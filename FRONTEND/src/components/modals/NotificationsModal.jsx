@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Button,
     List,
     ListItem,
@@ -12,10 +8,8 @@ import {
     ListItemAvatar,
     Avatar,
     Typography,
-    IconButton,
     Box,
     CircularProgress,
-    Divider
 } from '@mui/material';
 import {
     Notifications as NotificationsIcon,
@@ -23,13 +17,13 @@ import {
     Warning as WarningIcon,
     Info as InfoIcon,
     Error as ErrorIcon,
-    Close as CloseIcon,
     DoneAll as DoneAllIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import notificationService from '../../services/notification.service';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import StandardModal from '../common/StandardModal';
 
 const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
     const [notifications, setNotifications] = useState([]);
@@ -38,7 +32,6 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
     const isDark = mode === 'dark';
     const navigate = useNavigate();
 
-    // Fetch all notifications when modal opens
     useEffect(() => {
         if (open) {
             fetchNotifications();
@@ -48,11 +41,7 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
     const fetchNotifications = async () => {
         setLoading(true);
         try {
-            // Fetch ALL notifications (no limit)
-            const { notifications: list } = await notificationService.getAll(); // Assuming service supports this or defaults to listing
-            // Currently service.getAll() calls /notifications which by default uses limit=50.
-            // We might want to pass ?all=true or limit=100
-            // For now, standard fetch is fine.
+            const { notifications: list } = await notificationService.getAll();
             setNotifications(list);
         } catch (error) {
             console.error("Failed to load notifications", error);
@@ -64,7 +53,6 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
     const handleMarkAsRead = async (id) => {
         try {
             await notificationService.markAsRead(id);
-            // Update local state to reflect change immediately
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
         } catch (error) {
             console.error(error);
@@ -98,19 +86,55 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
-                <Box display="flex" alignItems="center" gap={1}>
-                    <NotificationsIcon color="primary" />
-                    Todas as Notificações
-                </Box>
-                <IconButton onClick={onClose} size="small">
-                    <CloseIcon />
-                </IconButton>
-            </DialogTitle>
-            <Divider />
-
-            <DialogContent sx={{ p: 0, height: '60vh', display: 'flex', flexDirection: 'column' }}>
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title="Todas as Notificações"
+            subtitle="Histórico e leituras"
+            icon="notifications"
+            size="form"
+            loading={loading}
+            contentSx={{
+                p: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0,
+            }}
+            footer={
+                <>
+                    <Button
+                        type="button"
+                        startIcon={<DoneAllIcon />}
+                        onClick={() => {
+                            onMarkAllRead();
+                            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+                        }}
+                        disabled={notifications.every(n => n.isRead)}
+                        sx={{ mr: 'auto', textTransform: 'none' }}
+                    >
+                        Marcar tudo como lido
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={onClose}
+                        variant="contained"
+                        color="primary"
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >
+                        Fechar
+                    </Button>
+                </>
+            }
+        >
+            <Box
+                sx={{
+                    height: '60vh',
+                    minHeight: 200,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'auto',
+                }}
+            >
                 {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" flex={1}>
                         <CircularProgress />
@@ -123,7 +147,7 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
                         </Typography>
                     </Box>
                 ) : (
-                    <List sx={{ pt: 0 }}>
+                    <List sx={{ pt: 0, pb: 0 }}>
                         {notifications.map((notif) => (
                             <ListItem
                                 key={notif.id}
@@ -167,28 +191,9 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
                         ))}
                     </List>
                 )}
-            </DialogContent>
-
-            <Divider />
-            <DialogActions sx={{ p: 2 }}>
-                <Button
-                    startIcon={<DoneAllIcon />}
-                    onClick={() => {
-                        onMarkAllRead();
-                        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-                    }}
-                    disabled={notifications.every(n => n.isRead)}
-                >
-                    Marcar tudo como lido
-                </Button>
-                <Button onClick={onClose}>
-                    Fechar
-                </Button>
-            </DialogActions>
-        </Dialog>
+            </Box>
+        </StandardModal>
     );
 };
 
 export default NotificationsModal;
-
-

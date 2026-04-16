@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
-    TextField, Button, Alert, CircularProgress, Box
+    TextField, Button, Alert, CircularProgress, Box,
 } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import integrationService from '../../services/integration.service';
+
+const LDAP_FORM_ID = 'ldap-config-form';
 
 const LdapConfigModal = ({ open, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -71,12 +73,10 @@ const LdapConfigModal = ({ open, onClose, onSuccess }) => {
         setLoading(true);
         setMessage(null);
         try {
-            // Primeiro salva a configuração atual
             await integrationService.update('LDAP', {
                 isEnabled: true,
                 config: formData
             });
-            // Testa a conexão
             const result = await integrationService.testConnection('LDAP');
             setMessage({ type: 'success', text: result.message || 'Conexão LDAP estabelecida com sucesso!' });
         } catch (error) {
@@ -87,80 +87,98 @@ const LdapConfigModal = ({ open, onClose, onSuccess }) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Configuração AD Local (LDAP)</DialogTitle>
-            <form onSubmit={handleSubmit}>
-                <DialogContent>
-                    {message && <Alert severity={message.type} sx={{ mb: 2 }}>{message.text}</Alert>}
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <TextField
-                                fullWidth
-                                sx={{ flex: 2 }}
-                                label="Host / IP Servidor"
-                                name="host"
-                                value={formData.host}
-                                onChange={handleChange}
-                                required
-                                placeholder="192.168.1.10"
-                            />
-                            <TextField
-                                fullWidth
-                                sx={{ flex: 1 }}
-                                label="Porta"
-                                name="port"
-                                value={formData.port}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Box>
-
-                        <TextField
-                            fullWidth
-                            label="Base DN"
-                            name="baseDN"
-                            value={formData.baseDN}
-                            onChange={handleChange}
-                            required
-                            placeholder="dc=empresa,dc=local"
-                        />
-                        <TextField
-                            fullWidth
-                            label="Bind DN (Usuário Leitura)"
-                            name="bindDN"
-                            value={formData.bindDN}
-                            onChange={handleChange}
-                            required
-                            placeholder="cn=admin,dc=empresa,dc=local"
-                        />
-                        <TextField
-                            fullWidth
-                            label="Senha do Bind"
-                            name="bindPassword"
-                            type="password"
-                            value={formData.bindPassword}
-                            onChange={handleChange}
-                            required
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title="Configuração AD Local (LDAP)"
+            subtitle="Integração com diretório"
+            icon="vpn_key"
+            size="detail"
+            loading={loading}
+            footer={
+                <>
                     <Button
+                        type="button"
                         onClick={handleTestConnection}
                         color="secondary"
                         variant="outlined"
+                        disabled={loading}
                         sx={{ mr: 'auto' }}
                     >
                         Testar Conexão
                     </Button>
-                    <Button onClick={onClose}>Cancelar</Button>
-                    <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                    <Button type="button" onClick={onClose} disabled={loading}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="submit"
+                        form={LDAP_FORM_ID}
+                        variant="contained"
+                        color="primary"
+                        disabled={loading}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >
                         {loading ? <CircularProgress size={24} /> : 'Salvar'}
                     </Button>
-                </DialogActions>
+                </>
+            }
+        >
+            <form id={LDAP_FORM_ID} onSubmit={handleSubmit}>
+                {message && <Alert severity={message.type} sx={{ mb: 2 }}>{message.text}</Alert>}
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <TextField
+                            fullWidth
+                            sx={{ flex: 2 }}
+                            label="Host / IP Servidor"
+                            name="host"
+                            value={formData.host}
+                            onChange={handleChange}
+                            required
+                            placeholder="192.168.1.10"
+                        />
+                        <TextField
+                            fullWidth
+                            sx={{ flex: 1 }}
+                            label="Porta"
+                            name="port"
+                            value={formData.port}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Box>
+
+                    <TextField
+                        fullWidth
+                        label="Base DN"
+                        name="baseDN"
+                        value={formData.baseDN}
+                        onChange={handleChange}
+                        required
+                        placeholder="dc=empresa,dc=local"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Bind DN (Usuário Leitura)"
+                        name="bindDN"
+                        value={formData.bindDN}
+                        onChange={handleChange}
+                        required
+                        placeholder="cn=admin,dc=empresa,dc=local"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Senha do Bind"
+                        name="bindPassword"
+                        type="password"
+                        value={formData.bindPassword}
+                        onChange={handleChange}
+                        required
+                    />
+                </Box>
             </form>
-        </Dialog>
+        </StandardModal>
     );
 };
 

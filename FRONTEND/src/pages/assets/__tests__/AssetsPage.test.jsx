@@ -90,8 +90,8 @@ describe('AssetsPage', () => {
         // 1 item in maintenance
         expect(screen.getAllByText('1')[0]).toBeInTheDocument();
 
-        // Value: 5000 + 15000 = 20000
-        expect(screen.getAllByText(/20\s*mil/i)[0]).toBeInTheDocument();
+        // Value: 5000 + 15000 = 20000 — compact pt-BR (ex.: "R$ 20,0 mil"); pode repetir no dashboard
+        expect(screen.getAllByText(/R\$\s*20[,.]?\d*\s*mil/i)[0]).toBeInTheDocument();
     });
 
     it('should switch to List view and filter assets', async () => {

@@ -14,6 +14,7 @@
 | EP-005 | Melhorias de UX - Administracao e Configuracao | Fase 5 | Media      | Closed | 2         | EP-002, EP-003 |
 | EP-006 | Melhorias de UX - Dashboard do Tenant (refinamentos) | Fase 6 | Media      | Closed | 1         | EP-004     |
 | EP-007 | Padronizacao de filtros em modulos (off-canvas)       | -      | Media      | Closed | 1         | EP-002     |
+| EP-008 | Padronizacao e componentizacao de modais (Frontend)     | -      | Alta       | Closed | 1         | EP-002, EP-003 |
 
 ## Historias por Epico
 
@@ -73,30 +74,38 @@
 |--------|----------------------------------------------------------|--------|------------|--------|
 | US-021 | Filtros de Incidentes em drawer off-canvas                | 3      | Media      | Resolved |
 
+### EP-008 - Padronizacao e componentizacao de modais (Frontend)
+
+| ID     | Titulo                                                   | Pontos | Prioridade | Status |
+|--------|----------------------------------------------------------|--------|------------|--------|
+| US-022 | Padronizacao de modais — shell reutilizavel e migracao progressiva | 13     | Alta       | Resolved |
+
 ## Resumo
 
 | Metrica                    | Valor |
 |----------------------------|-------|
-| Total de Epicos            | 7     |
-| Total de Historias         | 21    |
-| Total de Story Points      | 94    |
+| Total de Epicos            | 8     |
+| Total de Historias         | 22    |
+| Total de Story Points      | 107   |
 | Total de Bugs              | 5     |
-| Historias Concluidas       | 21    |
+| Historias Concluidas       | 22    |
+| Historias Abertas (novas)  | 0     |
 | Bugs Resolvidos            | 5     |
 
 ## Proximos IDs Disponiveis
 
 | Tipo    | Proximo ID |
 |---------|------------|
-| Epic    | EP-008     |
-| Story   | US-022     |
+| Epic    | EP-009     |
+| Story   | US-023     |
 | Bug     | BUG-006    |
 
 ## Ordem de Execucao Recomendada
 
 ```
 EP-001 ─> EP-002 ─> EP-003 ─> EP-004 (Dashboard UX, encerrado) ─> EP-005 (Admin/Config) ─> EP-006 (Dashboard tenant)
+EP-008 (Padronizacao modais) — depende de EP-002, EP-003; pode correr em paralelo a outros epicos fechados
 ```
 
 ---
-*Ultima atualizacao: 2026-04-15*
+*Ultima atualizacao: 2026-04-16*

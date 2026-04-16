@@ -3,10 +3,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import {
     Box, Typography, Grid, Card, CardContent, CardActions, Button, Chip, Divider
 } from '@mui/material';
-import { Settings, CheckCircle, Cancel, Cloud, Mail } from '@mui/icons-material';
+import { Settings, CheckCircle, Cancel, Cloud, Mail, VpnKey } from '@mui/icons-material';
 import integrationService from '../../services/integration.service';
 import AzureConfigModal from '../modals/AzureConfigModal';
 import SmtpConfigModal from '../modals/SmtpConfigModal';
+import LdapConfigModal from '../modals/LdapConfigModal';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 const AVAILABLE_INTEGRATIONS = [
@@ -24,6 +25,13 @@ const AVAILABLE_INTEGRATIONS = [
         icon: <Mail sx={{ fontSize: 36, color: '#EA4335' }} />,
         color: '#EA4335',
     },
+    {
+        type: 'LDAP',
+        name: 'AD Local (LDAP)',
+        description: 'Sincronização e autenticação contra diretório LDAP / Active Directory no ambiente local.',
+        icon: <VpnKey sx={{ fontSize: 36, color: '#6366f1' }} />,
+        color: '#6366f1',
+    },
 ];
 
 const IntegrationsTab = () => {
@@ -33,6 +41,7 @@ const IntegrationsTab = () => {
     const [loading, setLoading] = useState(false);
     const [azureModalOpen, setAzureModalOpen] = useState(false);
     const [smtpModalOpen, setSmtpModalOpen] = useState(false);
+    const [ldapModalOpen, setLdapModalOpen] = useState(false);
 
     const loadData = async () => {
         setLoading(true);
@@ -53,6 +62,7 @@ const IntegrationsTab = () => {
     const handleConfig = (type) => {
         if (type === 'AZURE') setAzureModalOpen(true);
         if (type === 'SMTP') setSmtpModalOpen(true);
+        if (type === 'LDAP') setLdapModalOpen(true);
     };
 
     const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
@@ -164,6 +174,14 @@ const IntegrationsTab = () => {
                 <SmtpConfigModal
                     open={smtpModalOpen}
                     onClose={() => setSmtpModalOpen(false)}
+                    onSuccess={loadData}
+                />
+            )}
+
+            {ldapModalOpen && (
+                <LdapConfigModal
+                    open={ldapModalOpen}
+                    onClose={() => setLdapModalOpen(false)}
                     onSuccess={loadData}
                 />
             )}

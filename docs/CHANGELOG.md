@@ -28,6 +28,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **Diário de trabalho:** destino canónico outra vez **`D:\Leonardo\Diario\diary.md`**; `CLAUDE.md`, `.cursor/rules/work-diary.mdc` e `docs/trabalho-diario/README.md` atualizados; `docs/trabalho-diario/diary.md` no repo passa a ser nota de redirecionamento.
 
 ### Fixed
+- **Vitest:** `OrganizationPage` envolvido em `MemoryRouter` (uso de `useSearchParams`); KPI **Valor Patrimônio** em `AssetsPage` assert com formato compacto `Intl` pt-BR e `getAllByText` quando o valor aparece mais do que uma vez.
+  - `FRONTEND/src/pages/config/__tests__/OrganizationPage.test.jsx`
+  - `FRONTEND/src/pages/assets/__tests__/AssetsPage.test.jsx`
 - **`StandardModal`:** `DialogContent` com `padding-top` explícito (`spacing(3) !important`) para contrariar o reset do MUI após `DialogTitle`, evitando cortar labels de campos (ex.: LDAP **Porta**).
 - **`StandardModal`:** `padding-bottom` do corpo com `calc(spacing(2) + 5px)` para mais respiro acima do footer.
 
