@@ -8,6 +8,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — ITSM / mudanças:** `ChangeModal` e `ChangeViewModal` migrados para `StandardModal` (`wide`, ícone `sync`); formulário GMUD com rodapé em botões MUI (wizard: voltar/próximo/criar; rascunho: salvar); leitura com abas e lifecycle; `ConfirmDialog` permanece irmão do shell; `ChangeViewDataField` componente estático.
+  - `FRONTEND/src/components/modals/ChangeModal.jsx`
+  - `FRONTEND/src/components/modals/ChangeViewModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — domínio Ativos:** `AssetModal` (`wide`), `AssetViewModal` (`detail`; campos extraídos para componentes estáticos), `AssetMaintenanceModal` (`form`; botão salvar `contained`/`warning`); `AssetModal` passa a renderizar `AssetMaintenanceModal` como irmão do shell; validação de contrato em ativo locado com mensagem visível.
   - `FRONTEND/src/components/modals/AssetModal.jsx`
   - `FRONTEND/src/components/modals/AssetViewModal.jsx`

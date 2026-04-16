@@ -36,8 +36,8 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 11 | `BudgetImportModal.jsx` — migrado `StandardModal` (US-022) |
 | 12 | `BudgetItemModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
 | 13 | `BudgetModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
-| 14 | `ChangeModal.jsx` |
-| 15 | `ChangeViewModal.jsx` |
+| 14 | `ChangeModal.jsx` — migrado `StandardModal` (US-022 ITSM; `wide`; wizard + abas; `ConfirmDialog` fora) |
+| 15 | `ChangeViewModal.jsx` — migrado `StandardModal` (US-022 ITSM; `wide`; `ChangeViewDataField` extraído) |
 | 16 | `ContractCreationWizard.jsx` (inclui dialog aninhado “Novo tipo”) |
 | 17 | `ContractModal.jsx` |
 | 18 | `CostCenterModal.jsx` — migrado `StandardModal` (US-022 lote 2) |

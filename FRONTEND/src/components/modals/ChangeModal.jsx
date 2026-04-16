@@ -7,7 +7,8 @@ import {
     Add, Delete, ThumbUp, ThumbDown, AttachFile, CheckCircle,
     Schedule, Assignment, People, PlayArrow, History, Warning
 } from '@mui/icons-material';
-import { IconButton, Button, List, ListItem, ListItemText, ListItemAvatar, Avatar, Alert, Chip, Divider, LinearProgress, Tooltip, Dialog } from '@mui/material';
+import { IconButton, Button, Box, List, ListItem, ListItemText, ListItemAvatar, Avatar, Alert, Chip, Divider, LinearProgress, Tooltip } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import StatusChip from '../common/StatusChip';
 import userService from '../../services/user.service';
 import * as assetService from '../../services/asset.service';
@@ -433,6 +434,9 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
     const myApproval = currentApprovers.find(app => (app.userId === user?.id || app.user?.id === user?.id));
     const isMyApprovalPending = myApproval && myApproval.status === 'PENDING';
 
+    const gmudModalTitle = isViewMode ? 'Detalhes da GMUD' : (change ? 'Editar GMUD' : 'Nova solicitação');
+    const gmudModalSubtitle = change?.code || 'Preencha os dados para registrar a mudança';
+
     if (!open) return null;
 
     const inputClass = `form-input ${isViewMode ? 'disabled-input' : ''}`;
@@ -440,59 +444,73 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
     const textareaClass = `form-textarea ${isViewMode ? 'disabled-input' : ''}`;
 
     return (
-        <Dialog
-            open={true}
-            onClose={onClose}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    border: '1px solid var(--modal-border)',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                    color: 'var(--modal-text)',
-                    maxHeight: '70vh',
-                    overflow: 'visible',
+        <>
+            <StandardModal
+                open={open}
+                onClose={onClose}
+                title={gmudModalTitle}
+                subtitle={gmudModalSubtitle}
+                icon="sync"
+                size="wide"
+                loading={loading}
+                contentSx={{
+                    p: 0,
                     display: 'flex',
                     flexDirection: 'column',
+                    flex: 1,
+                    minHeight: 0,
+                    overflow: 'hidden',
+                }}
+                footer={
+                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        <Button type="button" variant="outlined" color="inherit" onClick={onClose} sx={{ textTransform: 'none', fontWeight: 600, mr: 'auto' }}>
+                            {isViewMode ? 'Fechar' : 'Cancelar'}
+                        </Button>
+                        {isWizardMode && (
+                            <>
+                                {activeStep > 0 && (
+                                    <Button type="button" variant="outlined" onClick={handleBackStep} sx={{ textTransform: 'none' }}>
+                                        ← Voltar
+                                    </Button>
+                                )}
+                                {activeStep < 1 && (
+                                    <Button type="button" variant="contained" color="primary" onClick={handleNextStep} disabled={!canProceedStep} sx={{ textTransform: 'none' }}>
+                                        Próximo →
+                                    </Button>
+                                )}
+                                {activeStep === 1 && (
+                                    <Button type="submit" form="gmudForm" variant="contained" color="success" disabled={loading || !canProceedStep} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                        Criar GMUD
+                                    </Button>
+                                )}
+                            </>
+                        )}
+                        {!isWizardMode && !isViewMode && (!change || change.status === 'DRAFT' || change.status === 'REVISION_REQUESTED') && (
+                            <Button type="submit" form="gmudForm" variant="contained" color="primary" disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                {change ? 'Salvar alterações' : 'Criar GMUD'}
+                            </Button>
+                        )}
+                    </Box>
                 }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
-        >
-            <div className="change-modal-inner" style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh' }}>
-                {/* Premium Header */}
-                <div className="modal-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
-                    <div className="modal-icon gmud">🔄</div>
-                    <div className="modal-header-info" style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            <h2>{isViewMode ? 'Detalhes da GMUD' : (change ? 'Editar GMUD' : 'Nova Solicitação')}</h2>
-                            {/* Risk Badge */}
-                            {change && (
-                                <Chip
-                                    label={calculatedRisk.level || change.riskLevel}
-                                    size="small"
-                                    sx={{
-                                        bgcolor: calculatedRisk.level === 'CRITICO' ? 'error.main' :
-                                            calculatedRisk.level === 'ALTO' ? 'warning.main' :
-                                                calculatedRisk.level === 'MEDIO' ? 'info.main' : 'success.main',
-                                        color: 'var(--modal-text)',
-                                        fontWeight: 600,
-                                        fontSize: 10
-                                    }}
-                                />
-                            )}
-                        </div>
-                        <p>{change ? change.code : 'Preencha os dados para registrar a mudança'}</p>
-                    </div>
-                    {/* Autosave indicator */}
+            >
+            <div className="change-modal-inner" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(85dvh, 900px)' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, px: 3, pt: 1, pb: 0.5, flexShrink: 0 }}>
+                    {change && (
+                        <Chip
+                            label={calculatedRisk.level || change.riskLevel}
+                            size="small"
+                            sx={{
+                                bgcolor: calculatedRisk.level === 'CRITICO' ? 'error.main' :
+                                    calculatedRisk.level === 'ALTO' ? 'warning.main' :
+                                        calculatedRisk.level === 'MEDIO' ? 'info.main' : 'success.main',
+                                color: 'var(--modal-text)',
+                                fontWeight: 600,
+                                fontSize: 10
+                            }}
+                        />
+                    )}
                     {!isViewMode && !change && (
-                        <div className={`autosave-indicator ${autoSaveStatus}`}>
+                        <div className={`autosave-indicator ${autoSaveStatus}`} style={{ marginLeft: change ? undefined : 'auto' }}>
                             <span className="autosave-dot" style={{
                                 background: autoSaveStatus === 'saving' ? '#f59e0b' :
                                     autoSaveStatus === 'saved' ? '#10b981' : 'var(--modal-text-muted)'
@@ -501,8 +519,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                 autoSaveStatus === 'saved' ? 'Rascunho salvo' : ''}
                         </div>
                     )}
-                    <button className="modal-close" onClick={onClose}>✕</button>
-                </div>
+                </Box>
 
                 {/* Status Banner - Only for existing changes */}
                 {change && (
@@ -1373,63 +1390,8 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                         )}
                     </form>
                 </div>
-
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={onClose}>
-                        {isViewMode ? 'Fechar' : 'Cancelar'}
-                    </button>
-
-                    {/* Wizard Navigation Buttons */}
-                    {isWizardMode && (
-                        <div style={{ display: 'flex', gap: 12, marginLeft: 'auto' }}>
-                            {activeStep > 0 && (
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={handleBackStep}
-                                >
-                                    ← Voltar
-                                </button>
-                            )}
-                            {activeStep < 1 && (
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleNextStep}
-                                    disabled={!canProceedStep}
-                                    style={{
-                                        opacity: canProceedStep ? 1 : 0.5,
-                                        cursor: canProceedStep ? 'pointer' : 'not-allowed'
-                                    }}
-                                >
-                                    Próximo →
-                                </button>
-                            )}
-                            {activeStep === 1 && (
-                                <button
-                                    type="submit"
-                                    form="gmudForm"
-                                    className="btn btn-primary"
-                                    disabled={loading || !canProceedStep}
-                                    style={{
-                                        background: 'linear-gradient(135deg, #10b981, #059669)',
-                                        opacity: canProceedStep ? 1 : 0.5
-                                    }}
-                                >
-                                    <span>✓</span> Criar GMUD
-                                </button>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Standard Save Button for existing GMUDs */}
-                    {!isWizardMode && !isViewMode && (!change || change.status === 'DRAFT' || change.status === 'REVISION_REQUESTED') && (
-                        <button type="submit" form="gmudForm" className="btn btn-primary" disabled={loading}>
-                            <span>✓</span> {change ? 'Salvar Alterações' : 'Criar GMUD'}
-                        </button>
-                    )}
-                </div>
             </div>
+            </StandardModal>
             <ConfirmDialog
                 open={confirmDialog.open}
                 title={confirmDialog.title}
@@ -1440,7 +1402,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                 confirmColor={confirmDialog.confirmColor}
                 variant={confirmDialog.variant}
             />
-        </Dialog>
+        </>
     );
 };
 

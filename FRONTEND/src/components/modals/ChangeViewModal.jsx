@@ -1,29 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
 import {
-    Dialog, Box, Typography, Chip, IconButton, Avatar, Divider, Button, Alert
+    Box, Typography, Chip, Avatar, Button
 } from '@mui/material';
-import { Close, Edit, Schedule, CalendarToday, Person, Description, AttachFile } from '@mui/icons-material';
+import { Edit, AttachFile } from '@mui/icons-material';
 import { ThemeContext } from '../../contexts/ThemeContext';
-import { AuthContext } from '../../contexts/AuthContext';
 import StatusChip from '../common/StatusChip';
 import ChangeLifecycle from '../changes/ChangeLifecycle';
 import RiskGauge from '../changes/RiskGauge';
 import ExecutionTimeline from '../changes/ExecutionTimeline';
 import { getAttachments } from '../../services/change-request.service';
 import { getFileURL } from '../../utils/urlUtils';
+import StandardModal from '../common/StandardModal';
 import './ChangeModal.css';
-
-const STATUS_LABELS = {
-    DRAFT: 'Rascunho',
-    PENDING_APPROVAL: 'Aguardando Aprovação',
-    APPROVED: 'Aprovada',
-    APPROVED_WAITING_EXECUTION: 'Aguardando Execução',
-    REJECTED: 'Rejeitada',
-    EXECUTED: 'Executada',
-    FAILED: 'Falha na Execução',
-    REVISION_REQUESTED: 'Revisão Solicitada',
-    CANCELLED: 'Cancelada'
-};
 
 const TYPE_LABELS = { NORMAL: 'Normal', PADRAO: 'Padrão', EMERGENCIAL: 'Emergencial' };
 const IMPACT_LABELS = { MENOR: 'Menor', SIGNIFICATIVO: 'Significativo', MAIOR: 'Maior' };
@@ -41,9 +29,26 @@ function formatShortDate(dateStr) {
     return new Date(dateStr).toLocaleDateString('pt-BR');
 }
 
+function ChangeViewDataField({ label, value, icon, fullWidth = false, surfaceBg, borderColor, textMuted, textPrimary }) {
+    return (
+        <Box sx={{
+            p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}`,
+            gridColumn: fullWidth ? '1 / -1' : 'auto',
+            minHeight: 60, display: 'flex', flexDirection: 'column', gap: 0.5
+        }}>
+            <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                {icon && <span style={{ fontSize: '14px' }}>{icon}</span>}
+                {label}
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: textPrimary, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                {value || '—'}
+            </Typography>
+        </Box>
+    );
+}
+
 const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
     const { mode } = useContext(ThemeContext);
-    const { user } = useContext(AuthContext);
     const isDark = mode === 'dark';
     const [activeTab, setActiveTab] = useState('geral');
     const [attachments, setAttachments] = useState([]);
@@ -84,92 +89,69 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
     ];
     if (showExecution) tabs.push({ key: 'execucao', label: 'Execução', icon: '🚀' });
 
-    const DataField = ({ label, value, icon, fullWidth = false }) => (
-        <Box sx={{
-            p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}`,
-            gridColumn: fullWidth ? '1 / -1' : 'auto',
-            minHeight: 60, display: 'flex', flexDirection: 'column', gap: 0.5
-        }}>
-            <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                {icon && <span style={{ fontSize: '14px' }}>{icon}</span>}
-                {label}
-            </Typography>
-            <Typography sx={{ fontSize: '14px', color: textPrimary, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
-                {value || '—'}
-            </Typography>
-        </Box>
-    );
+    const df = (props) => <ChangeViewDataField {...props} surfaceBg={surfaceBg} borderColor={borderColor} textMuted={textMuted} textPrimary={textPrimary} />;
 
     return (
-        <Dialog
-            open={true}
+        <StandardModal
+            open={open}
             onClose={onClose}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    background: isDark ? '#0f172a' : '#ffffff',
-                    borderRadius: '12px',
-                    border: `1px solid ${borderColor}`,
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                    color: textPrimary,
-                    maxHeight: '90vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }
+            title={change.code}
+            subtitle={change.title}
+            icon="sync"
+            size="wide"
+            contentSx={{
+                p: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                minHeight: 0,
+                overflow: 'hidden',
             }}
-            BackdropProps={{
-                sx: { backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.7)' }
-            }}
+            footer={
+                <Box sx={{
+                    display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center',
+                    flexWrap: 'wrap', gap: 1,
+                }}>
+                    <Typography sx={{ fontSize: '11px', color: textMuted }}>
+                        Criado em {formatDate(change.createdAt)} • Atualizado em {formatDate(change.updatedAt)}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1.5 }}>
+                        <Button onClick={onClose} variant="outlined" color="inherit" sx={{ textTransform: 'none', fontWeight: 600, fontSize: '13px' }}>
+                            Fechar
+                        </Button>
+                        {onEdit && (
+                            <Button onClick={() => onEdit(change)} variant="contained" color="primary" sx={{ textTransform: 'none', fontWeight: 600, fontSize: '13px' }}
+                                startIcon={<Edit sx={{ fontSize: '16px !important' }} />}
+                            >
+                                Editar
+                            </Button>
+                        )}
+                    </Box>
+                </Box>
+            }
         >
-            <div className="change-modal-inner" style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh' }}>
-                {/* Header */}
-                <Box sx={{ p: 3, pb: 1.5 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flex: 1 }}>
-                            <Box sx={{
-                                width: 44, height: 44, borderRadius: '10px',
-                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '20px', flexShrink: 0
-                            }}>
-                                🔄
-                            </Box>
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-                                    <Typography sx={{ fontWeight: 700, fontSize: '18px', color: textPrimary }}>
-                                        {change.code}
-                                    </Typography>
-                                    <StatusChip status={change.status} type="CHANGE" />
-                                    {change.type && (
-                                        <Chip
-                                            label={TYPE_LABELS[change.type] || change.type}
-                                            size="small"
-                                            variant="outlined"
-                                            sx={{ fontSize: '11px', height: 22, borderColor: borderColor, color: textSecondary }}
-                                        />
-                                    )}
-                                </Box>
-                                <Typography sx={{ fontSize: '15px', color: textPrimary, mt: 0.5, fontWeight: 500 }}>
-                                    {change.title}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <IconButton onClick={onClose} size="small" sx={{ color: textMuted }}>
-                            <Close />
-                        </IconButton>
+            <div className="change-modal-inner" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(78dvh, 820px)' }}>
+                <Box sx={{ px: 3, pt: 0, pb: 1.5, flexShrink: 0 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                        <StatusChip status={change.status} type="CHANGE" />
+                        {change.type && (
+                            <Chip
+                                label={TYPE_LABELS[change.type] || change.type}
+                                size="small"
+                                variant="outlined"
+                                sx={{ fontSize: '11px', height: 22, borderColor: borderColor, color: textSecondary }}
+                            />
+                        )}
                     </Box>
                 </Box>
 
-                {/* Lifecycle Stepper */}
                 <ChangeLifecycle
                     status={change.status}
                     createdAt={change.createdAt}
                     updatedAt={change.updatedAt}
                 />
 
-                {/* Tabs */}
-                <Box sx={{ display: 'flex', gap: 0.5, px: 3, borderBottom: `1px solid ${borderColor}` }}>
+                <Box sx={{ display: 'flex', gap: 0.5, px: 3, borderBottom: `1px solid ${borderColor}`, flexShrink: 0 }}>
                     {tabs.map(tab => (
                         <Box
                             key={tab.key}
@@ -192,19 +174,15 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                     ))}
                 </Box>
 
-                {/* Tab Content */}
-                <Box sx={{ flex: 1, overflow: 'auto', p: 3 }}>
+                <Box sx={{ flex: 1, overflow: 'auto', p: 3, minHeight: 0 }}>
 
-                    {/* TAB: Geral */}
                     {activeTab === 'geral' && (
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
-                            <DataField label="Tipo" value={TYPE_LABELS[change.type] || change.type} icon="📦" />
-                            <DataField label="Impacto" value={IMPACT_LABELS[change.impact] || change.impact} icon="💥" />
-                            <DataField label="Solicitante" value={change.requester?.name || '—'} icon="👤" />
+                            {df({ label: 'Tipo', value: TYPE_LABELS[change.type] || change.type, icon: '📦' })}
+                            {df({ label: 'Impacto', value: IMPACT_LABELS[change.impact] || change.impact, icon: '💥' })}
+                            {df({ label: 'Solicitante', value: change.requester?.name || '—', icon: '👤' })}
+                            {df({ label: 'Descrição', value: change.description, fullWidth: true, icon: '📝' })}
 
-                            <DataField label="Descrição" value={change.description} fullWidth icon="📝" />
-
-                            {/* Risk Gauge */}
                             <Box sx={{
                                 gridColumn: '1 / -1', p: 2, borderRadius: '10px',
                                 background: surfaceBg, border: `1px solid ${borderColor}`,
@@ -212,7 +190,7 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                             }}>
                                 <Box>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1 }}>
-                                        Avaliação de Risco
+                                        Avaliação de risco
                                     </Typography>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                         {[
@@ -241,11 +219,10 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                                 </Box>
                             </Box>
 
-                            {/* Assets */}
                             {change.assets?.length > 0 && (
                                 <Box sx={{ gridColumn: '1 / -1' }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1 }}>
-                                        Ativos / Sistemas Afetados
+                                        Ativos / sistemas afetados
                                     </Typography>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                                         {change.assets.map(asset => (
@@ -256,16 +233,14 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                                 </Box>
                             )}
 
-                            {/* Project Link */}
                             {change.project && (
-                                <DataField label="Projeto Vinculado" value={`${change.project.name} (${change.project.code})`} icon="📂" fullWidth />
+                                df({ label: 'Projeto vinculado', value: `${change.project.name} (${change.project.code})`, icon: '📂', fullWidth: true })
                             )}
 
-                            {/* Related Incidents */}
                             {change.relatedIncidents?.length > 0 && (
                                 <Box sx={{ gridColumn: '1 / -1' }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1 }}>
-                                        ⚠️ Incidentes Relacionados
+                                        Incidentes relacionados
                                     </Typography>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                                         {change.relatedIncidents.map(inc => (
@@ -278,17 +253,15 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                         </Box>
                     )}
 
-                    {/* TAB: Plano */}
                     {activeTab === 'plano' && (
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                            <DataField label="Início Agendado" value={formatDate(change.scheduledStart)} icon="🕐" />
-                            <DataField label="Fim Agendado" value={formatDate(change.scheduledEnd)} icon="🕐" />
-                            <DataField label="Justificativa" value={change.justification} icon="📋" fullWidth />
-                            <DataField label="Pré-requisitos" value={change.prerequisites} icon="✅" fullWidth />
-                            <DataField label="Plano de Testes" value={change.testPlan} icon="🧪" fullWidth />
-                            <DataField label="Plano de Rollback" value={change.backoutPlan} icon="↩️" fullWidth />
+                            {df({ label: 'Início agendado', value: formatDate(change.scheduledStart), icon: '🕐' })}
+                            {df({ label: 'Fim agendado', value: formatDate(change.scheduledEnd), icon: '🕐' })}
+                            {df({ label: 'Justificativa', value: change.justification, icon: '📋', fullWidth: true })}
+                            {df({ label: 'Pré-requisitos', value: change.prerequisites, icon: '✅', fullWidth: true })}
+                            {df({ label: 'Plano de testes', value: change.testPlan, icon: '🧪', fullWidth: true })}
+                            {df({ label: 'Plano de rollback', value: change.backoutPlan, icon: '↩️', fullWidth: true })}
 
-                            {/* Attachments */}
                             {attachments.length > 0 && (
                                 <Box sx={{ gridColumn: '1 / -1' }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1.5 }}>
@@ -325,7 +298,6 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                         </Box>
                     )}
 
-                    {/* TAB: Aprovações */}
                     {activeTab === 'aprovacao' && (
                         <Box>
                             {approvers.length > 0 ? (
@@ -354,7 +326,7 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                                                 </Typography>
                                                 {app.comment && (
                                                     <Typography sx={{ fontSize: '12px', color: textSecondary, mt: 0.5, fontStyle: 'italic' }}>
-                                                        "{app.comment}"
+                                                        &quot;{app.comment}&quot;
                                                     </Typography>
                                                 )}
                                             </Box>
@@ -370,16 +342,15 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                         </Box>
                     )}
 
-                    {/* TAB: Execução */}
                     {activeTab === 'execucao' && showExecution && (
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                            <DataField label="Início Real" value={formatDate(change.actualStart)} icon="▶️" />
-                            <DataField label="Fim Real" value={formatDate(change.actualEnd)} icon="⏹️" />
+                            {df({ label: 'Início real', value: formatDate(change.actualStart), icon: '▶️' })}
+                            {df({ label: 'Fim real', value: formatDate(change.actualEnd), icon: '⏹️' })}
 
                             {(change.actualStart || change.actualEnd) && (
                                 <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}` }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 2 }}>
-                                        Variação Planejado vs Real
+                                        Variação planejado vs real
                                     </Typography>
                                     <ExecutionTimeline
                                         scheduledStart={change.scheduledStart}
@@ -391,51 +362,20 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                                 </Box>
                             )}
 
-                            <DataField label="Notas de Fechamento" value={change.closureNotes} icon="📝" fullWidth />
+                            {df({ label: 'Notas de fechamento', value: change.closureNotes, icon: '📝', fullWidth: true })}
 
-                            {/* PIR Section */}
                             {change.rootCause && (
                                 <>
-                                    <DataField label="Causa Raiz" value={change.rootCause} icon="🔍" fullWidth />
-                                    <DataField label="Ação Corretiva" value={change.correctiveAction} icon="🔧" fullWidth />
-                                    <DataField label="Lições Aprendidas" value={change.lessonsLearned} icon="💡" fullWidth />
+                                    {df({ label: 'Causa raiz', value: change.rootCause, icon: '🔍', fullWidth: true })}
+                                    {df({ label: 'Ação corretiva', value: change.correctiveAction, icon: '🔧', fullWidth: true })}
+                                    {df({ label: 'Lições aprendidas', value: change.lessonsLearned, icon: '💡', fullWidth: true })}
                                 </>
                             )}
                         </Box>
                     )}
                 </Box>
-
-                {/* Footer */}
-                <Box sx={{
-                    p: 2, px: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    borderTop: `1px solid ${borderColor}`, background: surfaceBg
-                }}>
-                    <Typography sx={{ fontSize: '11px', color: textMuted }}>
-                        Criado em {formatDate(change.createdAt)} • Atualizado em {formatDate(change.updatedAt)}
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1.5 }}>
-                        <Button onClick={onClose} sx={{
-                            color: textSecondary, textTransform: 'none', fontWeight: 600, fontSize: '13px',
-                            border: `1px solid ${borderColor}`, borderRadius: '8px', px: 3
-                        }}>
-                            Fechar
-                        </Button>
-                        {onEdit && (
-                            <Button onClick={() => onEdit(change)} sx={{
-                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                color: '#fff', textTransform: 'none', fontWeight: 600, fontSize: '13px',
-                                borderRadius: '8px', px: 3,
-                                '&:hover': { boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)' }
-                            }}
-                                startIcon={<Edit sx={{ fontSize: '16px !important' }} />}
-                            >
-                                Editar
-                            </Button>
-                        )}
-                    </Box>
-                </Box>
             </div>
-        </Dialog>
+        </StandardModal>
     );
 };
 
