@@ -139,6 +139,7 @@ const IntegrationsTab = () => {
                                 </CardContent>
                                 <CardActions sx={{ justifyContent: 'flex-end', p: 2, pt: 0 }}>
                                     <Button
+                                        data-testid={`integration-open-${item.type}`}
                                         size="small"
                                         variant={configured ? 'outlined' : 'contained'}
                                         startIcon={<Settings sx={{ fontSize: 16 }} />}

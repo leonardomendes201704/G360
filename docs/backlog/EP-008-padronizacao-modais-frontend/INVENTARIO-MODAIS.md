@@ -32,7 +32,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 7 | `AssetMaintenanceModal.jsx` |
 | 8 | `AssetModal.jsx` |
 | 9 | `AssetViewModal.jsx` |
-| 10 | `AzureConfigModal.jsx` |
+| 10 | `AzureConfigModal.jsx` — migrado `StandardModal` (pós-US-022, Integrações) |
 | 11 | `BudgetImportModal.jsx` |
 | 12 | `BudgetItemModal.jsx` |
 | 13 | `BudgetModal.jsx` — migrado `StandardModal` (US-022 lote 2) |

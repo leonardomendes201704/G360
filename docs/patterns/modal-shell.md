@@ -61,7 +61,7 @@ Alinhar com **`variant="contained"`** + **`color="primary"`** + **`sx={{ textTra
 
 Botão “secundário” à esquerda e grupo à direita; `type="submit"` com `form="meu-form-id"` quando o submit está fora do `<form>` no DOM.
 
-Ver referência: `FRONTEND/src/components/modals/LdapConfigModal.jsx`.
+Ver referência: `FRONTEND/src/components/modals/LdapConfigModal.jsx`, `AzureConfigModal.jsx` (Integrações — Microsoft Azure AD).
 
 ## Confirmações
 

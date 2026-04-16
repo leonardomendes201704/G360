@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **`AzureConfigModal`:** migrado para `StandardModal` (Integrações — Microsoft Azure AD); footer com Testar / Cancelar / Salvar; spec E2E `e2e/integrations-azure-modal.spec.ts` e `data-testid` `integration-open-*` em `IntegrationsTab`.
+  - `FRONTEND/src/components/modals/AzureConfigModal.jsx`
+  - `FRONTEND/src/components/config/IntegrationsTab.jsx`
+  - `FRONTEND/e2e/integrations-azure-modal.spec.ts`
+  - `FRONTEND/e2e/evidence/US-022-azure-modal/README.md`
+  - `docs/patterns/modal-shell.md`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
 - **`SmtpConfigModal`:** migrado para `StandardModal` (Integrações — e-mail SMTP); carregamento inicial vs. salvamento separados para não ocultar o formulário ao salvar.
   - `FRONTEND/src/components/modals/SmtpConfigModal.jsx`
   - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
