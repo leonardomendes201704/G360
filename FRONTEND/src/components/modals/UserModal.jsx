@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
     TextField, Button, MenuItem, Select, InputLabel, FormControl, Chip, Box, OutlinedInput, Alert,
-    List, ListItem, ListItemIcon, ListItemText, FormControlLabel, Switch, Typography, Divider
+    FormControlLabel, Switch, Typography, Divider
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
-import departmentService from '../../services/department.service';
 import userService from '../../services/user.service';
 import costCenterService from '../../services/cost-center.service';
 import roleService from '../../services/role.service';
 import notificationService from '../../services/notification.service';
+import StandardModal from '../common/StandardModal';
+
+const USER_FORM_ID = 'user-form';
+
 // Política de senhas (espelho do backend)
 const PASSWORD_POLICY = {
     minLength: 8,
@@ -212,272 +214,289 @@ const UserModal = ({ open, onClose, onSuccess, editData, isProfileMode = false }
         },
         '& .MuiFormHelperText-root': { color: 'var(--modal-text-muted)', marginLeft: 0 }
     };
+
+    const title = isProfileMode ? 'Meu Perfil' : (editData ? 'Editar Usuário' : 'Novo Usuário Local');
+    const subtitle = isProfileMode ? 'Dados pessoais e notificações' : 'Conta e permissões';
+
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle sx={{ fontWeight: 600, color: 'var(--modal-text)' }}>{isProfileMode ? 'Meu Perfil' : (editData ? 'Editar Usuário' : 'Novo Usuário Local')}</DialogTitle>
-            <form onSubmit={handleSubmit}>
-                <DialogContent sx={{ pt: 2 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.25 }}>
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title={title}
+            subtitle={subtitle}
+            icon={isProfileMode ? 'person' : 'badge'}
+            size="form"
+            footer={
+                <>
+                    <Button type="button" onClick={onClose}>Cancelar</Button>
+                    <Button
+                        type="submit"
+                        form={USER_FORM_ID}
+                        variant="contained"
+                        color="primary"
+                        disabled={!!passwordError}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >
+                        Salvar
+                    </Button>
+                </>
+            }
+        >
+            <form id={USER_FORM_ID} onSubmit={handleSubmit}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.25 }}>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        label="Nome Completo"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        label="Email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        disabled={isProfileMode}
+                    />
+                    {/* Tipo de Autenticação - Apenas no modo admin (não perfil) */}
+                    {!isProfileMode && (
                         <TextField
+                            select
                             fullWidth
                             variant="outlined"
                             sx={inputSx}
-                            label="Nome Completo"
-                            name="name"
-                            value={formData.name}
+                            label="Tipo de Autenticação"
+                            name="authProvider"
+                            value={formData.authProvider}
                             onChange={handleChange}
-                            required
-                        />
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            sx={inputSx}
-                            label="Email"
-                            name="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            disabled={isProfileMode}
-                        />
-                        {/* Tipo de Autenticação - Apenas no modo admin (não perfil) */}
-                        {!isProfileMode && (
-                            <TextField
-                                select
-                                fullWidth
-                                variant="outlined"
-                                sx={inputSx}
-                                label="Tipo de Autenticação"
-                                name="authProvider"
-                                value={formData.authProvider}
-                                onChange={handleChange}
-                                helperText={
-                                    formData.authProvider === 'LDAP'
-                                        ? 'Usuário autenticará via Active Directory local'
-                                        : formData.authProvider === 'AZURE'
-                                            ? 'Usuário autenticará via Microsoft (SSO)'
-                                            : 'Senha armazenada no sistema'
-                                }
-                            >
-                                <MenuItem value="LOCAL">Senha Local</MenuItem>
-                                <MenuItem value="LDAP">Active Directory (LDAP)</MenuItem>
-                                <MenuItem value="AZURE">Microsoft Azure AD</MenuItem>
-                            </TextField>
-                        )}
-                        {/* Campos de senha - Apenas para usuários locais */}
-                        {!isExternalAuth && (
-                            <>
-                                {isProfileMode && editData && (
-                                    <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        sx={inputSx}
-                                        label="Senha Atual"
-                                        name="currentPassword"
-                                        type="password"
-                                        value={formData.currentPassword}
-                                        onChange={handleChange}
-                                        helperText="Necessário para alterar a senha"
-                                    />
-                                )}
+                            helperText={
+                                formData.authProvider === 'LDAP'
+                                    ? 'Usuário autenticará via Active Directory local'
+                                    : formData.authProvider === 'AZURE'
+                                        ? 'Usuário autenticará via Microsoft (SSO)'
+                                        : 'Senha armazenada no sistema'
+                            }
+                        >
+                            <MenuItem value="LOCAL">Senha Local</MenuItem>
+                            <MenuItem value="LDAP">Active Directory (LDAP)</MenuItem>
+                            <MenuItem value="AZURE">Microsoft Azure AD</MenuItem>
+                        </TextField>
+                    )}
+                    {/* Campos de senha - Apenas para usuários locais */}
+                    {!isExternalAuth && (
+                        <>
+                            {isProfileMode && editData && (
                                 <TextField
                                     fullWidth
                                     variant="outlined"
                                     sx={inputSx}
-                                    label={editData ? "Nova Senha (deixe em branco para manter)" : "Senha"}
-                                    name="password"
+                                    label="Senha Atual"
+                                    name="currentPassword"
                                     type="password"
-                                    value={formData.password}
+                                    value={formData.currentPassword}
                                     onChange={handleChange}
-                                    required={!editData}
+                                    helperText="Necessário para alterar a senha"
                                 />
-                                {(isProfileMode || formData.password) && (
-                                    <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        sx={inputSx}
-                                        label="Confirmar Nova Senha"
-                                        name="confirmPassword"
-                                        type="password"
-                                        value={formData.confirmPassword}
-                                        onChange={handleChange}
-                                        error={!!passwordError}
-                                        helperText={passwordError}
-                                    />
-                                )}
-                                {/* Checklist visual de requisitos de senha */}
-                                {formData.password && passwordValidation.checks.length > 0 && (
-                                    <Box sx={{
-                                        p: 1.5,
-                                        bgcolor: 'var(--modal-surface-subtle)',
-                                        borderRadius: '10px',
-                                        border: '1px solid',
-                                        borderColor: passwordValidation.valid ? 'success.main' : 'var(--modal-border)'
-                                    }}>
-                                        <InputLabel sx={{ fontSize: '12px', mb: 1 }}>
-                                            Requisitos de Segurança
-                                        </InputLabel>
-                                        {passwordValidation.checks.map((check, idx) => (
-                                            <Box
-                                                key={idx}
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: 0.5,
-                                                    py: 0.25
-                                                }}
-                                            >
-                                                {check.passed ? (
-                                                    <Check sx={{ fontSize: 16, color: 'success.main' }} />
-                                                ) : (
-                                                    <Close sx={{ fontSize: 16, color: 'text.disabled' }} />
-                                                )}
-                                                <Box sx={{
-                                                    fontSize: '12px',
-                                                    color: check.passed ? 'success.main' : 'text.secondary'
-                                                }}>
-                                                    {check.rule}
-                                                </Box>
-                                            </Box>
-                                        ))}
-                                    </Box>
-                                )}
-                            </>
-                        )}
-                        {/* Alerta para usuários Azure */}
-                        {isProfileMode && isAzureUser && (
-                            <Alert severity="info">
-                                Sua conta é gerenciada pelo Azure AD. Para alterar sua senha, utilize o portal da sua organização.
-                            </Alert>
-                        )}
-                        {isProfileMode && (
-                            <Box sx={{ mt: 1 }}>
-                                <Typography variant="subtitle2" sx={{ mb: 1, color: 'var(--modal-text-secondary)' }}>
-                                    Notificações
-                                </Typography>
-                                <Divider sx={{ mb: 1.5 }} />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={notifPrefs.inApp}
-                                            onChange={(e) => setNotifPrefs((s) => ({ ...s, inApp: e.target.checked }))}
-                                        />
-                                    }
-                                    label="Alertas dentro da aplicação"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={notifPrefs.emailCritical}
-                                            onChange={(e) => setNotifPrefs((s) => ({ ...s, emailCritical: e.target.checked }))}
-                                        />
-                                    }
-                                    label="E-mail: SLA e alertas críticos"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={notifPrefs.emailApprovals}
-                                            onChange={(e) => setNotifPrefs((s) => ({ ...s, emailApprovals: e.target.checked }))}
-                                        />
-                                    }
-                                    label="E-mail: aprovações e finanças"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={notifPrefs.emailProjects}
-                                            onChange={(e) => setNotifPrefs((s) => ({ ...s, emailProjects: e.target.checked }))}
-                                        />
-                                    }
-                                    label="E-mail: projetos e GMUD"
-                                />
-                                <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
-                                    Horário silencioso e categorias avançadas podem ser configurados via API (notificationPreferences).
-                                </Typography>
-                            </Box>
-                        )}
-                        {/* Perfis de acesso (somente leitura no modo perfil) */}
-                        {isProfileMode && editData?.roles && editData.roles.length > 0 && (
-                            <Box sx={{ mt: 2 }}>
-                                <InputLabel sx={{
-                                    fontSize: '12px',
-                                    color: 'var(--modal-text-secondary)',
-                                    mb: 1.5,
-                                    position: 'relative',
-                                    transform: 'none',
-                                    lineHeight: 1.5
-                                }}>
-                                    Perfis de Acesso
-                                </InputLabel>
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                    {editData.roles.map((role) => (
-                                        <Chip
-                                            key={role.id}
-                                            label={role.name}
-                                            color="primary"
-                                            variant="outlined"
-                                            size="small"
-                                        />
-                                    ))}
-                                </Box>
-                            </Box>
-                        )}
-                        {!isProfileMode && (
-                            <FormControl fullWidth>
-                                <InputLabel sx={{ color: 'var(--modal-text-secondary)' }}>Perfis de Acesso</InputLabel>
-                                <Select
-                                    multiple
-                                    name="roleIds"
-                                    value={formData.roleIds}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput label="Perfis de Acesso" />}
-                                    renderValue={(selected) => (
-                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                            {selected.map((value) => {
-                                                const role = roles.find(r => r.id === value);
-                                                return <Chip key={value} label={role ? role.name : value} size="small" />;
-                                            })}
-                                        </Box>
-                                    )}
-                                    MenuProps={MenuProps}
-                                    sx={inputSx}
-                                >
-                                    {roles.map((role) => (
-                                        <MenuItem key={role.id} value={role.id}>
-                                            {role.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        )}
-                        {!isProfileMode && (
+                            )}
                             <TextField
-                                select
                                 fullWidth
                                 variant="outlined"
                                 sx={inputSx}
-                                label="Centro de Custo"
-                                name="costCenterId"
-                                value={formData.costCenterId || ''}
+                                label={editData ? "Nova Senha (deixe em branco para manter)" : "Senha"}
+                                name="password"
+                                type="password"
+                                value={formData.password}
                                 onChange={handleChange}
-                            >
-                                <MenuItem value=""><em>Nenhum</em></MenuItem>
-                                {costCenters.map(cc => (
-                                    <MenuItem key={cc.id} value={cc.id}>{cc.name} ({cc.code})</MenuItem>
+                                required={!editData}
+                            />
+                            {(isProfileMode || formData.password) && (
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={inputSx}
+                                    label="Confirmar Nova Senha"
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    error={!!passwordError}
+                                    helperText={passwordError}
+                                />
+                            )}
+                            {/* Checklist visual de requisitos de senha */}
+                            {formData.password && passwordValidation.checks.length > 0 && (
+                                <Box sx={{
+                                    p: 1.5,
+                                    bgcolor: 'var(--modal-surface-subtle)',
+                                    borderRadius: '10px',
+                                    border: '1px solid',
+                                    borderColor: passwordValidation.valid ? 'success.main' : 'var(--modal-border)'
+                                }}>
+                                    <InputLabel sx={{ fontSize: '12px', mb: 1 }}>
+                                        Requisitos de Segurança
+                                    </InputLabel>
+                                    {passwordValidation.checks.map((check, idx) => (
+                                        <Box
+                                            key={idx}
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 0.5,
+                                                py: 0.25
+                                            }}
+                                        >
+                                            {check.passed ? (
+                                                <Check sx={{ fontSize: 16, color: 'success.main' }} />
+                                            ) : (
+                                                <Close sx={{ fontSize: 16, color: 'text.disabled' }} />
+                                            )}
+                                            <Box sx={{
+                                                fontSize: '12px',
+                                                color: check.passed ? 'success.main' : 'text.secondary'
+                                            }}>
+                                                {check.rule}
+                                            </Box>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            )}
+                        </>
+                    )}
+                    {/* Alerta para usuários Azure */}
+                    {isProfileMode && isAzureUser && (
+                        <Alert severity="info">
+                            Sua conta é gerenciada pelo Azure AD. Para alterar sua senha, utilize o portal da sua organização.
+                        </Alert>
+                    )}
+                    {isProfileMode && (
+                        <Box sx={{ mt: 1 }}>
+                            <Typography variant="subtitle2" sx={{ mb: 1, color: 'var(--modal-text-secondary)' }}>
+                                Notificações
+                            </Typography>
+                            <Divider sx={{ mb: 1.5 }} />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={notifPrefs.inApp}
+                                        onChange={(e) => setNotifPrefs((s) => ({ ...s, inApp: e.target.checked }))}
+                                    />
+                                }
+                                label="Alertas dentro da aplicação"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={notifPrefs.emailCritical}
+                                        onChange={(e) => setNotifPrefs((s) => ({ ...s, emailCritical: e.target.checked }))}
+                                    />
+                                }
+                                label="E-mail: SLA e alertas críticos"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={notifPrefs.emailApprovals}
+                                        onChange={(e) => setNotifPrefs((s) => ({ ...s, emailApprovals: e.target.checked }))}
+                                    />
+                                }
+                                label="E-mail: aprovações e finanças"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={notifPrefs.emailProjects}
+                                        onChange={(e) => setNotifPrefs((s) => ({ ...s, emailProjects: e.target.checked }))}
+                                    />
+                                }
+                                label="E-mail: projetos e GMUD"
+                            />
+                            <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
+                                Horário silencioso e categorias avançadas podem ser configurados via API (notificationPreferences).
+                            </Typography>
+                        </Box>
+                    )}
+                    {/* Perfis de acesso (somente leitura no modo perfil) */}
+                    {isProfileMode && editData?.roles && editData.roles.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <InputLabel sx={{
+                                fontSize: '12px',
+                                color: 'var(--modal-text-secondary)',
+                                mb: 1.5,
+                                position: 'relative',
+                                transform: 'none',
+                                lineHeight: 1.5
+                            }}>
+                                Perfis de Acesso
+                            </InputLabel>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                {editData.roles.map((role) => (
+                                    <Chip
+                                        key={role.id}
+                                        label={role.name}
+                                        color="primary"
+                                        variant="outlined"
+                                        size="small"
+                                    />
                                 ))}
-                            </TextField>
-                        )}
-                    </Box>
-                </DialogContent>
-                <DialogActions sx={{ px: 3, pb: 2, pt: 1.5 }}>
-                    <Button onClick={onClose}>Cancelar</Button>
-                    <Button type="submit" variant="contained" color="primary" disabled={!!passwordError}>
-                        Salvar
-                    </Button>
-                </DialogActions>
+                            </Box>
+                        </Box>
+                    )}
+                    {!isProfileMode && (
+                        <FormControl fullWidth>
+                            <InputLabel sx={{ color: 'var(--modal-text-secondary)' }}>Perfis de Acesso</InputLabel>
+                            <Select
+                                multiple
+                                name="roleIds"
+                                value={formData.roleIds}
+                                onChange={handleChange}
+                                input={<OutlinedInput label="Perfis de Acesso" />}
+                                renderValue={(selected) => (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => {
+                                            const role = roles.find(r => r.id === value);
+                                            return <Chip key={value} label={role ? role.name : value} size="small" />;
+                                        })}
+                                    </Box>
+                                )}
+                                MenuProps={MenuProps}
+                                sx={inputSx}
+                            >
+                                {roles.map((role) => (
+                                    <MenuItem key={role.id} value={role.id}>
+                                        {role.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    )}
+                    {!isProfileMode && (
+                        <TextField
+                            select
+                            fullWidth
+                            variant="outlined"
+                            sx={inputSx}
+                            label="Centro de Custo"
+                            name="costCenterId"
+                            value={formData.costCenterId || ''}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value=""><em>Nenhum</em></MenuItem>
+                            {costCenters.map(cc => (
+                                <MenuItem key={cc.id} value={cc.id}>{cc.name} ({cc.code})</MenuItem>
+                            ))}
+                        </TextField>
+                    )}
+                </Box>
             </form>
-        </Dialog>
+        </StandardModal>
     );
 };
 export default UserModal;

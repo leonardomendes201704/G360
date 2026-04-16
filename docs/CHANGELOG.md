@@ -7,6 +7,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Changed
+- **US-022 / EP-008:** `FiscalYearModal`, `RoleModal`, `UserModal` e `TenantModal` migrados para `StandardModal` (cabeçalho, corpo com scroll, rodapé sem gradiente; `RoleModal` em `size="wide"` para a matriz RBAC).
+  - `FRONTEND/src/components/modals/FiscalYearModal.jsx`
+  - `FRONTEND/src/components/modals/RoleModal.jsx`
+  - `FRONTEND/src/components/modals/UserModal.jsx`
+  - `FRONTEND/src/components/modals/TenantModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
 ### Added
 - **E2E Azure modal:** mocks em `FRONTEND/e2e/helpers/mock-api-for-config-pages.ts` para `integrations-azure-modal.spec.ts` sem backend; snapshot `e2e/integrations-azure-modal.spec.ts-snapshots/integrations-azure-modal-shell-chromium-win32.png`.
 

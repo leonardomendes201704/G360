@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
     Button, TextField, Typography, Box, Alert, CircularProgress
 } from '@mui/material';
 import tenantService from '../../services/tenant.service';
+import StandardModal from '../common/StandardModal';
+
+const TENANT_FORM_ID = 'tenant-form';
 
 const schema = yup.object().shape({
     name: yup.string().required('Nome é obrigatório'),
@@ -94,112 +96,94 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
     };
 
     return (
-        <Dialog
+        <StandardModal
             open={open}
-            onClose={saving ? undefined : onClose}
-            maxWidth="sm"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    maxHeight: 'min(90vh, 800px)',
-                },
-            }}
-        >
-            <DialogTitle sx={{ flexShrink: 0 }}>{editData ? 'Editar Empresa' : 'Nova Empresa'}</DialogTitle>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    minHeight: 0,
-                    overflow: 'hidden',
-                }}
-            >
-                <DialogContent
-                    sx={{
-                        flex: '1 1 auto',
-                        minHeight: 0,
-                        overflowY: 'auto',
-                    }}
-                >
-                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                    {success && <Alert severity="success" sx={{ mb: 2 }}>Empresa salva com sucesso!</Alert>}
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-                        <Typography variant="subtitle1" fontWeight="bold">Dados da Empresa</Typography>
-
-                        <TextField
-                            fullWidth
-                            label="Nome da Empresa"
-                            {...register('name')}
-                            error={!!errors.name}
-                            helperText={errors.name?.message}
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="ID Único (Slug)"
-                            helperText={errors.slug?.message || "Identificador usado na URL e Login (Ex: g360-filial-rj)."}
-                            {...register('slug')}
-                            error={!!errors.slug}
-                            disabled={!!editData}
-                        />
-                    </Box>
-
-                    <Box sx={{ mt: 3, mb: 2, borderTop: 1, borderColor: 'divider', pt: 2 }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            {editData ? 'Dados do Administrador (Editar)' : 'Administrador Global da Empresa'}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            {editData
-                                ? 'Altere apenas os campos que deseja atualizar.'
-                                : 'Crie o primeiro usuário administrador para esta empresa.'}
-                        </Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <TextField
-                            fullWidth
-                            label="Nome do Admin"
-                            {...register('adminName')}
-                        />
-                        <TextField
-                            fullWidth
-                            label="Email do Admin"
-                            {...register('adminEmail')}
-                            error={!!errors.adminEmail}
-                            helperText={errors.adminEmail?.message}
-                        />
-                        <TextField
-                            fullWidth
-                            label={editData ? "Nova Senha (Deixe em branco para manter)" : "Senha Provisória"}
-                            type="password"
-                            {...register('adminPassword')}
-                            error={!!errors.adminPassword}
-                            helperText={errors.adminPassword?.message}
-                        />
-                    </Box>
-
-                </DialogContent>
-                <DialogActions
+            onClose={onClose}
+            title={editData ? 'Editar Empresa' : 'Nova Empresa'}
+            subtitle="Dados da empresa e administrador"
+            icon="domain"
+            size="form"
+            loading={saving}
+            footer={
+                <Box
                     data-testid="tenant-modal-footer"
-                    sx={{ flexShrink: 0, borderTop: 1, borderColor: 'divider', px: 3, py: 2 }}
+                    sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'flex-end', width: '100%' }}
                 >
-                    <Button onClick={onClose} disabled={saving}>Cancelar</Button>
+                    <Button type="button" onClick={onClose} disabled={saving}>Cancelar</Button>
                     <Button
                         type="submit"
+                        form={TENANT_FORM_ID}
                         variant="contained"
+                        color="primary"
                         disabled={saving || success}
                         startIcon={saving ? <CircularProgress size={18} color="inherit" /> : null}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
                     >
                         {saving ? 'Salvando...' : success ? 'Salvo!' : 'Salvar'}
                     </Button>
-                </DialogActions>
+                </Box>
+            }
+        >
+            <form id={TENANT_FORM_ID} onSubmit={handleSubmit(onSubmit)}>
+                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                {success && <Alert severity="success" sx={{ mb: 2 }}>Empresa salva com sucesso!</Alert>}
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                    <Typography variant="subtitle1" fontWeight="bold">Dados da Empresa</Typography>
+
+                    <TextField
+                        fullWidth
+                        label="Nome da Empresa"
+                        {...register('name')}
+                        error={!!errors.name}
+                        helperText={errors.name?.message}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="ID Único (Slug)"
+                        helperText={errors.slug?.message || "Identificador usado na URL e Login (Ex: g360-filial-rj)."}
+                        {...register('slug')}
+                        error={!!errors.slug}
+                        disabled={!!editData}
+                    />
+                </Box>
+
+                <Box sx={{ mt: 3, mb: 2, borderTop: 1, borderColor: 'divider', pt: 2 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                        {editData ? 'Dados do Administrador (Editar)' : 'Administrador Global da Empresa'}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                        {editData
+                            ? 'Altere apenas os campos que deseja atualizar.'
+                            : 'Crie o primeiro usuário administrador para esta empresa.'}
+                    </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <TextField
+                        fullWidth
+                        label="Nome do Admin"
+                        {...register('adminName')}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Email do Admin"
+                        {...register('adminEmail')}
+                        error={!!errors.adminEmail}
+                        helperText={errors.adminEmail?.message}
+                    />
+                    <TextField
+                        fullWidth
+                        label={editData ? "Nova Senha (Deixe em branco para manter)" : "Senha Provisória"}
+                        type="password"
+                        {...register('adminPassword')}
+                        error={!!errors.adminPassword}
+                        helperText={errors.adminPassword?.message}
+                    />
+                </Box>
             </form>
-        </Dialog>
+        </StandardModal>
     );
 };
 

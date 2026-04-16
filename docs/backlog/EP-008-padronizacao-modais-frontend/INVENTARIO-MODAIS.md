@@ -44,7 +44,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 19 | `DepartmentModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 20 | `ExpenseApprovalModal.jsx` |
 | 21 | `ExpenseModal.jsx` |
-| 22 | `FiscalYearModal.jsx` |
+| 22 | `FiscalYearModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 23 | `FollowUpModal.jsx` |
 | 24 | `GlobalRiskModal.jsx` |
 | 25 | `IncidentCreateModal.jsx` |
@@ -62,16 +62,16 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 37 | `RescheduleModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 38 | `RiskModal.jsx` |
 | 39 | `RiskViewModal.jsx` |
-| 40 | `RoleModal.jsx` |
+| 40 | `RoleModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 41 | `SmtpConfigModal.jsx` — migrado `StandardModal` (pós-US-022) |
 | 42 | `SubmitExpenseModal.jsx` |
 | 43 | `SupplierModal.jsx` |
 | 44 | `SupplierViewModal.jsx` |
 | 45 | `TaskModal.jsx` |
 | 46 | `TeamModal.jsx` |
-| 47 | `TenantModal.jsx` |
+| 47 | `TenantModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 48 | `UserImportModal.jsx` |
-| 49 | `UserModal.jsx` |
+| 49 | `UserModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 
 *Nota:* `ProjectEditForm.jsx` e `ProjectCreationWizard.jsx` nao usam `Dialog` directamente (formularios auxiliares).
 
