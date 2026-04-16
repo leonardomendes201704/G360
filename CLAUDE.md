@@ -163,6 +163,7 @@ docs/backlog/
      - Descricao da solucao encontrada
      - Causa raiz identificada (quando aplicavel)
      - Arquivos alterados (caminho completo)
+     - **Evidencias E2E (Playwright):** caminhos dos ficheiros gerados e comandos usados; ou motivo de exclusao (ver **Validacao E2E com Playwright e evidencias** em Diretrizes Gerais)
      - Decisoes tecnicas tomadas e justificativas
      - Riscos ou pontos de atencao pos-implementacao
    - **Checklist de DoD** com itens marcados como concluidos `- [x]`
@@ -263,6 +264,23 @@ O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega
 - **Backend:** Node.js, Express, Prisma, PostgreSQL
 - **Frontend:** React 19, Vite 6, Material UI 7
 - **Testes:** Jest (backend), Vitest + Playwright (frontend)
+
+### Validacao E2E com Playwright e evidencias
+
+Ao concluir uma **task**, **historia**, **bug** ou entrega com **impacto em UI, fluxo de utilizador ou integracao front+API**, o agente **DEVE**:
+
+1. **Validar com Playwright** sempre que o ambiente permitir (stack acessiveis; fluxos com login exigem backend com dados de teste / seed, alinhados a `FRONTEND/e2e/helpers/auth.helper.ts`).
+2. **Gerar evidencias** relacionadas ao que foi pedido:
+   - Preferir testes em `FRONTEND/e2e/` (spec novo ou alterado) com assercoes de UI e, quando fizer sentido, `expect(page).toHaveScreenshot(...)`; snapshots versionados em `e2e/**/*.spec.ts-snapshots/`.
+   - Ou `page.screenshot({ path: ... })`, trace/reporter HTML — guardar sob pasta dedicada (ponto 3).
+3. **Pasta para evidencias ad-hoc** (prints nomeados, copias de report, etc.): `FRONTEND/e2e/evidence/<US-xxx|BUG-xxx|slug-curto>/`, com nomes descritivos (opcional: sufixo `YYYY-MM-DD`). Ver `FRONTEND/e2e/evidence/README.md`.
+4. **Config Playwright:** se a porta **5173** estiver ocupada por outro Vite, usar `npm run test:e2e` (baseado em `playwright.g360.config.ts`, porta predefinida **5180**). Variavel opcional: `PLAYWRIGHT_PORT`.
+5. **No fecho da tarefa** (resposta ao utilizador e, quando existir, secao **Resolucao** no MD do work item): incluir subsecao **Evidencias E2E (Playwright)** com:
+   - **caminhos** dos ficheiros de evidencia (relativos ao repo `G360/`, ou absolutos se for so fora do repo);
+   - **comando(s)** utilizados (ex.: `npm run test:e2e -- e2e/config.spec.ts`);
+   - se nao foi possivel correr Playwright: **motivo** explicito (ex.: apenas backend; ambiente indisponivel; pedido documental sem UI).
+
+**Nota:** Vitest cobre componentes/logica em JSDOM; **nao** substitui evidencia de browser quando a entrega e fluxo E2E. Pode coexistir com Playwright na mesma entrega.
 
 ### IMPORTANTE — Stack do Frontend
 Este projeto usa **Vite + React SPA** (NAO e Next.js). Portanto:

@@ -25,6 +25,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ### Docs
 - **CLAUDE.md:** diretriz obrigatória — ao concluir task ou entrega com alterações no repositório, **`git commit`** + **`git push`** (Regras de Gestão §7; fluxo de trabalho).
+- **Playwright / evidencias E2E:** secção **Validacao E2E com Playwright e evidencias** no `CLAUDE.md`; regra `.cursor/rules/playwright-evidence.mdc`; pasta convencional `FRONTEND/e2e/evidence/` com `README.md` (validacao por tarefa, caminhos das evidencias no fecho).
 - **Diário de trabalho:** destino canónico outra vez **`D:\Leonardo\Diario\diary.md`**; `CLAUDE.md`, `.cursor/rules/work-diary.mdc` e `docs/trabalho-diario/README.md` atualizados; `docs/trabalho-diario/diary.md` no repo passa a ser nota de redirecionamento.
 
 ### Fixed

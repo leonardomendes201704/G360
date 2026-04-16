@@ -1,0 +1,16 @@
+---
+description: A cada tarefa com UI/fluxo, validar com Playwright, gerar evidencias e listar caminhos no fecho.
+alwaysApply: true
+---
+
+# Evidencias Playwright (G360)
+
+Quando uma **tarefa** / **US** / **BUG** / entrega envolver **UI, fluxo de utilizador ou front+API**:
+
+1. Correr **Playwright** (`FRONTEND`: `npm run test:e2e`, ou spec concreto; ver `playwright.g360.config.ts` se a 5173 estiver ocupada).
+2. Gerar **evidencias** alinhadas ao pedido: snapshots em `e2e/*-snapshots/`, specs em `e2e/`, e/ou `page.screenshot` / report em `FRONTEND/e2e/evidence/<US-xxx|BUG-xxx|slug>/`.
+3. Na **mensagem final** e na **Resolucao** do work item (se existir): secao **Evidencias E2E (Playwright)** com **caminhos** dos ficheiros + **comandos**. Se N/A: **motivo**.
+
+Vitest nao substitui E2E quando a entrega e fluxo real no browser.
+
+Detalhe: `CLAUDE.md` — **Validacao E2E com Playwright e evidencias**.
