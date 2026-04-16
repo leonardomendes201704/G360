@@ -47,9 +47,9 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 22 | `FiscalYearModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 23 | `FollowUpModal.jsx` — migrado `StandardModal` (US-022) |
 | 24 | `GlobalRiskModal.jsx` — migrado `StandardModal` (US-022 riscos; `wide`; wizard + CSS legado no corpo) |
-| 25 | `IncidentCreateModal.jsx` |
-| 26 | `IncidentModal.jsx` (inclui dialog de escalonamento) |
-| 27 | `IncidentViewModal.jsx` |
+| 25 | `IncidentCreateModal.jsx` — migrado `StandardModal` (US-022 ITSM; `form`; `loading`; primário `error`) |
+| 26 | `IncidentModal.jsx` — migrado `StandardModal` (US-022 ITSM; `detail`; escalonamento em segundo `StandardModal`; rodapé MUI) |
+| 27 | `IncidentViewModal.jsx` — migrado `StandardModal` (US-022 ITSM; `detail`; `IncidentViewDataField` extraído) |
 | 28 | `KnowledgeBaseModal.jsx` |
 | 29 | `LdapConfigModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 30 | `MemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |

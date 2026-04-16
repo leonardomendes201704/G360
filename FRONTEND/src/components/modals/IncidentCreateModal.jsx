@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions,
     Box, Typography, TextField, Button, MenuItem, Select,
-    FormControl, InputLabel, IconButton, CircularProgress
+    FormControl, InputLabel, CircularProgress
 } from '@mui/material';
-import { Close, Warning } from '@mui/icons-material';
+import { Warning } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { createIncident, getIncidentCategories } from '../../services/incident.service';
+import StandardModal from '../common/StandardModal';
 
 const PRIORITIES = [
     { value: 'LOW', label: 'Baixa', color: '#10b981' },
@@ -40,7 +40,6 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
             getIncidentCategories()
                 .then(cats => setCategories(cats || []))
                 .catch(() => setCategories([]));
-            // Reset form
             setForm({ title: '', description: '', priority: 'MEDIUM', impactLevel: 'MEDIUM', categoryId: '' });
             setErrors({});
         }
@@ -82,130 +81,111 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
     const selectedPriority = PRIORITIES.find(p => p.value === form.priority);
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth
-            PaperProps={{ sx: { borderRadius: '16px', overflow: 'hidden' } }}>
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title="Novo Incidente"
+            subtitle="Registre um incidente para análise e resolução"
+            icon="warning"
+            size="form"
+            loading={loading}
+            footer={
+                <>
+                    <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ borderRadius: 2, textTransform: 'none' }}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        variant="contained"
+                        color="error"
+                        disabled={loading}
+                        startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <Warning />}
+                        sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
+                    >
+                        {loading ? 'Criando...' : 'Registrar Incidente'}
+                    </Button>
+                </>
+            }
+            contentSx={{ pt: 2 }}
+        >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                <TextField
+                    label="Título *"
+                    value={form.title}
+                    onChange={handleChange('title')}
+                    error={!!errors.title}
+                    helperText={errors.title}
+                    fullWidth
+                    size="small"
+                    placeholder="Ex: Sistema de pagamentos indisponível"
+                    inputProps={{ maxLength: 200 }}
+                />
 
-            {/* Header */}
-            <DialogTitle sx={{
-                p: 0,
-                background: 'linear-gradient(135deg, #ef444418 0%, #f9731608 100%)',
-                borderBottom: '1px solid rgba(239,68,68,0.15)',
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: '16px 20px' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Box sx={{ width: 36, height: 36, borderRadius: '10px', bgcolor: 'rgba(239,68,68,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Warning sx={{ color: '#ef4444', fontSize: '18px' }} />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ fontSize: '16px', fontWeight: 700 }}>Novo Incidente</Typography>
-                            <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>Registre um incidente para análise e resolução</Typography>
-                        </Box>
-                    </Box>
-                    <IconButton size="small" onClick={onClose}><Close fontSize="small" /></IconButton>
+                <TextField
+                    label="Descrição *"
+                    value={form.description}
+                    onChange={handleChange('description')}
+                    error={!!errors.description}
+                    helperText={errors.description}
+                    fullWidth
+                    multiline
+                    rows={3}
+                    size="small"
+                    placeholder="Descreva o que está acontecendo, quando começou e o impacto observado..."
+                />
+
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                    <FormControl size="small" fullWidth>
+                        <InputLabel>Prioridade *</InputLabel>
+                        <Select value={form.priority} label="Prioridade *" onChange={handleChange('priority')}>
+                            {PRIORITIES.map(p => (
+                                <MenuItem key={p.value} value={p.value}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: p.color, flexShrink: 0 }} />
+                                        {p.label}
+                                    </Box>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl size="small" fullWidth>
+                        <InputLabel>Impacto *</InputLabel>
+                        <Select value={form.impactLevel} label="Impacto *" onChange={handleChange('impactLevel')}>
+                            {IMPACTS.map(i => (
+                                <MenuItem key={i.value} value={i.value}>{i.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Box>
-            </DialogTitle>
 
-            <DialogContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
+                {categories.length > 0 && (
+                    <FormControl size="small" fullWidth>
+                        <InputLabel>Categoria</InputLabel>
+                        <Select value={form.categoryId} label="Categoria" onChange={handleChange('categoryId')}>
+                            <MenuItem value=""><em>Sem categoria</em></MenuItem>
+                            {categories.map(c => (
+                                <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
 
-                    {/* Title */}
-                    <TextField
-                        label="Título *"
-                        value={form.title}
-                        onChange={handleChange('title')}
-                        error={!!errors.title}
-                        helperText={errors.title}
-                        fullWidth
-                        size="small"
-                        placeholder="Ex: Sistema de pagamentos indisponível"
-                        inputProps={{ maxLength: 200 }}
-                    />
-
-                    {/* Description */}
-                    <TextField
-                        label="Descrição *"
-                        value={form.description}
-                        onChange={handleChange('description')}
-                        error={!!errors.description}
-                        helperText={errors.description}
-                        fullWidth
-                        multiline
-                        rows={3}
-                        size="small"
-                        placeholder="Descreva o que está acontecendo, quando começou e o impacto observado..."
-                    />
-
-                    {/* Priority + Impact row */}
-                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                        <FormControl size="small" fullWidth>
-                            <InputLabel>Prioridade *</InputLabel>
-                            <Select value={form.priority} label="Prioridade *" onChange={handleChange('priority')}>
-                                {PRIORITIES.map(p => (
-                                    <MenuItem key={p.value} value={p.value}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: p.color, flexShrink: 0 }} />
-                                            {p.label}
-                                        </Box>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <FormControl size="small" fullWidth>
-                            <InputLabel>Impacto *</InputLabel>
-                            <Select value={form.impactLevel} label="Impacto *" onChange={handleChange('impactLevel')}>
-                                {IMPACTS.map(i => (
-                                    <MenuItem key={i.value} value={i.value}>{i.label}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    {/* Category */}
-                    {categories.length > 0 && (
-                        <FormControl size="small" fullWidth>
-                            <InputLabel>Categoria</InputLabel>
-                            <Select value={form.categoryId} label="Categoria" onChange={handleChange('categoryId')}>
-                                <MenuItem value=""><em>Sem categoria</em></MenuItem>
-                                {categories.map(c => (
-                                    <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    )}
-
-                    {/* Priority preview badge */}
-                    {selectedPriority && (
-                        <Box sx={{
-                            p: 1.5, borderRadius: '10px',
-                            bgcolor: `${selectedPriority.color}10`,
-                            border: `1px solid ${selectedPriority.color}25`,
-                            display: 'flex', alignItems: 'center', gap: 1
-                        }}>
-                            <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: selectedPriority.color, flexShrink: 0 }} />
-                            <Typography sx={{ fontSize: '12px', color: selectedPriority.color, fontWeight: 600 }}>
-                                Prioridade {selectedPriority.label} — o incidente será atribuído à fila correspondente
-                            </Typography>
-                        </Box>
-                    )}
-                </Box>
-            </DialogContent>
-
-            <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-                <Button onClick={onClose} variant="outlined" disabled={loading}
-                    sx={{ borderRadius: '8px', textTransform: 'none' }}>
-                    Cancelar
-                </Button>
-                <Button onClick={handleSubmit} variant="contained" disabled={loading}
-                    startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <Warning />}
-                    sx={{
-                        borderRadius: '8px', textTransform: 'none', fontWeight: 600,
-                        bgcolor: '#ef4444', '&:hover': { bgcolor: '#dc2626' },
+                {selectedPriority && (
+                    <Box sx={{
+                        p: 1.5, borderRadius: '10px',
+                        bgcolor: `${selectedPriority.color}10`,
+                        border: `1px solid ${selectedPriority.color}25`,
+                        display: 'flex', alignItems: 'center', gap: 1
                     }}>
-                    {loading ? 'Criando...' : 'Registrar Incidente'}
-                </Button>
-            </DialogActions>
-        </Dialog>
+                        <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: selectedPriority.color, flexShrink: 0 }} />
+                        <Typography sx={{ fontSize: '12px', color: selectedPriority.color, fontWeight: 600 }}>
+                            Prioridade {selectedPriority.label} — o incidente será atribuído à fila correspondente
+                        </Typography>
+                    </Box>
+                )}
+            </Box>
+        </StandardModal>
     );
 };
 

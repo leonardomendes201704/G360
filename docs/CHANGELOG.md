@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — ITSM incidentes:** `IncidentCreateModal` (`form`, `loading`), `IncidentViewModal` (`detail`, abas e `IncidentViewDataField` no âmbito do módulo), `IncidentModal` (`detail`, `loading` do prop; formulário e abas CSS existentes; escalonamento em segundo `StandardModal` com `color="warning"`; exclusão/finalizar/salvar em botões MUI).
+  - `FRONTEND/src/components/modals/IncidentCreateModal.jsx`
+  - `FRONTEND/src/components/modals/IncidentViewModal.jsx`
+  - `FRONTEND/src/components/modals/IncidentModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — domínio Despesas:** `ExpenseModal` (`detail`; formulário `react-hook-form` + `expenseFormDark`), `ExpenseApprovalModal` (`form`; aprovação com NF e anexo; `loading`), `SubmitExpenseModal` (`form`; envio para aprovação; `loading`); botões sem gradiente (`contained`/`success` ou `primary`).
   - `FRONTEND/src/components/modals/ExpenseModal.jsx`
   - `FRONTEND/src/components/modals/ExpenseApprovalModal.jsx`

@@ -6,8 +6,8 @@ import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import {
     Box, Button, Typography, Avatar, Divider, Alert, Chip, List, ListItem, ListItemText, ListItemAvatar, IconButton, TextField,
-    Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import { ThumbUp, Send, AttachFile, History, Comment, Link as LinkIcon, Add } from '@mui/icons-material';
 import StatusChip from '../common/StatusChip';
 import {
@@ -31,7 +31,6 @@ const schema = yup.object({
 const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = null, isViewMode = false, loading = false, categories: propCategories = [], users = [] }) => {
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
-    const [mounted, setMounted] = useState(false);
     const [activeTab, setActiveTab] = useState('geral');
     const [fullIncident, setFullIncident] = useState(null);
     const [newComment, setNewComment] = useState('');
@@ -57,8 +56,6 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
 
     const selectedChangeId = watch('relatedChangeId');
     const selectedAssetId = watch('relatedAssetId');
-
-    useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 
     useEffect(() => {
         if (open) {
@@ -186,7 +183,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
         }
     };
 
-    if (!open || !mounted) return null;
+    if (!open) return null;
 
     const currentIncident = fullIncident || incident;
     const inputClass = `form-input ${isViewMode ? 'disabled-input' : ''}`;
@@ -195,44 +192,67 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
 
     const priorityColors = { P1: '#ef4444', P2: '#f59e0b', P3: '#3b82f6', P4: '#10b981' };
 
+    const modalTitle = isViewMode ? 'Detalhes do Incidente' : (incident ? 'Editar Incidente' : 'Novo Incidente');
+    const modalSubtitle = currentIncident?.code || 'Preencha os dados do incidente';
+
     return (
-        <Dialog
-            open={true}
+        <>
+        <StandardModal
+            open={open}
             onClose={onClose}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    border: '1px solid var(--modal-border)',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                    color: 'var(--modal-text)',
-                    maxHeight: '90vh',
-                    overflow: 'visible',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
+            title={modalTitle}
+            subtitle={modalSubtitle}
+            icon="warning"
+            size="detail"
+            loading={loading}
+            footer={
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {!isViewMode && incident && onDelete && currentIncident?.status !== 'CLOSED' && (
+                            <Button
+                                type="button"
+                                color="error"
+                                variant="outlined"
+                                onClick={() => {
+                                    if (window.confirm('Tem certeza que deseja excluir este incidente? Esta ação não pode ser desfeita.')) {
+                                        onDelete(incident.id);
+                                    }
+                                }}
+                            >
+                                Excluir
+                            </Button>
+                        )}
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', ml: 'auto' }}>
+                        <Button type="button" variant="outlined" onClick={onClose}>
+                            {isViewMode ? 'Fechar' : 'Cancelar'}
+                        </Button>
+                        {incident && currentIncident?.status === 'RESOLVED' && (
+                            <Button type="button" variant="contained" color="success" onClick={handleClose}>
+                                Finalizar Incidente
+                            </Button>
+                        )}
+                        {!isViewMode && !incident && (
+                            <Button type="submit" form="incidentForm" variant="contained" disabled={loading}>
+                                Registrar Incidente
+                            </Button>
+                        )}
+                        {!isViewMode && incident && currentIncident?.status !== 'CLOSED' && (
+                            <Button type="submit" form="incidentForm" variant="contained" disabled={loading}>
+                                Salvar Alterações
+                            </Button>
+                        )}
+                    </Box>
+                </Box>
+            }
+            contentSx={{ p: 0, pt: 0 }}
         >
-            <div className="incident-modal-inner" style={{ display: 'flex', flexDirection: 'column', maxHeight: '90vh' }}>
-                <div className="modal-header">
-                    <div className="modal-icon" style={{ background: priorityColors[currentIncident?.priority] || '#f59e0b' }}>⚠️</div>
-                    <div className="modal-header-info">
-                        <h2>{isViewMode ? 'Detalhes do Incidente' : (incident ? 'Editar Incidente' : 'Novo Incidente')}</h2>
-                        <p>{currentIncident?.code || 'Preencha os dados do incidente'}</p>
-                    </div>
-                    {currentIncident?.priority && (
-                        <Chip label={currentIncident.priority} size="small" sx={{ bgcolor: priorityColors[currentIncident.priority], color: 'var(--modal-text)', fontWeight: 700, ml: 2 }} />
-                    )}
-                    <button className="modal-close" onClick={onClose}>✕</button>
-                </div>
+            <div className="incident-modal-inner" style={{ display: 'flex', flexDirection: 'column', maxHeight: 'min(90dvh, 920px)' }}>
+                {currentIncident?.priority && (
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, pt: 1.5 }}>
+                        <Chip label={currentIncident.priority} size="small" sx={{ bgcolor: priorityColors[currentIncident.priority], color: 'var(--modal-text)', fontWeight: 700 }} />
+                    </Box>
+                )}
 
                 <div className="modal-tabs">
                     <button className={`modal-tab ${activeTab === 'geral' ? 'active' : ''}`} onClick={() => setActiveTab('geral')}>Geral</button>
@@ -625,109 +645,51 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                         )}
                     </form>
                 </div>
-
-                <div className="modal-footer">
-                    {/* Botão Deletar - Somente ao editar */}
-                    {!isViewMode && incident && onDelete && currentIncident?.status !== 'CLOSED' && (
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            onClick={() => {
-                                if (window.confirm('Tem certeza que deseja excluir este incidente? Esta ação não pode ser desfeita.')) {
-                                    onDelete(incident.id);
-                                }
-                            }}
-                            style={{ marginRight: 'auto' }}
-                        >
-                            🗑️ Excluir
-                        </button>
-                    )}
-                    <button type="button" className="btn btn-secondary" onClick={onClose}>{isViewMode ? 'Fechar' : 'Cancelar'}</button>
-
-                    {/* Botão Finalizar - Status RESOLVED */}
-                    {incident && currentIncident?.status === 'RESOLVED' && (
-                        <button
-                            type="button"
-                            className="btn btn-success"
-                            onClick={handleClose}
-                            style={{ backgroundColor: '#10b981', borderColor: '#10b981' }}
-                        >
-                            ✓ Finalizar Incidente
-                        </button>
-                    )}
-
-                    {/* Botão Salvar - Novo ou Editar */}
-                    {!isViewMode && !incident && (
-                        <button type="submit" form="incidentForm" className="btn btn-primary" disabled={loading}>
-                            <span>✓</span> Registrar Incidente
-                        </button>
-                    )}
-                    {!isViewMode && incident && currentIncident?.status !== 'CLOSED' && (
-                        <button type="submit" form="incidentForm" className="btn btn-primary" disabled={loading}>
-                            <span>✓</span> Salvar Alterações
-                        </button>
-                    )}
-                </div>
             </div>
+        </StandardModal>
 
-            {/* Dialog de Escalonamento */}
-            <Dialog
-                open={escalateDialogOpen}
-                onClose={() => setEscalateDialogOpen(false)}
-                maxWidth="sm"
-                fullWidth
-                sx={{
-                    zIndex: 1400,
-                    '& .MuiDialog-paper': {
-                        bgcolor: 'var(--modal-bg, #1e293b)',
-                        color: 'var(--modal-text, #e0e0e0)',
-                        borderRadius: 2
-                    }
-                }}
-            >
-                <DialogTitle sx={{ color: 'var(--modal-text, #e0e0e0)', fontWeight: 600 }}>
-                    🚨 Escalonar Incidente
-                </DialogTitle>
-                <DialogContent>
-                    <Typography sx={{ color: 'var(--modal-text-secondary, #94a3b8)', mb: 2, fontSize: 14 }}>
-                        Informe o motivo do escalonamento. Esta ação notificará os gestores responsáveis.
-                    </Typography>
-                    <TextField
-                        autoFocus
-                        fullWidth
-                        multiline
-                        rows={3}
-                        placeholder="Descreva o motivo do escalonamento..."
-                        value={escalateReason}
-                        onChange={(e) => setEscalateReason(e.target.value)}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                bgcolor: 'var(--modal-surface-hover, #334155)',
-                                color: 'var(--modal-text, #e0e0e0)',
-                                '& fieldset': { borderColor: 'var(--modal-border-strong, #475569)' },
-                                '&:hover fieldset': { borderColor: '#2563eb' },
-                                '&.Mui-focused fieldset': { borderColor: '#2563eb' }
-                            }
-                        }}
-                    />
-                </DialogContent>
-                <DialogActions sx={{ p: 2, gap: 1 }}>
-                    <Button
-                        onClick={() => setEscalateDialogOpen(false)}
-                        sx={{ color: 'var(--modal-text-secondary, #94a3b8)' }}
-                    >
+        <StandardModal
+            open={escalateDialogOpen}
+            onClose={() => setEscalateDialogOpen(false)}
+            title="Escalonar Incidente"
+            subtitle="Esta ação notificará os gestores responsáveis."
+            icon="trending_up"
+            size="form"
+            footer={
+                <>
+                    <Button variant="outlined" onClick={() => setEscalateDialogOpen(false)} sx={{ textTransform: 'none' }}>
                         Cancelar
                     </Button>
-                    <Button
-                        variant="contained"
-                        onClick={handleEscalate}
-                        sx={{ bgcolor: '#f59e0b', '&:hover': { bgcolor: '#d97706' } }}
-                    >
+                    <Button variant="contained" color="warning" onClick={handleEscalate} sx={{ textTransform: 'none', fontWeight: 600 }}>
                         Confirmar Escalonamento
                     </Button>
-                </DialogActions>
-            </Dialog>
-        </Dialog>
+                </>
+            }
+            contentSx={{ pt: 2 }}
+        >
+            <Typography sx={{ color: 'var(--modal-text-secondary, #94a3b8)', mb: 2, fontSize: 14 }}>
+                Informe o motivo do escalonamento.
+            </Typography>
+            <TextField
+                autoFocus
+                fullWidth
+                multiline
+                rows={3}
+                placeholder="Descreva o motivo do escalonamento..."
+                value={escalateReason}
+                onChange={(e) => setEscalateReason(e.target.value)}
+                sx={{
+                    '& .MuiOutlinedInput-root': {
+                        bgcolor: 'var(--modal-surface-hover, #334155)',
+                        color: 'var(--modal-text, #e0e0e0)',
+                        '& fieldset': { borderColor: 'var(--modal-border-strong, #475569)' },
+                        '&:hover fieldset': { borderColor: '#2563eb' },
+                        '&.Mui-focused fieldset': { borderColor: '#2563eb' }
+                    }
+                }}
+            />
+        </StandardModal>
+        </>
     );
 };
 
