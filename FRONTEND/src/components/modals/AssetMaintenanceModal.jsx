@@ -3,10 +3,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
-    Box, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-    IconButton, TextField, MenuItem, Typography, InputAdornment
+    Box, Button, TextField, MenuItem, Typography, InputAdornment
 } from '@mui/material';
-import { Close, Build, Check, Info } from '@mui/icons-material';
+import { Build, Check, Info } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
 import { useSnackbar } from 'notistack';
 import { getFileURL, getUploadURL } from '../../utils/urlUtils';
 
@@ -24,20 +24,6 @@ const schema = yup.object({
 }).required();
 
 const modalStyles = {
-    backdrop: { backdropFilter: 'blur(8px)', backgroundColor: 'var(--modal-backdrop, rgba(0, 0, 0, 0.7))' },
-    paper: {
-        borderRadius: '16px',
-        background: 'var(--modal-gradient)',
-        border: '1px solid var(--modal-border)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        color: 'var(--modal-text)',
-        maxWidth: '620px', width: '100%', m: 2
-    },
-    title: {
-        borderBottom: '1px solid var(--modal-border)',
-        padding: '24px 32px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-    },
     input: {
         '& .MuiOutlinedInput-root': {
             background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '10px',
@@ -91,38 +77,37 @@ const AssetMaintenanceModal = ({ open, onClose, onSave, maintenance = null }) =>
         onSave(payload);
     };
 
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            PaperProps={{ sx: modalStyles.paper }}
-            BackdropProps={{ sx: modalStyles.backdrop }}
-            TransitionProps={{ onExited: () => reset() }}
-            maxWidth="md"
-            sx={{ zIndex: 1400 }}
-        >
-            <DialogTitle sx={modalStyles.title}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{
-                        width: 44, height: 44, borderRadius: '12px',
-                        background: 'rgba(234, 88, 12, 0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <Build sx={{ color: '#ea580c', fontSize: 24 }} />
-                    </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 600, color: 'var(--modal-text-strong)' }}>
-                            {maintenance ? 'Editar Manutenção' : 'Nova Manutenção'}
-                        </Typography>
-                        <Typography sx={{ fontSize: '13px', color: 'var(--modal-text-secondary)' }}>Registro de serviços e reparos</Typography>
-                    </Box>
-                </Box>
-                <IconButton onClick={onClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { color: 'var(--modal-text)', background: 'var(--modal-surface-hover)' } }}>
-                    <Close />
-                </IconButton>
-            </DialogTitle>
+    const handleClose = () => {
+        reset();
+        onClose();
+    };
 
-            <DialogContent sx={{ p: 3 }}>
+    return (
+        <StandardModal
+            open={open}
+            onClose={handleClose}
+            title={maintenance ? 'Editar manutenção' : 'Nova manutenção'}
+            subtitle="Registro de serviços e reparos"
+            icon="build"
+            size="form"
+            footer={
+                <>
+                    <Button type="button" onClick={handleClose}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="submit"
+                        form="maintForm"
+                        variant="contained"
+                        color="warning"
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                        startIcon={<Check />}
+                    >
+                        Salvar
+                    </Button>
+                </>
+            }
+        >
                 <form id="maintForm" onSubmit={handleSubmit(onSubmit)}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
@@ -222,19 +207,7 @@ const AssetMaintenanceModal = ({ open, onClose, onSave, maintenance = null }) =>
                         )} />
                     </Box>
                 </form>
-            </DialogContent>
-
-            <DialogActions sx={{ p: 3, borderTop: '1px solid var(--modal-border)', gap: 2 }}>
-                <Button onClick={onClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { background: 'var(--modal-surface-hover)' } }}>Cancelar</Button>
-                <Button type="submit" form="maintForm" startIcon={<Check />}
-                    sx={{
-                        padding: '10px 24px', borderRadius: '10px', fontWeight: 600, textTransform: 'none',
-                        background: 'linear-gradient(135deg, #ea580c 0%, #dc2626 100%)', color: 'white',
-                        '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(234, 88, 12, 0.4)' }
-                    }}
-                >Salvar</Button>
-            </DialogActions>
-        </Dialog>
+        </StandardModal>
     );
 };
 

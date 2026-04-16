@@ -2,8 +2,9 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Button, IconButton, TextField, MenuItem, Box, Typography, InputAdornment, Alert, Dialog } from '@mui/material';
-import { Close, Devices, QrCode, VpnKey, Build, Add, Edit, Delete } from '@mui/icons-material';
+import { Button, IconButton, TextField, MenuItem, Box, Typography, InputAdornment, Alert } from '@mui/material';
+import StandardModal from '../common/StandardModal';
+import { Edit, Delete } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { format } from 'date-fns';
 
@@ -53,7 +54,6 @@ const createSchema = (assetType) => {
 
 const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = null, isViewMode = false, categories: propCategories = [], users = [] }) => {
     const { enqueueSnackbar } = useSnackbar();
-    const [mounted, setMounted] = useState(false);
     const [assetType, setAssetType] = useState('HARDWARE'); // HARDWARE ou LICENSE
     const [activeTab, setActiveTab] = useState(0);
 
@@ -89,8 +89,6 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
     });
 
     const watchStatus = watch('status');
-
-    useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 
     useEffect(() => {
         if (open) {
@@ -208,30 +206,11 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
         catch (e) { enqueueSnackbar('Erro ao excluir', { variant: 'error' }); }
     };
 
-    if (!open || !mounted) return null;
+    if (!open) return null;
 
-    // Styles
-    const modalStyles = {
-        backdrop: {
-            backdropFilter: 'blur(8px)',
-            backgroundColor: 'var(--modal-backdrop, rgba(0, 0, 0, 0.7))'
-        },
-        paper: {
-            borderRadius: '16px',
-            background: 'var(--modal-gradient)',
-            border: '1px solid var(--modal-border)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-            color: 'var(--modal-text)'
-        },
-        title: {
-            borderBottom: '1px solid var(--modal-border)',
-            padding: '24px 32px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            background: 'var(--modal-surface-subtle)'
-        }
-    };
+    const assetModalTitle = isViewMode ? 'Detalhes do ativo' : (asset ? 'Editar ativo' : 'Novo ativo');
+    const assetModalSubtitle = assetType === 'LICENSE' ? 'Licença de software' : 'Hardware / equipamento';
+    const assetModalIcon = assetType === 'LICENSE' ? 'key' : 'computer';
 
     const sectionStyle = { marginBottom: '24px' };
     const sectionTitleStyle = { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontSize: '14px', fontWeight: 600, color: 'var(--modal-text)', textTransform: 'uppercase', letterSpacing: '0.5px' };
@@ -243,40 +222,27 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
 
     return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            TransitionProps={{ onEntered: () => setMounted(true) }} // Ensure mounted state if needed, though Dialog handles it
-            PaperProps={{ sx: modalStyles.paper }}
-            BackdropProps={{ sx: modalStyles.backdrop }}
-            maxWidth="md"
-            fullWidth
-        >
-            {/* Header */}
-            <div style={modalStyles.title}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                        width: 48, height: 48, borderRadius: '12px',
-                        background: assetType === 'LICENSE' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(37, 99, 235, 0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: assetType === 'LICENSE' ? '#3b82f6' : '#2563eb'
-                    }}>
-                        <span className="material-icons-round" style={{ fontSize: '24px' }}>{assetType === 'LICENSE' ? 'key' : 'computer'}</span>
-                    </div>
-                    <div>
-                        <div style={{ fontSize: '20px', fontWeight: 600, color: 'var(--modal-text-strong)' }}>
-                            {isViewMode ? 'Detalhes do Ativo' : (asset ? 'Editar Ativo' : 'Novo Ativo')}
-                        </div>
-                        <div style={{ fontSize: '13px', color: 'var(--modal-text-secondary)' }}>
-                            {assetType === 'LICENSE' ? 'Licença de Software' : 'Hardware / Equipamento'}
-                        </div>
-                    </div>
-                </div>
-                <IconButton onClick={onClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { color: 'var(--modal-text)', background: 'var(--modal-surface-hover)' } }}>
-                    <Close />
-                </IconButton>
-            </div>
-
+        <>
+            <StandardModal
+                open={open}
+                onClose={onClose}
+                title={assetModalTitle}
+                subtitle={assetModalSubtitle}
+                icon={assetModalIcon}
+                size="wide"
+                footer={
+                    <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', gap: 1.5, flexWrap: 'wrap' }}>
+                        <Button type="button" onClick={onClose} variant="outlined" color="inherit" sx={{ textTransform: 'none', fontWeight: 600 }}>
+                            {isViewMode ? 'Fechar' : 'Cancelar'}
+                        </Button>
+                        {!isViewMode && activeTab === 0 && (
+                            <Button type="submit" form="assetUnifiedForm" variant="contained" color="primary" sx={{ textTransform: 'none', fontWeight: 600 }}>
+                                {assetType === 'LICENSE' ? 'Salvar licença' : 'Salvar ativo'}
+                            </Button>
+                        )}
+                    </Box>
+                }
+            >
             {/* Type Toggle (somente para novo ativo) */}
             {!asset && (
                 <div style={{ padding: '16px 32px', borderBottom: '1px solid var(--modal-border)', background: 'var(--modal-ink-soft)' }}>
@@ -481,7 +447,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                                     </div>
                                     <div>
                                         <label style={labelStyle}>Contrato{watchStatus === 'LOCADO' && <span style={{ color: '#f43f5e' }}> *</span>}</label>
-                                        /* ADD_ERROR_BELOW */
+                                        {errors.contractId && <span style={{ color: '#f43f5e', fontSize: '12px', display: 'block', marginBottom: 4 }}>{errors.contractId.message}</span>}
                                         <Controller name="contractId" control={control} render={({ field }) => (
                                             <select {...field} style={{ ...inputStyle, borderColor: errors.contractId ? '#f43f5e' : 'var(--modal-border-strong)' }} disabled={isViewMode}>
                                                 <option value="">Nenhum</option>
@@ -651,26 +617,10 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                     )}
                 </form>
             </div>
+            </StandardModal>
 
-            {/* Footer */}
-            <div style={{ padding: '20px 32px', borderTop: '1px solid var(--modal-border)', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                <button type="button" onClick={onClose} style={{ padding: '12px 24px', background: 'var(--modal-surface)', color: 'var(--modal-text-secondary)', border: '1px solid var(--modal-border-strong)', borderRadius: '10px', cursor: 'pointer', fontWeight: 500 }}>
-                    {isViewMode ? 'Fechar' : 'Cancelar'}
-                </button>
-                {!isViewMode && activeTab === 0 && (
-                    <button type="submit" form="assetUnifiedForm" style={{
-                        padding: '12px 24px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600,
-                        background: assetType === 'LICENSE' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'linear-gradient(135deg, #06b6d4 0%, #2563eb 100%)',
-                        color: 'var(--modal-text)', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
-                    }}>
-                        {assetType === 'LICENSE' ? 'Salvar Licença' : 'Salvar Ativo'}
-                    </button>
-                )}
-            </div>
-
-            {/* Modal de Manutenção */}
             <AssetMaintenanceModal open={maintModalOpen} onClose={() => setMaintModalOpen(false)} onSave={handleSaveMaint} maintenance={selectedMaint} />
-        </Dialog>
+        </>
     );
 };
 

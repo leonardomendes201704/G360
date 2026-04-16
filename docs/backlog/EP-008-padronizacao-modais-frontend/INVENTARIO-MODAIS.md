@@ -29,9 +29,9 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 4 | `AddMemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
 | 5 | `ApprovalDetailsModal.jsx` — migrado `StandardModal` (US-022) |
 | 6 | `AssetCategoryModal.jsx` — migrado `StandardModal` (US-022) |
-| 7 | `AssetMaintenanceModal.jsx` |
-| 8 | `AssetModal.jsx` |
-| 9 | `AssetViewModal.jsx` |
+| 7 | `AssetMaintenanceModal.jsx` — migrado `StandardModal` (US-022 domínio ativos; primário `warning`) |
+| 8 | `AssetModal.jsx` — migrado `StandardModal` (US-022, `wide`; manutenção aninhada fora do shell) |
+| 9 | `AssetViewModal.jsx` — migrado `StandardModal` (US-022, `detail`) |
 | 10 | `AzureConfigModal.jsx` — migrado `StandardModal` (pós-US-022, Integrações) |
 | 11 | `BudgetImportModal.jsx` — migrado `StandardModal` (US-022) |
 | 12 | `BudgetItemModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |

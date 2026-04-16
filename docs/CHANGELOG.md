@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — domínio Ativos:** `AssetModal` (`wide`), `AssetViewModal` (`detail`; campos extraídos para componentes estáticos), `AssetMaintenanceModal` (`form`; botão salvar `contained`/`warning`); `AssetModal` passa a renderizar `AssetMaintenanceModal` como irmão do shell; validação de contrato em ativo locado com mensagem visível.
+  - `FRONTEND/src/components/modals/AssetModal.jsx`
+  - `FRONTEND/src/components/modals/AssetViewModal.jsx`
+  - `FRONTEND/src/components/modals/AssetMaintenanceModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008:** Segundo lote de modais em `StandardModal`: `AddendumViewModal`, `SupplierViewModal` (`wide`; secções `DataField` extraídas para evitar componentes dentro do render), `ApprovalDetailsModal` (`loading` na API), `MinuteModal` (form + `loading`), `FollowUpModal` (corpo com classes existentes), `TeamModal`, `ProjectTaskModal` (`paperProps` com `data-testid`); `StandardModal` aceita `paperProps` opcional para o Paper do MUI `Dialog`.
   - `FRONTEND/src/components/common/StandardModal.jsx`
   - `FRONTEND/src/components/modals/AddendumViewModal.jsx`
