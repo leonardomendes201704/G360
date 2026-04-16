@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { 
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Card, CardContent,
+  Button, TextField, Tooltip, Card, CardContent,
   Box, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, Grid, TableContainer, Paper,
   CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Chip, Avatar, useTheme, keyframes
 } from '@mui/material';
@@ -13,6 +13,7 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import WarningIcon from '@mui/icons-material/Warning';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ticketService from '../../services/ticket.service';
+import StandardModal from '../../components/common/StandardModal';
 
 const STATUS_COLORS = {
   'OPEN': 'info',
@@ -322,33 +323,35 @@ const ServiceDeskDashboard = () => {
         )}
       </TableContainer>
 
-      {/* RESOLUTION MODAL */}
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Resolver Chamado: {selectedTicket?.code}</DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="body2" sx={{ mb: 2 }}>
-            Você está prestes a resolver a requisição <b>{selectedTicket?.title}</b>. O usuário será notificado.
-          </Typography>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Nota de Resolução (Visível ao Usuário)"
-            fullWidth
-            multiline
-            rows={4}
-            variant="outlined"
-            value={resolutionComment}
-            onChange={(e) => setResolutionComment(e.target.value)}
-            disabled={resolving}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setModalOpen(false)} disabled={resolving}>Cancelar</Button>
-          <Button variant="contained" color="success" onClick={handleResolveTicket} disabled={resolving}>
-            {resolving ? <CircularProgress size={24} color="inherit" /> : 'Confirmar Resolução'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <StandardModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={`Resolver Chamado: ${selectedTicket?.code || ''}`}
+        subtitle={selectedTicket?.title}
+        icon="task_alt"
+        size="form"
+        loading={resolving}
+        actions={[
+          { label: 'Cancelar', onClick: () => setModalOpen(false) },
+          { label: 'Confirmar Resolução', onClick: handleResolveTicket, color: 'success' },
+        ]}
+      >
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          Você está prestes a resolver a requisição <b>{selectedTicket?.title}</b>. O usuário será notificado.
+        </Typography>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Nota de Resolução (Visível ao Usuário)"
+          fullWidth
+          multiline
+          rows={4}
+          variant="outlined"
+          value={resolutionComment}
+          onChange={(e) => setResolutionComment(e.target.value)}
+          disabled={resolving}
+        />
+      </StandardModal>
     </Box>
   );
 };

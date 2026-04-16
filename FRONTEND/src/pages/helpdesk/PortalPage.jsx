@@ -13,11 +13,8 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
   TextField,
-  DialogContentText,
   InputAdornment,
   Slide,
   useTheme,
@@ -39,6 +36,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+
+import StandardModal from '../../components/common/StandardModal';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -628,27 +627,19 @@ const PortalPage = () => {
         </DialogContent>
       </Dialog>
 
-      <Dialog
+      <StandardModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Transition}
-        PaperProps={{
-          sx: {
-            borderRadius: 1,
-            backgroundImage: 'none',
-            bgcolor: mode === 'dark' ? '#1e293b' : '#ffffff'
-          }
-        }}
+        onClose={() => !creating && setModalOpen(false)}
+        title={`Solicitar: ${selectedService?.name || ''}`}
+        subtitle="Preencha os detalhes do seu problema ou requerimento para enviarmos à equipe técnica."
+        icon="support_agent"
+        size="form"
+        loading={creating}
+        actions={[
+          { label: 'Cancelar', onClick: () => setModalOpen(false), disabled: creating },
+          { label: 'Abrir Chamado', onClick: handleSubmit, disabled: creating || !title || !description },
+        ]}
       >
-        <DialogTitle sx={{ pb: 1, pt: 3, px: 3, fontWeight: 700, fontSize: '1.25rem' }}>
-          Solicitar: {selectedService?.name}
-        </DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText sx={{ mb: 2 }}>
-            Preencha os detalhes do seu problema ou requerimento para enviarmos à equipe técnica.
-          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -781,16 +772,7 @@ const PortalPage = () => {
               </option>
             ))}
           </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setModalOpen(false)} disabled={creating}>
-            Cancelar
-          </Button>
-          <Button variant="contained" onClick={handleSubmit} disabled={creating || !title || !description}>
-            {creating ? <CircularProgress size={24} color="inherit" /> : 'Abrir Chamado'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
     </Box>
   );
 };

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { 
   Box, Typography, Paper, Grid, Table, TableBody, TableCell, 
   TableContainer, TableHead, TableRow, IconButton, Button,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Chip, Tabs, Tab
+  TextField, MenuItem, Chip, Tabs, Tab
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import serviceCatalogService from '../../services/service-catalog.service';
 import slaPolicyService from '../../services/sla-policy.service';
+import StandardModal from '../../components/common/StandardModal';
 
 export const CatalogAdminPanel = ({ embedded = false }) => {
   const [categories, setCategories] = useState([]);
@@ -353,21 +354,32 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
       )}
 
       {/* Cat Modal */}
-      <Dialog open={catModalOpen} onClose={() => setCatModalOpen(false)}>
-        <DialogTitle>{editingCat ? 'Editar Categoria' : 'Nova Categoria'}</DialogTitle>
-        <DialogContent dividers>
+      <StandardModal
+        open={catModalOpen}
+        onClose={() => setCatModalOpen(false)}
+        title={editingCat ? 'Editar Categoria' : 'Nova Categoria'}
+        icon="folder"
+        maxWidth="xs"
+        actions={[
+          { label: 'Cancelar', onClick: () => setCatModalOpen(false) },
+          { label: 'Salvar', onClick: handleSaveCategory },
+        ]}
+      >
           <TextField autoFocus margin="dense" label="Nome" fullWidth value={catName} onChange={e => setCatName(e.target.value)} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCatModalOpen(false)}>Cancelar</Button>
-          <Button variant="contained" onClick={handleSaveCategory}>Salvar</Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
 
       {/* Svc Modal */}
-      <Dialog open={svcModalOpen} onClose={() => setSvcModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingSvc ? 'Editar Serviço' : 'Novo Serviço'}</DialogTitle>
-        <DialogContent dividers>
+      <StandardModal
+        open={svcModalOpen}
+        onClose={() => setSvcModalOpen(false)}
+        title={editingSvc ? 'Editar Serviço' : 'Novo Serviço'}
+        icon="design_services"
+        size="form"
+        actions={[
+          { label: 'Cancelar', onClick: () => setSvcModalOpen(false) },
+          { label: 'Salvar Serviço', onClick: handleSaveService },
+        ]}
+      >
           <TextField autoFocus margin="dense" label="Nome do Serviço" fullWidth value={svcName} onChange={e => setSvcName(e.target.value)} />
           
           <Box display="flex" gap={2} mt={1}>
@@ -381,17 +393,20 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
           </Box>
           
           <TextField margin="dense" label="Descrição do Problema/Serviço a ser apresentado ao Usuário" fullWidth multiline rows={2} value={svcDesc} onChange={e => setSvcDesc(e.target.value)} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSvcModalOpen(false)}>Cancelar</Button>
-          <Button variant="contained" color="primary" onClick={handleSaveService}>Salvar Serviço</Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
 
       {/* SLA Modal */}
-      <Dialog open={slaModalOpen} onClose={() => setSlaModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Nova Política de SLA</DialogTitle>
-        <DialogContent dividers>
+      <StandardModal
+        open={slaModalOpen}
+        onClose={() => setSlaModalOpen(false)}
+        title="Nova Política de SLA"
+        icon="schedule"
+        size="form"
+        actions={[
+          { label: 'Cancelar', onClick: () => setSlaModalOpen(false) },
+          { label: 'Criar SLA', onClick: handleSaveSla, color: 'secondary' },
+        ]}
+      >
           <TextField autoFocus margin="dense" label="Nome da Política (ex: Alto Impacto - Ouro)" fullWidth value={slaData.name} onChange={e => setSlaData({...slaData, name: e.target.value})} />
           <TextField margin="dense" label="Descrição Interna" fullWidth value={slaData.description} onChange={e => setSlaData({...slaData, description: e.target.value})} />
           
@@ -399,17 +414,25 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
             <TextField margin="dense" type="number" label="Prazo de 1ª Resposta (Horas)" fullWidth value={slaData.responseHours} onChange={e => setSlaData({...slaData, responseHours: Number(e.target.value)})} />
             <TextField margin="dense" type="number" label="Prazo de Solução (Horas)" fullWidth value={slaData.resolveHours} onChange={e => setSlaData({...slaData, resolveHours: Number(e.target.value)})} />
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSlaModalOpen(false)}>Cancelar</Button>
-          <Button variant="contained" color="secondary" onClick={handleSaveSla}>Criar SLA</Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
 
       {/* Form Builder Modal */}
-      <Dialog open={fbModalOpen} onClose={() => setFbModalOpen(false)} maxWidth="lg" fullWidth>
-        <DialogTitle>Montador de Formulário: {fbService?.name}</DialogTitle>
-        <DialogContent dividers sx={{ bgcolor: '#f8fafc' }}>
+      <StandardModal
+        open={fbModalOpen}
+        onClose={() => setFbModalOpen(false)}
+        title={`Montador de Formulário: ${fbService?.name || ''}`}
+        icon="dynamic_form"
+        size="wide"
+        footer={
+          <>
+            <Button onClick={() => setFbModalOpen(false)}>Cancelar Modificações</Button>
+            <Button variant="contained" color="primary" onClick={handleSaveFormSchema} startIcon={<DynamicFormIcon />}>
+              Salvar Planta do Formulário
+            </Button>
+          </>
+        }
+        contentSx={{ bgcolor: '#f8fafc' }}
+      >
           
           <Paper elevation={0} sx={{ p: 3, mb: 4, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
             <Typography variant="subtitle1" gutterBottom fontWeight="bold" color="primary.main">
@@ -498,14 +521,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
             </Paper>
           )}
 
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setFbModalOpen(false)}>Cancelar Modificações</Button>
-          <Button variant="contained" color="primary" onClick={handleSaveFormSchema} startIcon={<DynamicFormIcon />}>
-            Salvar Planta do Formulário
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
 
     </Box>
   );

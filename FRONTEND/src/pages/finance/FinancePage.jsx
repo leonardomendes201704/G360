@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Button, IconButton, Typography, Paper, useTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Box, Button, IconButton, Typography, Paper, useTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 
 import FinanceDashboard from './FinanceDashboard';
 import ExpensesPage from './ExpensesPage';
@@ -11,6 +11,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import BudgetModal from '../../components/modals/BudgetModal';
 import AccountModal from '../../components/modals/AccountModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import StandardModal from '../../components/common/StandardModal';
 import EmptyState from '../../components/common/EmptyState';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -434,28 +435,30 @@ const FinancePage = () => {
 
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmAction} title={confirmConfig.title} content={confirmConfig.content} />
 
-      {/* DIÁLOGO DE DUPLICAÇÃO */}
-      <Dialog open={duplicateDialogOpen} onClose={() => setDuplicateDialogOpen(false)}>
-        <DialogTitle>Duplicar Orçamento</DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Nome da Cópia"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={duplicateName}
-              onChange={(e) => setDuplicateName(e.target.value)}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDuplicateDialogOpen(false)} color="inherit">Cancelar</Button>
-          <Button onClick={handleConfirmDuplicate} variant="contained" color="primary">Duplicar</Button>
-        </DialogActions>
-      </Dialog>
+      <StandardModal
+        open={duplicateDialogOpen}
+        onClose={() => setDuplicateDialogOpen(false)}
+        title="Duplicar Orçamento"
+        icon="content_copy"
+        size="form"
+        actions={[
+          { label: 'Cancelar', onClick: () => setDuplicateDialogOpen(false) },
+          { label: 'Duplicar', onClick: handleConfirmDuplicate },
+        ]}
+      >
+        <Box sx={{ mt: 0 }}>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Nome da Cópia"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={duplicateName}
+            onChange={(e) => setDuplicateName(e.target.value)}
+          />
+        </Box>
+      </StandardModal>
     </Box >
   );
 };

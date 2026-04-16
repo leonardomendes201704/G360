@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { Box, Typography, Button, Avatar, LinearProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, Button, Avatar, LinearProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { BarChart } from '@mui/x-charts/BarChart';
@@ -15,6 +15,7 @@ import ExpenseModal from '../../components/modals/ExpenseModal';
 import IncidentCreateModal from '../../components/modals/IncidentCreateModal';
 import api from '../../services/api';
 import StatsCard from '../../components/common/StatsCard';
+import StandardModal from '../../components/common/StandardModal';
 import KpiGrid from '../../components/common/KpiGrid';
 import { getIncidentKPIs } from '../../services/incident.service';
 import { createProject } from '../../services/project.service';
@@ -647,19 +648,15 @@ const ManagerOverview = () => {
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />
             <IncidentCreateModal open={isIncidentOpen} onClose={() => setIsIncidentOpen(false)} onSave={() => load()} />
 
-            {/* Score Info Modal */}
-            <Dialog open={scoreInfoOpen} onClose={() => setScoreInfoOpen(false)} maxWidth="sm" fullWidth
-                PaperProps={{ sx: { borderRadius: '16px', p: 1 } }}>
-                <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
-                    <Box sx={{ width: 40, height: 40, borderRadius: 2, bgcolor: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span className="material-icons-round" style={{ color: '#2563eb', fontSize: 22 }}>speed</span>
-                    </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: 18, fontWeight: 700 }}>Score de Saúde Geral</Typography>
-                        <Typography sx={{ fontSize: 13, color: textMuted }}>Como o score é calculado</Typography>
-                    </Box>
-                </DialogTitle>
-                <DialogContent sx={{ pt: 1 }}>
+            <StandardModal
+                open={scoreInfoOpen}
+                onClose={() => setScoreInfoOpen(false)}
+                title="Score de Saúde Geral"
+                subtitle="Como o score é calculado"
+                icon="speed"
+                size="form"
+                actions={[{ label: 'Entendi', onClick: () => setScoreInfoOpen(false) }]}
+            >
                     <Typography sx={{ fontSize: 14, color: textPrimary, mb: 2, mt: '5px', lineHeight: 1.7 }}>
                         O Score de Saúde Geral é uma métrica composta que reflete a performance operacional
                         do seu time em tempo real, variando de <strong>0 a 100 pontos</strong>.
@@ -700,14 +697,7 @@ const ManagerOverview = () => {
                             ))}
                         </Box>
                     </Box>
-                </DialogContent>
-                <DialogActions sx={{ px: 3, pb: 2 }}>
-                    <Button onClick={() => setScoreInfoOpen(false)} variant="contained"
-                        sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}>
-                        Entendi
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            </StandardModal>
         </Box>
     );
 };

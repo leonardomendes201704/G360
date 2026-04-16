@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../../services/api';
-import { Box, Typography, Dialog, IconButton, CircularProgress, Chip } from '@mui/material';
+import { Box, Typography, IconButton, CircularProgress, Chip, Button } from '@mui/material';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { useSnackbar } from 'notistack';
+import StandardModal from '../../components/common/StandardModal';
 
 const TenantAdminPage = () => {
     const [tenants, setTenants] = useState([]);
@@ -25,8 +26,6 @@ const TenantAdminPage = () => {
     const surfaceBg = isDark ? '#1c2632' : '#f1f5f9';
     const inputBg = isDark ? '#1c2632' : '#ffffff';
     const inputBorder = isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(15, 23, 42, 0.12)';
-    const modalShadow = isDark ? '0 20px 60px rgba(0, 0, 0, 0.6)' : '0 20px 60px rgba(15, 23, 42, 0.15)';
-
     const cardStyle = { background: cardBg, border: cardBorder, borderRadius: '16px' };
 
     const inputStyle = {
@@ -209,59 +208,42 @@ const TenantAdminPage = () => {
         };
 
         return (
-            <Dialog
+            <StandardModal
                 open={open}
                 onClose={saving ? undefined : onClose}
-                maxWidth={false}
-                PaperProps={{
-                    sx: {
-                        background: cardBg, border: cardBorder, borderRadius: '24px',
-                        width: '100%', maxWidth: isEdit ? '680px' : '560px', overflow: 'hidden',
-                        boxShadow: modalShadow,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        maxHeight: 'min(90vh, 880px)',
-                    }
-                }}
-                BackdropProps={{ sx: { backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.7)' } }}
+                title={isEdit ? 'Editar Tenant' : 'Novo Tenant'}
+                icon={isEdit ? 'edit' : 'domain_add'}
+                size={isEdit ? 'detail' : 'form'}
+                loading={saving}
+                footer={
+                    <Box data-testid="tenant-modal-footer" sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%' }}>
+                        <Button variant="outlined" onClick={onClose} disabled={saving}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            type="submit"
+                            form="g360-tenant-admin-form"
+                            variant="contained"
+                            disabled={saving}
+                            startIcon={
+                                saving ? (
+                                    <CircularProgress size={16} color="inherit" />
+                                ) : (
+                                    <span className="material-icons-round" style={{ fontSize: 18 }}>{isEdit ? 'save' : 'add'}</span>
+                                )
+                            }
+                        >
+                            {isEdit ? 'Salvar' : 'Criar Tenant'}
+                        </Button>
+                    </Box>
+                }
             >
-                {/* Header */}
-                <div style={{ padding: '24px 32px', borderBottom: cardBorder, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <span className="material-icons-round" style={{ fontSize: '24px', color: '#2563eb' }}>
-                                {isEdit ? 'edit' : 'domain_add'}
-                            </span>
-                        </div>
-                        <div style={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-                            {isEdit ? 'Editar Tenant' : 'Novo Tenant'}
-                        </div>
-                    </div>
-                    <IconButton onClick={onClose} sx={{ color: textSecondary, '&:hover': { color: '#f43f5e', background: 'rgba(244, 63, 94, 0.1)' } }}>
-                        <span className="material-icons-round">close</span>
-                    </IconButton>
-                </div>
-
-                {/* Body */}
-                <form
+                <Box
+                    component="form"
+                    id="g360-tenant-admin-form"
                     onSubmit={handleSubmit}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        minHeight: 0,
-                        overflow: 'hidden',
-                    }}
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
                 >
-                    <div style={{
-                        padding: '32px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                        flex: 1,
-                        minHeight: 0,
-                        overflowY: 'auto',
-                    }}>
                         <div>
                             <label style={labelStyle}>Nome da Empresa *</label>
                             <input
@@ -449,50 +431,8 @@ const TenantAdminPage = () => {
                                 </div>
                             </>
                         )}
-                    </div>
-
-                    {/* Footer — fixo no rodape do modal; area acima rola */}
-                    <div
-                        data-testid="tenant-modal-footer"
-                        style={{
-                            padding: '20px 32px',
-                            borderTop: cardBorder,
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            gap: '12px',
-                            flexShrink: 0,
-                            background: cardBg,
-                        }}
-                    >
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            style={{
-                                padding: '12px 24px', background: surfaceBg, color: textSecondary,
-                                border: inputBorder, borderRadius: '10px', cursor: 'pointer', fontWeight: 500,
-                                display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px',
-                            }}
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            style={{
-                                padding: '12px 28px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                color: 'white', border: 'none', borderRadius: '10px', cursor: saving ? 'not-allowed' : 'pointer',
-                                fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px',
-                                opacity: saving ? 0.7 : 1, boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                            }}
-                        >
-                            {saving ? <CircularProgress size={16} sx={{ color: 'white' }} /> : (
-                                <span className="material-icons-round" style={{ fontSize: 18 }}>{isEdit ? 'save' : 'add'}</span>
-                            )}
-                            {isEdit ? 'Salvar' : 'Criar Tenant'}
-                        </button>
-                    </div>
-                </form>
-            </Dialog>
+                </Box>
+            </StandardModal>
         );
     };
 

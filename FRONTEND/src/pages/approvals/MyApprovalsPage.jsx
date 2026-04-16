@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, Typography, Button, IconButton, Chip, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Tooltip, Checkbox, FormControlLabel, Paper, useTheme } from '@mui/material';
+import { Box, Typography, Button, IconButton, Chip, CircularProgress, TextField, Tooltip, Checkbox, FormControlLabel, Paper, useTheme } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import approvalService from '../../services/approval.service';
@@ -8,6 +8,7 @@ import ApprovalDetailsModal from '../../components/modals/ApprovalDetailsModal';
 import EmptyState from '../../components/common/EmptyState';
 import LoadingOverlay from '../../components/common/LoadingOverlay';
 import StatsCard from '../../components/common/StatsCard';
+import StandardModal from '../../components/common/StandardModal';
 import KpiGrid from '../../components/common/KpiGrid';
 
 const formatCurrency = (val) => val ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val) : '-';
@@ -334,17 +335,41 @@ const MyApprovalsPage = () => {
                 )}
             </Paper>
 
-            <Dialog
+            <StandardModal
                 open={rejectDialog.open}
-                onClose={() => { setRejectDialog({ open: false, item: null }); setRequiresAdjustment(false); }}
-                PaperProps={{ sx: { background: '#1a222d', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, minWidth: 450 } }}
+                onClose={() => {
+                    if (processing === rejectDialog.item?.id) return;
+                    setRejectDialog({ open: false, item: null });
+                    setRequiresAdjustment(false);
+                }}
+                title="Rejeitar Item"
+                icon="block"
+                size="form"
+                loading={processing === rejectDialog.item?.id}
+                footer={
+                    <>
+                        <Button onClick={() => { setRejectDialog({ open: false, item: null }); setRequiresAdjustment(false); }} sx={{ color: 'text.secondary' }}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={handleReject}
+                            variant="contained"
+                            disabled={processing === rejectDialog.item?.id || !rejectReason.trim()}
+                            sx={{
+                                background: requiresAdjustment ? '#f59e0b' : '#f43f5e',
+                                '&:hover': { background: requiresAdjustment ? '#d97706' : '#dc2626' }
+                            }}
+                        >
+                            {requiresAdjustment ? 'Devolver para Ajustes' : 'Rejeitar Definitivo'}
+                        </Button>
+                    </>
+                }
             >
-                <DialogTitle sx={{ color: '#f1f5f9', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    Rejeitar Item
-                </DialogTitle>
-                <DialogContent sx={{ pt: 3 }}>
-                    <Typography sx={{ color: '#94a3b8', mb: 2 }}>
-                        Rejeitando: <strong style={{ color: '#f1f5f9' }}>{rejectDialog.item?.title}</strong>
+                    <Typography sx={{ color: 'text.secondary', mb: 2 }}>
+                        Rejeitando:{' '}
+                        <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                            {rejectDialog.item?.title}
+                        </Box>
                     </Typography>
                     <TextField
                         fullWidth
@@ -353,14 +378,9 @@ const MyApprovalsPage = () => {
                         label="Motivo da rejeição *"
                         value={rejectReason}
                         onChange={(e) => setRejectReason(e.target.value)}
-                        sx={{
-                            mb: 2,
-                            '& .MuiOutlinedInput-root': { color: '#f1f5f9', background: '#1c2632' },
-                            '& .MuiInputLabel-root': { color: '#94a3b8' }
-                        }}
+                        sx={{ mb: 2 }}
                     />
 
-                    {/* Checkbox para projetos, atas, custos e propostas - permite reenvio */}
                     {(rejectDialog.item?.type === 'project' || rejectDialog.item?.type === 'minute' || rejectDialog.item?.type === 'projectCost' || rejectDialog.item?.type === 'proposal' || rejectDialog.item?.type === 'gmud') && (
                         <Box sx={{
                             p: 2,
@@ -379,10 +399,10 @@ const MyApprovalsPage = () => {
                                 }
                                 label={
                                     <Box>
-                                        <Typography sx={{ color: '#f1f5f9', fontSize: 14, fontWeight: 500 }}>
+                                        <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
                                             Permitir ajustes e reenvio
                                         </Typography>
-                                        <Typography sx={{ color: '#64748b', fontSize: 12 }}>
+                                        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
                                             {requiresAdjustment
                                                 ? `O criador poderá editar e reenviar ${getItemLabel(rejectDialog.item?.type)} para aprovação.`
                                                 : `Rejeição definitiva - ${getItemLabel(rejectDialog.item?.type)} ficará somente leitura.`}
@@ -392,22 +412,7 @@ const MyApprovalsPage = () => {
                             />
                         </Box>
                     )}
-                </DialogContent>
-                <DialogActions sx={{ p: 2.5, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                    <Button onClick={() => { setRejectDialog({ open: false, item: null }); setRequiresAdjustment(false); }} sx={{ color: '#94a3b8' }}>Cancelar</Button>
-                    <Button
-                        onClick={handleReject}
-                        variant="contained"
-                        disabled={processing === rejectDialog.item?.id || !rejectReason.trim()}
-                        sx={{
-                            background: requiresAdjustment ? '#f59e0b' : '#f43f5e',
-                            '&:hover': { background: requiresAdjustment ? '#d97706' : '#dc2626' }
-                        }}
-                    >
-                        {requiresAdjustment ? 'Devolver para Ajustes' : 'Rejeitar Definitivo'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            </StandardModal>
 
             <ApprovalDetailsModal
                 open={detailsModalOpen}

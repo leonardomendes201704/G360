@@ -8,10 +8,6 @@ import {
   FormControlLabel,
   TextField,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   CircularProgress,
   Chip,
   MenuItem,
@@ -22,6 +18,7 @@ import {
   Autocomplete
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
+import StandardModal from '../../components/common/StandardModal';
 import { getHelpdeskConfig, updateHelpdeskConfig } from '../../services/helpdesk-config.service';
 import {
   getAllSupportGroups,
@@ -734,10 +731,19 @@ export const ServiceDeskSettingsPanel = ({ embedded = false }) => {
         </Box>
       </Box>
 
-      <Dialog open={dlgOpen} onClose={() => setDlgOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 600 }}>{editId ? 'Editar grupo' : 'Novo grupo'}</DialogTitle>
-        <DialogContent dividers>
-          <TextField fullWidth label="Nome" value={gName} onChange={(e) => setGName(e.target.value)} sx={{ mb: 2, mt: 1 }} />
+      <StandardModal
+        open={dlgOpen}
+        onClose={() => setDlgOpen(false)}
+        title={editId ? 'Editar grupo' : 'Novo grupo'}
+        icon="groups"
+        size="form"
+        loading={saving}
+        actions={[
+          { label: 'Cancelar', onClick: () => setDlgOpen(false) },
+          { label: 'Salvar', onClick: saveGroup, disabled: !gName.trim() },
+        ]}
+      >
+          <TextField fullWidth label="Nome" value={gName} onChange={(e) => setGName(e.target.value)} sx={{ mb: 2 }} />
           <TextField
             fullWidth
             label="Descrição"
@@ -779,14 +785,7 @@ export const ServiceDeskSettingsPanel = ({ embedded = false }) => {
               ))}
             </Select>
           </FormControl>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDlgOpen(false)}>Cancelar</Button>
-          <Button variant="contained" onClick={saveGroup} disabled={saving || !gName.trim()}>
-            Salvar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
     </Box>
   );
 };

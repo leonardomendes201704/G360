@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import api from '../../services/api';
-import { Box, Typography, Button, Pagination, IconButton, Dialog } from '@mui/material';
+import { Box, Typography, Button, Pagination, IconButton } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import StandardModal from '../../components/common/StandardModal';
 
 const ActivityLogPage = () => {
     const [viewMode, setViewMode] = useState('dashboard');
@@ -29,8 +30,6 @@ const ActivityLogPage = () => {
     const hoverRowBg = isDark ? '#1c2632' : '#f1f5f9';
     const codeBg = isDark ? '#0f1419' : '#f8fafc';
     const codeText = isDark ? '#10b981' : '#0f766e';
-    const modalShadow = isDark ? '0 20px 60px rgba(0, 0, 0, 0.6)' : '0 20px 60px rgba(15, 23, 42, 0.15)';
-
     /** Chaves canônicas rbac-matrix.json (+ SUPER_ADMIN para logs de plataforma) */
     const modules = [
         'ACTIVITY_LOG', 'APPROVALS', 'ASSETS', 'CONFIG', 'CONTRACTS', 'FINANCE', 'GMUD', 'HELPDESK',
@@ -216,40 +215,14 @@ const ActivityLogPage = () => {
         const valueStyle = { fontSize: '14px', color: textPrimary, fontWeight: 500 };
 
         return (
-            <Dialog
-                open={true}
+            <StandardModal
+                open
                 onClose={onClose}
-                maxWidth={false}
-                PaperProps={{
-                    sx: {
-                        background: cardBg, border: cardBorder,
-                        borderRadius: '24px', width: '100%', maxWidth: '700px', maxHeight: '90vh', overflow: 'hidden',
-                        display: 'flex', flexDirection: 'column', boxShadow: modalShadow
-                    }
-                }}
-                BackdropProps={{
-                    sx: {
-                        backdropFilter: 'blur(4px)',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                    }
-                }}
+                title="Detalhes da Atividade"
+                icon={actionStyle.icon}
+                maxWidth="md"
+                actions={[{ label: 'Fechar', onClick: onClose }]}
             >
-                {/* Header */}
-                <div style={{ padding: '24px 32px', borderBottom: cardBorder, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: 48, height: 48, borderRadius: '12px', background: actionStyle.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <span className="material-icons-round" style={{ fontSize: '24px', color: actionStyle.color }}>{actionStyle.icon}</span>
-                        </div>
-                        <div style={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Detalhes da Atividade</div>
-                    </div>
-                    <IconButton onClick={onClose} sx={{ color: textSecondary, '&:hover': { color: '#f43f5e', background: 'rgba(244, 63, 94, 0.1)' } }}>
-                        <span className="material-icons-round">close</span>
-                    </IconButton>
-                </div>
-
-                {/* Body */}
-                <div style={{ padding: '32px', overflowY: 'auto', flex: 1 }}>
-                    {/* Acao Info */}
                     <div style={{ marginBottom: '32px' }}>
                         <div style={sectionTitleStyle}>
                             <span className="material-icons-round" style={{ fontSize: '18px', color: '#3b82f6' }}>bolt</span>
@@ -328,16 +301,7 @@ const ActivityLogPage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Footer */}
-                <div style={{ padding: '20px 32px', borderTop: cardBorder, display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                    <button onClick={onClose} style={{ padding: '12px 24px', background: surfaceBg, color: textSecondary, border: inputBorder, borderRadius: '10px', cursor: 'pointer', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="material-icons-round" style={{ fontSize: '18px' }}>close</span>
-                        Fechar
-                    </button>
-                </div>
-            </Dialog>
+            </StandardModal>
         );
     };
 

@@ -8,6 +8,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — páginas (`pages/`):** Migração de diálogos MUI inline para **`StandardModal`** onde aplicável: duplicação de orçamento (`FinancePage`), resolver chamado (`ServiceDeskDashboard`), modal do score (`ManagerOverview`), grupo de suporte (`ServiceDeskSettings`), catálogo/serviço/SLA/form builder (`CatalogAdmin`), rejeição (`MyApprovalsPage`), detalhe do log (`ActivityLogPage`), formulário tenant (`TenantAdminPage`), dois fluxos em `ProblemManagement`, formulário «Solicitar chamado» (`PortalPage`; wizard «Novo chamado» mantém `Dialog` customizado). Imports não utilizados removidos (`GlobalSettingsPage`).
+  - `FRONTEND/src/pages/finance/FinancePage.jsx`
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
+  - `FRONTEND/src/pages/dashboard/ManagerOverview.jsx`
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskSettings.jsx`
+  - `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx`
+  - `FRONTEND/src/pages/approvals/MyApprovalsPage.jsx`
+  - `FRONTEND/src/pages/admin/ActivityLogPage.jsx`
+  - `FRONTEND/src/pages/admin/TenantAdminPage.jsx`
+  - `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx`
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+  - `FRONTEND/src/pages/admin/GlobalSettingsPage.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — diálogos inline (config / admin / KB):** `KnowledgeCategoriesTab` (`CategoryModal` em `StandardModal` com `loading`); `TenantsTab` (confirmação de exclusão em `ConfirmDialog`); `ApprovalTiersTab` (formulário de alçada em `StandardModal`); `CabMembersTab` (adicionar membro em `StandardModal`); `DocumentViewer` (casca `StandardModal`, ícone `picture_as_pdf`).
   - `FRONTEND/src/components/config/KnowledgeCategoriesTab.jsx`
   - `FRONTEND/src/components/config/TenantsTab.jsx`

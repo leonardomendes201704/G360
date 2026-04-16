@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   Box, Typography, Paper, Table, TableBody, TableCell, 
   TableContainer, TableHead, TableRow, IconButton, Button,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Chip, useTheme, CircularProgress, Grid
+  TextField, MenuItem, Chip, useTheme, CircularProgress, Grid
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import problemService from '../../services/problem.service';
+import StandardModal from '../../components/common/StandardModal';
 
 const STATUS_COLORS = {
   'INVESTIGATING': 'secondary',
@@ -136,10 +137,17 @@ const ProblemManagement = () => {
         </Table>
       </TableContainer>
 
-      {/* CREATE MODAL */}
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Declarar Novo Problema Crônico</DialogTitle>
-        <DialogContent dividers>
+      <StandardModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Declarar Novo Problema Crônico"
+        icon="bug_report"
+        size="form"
+        actions={[
+          { label: 'Cancelar', onClick: () => setModalOpen(false) },
+          { label: 'Declarar', onClick: handleCreate, color: 'secondary', disabled: !title },
+        ]}
+      >
           <TextField autoFocus margin="dense" label="Título Resumido" fullWidth value={title} onChange={e => setTitle(e.target.value)} />
           <TextField margin="dense" label="Descrição Evidência" fullWidth multiline rows={3} value={description} onChange={e => setDescription(e.target.value)} />
           <TextField margin="dense" select label="Prioridade/Impacto" fullWidth value={priority} onChange={e => setPriority(e.target.value)}>
@@ -147,23 +155,28 @@ const ProblemManagement = () => {
              <MenuItem value="HIGH">Alto</MenuItem>
              <MenuItem value="URGENT">Urgente (Crise)</MenuItem>
           </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setModalOpen(false)}>Cancelar</Button>
-          <Button variant="contained" color="secondary" onClick={handleCreate} disabled={!title}>Declarar</Button>
-        </DialogActions>
-      </Dialog>
+      </StandardModal>
 
-      {/* MANAGE MODAL */}
-      <Dialog open={manageModalOpen} onClose={() => setManageModalOpen(false)} maxWidth="lg" fullWidth>
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: mode==='dark'?'#0f172a':'#f1f5f9' }}>
-          <Box>
-            <Typography variant="h6" fontWeight="bold">Mission Control: Problema {selectedProb?.code}</Typography>
-            <Typography variant="body2" color="text.secondary">{selectedProb?.title}</Typography>
-          </Box>
+      <StandardModal
+        open={manageModalOpen}
+        onClose={() => setManageModalOpen(false)}
+        title={`Mission Control · ${selectedProb?.code || ''}`}
+        subtitle={selectedProb?.title}
+        icon="engineering"
+        size="wide"
+        contentSx={{ p: 0 }}
+        footer={
+          <>
+            <Button onClick={() => setManageModalOpen(false)}>Sair da Edição</Button>
+            <Button variant="contained" color="primary" onClick={handleUpdateStatus}>Salvar Alterações do Problema</Button>
+          </>
+        }
+      >
+        <>
+        <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'flex-end' }}>
           <Chip label={pStatus} color={STATUS_COLORS[pStatus]} sx={{ fontWeight: 800 }} />
-        </DialogTitle>
-        <DialogContent dividers sx={{ p: 0, bgcolor: mode==='dark'?'#1e293b':'#ffffff', display: 'flex', height: '65vh' }}>
+        </Box>
+        <Box sx={{ bgcolor: mode === 'dark' ? '#1e293b' : '#ffffff', display: 'flex', minHeight: 'min(65vh, 560px)', maxHeight: '65vh' }}>
           <Grid container sx={{ height: '100%' }}>
             {/* Lado Esquerdo: Edição do Problema */}
             <Grid item xs={12} md={7} sx={{ p: { xs: 2, md: 4 }, borderRight: `1px solid ${mode==='dark'?'rgba(255,255,255,0.1)':'#e2e8f0'}`, overflowY: 'auto' }}>
@@ -224,12 +237,9 @@ const ProblemManagement = () => {
               </Box>
             </Grid>
           </Grid>
-        </DialogContent>
-        <DialogActions sx={{ p: 2, bgcolor: mode==='dark'?'#0f172a':'#f1f5f9' }}>
-          <Button onClick={() => setManageModalOpen(false)}>Sair da Edição</Button>
-          <Button variant="contained" color="primary" onClick={handleUpdateStatus}>Salvar Alterações do Problema</Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+        </>
+      </StandardModal>
     </Box>
   );
 };

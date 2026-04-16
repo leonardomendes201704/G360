@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useSearchParams, Navigate } from 'react-router-dom';
 import {
     Box, Typography, Switch, Button, TextField, CircularProgress,
-    Dialog, DialogTitle, DialogContent, DialogActions, Chip, LinearProgress,
     Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 import { useSnackbar } from 'notistack';

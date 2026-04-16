@@ -101,19 +101,15 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 
 ## 5. Paginas (`pages/`) com `Dialog` inline ou composto
 
+Migrados para **`StandardModal`** (US-022 lote páginas): `FinancePage` (duplicar orçamento); `ServiceDeskDashboard`; `ManagerOverview`; `ServiceDeskSettings`; `CatalogAdmin` (quatro shells); `MyApprovalsPage`; `ActivityLogPage` (`DetailModal`); `TenantAdminPage` (`TenantFormModal`); `ProblemManagement`; formulário «Solicitar» em `PortalPage`.
+
+**Limpezas:** `GlobalSettingsPage.jsx` — removidos imports não utilizados (`Dialog`, etc.).
+
+**Restantes neste grupo:**
+
 | Ficheiro | Notas |
 |----------|--------|
-| `pages/admin/TenantAdminPage.jsx` | `TenantFormModal` inline (`Dialog`) |
-| `pages/admin/ActivityLogPage.jsx` | `Dialog` |
-| `pages/admin/GlobalSettingsPage.jsx` | Importa `Dialog` (verificar uso efectivo / limpeza) |
-| `pages/finance/FinancePage.jsx` | `BudgetModal`, `AccountModal`, `ConfirmDialog`, `Dialog` duplicar orcamento |
-| `pages/helpdesk/PortalPage.jsx` | Multiplos `Dialog` (wizard + modal) |
-| `pages/helpdesk/ProblemManagement.jsx` | Dois `Dialog` |
-| `pages/servicedesk/CatalogAdmin.jsx` | Varias instancias `Dialog` (catalogo, servico, SLA, feedback) |
-| `pages/servicedesk/ServiceDeskDashboard.jsx` | `Dialog` |
-| `pages/servicedesk/ServiceDeskSettings.jsx` | `Dialog` grupo |
-| `pages/approvals/MyApprovalsPage.jsx` | `Dialog` |
-| `pages/dashboard/ManagerOverview.jsx` | `Dialog` informacao score |
+| `pages/helpdesk/PortalPage.jsx` | Wizard «Novo chamado» (gradiente + steps + `Slide`) mantém **`Dialog`** — caso especial UX |
 
 ---
 
