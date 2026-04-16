@@ -1,14 +1,16 @@
 ---
-description: Ao concluir tarefas no G360, registar entrada no diário central D:\Leonardo\Diario\diary.md (tom legível, formato VisionAssets).
+description: Ao concluir tarefas no G360, registrar entrada no diário central D:\Leonardo\Diario\diary.md (tom legível, pt-BR, formato VisionAssets).
 alwaysApply: true
 ---
 
 # Diário de trabalho (G360)
 
-Quando **concluíres uma tarefa** com entregável no repositório G360, **insere** em **`D:\Leonardo\Diario\diary.md`** uma entrada **no topo da lista** (após cabeçalho/nota, antes da primeira entrada `---`), no formato abaixo, para manter **data/hora descendente**.
+Quando **concluir uma tarefa** com entregável no repositório G360, **insira** em **`D:\Leonardo\Diario\diary.md`** uma entrada **no topo da lista** (após cabeçalho/nota, antes da primeira entrada `---`), no formato abaixo, para manter **data/hora descendente**.
 
-- O registo **canónico** é **fora** do Git deste projeto (`D:\Leonardo\Diario\`).
-- Se o ficheiro ou pasta não existir, cria `D:\Leonardo\Diario\` e segue o `README.md` desse diretório.
+- O registro **canônico** é **fora** do Git deste projeto (`D:\Leonardo\Diario\`).
+- Se o arquivo ou pasta não existir, crie `D:\Leonardo\Diario\` e siga o `README.md` desse diretório.
+
+**Idioma:** português **do Brasil (pt-BR)** — vocabulário e grafia brasileiros (ex.: atualizar, registro, usuário, tela, arquivo, ações; evitar actualizar, registo, ecrã, acções, ficheiro).
 
 ## Formato
 
@@ -26,13 +28,13 @@ Opcional: **Work item:** US-xxx / BUG-xxx
 
 ## Tom e redação (importante)
 
-O diário é **nota para ti** (e para leitura humana), não substituto do `CHANGELOG.md`.
+O diário é **nota para você** (e para leitura humana), não substituto do `CHANGELOG.md`.
 
-- **Título:** frase que um colega entenda sem abrir o repo (ex.: “Modal X ao padrão visual” em vez de “`FooModal.jsx` → `StandardModal`”).
-- **Corpo:** escrever como conversa curta: motivo, decisão, desfecho. Usar **“nós”/impessoal** (“alinhámos”, “ficou”, “combinámos”) quando fizer sentido.
-- **Detalhe técnico:** só o necessário; nomes de ficheiros ou paths **no fim** do parágrafo ou **uma linha** “Referência:” se ajudar mais tarde — evitar listas estilo lista de ficheiros do Git.
-- **IDs:** mencionar US/BUG no título ou linha opcional **Work item:**, não repetir o mesmo em cinco sítios.
+- **Título:** frase que um colega entenda sem abrir o repositório (ex.: “Modal X ao padrão visual” em vez de “`FooModal.jsx` → `StandardModal`”).
+- **Corpo:** escrever como conversa curta: motivo, decisão, desfecho. Pode usar **“nós”** ou impessoal (“alinhamos”, “ficou”, “combinamos”) quando fizer sentido.
+- **Detalhe técnico:** só o necessário; nomes de arquivos ou caminhos **no fim** do parágrafo ou **uma linha** “Referência:” se ajudar depois — evitar listas estilo commit do Git.
+- **IDs:** mencionar US/BUG no título ou linha opcional **Work item:**, sem repetir o mesmo em cinco lugares.
 
 ## Exceções
 
-- Consultas sem alterações ao código: só regista se o utilizador pedir.
+- Consultas sem alterações ao código: só registre se o usuário pedir.

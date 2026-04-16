@@ -252,7 +252,7 @@ O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega
 
 1. Ao **concluir** uma solicitacao com entrega material, **inserir** uma entrada no **topo** da lista em `D:\Leonardo\Diario\diary.md` (apos cabecalho/nota, antes da primeira entrada existente), para ordem **descendente** por data/hora (nao usar `docs/trabalho-diario/diary.md` como destino canónico).
 2. Se `D:\Leonardo\Diario\diary.md` **nao existir**, criar a pasta `D:\Leonardo\Diario\`, o `README.md` de convencoes e o `diary.md` com cabecalho minimo, depois acrescentar a entrada.
-3. Cada entrada deve ter **Quando** (ISO com timezone), **Projeto** (padrao **G360**, salvo outro nome indicado pelo usuario), **Titulo** e **paragrafo(s) em prosa legivel** (contexto, proposito, resultado); titulo e texto **humanos**, nao lista de ficheiros estilo commit — ver `D:\Leonardo\Diario\README.md` e `.cursor/rules/work-diary.mdc`. Incluir **Work item** US/BUG quando existir (linha opcional ou no texto).
+3. Cada entrada deve ter **Quando** (ISO com timezone), **Projeto** (padrao **G360**, salvo outro nome indicado pelo usuario), **Titulo** e **paragrafo(s) em prosa legivel** em **portugues do Brasil (pt-BR)** (contexto, proposito, resultado); titulo e texto **humanos**, nao lista de arquivos estilo commit — ver `D:\Leonardo\Diario\README.md` e `.cursor/rules/work-diary.mdc`. Incluir **Work item** US/BUG quando existir (linha opcional ou no texto).
 4. Perguntas puramente informativas **sem** alteracao no repositorio: entrada **nao** obrigatoria; se o usuario pedir registro, registrar.
 5. O diario **nao substitui** `docs/CHANGELOG.md` em commits com mudancas de produto — manter ambos quando aplicavel.
 
