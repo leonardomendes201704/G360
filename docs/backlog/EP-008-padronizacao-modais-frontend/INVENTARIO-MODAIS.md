@@ -38,8 +38,8 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 13 | `BudgetModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
 | 14 | `ChangeModal.jsx` — migrado `StandardModal` (US-022 ITSM; `wide`; wizard + abas; `ConfirmDialog` fora) |
 | 15 | `ChangeViewModal.jsx` — migrado `StandardModal` (US-022 ITSM; `wide`; `ChangeViewDataField` extraído) |
-| 16 | `ContractCreationWizard.jsx` (inclui dialog aninhado “Novo tipo”) |
-| 17 | `ContractModal.jsx` |
+| 16 | `ContractCreationWizard.jsx` — migrado `StandardModal` (US-022; “Novo tipo” em `StandardModal`) |
+| 17 | `ContractModal.jsx` — migrado `StandardModal` (US-022; `wide`; wizard + edição; rodapé no shell) |
 | 18 | `CostCenterModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
 | 19 | `DepartmentModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 20 | `ExpenseApprovalModal.jsx` — migrado `StandardModal` (US-022 despesas; `form`; `loading`; primário `success`) |
@@ -58,7 +58,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 33 | `PaymentConditionModal.jsx` — migrado `StandardModal` (US-022) |
 | 34 | `ProjectModal.jsx` — migrado `StandardModal` (US-022; `wide`; wizard/edição no corpo) |
 | 35 | `ProjectTaskModal.jsx` — migrado `StandardModal` (US-022; `data-testid` no Paper) |
-| 36 | `ProposalModal.jsx` (dialog principal + dialog “nova categoria”) |
+| 36 | `ProposalModal.jsx` — migrado `StandardModal` (US-022; `detail`; `loading`; categoria extra em segundo `StandardModal`) |
 | 37 | `RescheduleModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 38 | `RiskModal.jsx` — migrado `StandardModal` (US-022; `detail`; primário `error`) |
 | 39 | `RiskViewModal.jsx` — migrado `StandardModal` (US-022; `detail`; `RiskViewBadge` / `RiskViewField` extraídos) |

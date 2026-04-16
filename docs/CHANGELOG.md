@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — Contratos e propostas:** `ContractModal` (`wide`; wizard/edição; rodapé só em modo edição), `ContractCreationWizard` (tipo extra em `StandardModal`), `ProposalModal` (`detail`; `loading`; «Nova categoria» em segundo modal).
+  - `FRONTEND/src/components/modals/ContractModal.jsx`
+  - `FRONTEND/src/components/modals/ContractCreationWizard.jsx`
+  - `FRONTEND/src/components/modals/ProposalModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — Projetos / tarefas / KB:** `ProjectModal` (`wide`, `rocket_launch`, `loading`), `TaskModal` (`wide`; título/subtítulo dinâmicos; abas no corpo; rodapé no shell; removido estado `mounted` e gradiente do `Paper`), `KnowledgeBaseModal` (artigo + diálogo «Nova Categoria» em `StandardModal`).
   - `FRONTEND/src/components/modals/ProjectModal.jsx`
   - `FRONTEND/src/components/modals/TaskModal.jsx`

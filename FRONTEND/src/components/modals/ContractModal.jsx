@@ -6,12 +6,13 @@ import {
     Box, Button, Tabs, Tab, IconButton, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, Paper, Chip,
     TextField, MenuItem, Grid, Accordion, AccordionSummary, AccordionDetails,
-    Typography, InputAdornment, FormControlLabel, Switch, Dialog
+    Typography, InputAdornment, FormControlLabel, Switch,
 } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import {
     CloudUpload, Delete, Download, NoteAdd, Edit, Calculate,
     ExpandMore, Description, AttachMoney, AccountBalance, Info,
-    Business, Numbers, Close, Visibility
+    Business, Numbers, Visibility
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { format } from 'date-fns';
@@ -56,7 +57,6 @@ const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024;
 
 const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isViewMode = false }) => {
     const { enqueueSnackbar } = useSnackbar();
-    const [mounted, setMounted] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
     const [wizardSaving, setWizardSaving] = useState(false);
 
@@ -130,8 +130,6 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
             }
         }
     }, [watchStartDate, watchEndDate, watchMonthly, watchRate, watchSignature, isViewMode, setValue, autoCalculate]);
-
-    useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 
     useEffect(() => {
         if (open) {
@@ -356,52 +354,58 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
         );
     };
 
-    if (!open || !mounted) return null;
+    if (!open) return null;
 
     const selectProps = {
         MenuProps: { style: { zIndex: 10005 } }
     };
 
     return (
-        <Dialog
-            open={true}
+        <StandardModal
+            open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                sx: {
-                    maxWidth: '820px',
-                    width: '92%',
-                    maxHeight: '80vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: 0,
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '16px',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.12)',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
+            title={contract ? `Contrato: ${contract.number}` : 'Novo Contrato'}
+            subtitle={
+                isViewMode
+                    ? 'Modo de visualização'
+                    : contract
+                        ? 'Dados, documentos e aditivos'
+                        : 'Assistente de cadastro de contrato'
+            }
+            icon="description"
+            size="wide"
+            loading={wizardSaving}
+            footer={
+                contract ? (
+                    <>
+                        <Button variant="outlined" onClick={onClose} size="large" sx={{ textTransform: 'none' }}>
+                            {isViewMode ? 'Fechar' : 'Cancelar'}
+                        </Button>
+                        {!isViewMode && activeTab === 0 && (
+                            <Button
+                                type="submit"
+                                form="contractForm"
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                sx={{ px: 3, textTransform: 'none' }}
+                            >
+                                Salvar Alterações
+                            </Button>
+                        )}
+                    </>
+                ) : null
+            }
+            contentSx={{
+                p: 0,
+                pt: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0,
+                overflow: 'hidden',
             }}
         >
-            <div className="contract-modal-inner" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-
-                {/* HEADER */}
-                <div className="modal-header" style={{ padding: '20px 28px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ffffff' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div className="modal-icon" style={{ background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', padding: '12px', borderRadius: '12px', border: '1px solid rgba(37, 99, 235, 0.25)' }}><Description /></div>
-                        <div>
-                            <Typography variant="h6" fontWeight="bold" sx={{ color: 'var(--modal-text)' }}>{contract ? `Contrato: ${contract.number}` : 'Novo Contrato'}</Typography>
-                            <Typography variant="caption" sx={{ color: 'var(--modal-text-muted)' }}>{isViewMode ? 'Modo de Visualizacao' : 'Preencha os dados do contrato'}</Typography>
-                        </div>
-                    </div>
-                    <IconButton onClick={onClose} sx={{ color: 'var(--modal-text-muted)', '&:hover': { color: 'var(--modal-text)' } }}><Close /></IconButton>
-                </div>
+            <Box className="contract-modal-inner" sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }}>
 
                 {/* WIZARD MODE for new contracts */}
                 {!contract ? (
@@ -664,14 +668,10 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                             </div>
 
                         </div>
-                        <div className="modal-footer" style={{ padding: '20px 32px', borderTop: '1px solid var(--modal-border)', display: 'flex', justifyContent: 'flex-end', gap: '16px', backgroundColor: 'rgba(22, 29, 38, 0.5)' }}>
-                            <Button onClick={onClose} size="large" sx={{ color: 'var(--modal-text-secondary)', '&:hover': { bgcolor: 'var(--modal-surface-hover)' } }}>{isViewMode ? 'Fechar' : 'Cancelar'}</Button>
-                            {!isViewMode && activeTab === 0 && <Button type="submit" form="contractForm" variant="contained" size="large" sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', px: 4 }}>Salvar Alterações</Button>}
-                        </div>
                     </> /* End of edit/view mode */
                 )}
-            </div>
-        </Dialog>
+            </Box>
+        </StandardModal>
     );
 };
 

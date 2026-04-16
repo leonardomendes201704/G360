@@ -5,8 +5,9 @@ import * as yup from 'yup';
 import {
     Box, Typography, TextField, MenuItem, Button, Grid,
     InputAdornment, FormControlLabel, Switch, Paper, Chip, CircularProgress,
-    IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions
+    IconButton, Tooltip,
 } from '@mui/material';
+import StandardModal from '../common/StandardModal';
 import {
     ArrowForward, ArrowBack, Save, Business, AttachMoney,
     AccountBalance, CloudUpload, Description, Numbers, Check,
@@ -338,17 +339,56 @@ const ContractCreationWizard = ({ onSave, onCancel, loading }) => {
                                     </IconButton>
                                 </Tooltip>
                             </Box>
-                            {/* Dialog para adicionar novo tipo */}
-                            <Dialog open={addTypeOpen} onClose={() => setAddTypeOpen(false)} maxWidth="xs" fullWidth>
-                                <DialogTitle sx={{ fontWeight: 700, fontSize: '16px' }}>Novo Tipo de Contrato</DialogTitle>
-                                <DialogContent>
-                                    <TextField autoFocus fullWidth label="Nome do tipo" value={newTypeName} onChange={(e) => setNewTypeName(e.target.value.toUpperCase())} placeholder="Ex: CONSULTORIA" sx={{ mt: 1, ...modalStyles.input }} onKeyDown={(e) => { if (e.key === 'Enter' && newTypeName.trim()) { e.preventDefault(); if (!allTypes.includes(newTypeName.trim())) { setCustomTypes(prev => [...prev, newTypeName.trim()]); setValue('type', newTypeName.trim()); } setNewTypeName(''); setAddTypeOpen(false); } }} />
-                                </DialogContent>
-                                <DialogActions sx={{ px: 3, pb: 2 }}>
-                                    <Button onClick={() => { setNewTypeName(''); setAddTypeOpen(false); }} sx={{ color: '#6b7280' }}>Cancelar</Button>
-                                    <Button variant="contained" disabled={!newTypeName.trim() || allTypes.includes(newTypeName.trim())} onClick={() => { setCustomTypes(prev => [...prev, newTypeName.trim()]); setValue('type', newTypeName.trim()); setNewTypeName(''); setAddTypeOpen(false); }} sx={{ bgcolor: '#1d4ed8', '&:hover': { bgcolor: '#1e40af' }, borderRadius: '8px', textTransform: 'none', fontWeight: 700 }}>Adicionar</Button>
-                                </DialogActions>
-                            </Dialog>
+                            <StandardModal
+                                open={addTypeOpen}
+                                onClose={() => { setNewTypeName(''); setAddTypeOpen(false); }}
+                                title="Novo Tipo de Contrato"
+                                subtitle="Defina um tipo personalizado para esta pasta"
+                                icon="folder_special"
+                                size="form"
+                                footer={
+                                    <>
+                                        <Button variant="outlined" onClick={() => { setNewTypeName(''); setAddTypeOpen(false); }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            disabled={!newTypeName.trim() || allTypes.includes(newTypeName.trim())}
+                                            onClick={() => {
+                                                setCustomTypes(prev => [...prev, newTypeName.trim()]);
+                                                setValue('type', newTypeName.trim());
+                                                setNewTypeName('');
+                                                setAddTypeOpen(false);
+                                            }}
+                                            sx={{ textTransform: 'none', fontWeight: 700 }}
+                                        >
+                                            Adicionar
+                                        </Button>
+                                    </>
+                                }
+                                contentSx={{ pt: 2 }}
+                            >
+                                <TextField
+                                    autoFocus
+                                    fullWidth
+                                    label="Nome do tipo"
+                                    value={newTypeName}
+                                    onChange={(e) => setNewTypeName(e.target.value.toUpperCase())}
+                                    placeholder="Ex: CONSULTORIA"
+                                    sx={{ ...modalStyles.input }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && newTypeName.trim()) {
+                                            e.preventDefault();
+                                            if (!allTypes.includes(newTypeName.trim())) {
+                                                setCustomTypes(prev => [...prev, newTypeName.trim()]);
+                                                setValue('type', newTypeName.trim());
+                                            }
+                                            setNewTypeName('');
+                                            setAddTypeOpen(false);
+                                        }
+                                    }}
+                                />
+                            </StandardModal>
                         </Grid>
                         <Grid size={4}>
                             <Controller name="signatureDate" control={control} render={({ field }) => (
