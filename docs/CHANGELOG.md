@@ -8,6 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **`SmtpConfigModal`:** migrado para `StandardModal` (Integrações — e-mail SMTP); carregamento inicial vs. salvamento separados para não ocultar o formulário ao salvar.
+  - `FRONTEND/src/components/modals/SmtpConfigModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
 - **US-022 / EP-008 (encerrados):** `ConfirmDialog` passa a usar `StandardModal`; lote 2 financeiro (`BudgetModal`, `AccountModal`, `CostCenterModal`); `FreezeWindowsTab` sem `Dialog` inline; inventario e backlog actualizados.
   - `FRONTEND/src/components/common/ConfirmDialog.jsx`
   - `FRONTEND/src/components/modals/BudgetModal.jsx`
