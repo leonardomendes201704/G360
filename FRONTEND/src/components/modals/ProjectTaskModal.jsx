@@ -5,9 +5,10 @@ import * as yup from 'yup';
 import { useSnackbar } from 'notistack';
 import {
     Box, Typography, TextField, Select, MenuItem, Button, IconButton,
-    FormControl, Chip, Autocomplete, Dialog
+    FormControl, Chip, Autocomplete
 } from '@mui/material';
-import { CheckCircle, Close, Add, Delete, CheckBox } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
+import { CheckCircle, Add, Delete, CheckBox } from '@mui/icons-material';
 import { getReferenceUsers } from '../../services/reference.service';
 
 const schema = yup.object({
@@ -31,7 +32,6 @@ const ProjectTaskModal = ({
     task = null, projectId, allTasks = []
 }) => {
     const { enqueueSnackbar } = useSnackbar();
-    const [mounted, setMounted] = useState(false);
     const [viewMode, setViewMode] = useState(!!task);
     const [users, setUsers] = useState([]);
     const [checklistItems, setChecklistItems] = useState([]);
@@ -47,11 +47,6 @@ const ProjectTaskModal = ({
     const status = watch('status');
     const title = watch('title');
     const progress = watch('progress');
-
-    useEffect(() => {
-        setMounted(true);
-        return () => setMounted(false);
-    }, []);
 
     // Load users
     useEffect(() => {
@@ -125,7 +120,10 @@ const ProjectTaskModal = ({
         onSave(payload);
     };
 
-    if (!open || !mounted) return null;
+    if (!open) return null;
+
+    const modalTitle = task ? (viewMode ? (title || task.title) : 'Editar tarefa') : 'Nova tarefa';
+    const modalSubtitle = 'Detalhes, prazos e dependências';
 
     const inputStyle = {
         '& .MuiOutlinedInput-root': {
@@ -146,77 +144,46 @@ const ProjectTaskModal = ({
     };
 
     return (
-        <Dialog
-            open={true}
+        <StandardModal
+            open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                'data-testid': 'modal-project-task',
-                sx: {
-                    width: '100%',
-                    maxWidth: '720px',
-                    maxHeight: '90vh',
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--modal-surface-hover)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
-        >
-            {/* Header */}
-            <Box sx={{
-                padding: '24px',
-                borderBottom: '1px solid var(--modal-border-strong)',
-                background: 'var(--modal-header-gradient)'
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-                        <Box sx={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '10px',
-                            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
-                        }}>
-                            <CheckCircle sx={{ color: 'var(--modal-text)', fontSize: '24px' }} />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                                {task ? (viewMode ? (title || task.title) : '✏️ Editando Tarefa') : 'Nova Tarefa'}
-                            </Typography>
-                            <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                                Gerencie os detalhes, prazos e dependências
-                            </Typography>
-                        </Box>
+            title={modalTitle}
+            subtitle={modalSubtitle}
+            icon="task_alt"
+            size="detail"
+            paperProps={{ 'data-testid': 'modal-project-task' }}
+            footer={
+                viewMode ? (
+                    <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', gap: 1.5 }}>
+                        <Button type="button" onClick={onClose} variant="outlined" color="inherit" sx={{ textTransform: 'none', fontWeight: 600 }}>
+                            Fechar
+                        </Button>
+                        <Button type="button" onClick={() => setViewMode(false)} variant="contained" color="primary" sx={{ textTransform: 'none', fontWeight: 600 }}>
+                            Editar
+                        </Button>
                     </Box>
-                    <IconButton
-                        onClick={onClose}
-                        sx={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '8px',
-                            background: 'var(--modal-surface-hover)',
-                            color: 'var(--modal-text-muted)',
-                            '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-                        }}
-                    >
-                        <Close fontSize="small" />
-                    </IconButton>
-                </Box>
-            </Box>
-
-            {/* Content */}
+                ) : (
+                    <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', gap: 1.5 }}>
+                        <Button
+                            type="button"
+                            onClick={task ? () => setViewMode(true) : onClose}
+                            sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                            {task ? 'Voltar' : 'Cancelar'}
+                        </Button>
+                        <Button
+                            type="submit"
+                            form="projectTaskForm"
+                            variant="contained"
+                            color="primary"
+                            sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                            {task ? 'Salvar alterações' : 'Criar tarefa'}
+                        </Button>
+                    </Box>
+                )
+            }
+        >
             <Box sx={{
                 flex: 1,
                 overflowY: 'auto',
@@ -656,105 +623,7 @@ const ProjectTaskModal = ({
                     </Box>
                 </form>
             </Box>
-
-            {/* Footer */}
-            <Box sx={{
-                padding: '16px 24px',
-                borderTop: '1px solid var(--modal-border-strong)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: 2,
-                background: 'var(--modal-surface-subtle)'
-            }}>
-                {viewMode ? (
-                    /* View Mode Footer */
-                    <>
-                        <Box />
-                        <Box sx={{ display: 'flex', gap: 1.5 }}>
-                            <Button
-                                type="button"
-                                onClick={onClose}
-                                sx={{
-                                    background: 'transparent',
-                                    border: '1px solid var(--modal-border)',
-                                    color: 'var(--modal-text-secondary)',
-                                    borderRadius: '8px',
-                                    padding: '10px 20px',
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    textTransform: 'none',
-                                    '&:hover': {
-                                        borderColor: 'var(--modal-text-muted)',
-                                        background: 'var(--modal-surface-hover)',
-                                        color: 'var(--modal-text)'
-                                    }
-                                }}
-                            >
-                                Fechar
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={() => setViewMode(false)}
-                                sx={{
-                                    background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                    color: '#fff',
-                                    borderRadius: '10px',
-                                    padding: '10px 24px',
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    textTransform: 'none',
-                                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                                    '&:hover': { boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
-                                }}
-                            >
-                                ✏️ Editar
-                            </Button>
-                        </Box>
-                    </>
-                ) : (
-                    /* Edit/Create Mode Footer */
-                    <>
-                        <Box />
-                        <Box sx={{ display: 'flex', gap: 1.5 }}>
-                            <Button
-                                type="button"
-                                onClick={task ? () => setViewMode(true) : onClose}
-                                sx={{
-                                    color: 'var(--modal-text-secondary)',
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    textTransform: 'none',
-                                    '&:hover': { background: 'var(--modal-surface-hover)' }
-                                }}
-                            >
-                                {task ? 'Voltar' : 'Cancelar'}
-                            </Button>
-                            <Button
-                                type="submit"
-                                form="projectTaskForm"
-                                sx={{
-                                    background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                    color: 'var(--modal-text)',
-                                    borderRadius: '10px',
-                                    padding: '10px 24px',
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    textTransform: 'none',
-                                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                                    '&:hover': {
-                                        transform: 'translateY(-1px)',
-                                        boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)'
-                                    }
-                                }}
-                            >
-                                {task ? 'Salvar Alterações' : 'Criar Tarefa'}
-                            </Button>
-                        </Box>
-                    </>
-                )}
-            </Box>
-        </Dialog>
+        </StandardModal>
     );
 };
 

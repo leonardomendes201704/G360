@@ -8,6 +8,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008:** Segundo lote de modais em `StandardModal`: `AddendumViewModal`, `SupplierViewModal` (`wide`; secções `DataField` extraídas para evitar componentes dentro do render), `ApprovalDetailsModal` (`loading` na API), `MinuteModal` (form + `loading`), `FollowUpModal` (corpo com classes existentes), `TeamModal`, `ProjectTaskModal` (`paperProps` com `data-testid`); `StandardModal` aceita `paperProps` opcional para o Paper do MUI `Dialog`.
+  - `FRONTEND/src/components/common/StandardModal.jsx`
+  - `FRONTEND/src/components/modals/AddendumViewModal.jsx`
+  - `FRONTEND/src/components/modals/SupplierViewModal.jsx`
+  - `FRONTEND/src/components/modals/ApprovalDetailsModal.jsx`
+  - `FRONTEND/src/components/modals/MinuteModal.jsx`
+  - `FRONTEND/src/components/modals/FollowUpModal.jsx`
+  - `FRONTEND/src/components/modals/TeamModal.jsx`
+  - `FRONTEND/src/components/modals/ProjectTaskModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008:** Oito modais migrados para `StandardModal` (cabeçalho, corpo com scroll, rodapé sem gradiente; `loading` onde aplicável): `AssetCategoryModal`, `PaymentConditionModal`, `MemberModal`, `AddMemberModal`, `BudgetImportModal`, `BudgetItemModal` (`wide`), `SupplierModal` (`wide`), `AddendumFormModal` (`detail`; primário `primary` / `error` conforme acréscimo ou supressão).
   - `FRONTEND/src/components/modals/AssetCategoryModal.jsx`
   - `FRONTEND/src/components/modals/PaymentConditionModal.jsx`

@@ -37,6 +37,7 @@ const SIZE_PRESET_TO_MAX_WIDTH = {
  * @param {boolean}   [loading=false] - bloqueia fecho e ações; no modo `actions`, último botão mostra spinner
  * @param {boolean}   [fullWidth=true]
  * @param {object}    [contentSx] - sx extra no DialogContent (corpo scrollável)
+ * @param {object}    [paperProps] - props extra no Paper do Dialog (ex.: `data-testid`)
  */
 const StandardModal = ({
     open,
@@ -52,6 +53,7 @@ const StandardModal = ({
     loading = false,
     fullWidth = true,
     contentSx,
+    paperProps,
 }) => {
     const { mode } = useContext(ThemeContext);
     const theme = useTheme();
@@ -86,6 +88,7 @@ const StandardModal = ({
             scroll="paper"
             PaperProps={{
                 sx: paperSx,
+                ...paperProps,
             }}
             BackdropProps={{
                 sx: {

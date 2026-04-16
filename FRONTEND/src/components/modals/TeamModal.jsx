@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     TextField,
     Button,
     Box,
@@ -14,24 +10,15 @@ import {
     MenuItem,
     Chip,
     OutlinedInput,
-    IconButton,
     List,
     ListItem,
     ListItemAvatar,
     ListItemText,
     Avatar,
-    Checkbox
+    Checkbox,
+    CircularProgress
 } from '@mui/material';
-import { Close, Groups, Person } from '@mui/icons-material';
-
-const TEAM_ICONS = {
-    'Desenvolvimento': 'code',
-    'Design': 'palette',
-    'QA': 'bug_report',
-    'Qualidade': 'bug_report',
-    'Product': 'rocket_launch',
-    'Gestão': 'rocket_launch'
-};
+import StandardModal from '../common/StandardModal';
 
 const TeamModal = ({ open, onClose, onSave, team, projectMembers = [], loading = false }) => {
     const [formData, setFormData] = useState({
@@ -119,38 +106,33 @@ const TeamModal = ({ open, onClose, onSave, team, projectMembers = [], loading =
     const selectedMembers = availableMembers.filter(m => formData.memberIds.includes(m.userId));
 
     return (
-        <Dialog
+        <StandardModal
             open={open}
             onClose={handleClose}
-            maxWidth="sm"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: 3,
-                    background: 'var(--modal-gradient)',
-                    border: '1px solid var(--modal-border)',
-                }
-            }}
+            title={team ? 'Editar equipe' : 'Nova equipe'}
+            subtitle="Membros e líder"
+            icon="groups"
+            size="form"
+            loading={loading}
+            footer={
+                <>
+                    <Button type="button" onClick={handleClose} disabled={loading}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={handleSubmit}
+                        variant="contained"
+                        color="primary"
+                        disabled={loading}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                        startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
+                    >
+                        {team ? 'Atualizar equipe' : 'Criar equipe'}
+                    </Button>
+                </>
+            }
         >
-            <DialogTitle sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderBottom: '1px solid var(--modal-border)',
-                pb: 2
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Groups sx={{ color: '#0ea5e9' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {team ? 'Editar Equipe' : 'Nova Equipe'}
-                    </Typography>
-                </Box>
-                <IconButton onClick={handleClose} disabled={loading} size="small">
-                    <Close />
-                </IconButton>
-            </DialogTitle>
-
-            <DialogContent sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
 
                     {/* Team Name */}
@@ -351,43 +333,7 @@ const TeamModal = ({ open, onClose, onSave, team, projectMembers = [], loading =
                         </Box>
                     )}
                 </Box>
-            </DialogContent>
-
-            <DialogActions sx={{
-                px: 3,
-                py: 2,
-                borderTop: '1px solid var(--modal-border)',
-                gap: 1
-            }}>
-                <Button
-                    onClick={handleClose}
-                    disabled={loading}
-                    sx={{
-                        borderRadius: 2,
-                        textTransform: 'none',
-                        color: 'var(--modal-text-secondary)'
-                    }}
-                >
-                    Cancelar
-                </Button>
-                <Button
-                    onClick={handleSubmit}
-                    variant="contained"
-                    disabled={loading}
-                    sx={{
-                        borderRadius: 2,
-                        textTransform: 'none',
-                        background: 'linear-gradient(135deg, #0ea5e9, #2563eb)',
-                        boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
-                        '&:hover': {
-                            background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
-                        }
-                    }}
-                >
-                    {loading ? 'Salvando...' : (team ? 'Atualizar Equipe' : 'Criar Equipe')}
-                </Button>
-            </DialogActions>
-        </Dialog>
+        </StandardModal>
     );
 };
 

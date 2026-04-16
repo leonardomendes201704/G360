@@ -25,9 +25,9 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 |---|----------|
 | 1 | `AccountModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
 | 2 | `AddendumFormModal.jsx` — migrado `StandardModal` (US-022 lote orçamento/contratos) |
-| 3 | `AddendumViewModal.jsx` |
+| 3 | `AddendumViewModal.jsx` — migrado `StandardModal` (US-022) |
 | 4 | `AddMemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
-| 5 | `ApprovalDetailsModal.jsx` |
+| 5 | `ApprovalDetailsModal.jsx` — migrado `StandardModal` (US-022) |
 | 6 | `AssetCategoryModal.jsx` — migrado `StandardModal` (US-022) |
 | 7 | `AssetMaintenanceModal.jsx` |
 | 8 | `AssetModal.jsx` |
@@ -45,7 +45,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 20 | `ExpenseApprovalModal.jsx` |
 | 21 | `ExpenseModal.jsx` |
 | 22 | `FiscalYearModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
-| 23 | `FollowUpModal.jsx` |
+| 23 | `FollowUpModal.jsx` — migrado `StandardModal` (US-022) |
 | 24 | `GlobalRiskModal.jsx` |
 | 25 | `IncidentCreateModal.jsx` |
 | 26 | `IncidentModal.jsx` (inclui dialog de escalonamento) |
@@ -53,11 +53,11 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 28 | `KnowledgeBaseModal.jsx` |
 | 29 | `LdapConfigModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 30 | `MemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
-| 31 | `MinuteModal.jsx` |
+| 31 | `MinuteModal.jsx` — migrado `StandardModal` (US-022) |
 | 32 | `NotificationsModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 33 | `PaymentConditionModal.jsx` — migrado `StandardModal` (US-022) |
 | 34 | `ProjectModal.jsx` |
-| 35 | `ProjectTaskModal.jsx` |
+| 35 | `ProjectTaskModal.jsx` — migrado `StandardModal` (US-022; `data-testid` no Paper) |
 | 36 | `ProposalModal.jsx` (dialog principal + dialog “nova categoria”) |
 | 37 | `RescheduleModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 38 | `RiskModal.jsx` |
@@ -66,9 +66,9 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 41 | `SmtpConfigModal.jsx` — migrado `StandardModal` (pós-US-022) |
 | 42 | `SubmitExpenseModal.jsx` |
 | 43 | `SupplierModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
-| 44 | `SupplierViewModal.jsx` |
+| 44 | `SupplierViewModal.jsx` — migrado `StandardModal` (US-022, `wide`) |
 | 45 | `TaskModal.jsx` |
-| 46 | `TeamModal.jsx` |
+| 46 | `TeamModal.jsx` — migrado `StandardModal` (US-022) |
 | 47 | `TenantModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 48 | `UserImportModal.jsx` — migrado `StandardModal` (US-022, aba Usuários) |
 | 49 | `UserModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |

@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { uploadMinute, updateMinute } from '../../services/project-details.service';
 import {
-  Box, Typography, TextField, Button, IconButton, Chip, Dialog
+  Box, Typography, TextField, Button, IconButton, Chip, CircularProgress
 } from '@mui/material';
-import { Description, Close, Add, Delete, CheckCircle } from '@mui/icons-material';
+import { Description, Add, Delete, CheckCircle } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
+
+const MINUTE_FORM_ID = 'minute-modal-form';
 
 const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEdit = null }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
@@ -22,11 +24,6 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
   const [actionInput, setActionInput] = useState('');
   const [actionAssignee, setActionAssignee] = useState('');
   const [file, setFile] = useState(null);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
 
   useEffect(() => {
     if (open) {
@@ -79,7 +76,8 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
     setActions(actions.map((action, i) => i === index ? { ...action, completed: !action.completed } : action));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e?.preventDefault?.();
     if (!title) return enqueueSnackbar('Título é obrigatório.', { variant: 'warning' });
     if (!minuteToEdit && !file) return enqueueSnackbar('Anexe o arquivo da ata para continuar.', { variant: 'warning' });
 
@@ -135,85 +133,41 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
   };
 
   return (
-    <Dialog
+    <StandardModal
       open={open}
       onClose={onClose}
-      maxWidth={false}
-      PaperProps={{
-        sx: {
-          width: '100%',
-          maxWidth: '720px',
-          maxHeight: '90vh',
-          background: 'var(--modal-bg)',
-          borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--modal-surface-hover)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-        }
-      }}
-      BackdropProps={{
-        sx: {
-          backdropFilter: 'blur(4px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)'
-        }
-      }}
-    >
-      {/* Header */}
-      <Box sx={{
-        padding: '24px 24px 20px 24px',
-        borderBottom: '1px solid var(--modal-border-strong)',
-        background: 'var(--modal-header-gradient)'
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-            <Box sx={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
-            }}>
-              <Description sx={{ color: 'var(--modal-text)', fontSize: '24px' }} />
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                {minuteToEdit ? 'Editar Ata' : 'Nova Ata de Reunião'}
-              </Typography>
-              <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                Documente a reunião realizada
-              </Typography>
-            </Box>
-          </Box>
-          <IconButton
-            onClick={onClose}
-            sx={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              background: 'var(--modal-surface-hover)',
-              color: 'var(--modal-text-muted)',
-              '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-            }}
+      title={minuteToEdit ? 'Editar ata' : 'Nova ata de reunião'}
+      subtitle="Documente a reunião realizada"
+      icon="description"
+      size="detail"
+      loading={loading}
+      footer={
+        <>
+          <Button type="button" onClick={onClose} disabled={loading}>
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            form={MINUTE_FORM_ID}
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            sx={{ textTransform: 'none', fontWeight: 600 }}
+            startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
           >
-            <Close fontSize="small" />
-          </IconButton>
-        </Box>
-      </Box>
-
-      {/* Content */}
-      <Box sx={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '24px',
-        background: 'var(--modal-bg)',
-        '&::-webkit-scrollbar': { width: '6px' },
-        '&::-webkit-scrollbar-track': { background: 'transparent' },
-        '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
-      }}>
+            {minuteToEdit ? 'Atualizar' : 'Salvar'}
+          </Button>
+        </>
+      }
+    >
+      <Box
+        component="form"
+        id={MINUTE_FORM_ID}
+        onSubmit={handleSave}
+        sx={{
+          background: 'var(--modal-bg)',
+        }}
+      >
         {/* Informações Básicas */}
         <Box sx={{ mb: 3 }}>
           <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 2 }}>
@@ -433,56 +387,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
           </Box>
         </Box>
       </Box>
-
-      {/* Footer */}
-      <Box sx={{
-        padding: '16px 24px',
-        borderTop: '1px solid var(--modal-border-strong)',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: 2,
-        background: 'var(--modal-surface-subtle)'
-      }}>
-        <Button
-          onClick={onClose}
-          sx={{
-            color: 'var(--modal-text-secondary)',
-            fontSize: '14px',
-            fontWeight: 500,
-            textTransform: 'none',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            '&:hover': { background: 'var(--modal-surface-hover)' }
-          }}
-        >
-          Cancelar
-        </Button>
-        <Button
-          onClick={handleSave}
-          disabled={loading}
-          sx={{
-            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-            color: 'var(--modal-text)',
-            fontSize: '14px',
-            fontWeight: 600,
-            textTransform: 'none',
-            padding: '10px 24px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 100%)',
-              boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)'
-            },
-            '&:disabled': {
-              background: 'var(--modal-border-strong)',
-              color: 'var(--modal-text-muted)'
-            }
-          }}
-        >
-          ✓ {minuteToEdit ? 'Atualizar' : 'Salvar'}
-        </Button>
-      </Box>
-    </Dialog>
+    </StandardModal>
   );
 };
 

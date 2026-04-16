@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
-import { Dialog } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { createFollowUp, updateFollowUp } from '../../services/project-details.service';
+import StandardModal from '../common/StandardModal';
 
 const TYPE_OPTIONS = [
     { value: 'STATUS_REPORT', label: 'Status', icon: '📊' },
@@ -136,40 +137,37 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
         }
     };
 
+    const titleText = isStatusReport ? 'Status report semanal' : (followUpToEdit?.id ? 'Editar follow-up' : 'Novo follow-up');
+    const subtitleText = isStatusReport ? 'Acompanhamento semanal do projeto' : 'Agende um follow-up para o projeto';
+
     return (
-        <Dialog
+        <StandardModal
             open={open}
             onClose={onClose}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    border: '1px solid var(--modal-border)',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                    color: 'var(--modal-text)',
-                    maxHeight: '90vh',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
+            title={titleText}
+            subtitle={subtitleText}
+            icon={isStatusReport ? 'assessment' : 'event_note'}
+            size="detail"
+            loading={loading}
+            footer={
+                <>
+                    <Button type="button" onClick={onClose} disabled={loading}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={handleSave}
+                        variant="contained"
+                        color="primary"
+                        disabled={loading}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >
+                        {isStatusReport ? 'Registrar status' : (followUpToEdit?.id ? 'Salvar' : 'Criar follow-up')}
+                    </Button>
+                </>
+            }
         >
-            <div className="modal-container large" style={{ border: 'none', borderRadius: 0, maxHeight: 'none', boxShadow: 'none' }}>
-                <div className="modal-header">
-                    <div className="modal-icon followup">{isStatusReport ? '📊' : '📋'}</div>
-                    <div className="modal-header-info">
-                        <h2>{isStatusReport ? 'Status Report Semanal' : (followUpToEdit?.id ? 'Editar Follow-up' : 'Novo Follow-up')}</h2>
-                        <p>{isStatusReport ? 'Registre o acompanhamento semanal do projeto' : 'Agende um follow-up para o projeto'}</p>
-                    </div>
-                    <button className="modal-close" onClick={onClose}>✕</button>
-                </div>
-
+            <Box className="modal-container large" sx={{ border: 'none', borderRadius: 0, maxHeight: 'none', boxShadow: 'none' }}>
                 <div className="modal-body">
                     {/* Type Selection */}
                     <div className="form-section">
@@ -403,14 +401,7 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
                         </>
                     )}
                 </div>
-
-                <div className="modal-footer">
-                    <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-                    <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
-                        <span>✓</span> {isStatusReport ? 'Registrar Status' : (followUpToEdit?.id ? 'Salvar' : 'Criar Follow-up')}
-                    </button>
-                </div>
-            </div>
+            </Box>
 
             <style>{`
                 .type-options {
@@ -514,7 +505,7 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
                     color: var(--modal-text);
                 }
             `}</style>
-        </Dialog>
+        </StandardModal>
     );
 };
 
