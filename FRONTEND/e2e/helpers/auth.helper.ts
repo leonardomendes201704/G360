@@ -1,24 +1,27 @@
 import { Page, expect } from '@playwright/test';
 
+/** Senha padrão do seed; sobrescreva com E2E_PASSWORD se todas as contas de teste usam a mesma senha. */
+const E2E_PASSWORD = process.env.E2E_PASSWORD || 'L89*Eb5v@';
+
 /**
  * Test user credentials from seed.js
  */
 export const TEST_USERS = {
     admin: {
         email: 'admin@g360.com.br',
-        password: 'L89*Eb5v@',
+        password: process.env.E2E_ADMIN_PASSWORD || E2E_PASSWORD,
         role: 'SUPER_ADMIN',
         expectedDashboard: 'SuperAdminDashboard',
     },
     manager: {
         email: 'gestor.ti@g360.com.br',
-        password: 'L89*Eb5v@',
+        password: process.env.E2E_MANAGER_PASSWORD || E2E_PASSWORD,
         role: 'MANAGER',
         expectedDashboard: 'ManagerDashboard',
     },
     collaborator: {
         email: 'dev@g360.com.br',
-        password: 'L89*Eb5v@',
+        password: process.env.E2E_COLLABORATOR_PASSWORD || E2E_PASSWORD,
         role: 'COLLABORATOR',
         expectedDashboard: 'CollaboratorDashboard',
     },
@@ -40,14 +43,18 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
     await page.waitForTimeout(500);
     await page.locator('button[type="submit"]').click();
 
-    // Check if multi-tenant selection appears
     try {
         const tenantSelector = page.getByText('Selecione a empresa');
-        await expect(tenantSelector).toBeVisible({ timeout: 5000 });
-        // If visible, click the first tenant option (assuming standard G360 tenant)
-        await page.locator('.material-icons-round:has-text("domain")').first().click();
-    } catch (e) {
-        // No tenant selection appeared, proceed normally
+        await expect(tenantSelector).toBeVisible({ timeout: 8000 });
+        const master = page.getByTestId('tenant-option-master');
+        if (await master.isVisible().catch(() => false)) {
+            await master.click();
+        } else {
+            const any = page.locator('[data-testid^="tenant-option-"]').first();
+            await any.click();
+        }
+    } catch {
+        /* sem seleção de tenant ou um único tenant */
     }
 
     // Wait for redirect to dashboard
@@ -66,6 +73,48 @@ export async function loginWithCredentials(
     await page.locator('input[name="email"]').fill(email);
     await page.locator('input[name="password"]').fill(password);
     await page.locator('button[type="submit"]').click();
+}
+
+/** Senha alinhada ao seed (`SEED_E2E_PASSWORD` / `E2E_PASSWORD` / padrão do backend). */
+export const E2E_SEED_PASSWORD = process.env.E2E_PASSWORD || 'L89*Eb5v@';
+
+/** Contas do seed `seed:three-areas:all` — gestores por área (isolamento CC). */
+export const THREE_AREAS_SEED = {
+    tiManager: { email: 'e2e-seed-ti-mgr@g360.com.br', password: E2E_SEED_PASSWORD },
+    tiCollaborator: { email: 'e2e-seed-ti-col@g360.com.br', password: E2E_SEED_PASSWORD },
+    finManager: { email: 'e2e-seed-fin-mgr@g360.com.br', password: E2E_SEED_PASSWORD },
+    opsManager: { email: 'e2e-seed-ops-mgr@g360.com.br', password: E2E_SEED_PASSWORD },
+} as const;
+
+/**
+ * Login + seleção de tenant (quando existir) + espera dashboard.
+ * Use com usuários criados pelo seed de áreas E2E.
+ */
+export async function loginWithCredentialsAndDashboard(
+    page: Page,
+    email: string,
+    password: string
+): Promise<void> {
+    await page.goto('/login');
+    await page.locator('input[name="email"]').fill(email);
+    await page.locator('input[name="password"]').fill(password);
+    await page.waitForTimeout(400);
+    await page.locator('button[type="submit"]').click();
+
+    try {
+        const tenantSelector = page.getByText('Selecione a empresa');
+        await expect(tenantSelector).toBeVisible({ timeout: 8000 });
+        const master = page.getByTestId('tenant-option-master');
+        if (await master.isVisible().catch(() => false)) {
+            await master.click();
+        } else {
+            await page.locator('[data-testid^="tenant-option-"]').first().click();
+        }
+    } catch {
+        /* um único tenant ou fluxo sem seleção */
+    }
+
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: 60000 });
 }
 
 /**

@@ -5,11 +5,11 @@ import RisksPage from '../RisksPage';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { SnackbarProvider } from 'notistack';
 import * as corporateRiskService from '../../services/corporate-risk.service';
-import * as userService from '../../services/user.service';
+import * as referenceService from '../../services/reference.service';
 
 // Mock Services
 vi.mock('../../services/corporate-risk.service');
-vi.mock('../../services/user.service');
+vi.mock('../../services/reference.service');
 
 // Mock Child Components
 vi.mock('../../components/risks/RiskHeatmap', () => ({
@@ -49,7 +49,7 @@ describe('RisksPage', () => {
         vi.clearAllMocks();
         corporateRiskService.getRisks.mockResolvedValue(mockRisks);
         corporateRiskService.getHeatmapMetrics.mockResolvedValue(mockHeatmap);
-        userService.getUsers.mockResolvedValue([]);
+        referenceService.getReferenceUsers.mockResolvedValue([]);
     });
 
     it('should render Dashboard with Heatmap and Top Risks', async () => {

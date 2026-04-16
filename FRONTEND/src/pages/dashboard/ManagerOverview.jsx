@@ -19,6 +19,7 @@ import KpiGrid from '../../components/common/KpiGrid';
 import { getIncidentKPIs } from '../../services/incident.service';
 import { createProject } from '../../services/project.service';
 import { createGeneralTask } from '../../services/task.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { createChange } from '../../services/change-request.service';
 import { createExpense } from '../../services/expense.service';
 import { formatRelative } from '../../utils/dateUtils';
@@ -151,6 +152,11 @@ const ManagerOverview = () => {
     const [isIncidentOpen, setIsIncidentOpen] = useState(false);
     const [scoreInfoOpen, setScoreInfoOpen] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
+    const [taskAssignees, setTaskAssignees] = useState([]);
+
+    useEffect(() => {
+        getReferenceUsers().then(setTaskAssignees).catch(() => setTaskAssignees([]));
+    }, []);
 
     // Modal save handlers
     const handleSaveTask = async (d) => { setModalLoading(true); try { await createGeneralTask(d); enqueueSnackbar('Tarefa criada!', { variant: 'success' }); setIsTaskOpen(false); load(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } finally { setModalLoading(false); } };
@@ -628,7 +634,14 @@ const ManagerOverview = () => {
             )}
 
             {/* ── MODALS ─────────────────────────────────────────────────────── */}
-            <TaskModal open={isTaskOpen} onClose={() => setIsTaskOpen(false)} onSave={handleSaveTask} initialData={{}} />
+            <TaskModal
+                open={isTaskOpen}
+                onClose={() => setIsTaskOpen(false)}
+                onSave={handleSaveTask}
+                loading={modalLoading}
+                isGeneralTask={true}
+                members={taskAssignees.map((u) => ({ user: u }))}
+            />
             <ProjectModal open={isProjectOpen} onClose={() => setIsProjectOpen(false)} onSave={handleSaveProject} />
             <ChangeModal open={isGmudOpen} onClose={() => setIsGmudOpen(false)} onSave={handleSaveGmud} />
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />

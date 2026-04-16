@@ -8,11 +8,11 @@ import ProjectsListPage from '../ProjectsListPage';
 import { SnackbarProvider } from 'notistack';
 import { MemoryRouter } from 'react-router-dom';
 import { getProjects } from '../../../services/project.service';
-import * as userService from '../../../services/user.service';
+import * as referenceService from '../../../services/reference.service';
 
 // Mock Services
 vi.mock('../../../services/project.service');
-vi.mock('../../../services/user.service');
+vi.mock('../../../services/reference.service');
 
 // Auth & Permission mocks
 vi.mock('../../../hooks/useAuth', () => ({ default: () => ({ user: { id: '1', name: 'Test', roles: [{ name: 'Super Admin' }] }, token: 't', hasRole: () => true }) }));
@@ -37,7 +37,7 @@ describe('ProjectsListPage Sorting', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         getProjects.mockResolvedValue(mockProjects);
-        userService.getUsers.mockResolvedValue(mockUsers);
+        referenceService.getReferenceUsers.mockResolvedValue(mockUsers);
     });
 
     it('should sort projects by name asc by default and desc on click', async () => {

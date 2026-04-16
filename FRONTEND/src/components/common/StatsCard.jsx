@@ -91,8 +91,22 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
                     {value}
                 </Typography>
 
-                {/* Titulo */}
-                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: darkColor, opacity: 0.85, mb: subtitle ? 0.25 : 0 }}>
+                {/* Titulo — uma linha (ellipsis se nao couber) */}
+                <Typography
+                    component="div"
+                    title={typeof title === 'string' ? title : undefined}
+                    data-testid="stats-card-title"
+                    sx={{
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: darkColor,
+                        opacity: 0.85,
+                        mb: subtitle ? 0.25 : 0,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
                     {title}
                 </Typography>
 

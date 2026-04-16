@@ -7,7 +7,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 
 import { getAssets, createAsset, updateAsset, deleteAsset } from '../../services/asset.service';
 import { getLicenses, createLicense, updateLicense, deleteLicense } from '../../services/software-license.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getAssetCategories } from '../../services/asset-category.service';
 import { getReferenceSuppliers } from '../../services/reference.service';
 
@@ -92,7 +92,7 @@ const AssetsPage = () => {
     setLoading(true);
     try {
       const [assetsData, licData, usersData, catsData, suppsData] = await Promise.all([
-        getAssets(), getLicenses(), getUsers(), getAssetCategories(), getReferenceSuppliers()
+        getAssets(), getLicenses(), getReferenceUsers(), getAssetCategories(), getReferenceSuppliers()
       ]);
       setAssets(assetsData);
       setLicenses(licData);

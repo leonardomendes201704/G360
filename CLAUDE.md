@@ -236,6 +236,18 @@ O agente DEVE manter um arquivo `docs/CHANGELOG.md` atualizado a cada commit. O 
 - Criado backlog completo com 4 epicos, 17 historias e 4 bugs
 ```
 
+### Diario de trabalho
+
+O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega material no repositorio (codigo, testes, resolucao documentada de backlog/US/BUG, etc.) em `docs/trabalho-diario/`, para controle de horas e rastreabilidade. Ver `docs/trabalho-diario/README.md` para formato e exemplos.
+
+**Regras:**
+
+1. Ao **concluir** uma solicitacao com entrega material, **acrescentar** uma entrada ao final do arquivo do dia `docs/trabalho-diario/YYYY-MM-DD.md` (data do encerramento da entrega).
+2. Se o arquivo do dia **nao existir**, cria-lo com a primeira entrada.
+3. Cada entrada deve ter **data e hora**, **titulo**, **descricao** (incluir principais arquivos e testes quando houver) e **Projeto** (padrao: **G360**, salvo outro nome indicado pelo usuario). Incluir **ID** de US/BUG quando existir.
+4. Perguntas puramente informativas **sem** alteracao no repositorio: entrada **nao** obrigatoria; se o usuario pedir registro, registrar.
+5. O diario **nao substitui** `docs/CHANGELOG.md` em commits com mudancas de produto — manter ambos quando aplicavel.
+
 ---
 
 ## Diretrizes Gerais do Projeto

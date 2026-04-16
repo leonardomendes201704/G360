@@ -273,10 +273,28 @@ const darkPremiumTheme = createTheme({
                 },
             },
         },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: '#1c2632',
+                    '& fieldset': {
+                        borderColor: 'rgba(255, 255, 255, 0.06)',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: 'rgba(37, 99, 235, 0.3)',
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: '#2563eb',
+                    },
+                },
+            },
+        },
         MuiTextField: {
             styleOverrides: {
                 root: {
                     '& .MuiOutlinedInput-root': {
+                        borderRadius: 8,
                         backgroundColor: '#1c2632',
                         '& fieldset': {
                             borderColor: 'rgba(255, 255, 255, 0.06)',
@@ -291,9 +309,17 @@ const darkPremiumTheme = createTheme({
                 },
             },
         },
+        MuiAutocomplete: {
+            styleOverrides: {
+                inputRoot: {
+                    borderRadius: 8,
+                },
+            },
+        },
         MuiSelect: {
             styleOverrides: {
                 root: {
+                    borderRadius: 8,
                     backgroundColor: '#1c2632',
                 },
             },
@@ -301,8 +327,16 @@ const darkPremiumTheme = createTheme({
         MuiMenu: {
             styleOverrides: {
                 paper: {
+                    borderRadius: 8,
                     backgroundImage: 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
+                },
+            },
+        },
+        MuiPopover: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 8,
                 },
             },
         },
@@ -324,6 +358,7 @@ const darkPremiumTheme = createTheme({
         MuiDialog: {
             styleOverrides: {
                 paper: {
+                    borderRadius: 8,
                     backgroundImage: 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
                 },

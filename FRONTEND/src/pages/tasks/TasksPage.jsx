@@ -8,7 +8,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useTaskTimerContext } from '../../contexts/TaskTimerContext';
 import { getGeneralTasks, createGeneralTask, updateGeneralTask, deleteGeneralTask } from '../../services/task.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 
 // Components
@@ -93,7 +93,7 @@ const TasksPage = () => {
         try {
             const [tasksData, usersData] = await Promise.all([
                 getGeneralTasks({}),
-                getUsers()
+                getReferenceUsers()
             ]);
             setTasks(tasksData);
             setUsers(usersData);

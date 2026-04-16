@@ -14,6 +14,7 @@ import ExpenseModal from '../../components/modals/ExpenseModal';
 import IncidentCreateModal from '../../components/modals/IncidentCreateModal';
 import api from '../../services/api';
 import { createGeneralTask } from '../../services/task.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { createProject } from '../../services/project.service';
 import { createChange } from '../../services/change-request.service';
 import { createExpense } from '../../services/expense.service';
@@ -146,6 +147,11 @@ const CollaboratorOverview = () => {
     const [isGmudOpen, setIsGmudOpen] = useState(false);
     const [isExpenseOpen, setIsExpenseOpen] = useState(false);
     const [isIncidentOpen, setIsIncidentOpen] = useState(false);
+    const [taskAssignees, setTaskAssignees] = useState([]);
+
+    useEffect(() => {
+        getReferenceUsers().then(setTaskAssignees).catch(() => setTaskAssignees([]));
+    }, []);
 
     const reload = useCallback(() => {
         setLoading(true);
@@ -501,7 +507,13 @@ const CollaboratorOverview = () => {
             )}
 
             {/* ── MODALS ─────────────────────────────────────────────────────── */}
-            <TaskModal open={isTaskOpen} onClose={() => setIsTaskOpen(false)} onSave={handleSaveTask} initialData={{}} />
+            <TaskModal
+                open={isTaskOpen}
+                onClose={() => setIsTaskOpen(false)}
+                onSave={handleSaveTask}
+                isGeneralTask={true}
+                members={taskAssignees.map((u) => ({ user: u }))}
+            />
             <ProjectModal open={isProjectOpen} onClose={() => setIsProjectOpen(false)} onSave={handleSaveProject} />
             <ChangeModal open={isGmudOpen} onClose={() => setIsGmudOpen(false)} onSave={handleSaveGmud} />
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />

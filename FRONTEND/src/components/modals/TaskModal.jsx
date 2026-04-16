@@ -18,6 +18,9 @@ import {
 } from '../../services/task.service';
 import { getFileURL } from '../../utils/urlUtils';
 
+/** Raio dos campos (TextField, Select, etc.) — alinhado a `--g360-radius-input` / login */
+const G360_INPUT_RADIUS = 'var(--g360-radius-input, 8px)';
+const G360_MODAL_SURFACE_RADIUS = 'var(--g360-radius-modal, 8px)';
 
 const getSchema = (isGeneralTask) => yup.object({
   title: yup.string().required('O Título é obrigatório'),
@@ -187,7 +190,7 @@ const DarkTaskModal = ({
           maxWidth: '800px',
           height: 'auto',
           maxHeight: '90vh',
-          borderRadius: '24px',
+          borderRadius: G360_MODAL_SURFACE_RADIUS,
           background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
@@ -215,7 +218,7 @@ const DarkTaskModal = ({
             <Box sx={{
               width: '40px',
               height: '40px',
-              borderRadius: '10px',
+              borderRadius: G360_INPUT_RADIUS,
               background: riskId
                 ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' // Amber for Risk Plan
                 : (task ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'),
@@ -332,7 +335,7 @@ const DarkTaskModal = ({
 
             {/* Description */}
             {task.description && (
-              <Box sx={{ mb: 3, p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+              <Box sx={{ mb: 3, p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Descrição</Typography>
                 <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{task.description}</Typography>
               </Box>
@@ -341,7 +344,7 @@ const DarkTaskModal = ({
             {/* Info Grid */}
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 2, mb: 3 }}>
               {/* Assignee */}
-              <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+              <Box sx={{ p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Responsável</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box sx={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -353,7 +356,7 @@ const DarkTaskModal = ({
 
               {/* Due Date */}
               {(task.dueDate || task.startDate) && (
-                <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                <Box sx={{ p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                   <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>
                     {isGeneralTask ? 'Vencimento' : 'Período'}
                   </Typography>
@@ -368,7 +371,7 @@ const DarkTaskModal = ({
 
               {/* Story Points */}
               {task.storyPoints && (
-                <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                <Box sx={{ p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                   <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Story Points</Typography>
                   <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>{task.storyPoints}</Typography>
                 </Box>
@@ -377,7 +380,7 @@ const DarkTaskModal = ({
 
             {/* Checklist */}
             {checklistItems.length > 0 && (
-              <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+              <Box sx={{ p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)' }}>Checklist</Typography>
                   <Typography sx={{ fontSize: '12px', color: 'var(--modal-text-secondary)' }}>
@@ -425,7 +428,7 @@ const DarkTaskModal = ({
                       height: '46px', // Standardized height
                       background: 'var(--modal-surface-hover)',
                       border: '1px solid var(--modal-border-strong)',
-                      borderRadius: '12px',
+                      borderRadius: G360_INPUT_RADIUS,
                       color: 'var(--modal-text)',
                       fontSize: '14px',
                       paddingRight: '12px',
@@ -459,7 +462,7 @@ const DarkTaskModal = ({
                     height: '46px', // Standardized height
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '12px',
+                    borderRadius: G360_INPUT_RADIUS,
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     transition: 'all 0.2s',
@@ -506,7 +509,7 @@ const DarkTaskModal = ({
                   '& .MuiOutlinedInput-root': {
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '12px',
+                    borderRadius: G360_INPUT_RADIUS,
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     padding: '12px',
@@ -530,7 +533,7 @@ const DarkTaskModal = ({
             {/* Checklist Section */}
             <Box sx={{
               padding: '16px',
-              borderRadius: '12px',
+              borderRadius: G360_INPUT_RADIUS,
               border: '1px solid var(--modal-border-strong)',
               background: 'var(--modal-surface-subtle)',
               mb: 2.5
@@ -622,7 +625,7 @@ const DarkTaskModal = ({
                     '& .MuiOutlinedInput-root': {
                       background: 'var(--modal-surface-hover)',
                       border: '1px solid var(--modal-border-strong)',
-                      borderRadius: '10px', // Smaller radius for nested items
+                      borderRadius: G360_INPUT_RADIUS,
                       color: 'var(--modal-text)',
                       fontSize: '13px',
                       transition: 'all 0.2s',
@@ -649,7 +652,7 @@ const DarkTaskModal = ({
                     border: '1px solid var(--modal-border-strong)',
                     background: 'var(--modal-surface-hover)',
                     color: 'var(--modal-text-muted)',
-                    borderRadius: '10px',
+                    borderRadius: G360_INPUT_RADIUS,
                     '&:hover': {
                       background: 'var(--modal-border-strong)',
                       color: '#3b82f6',
@@ -665,7 +668,7 @@ const DarkTaskModal = ({
             {/* Configurações Section */}
             <Box sx={{
               padding: '16px',
-              borderRadius: '12px',
+              borderRadius: G360_INPUT_RADIUS,
               border: '1px solid var(--modal-border-strong)',
               background: 'var(--modal-surface-subtle)'
             }}>
@@ -759,7 +762,7 @@ const DarkTaskModal = ({
                           '& .MuiOutlinedInput-root': {
                             background: 'var(--modal-surface-hover)',
                             border: '1px solid var(--modal-border-strong)',
-                            borderRadius: '12px',
+                            borderRadius: G360_INPUT_RADIUS,
                             color: 'var(--modal-text)',
                             fontSize: '13px',
                             transition: 'all 0.2s',
@@ -791,7 +794,7 @@ const DarkTaskModal = ({
                           '& .MuiOutlinedInput-root': {
                             background: 'var(--modal-surface-hover)',
                             border: '1px solid var(--modal-border-strong)',
-                            borderRadius: '12px',
+                            borderRadius: G360_INPUT_RADIUS,
                             color: 'var(--modal-text)',
                             fontSize: '13px',
                             transition: 'all 0.2s',
@@ -826,7 +829,7 @@ const DarkTaskModal = ({
                         '& .MuiOutlinedInput-root': {
                           background: 'var(--modal-surface-hover)',
                           border: '1px solid var(--modal-border-strong)',
-                          borderRadius: '12px',
+                          borderRadius: G360_INPUT_RADIUS,
                           color: 'var(--modal-text)',
                           fontSize: '13px',
                           transition: 'all 0.2s',
@@ -861,7 +864,7 @@ const DarkTaskModal = ({
                   sx={{
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '12px',
+                    borderRadius: G360_INPUT_RADIUS,
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     transition: 'all 0.2s',
@@ -908,7 +911,7 @@ const DarkTaskModal = ({
                   '& .MuiOutlinedInput-root': {
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '10px',
+                    borderRadius: G360_INPUT_RADIUS,
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -942,7 +945,7 @@ const DarkTaskModal = ({
               <Typography sx={{ textAlign: 'center', color: 'var(--modal-text-secondary)', fontSize: '13px' }}>Nenhum comentário ainda.</Typography>
             ) : (
               comments.map(c => (
-                <Box key={c.id} sx={{ mb: 2, p: 2, background: 'var(--modal-surface-subtle)', borderRadius: '10px' }}>
+                <Box key={c.id} sx={{ mb: 2, p: 2, background: 'var(--modal-surface-subtle)', borderRadius: G360_INPUT_RADIUS }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                     <Typography sx={{ color: 'var(--modal-text)', fontSize: '14px', fontWeight: 600 }}>{c.user?.name}</Typography>
                     <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '12px' }}>{format(new Date(c.createdAt), "dd/MM HH:mm")}</Typography>

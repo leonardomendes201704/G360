@@ -42,6 +42,10 @@ BACKEND/uploads/
 *.sql
 !**/migrations/*.sql
 
+# Local dev PostgreSQL (initdb / pg_ctl)
+.postgres-data/
+BACKEND/postgres-local.log
+
 # OS files
 .DS_Store
 Thumbs.db

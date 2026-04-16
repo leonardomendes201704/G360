@@ -24,7 +24,7 @@ import { createExpense } from '../../services/expense.service';
 import { createContract } from '../../services/contract.service';
 import { createSupplier } from '../../services/supplier.service';
 import { clearReferenceCache } from '../../services/reference.service';
-import userService from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import RecentActivities from '../../components/projects/RecentActivities';
 
 // Styles
@@ -57,7 +57,7 @@ const ManagerDashboard = ({ user }) => {
         try {
             const response = await api.get('/dashboard/manager');
             setStats(response.data);
-            const userBox = await userService.getAll();
+            const userBox = await getReferenceUsers();
             setAllUsers(userBox.map(u => ({ user: u })));
         } catch (error) {
             console.error("Error loading dashboard data:", error);

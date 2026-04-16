@@ -5,11 +5,11 @@ import TasksPage from '../TasksPage';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { SnackbarProvider } from 'notistack';
 import * as taskService from '../../../services/task.service';
-import * as userService from '../../../services/user.service';
+import * as referenceService from '../../../services/reference.service';
 
 // Mock Services
 vi.mock('../../../services/task.service');
-vi.mock('../../../services/user.service');
+vi.mock('../../../services/reference.service');
 
 // Mock Subcomponents
 vi.mock('../../../components/tasks/TaskKanban', () => ({
@@ -60,7 +60,7 @@ describe('TasksPage', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         taskService.getGeneralTasks.mockResolvedValue(mockTasks);
-        userService.getUsers.mockResolvedValue(mockUsers);
+        referenceService.getReferenceUsers.mockResolvedValue(mockUsers);
     });
 
     it('should render KPIs based on tasks', async () => {

@@ -7,11 +7,11 @@ import {
 } from '@mui/icons-material';
 import {
     Box, Typography, Button, TextField, MenuItem, InputAdornment,
-    IconButton, Collapse, Tooltip, Paper
+    IconButton, Tooltip, Paper
 } from '@mui/material';
 
 import { getIncidents, getIncidentKPIs, getIncidentCategories, createIncident, updateIncident, deleteIncident } from '../../services/incident.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import IncidentModal from '../../components/modals/IncidentModal';
 import IncidentViewModal from '../../components/modals/IncidentViewModal';
 import IncidentList from '../../components/incidents/IncidentList';
@@ -26,7 +26,16 @@ import { AuthContext } from '../../contexts/AuthContext';
 import usePersistedFilters from '../../hooks/usePersistedFilters';
 import { useUndoToast } from '../../hooks/useUndoToast';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { Delete as DeleteIcon, Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
+
+const DRAWER_FILTER_DEFAULTS = {
+    status: '',
+    priority: '',
+    categoryId: '',
+    assigneeId: '',
+    slaBreached: '',
+};
 
 const IncidentsPage = () => {
     const { mode } = useContext(ThemeContext);
@@ -49,7 +58,8 @@ const IncidentsPage = () => {
     const [categories, setCategories] = useState([]);
     const [kpis, setKpis] = useState({ open: 0, inProgress: 0, resolved: 0, slaBreached: 0, resolvedToday: 0 });
     const [loading, setLoading] = useState(true);
-    const [showFilters, setShowFilters] = useState(true);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState(DRAWER_FILTER_DEFAULTS);
     const [page, setPage] = useState(1);
     const [rowsPerPage] = useState(20);
     const [viewMode, setViewMode] = useState('LIST');
@@ -71,6 +81,11 @@ const IncidentsPage = () => {
         assigneeId: '',
         slaBreached: ''
     });
+
+    const activeDrawerFilterCount = useMemo(
+        () => [filters.status, filters.priority, filters.categoryId, filters.assigneeId, filters.slaBreached].filter(Boolean).length,
+        [filters.status, filters.priority, filters.categoryId, filters.assigneeId, filters.slaBreached]
+    );
 
     const filteredIncidents = useMemo(() => {
         return incidents.filter(inc => {
@@ -100,7 +115,7 @@ const IncidentsPage = () => {
                 getIncidents(),
                 getIncidentKPIs(),
                 getIncidentCategories(),
-                getUsers()
+                getReferenceUsers()
             ]);
             setIncidents(incData);
             setKpis(kpiData);
@@ -226,6 +241,26 @@ const IncidentsPage = () => {
         { key: 'slaBreached', label: 'SLA Estourado', value: kpis.slaBreached, icon: <ErrorOutline />, color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.15)' }
     ];
 
+    const openFilterDrawer = () => {
+        setDraftFilters({
+            status: filters.status,
+            priority: filters.priority,
+            categoryId: filters.categoryId,
+            assigneeId: filters.assigneeId,
+            slaBreached: filters.slaBreached,
+        });
+        setFilterDrawerOpen(true);
+    };
+
+    const handleApplyDrawerFilters = () => {
+        setFilters((prev) => ({ ...prev, ...draftFilters }));
+    };
+
+    const handleClearDrawerOnly = () => {
+        setDraftFilters({ ...DRAWER_FILTER_DEFAULTS });
+        setFilters((prev) => ({ ...prev, ...DRAWER_FILTER_DEFAULTS }));
+    };
+
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
@@ -277,57 +312,120 @@ const IncidentsPage = () => {
                 )}
             </Box>
 
-            {/* Filters */}
+            {/* Filtros — barra compacta + drawer off-canvas */}
             <Box sx={{ mb: 3, borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
-                <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: showFilters ? `1px solid ${borderSubtle}` : 'none' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-                        <FilterAlt fontSize="small" />
-                        <Typography fontWeight={600}>Filtros</Typography>
-                        {(() => {
-                            const activeCount = [filters.status, filters.priority, filters.categoryId, filters.assigneeId, filters.slaBreached].filter(Boolean).length;
-                            return activeCount > 0 ? (
-                                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
-                            ) : null;
-                        })()}
+                <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
+                        <Button
+                            size="medium"
+                            startIcon={<FilterAlt />}
+                            onClick={openFilterDrawer}
+                            sx={{
+                                color: textPrimary,
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)' },
+                            }}
+                        >
+                            Filtros
+                        </Button>
+                        {activeDrawerFilterCount > 0 ? (
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                                {activeDrawerFilterCount}
+                            </Box>
+                        ) : null}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button size="small" startIcon={<Refresh />} onClick={clearFilters} sx={{ color: textMuted, textTransform: 'none', '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)' } }}>Limpar</Button>
-                        <IconButton size="small" onClick={() => setShowFilters(!showFilters)} sx={{ color: textMuted }}>{showFilters ? '▲' : '▼'}</IconButton>
-                    </Box>
+                    <Button
+                        size="small"
+                        startIcon={<Refresh />}
+                        onClick={clearFilters}
+                        sx={{ color: textMuted, textTransform: 'none', '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)' } }}
+                    >
+                        Limpar tudo
+                    </Button>
                 </Box>
-                <Collapse in={showFilters}>
-                    <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 2 }}>
-                        <TextField select label="Status" size="small" value={filters.status} onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))} sx={inputSx}>
-                            <MenuItem value="">Todos</MenuItem>
-                            <MenuItem value="OPEN">Aberto</MenuItem>
-                            <MenuItem value="IN_PROGRESS">Em Andamento</MenuItem>
-                            <MenuItem value="PENDING">Pendente</MenuItem>
-                            <MenuItem value="RESOLVED">Resolvido</MenuItem>
-                            <MenuItem value="CLOSED">Fechado</MenuItem>
-                        </TextField>
-                        <TextField select label="Prioridade" size="small" value={filters.priority} onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))} sx={inputSx}>
-                            <MenuItem value="">Todas</MenuItem>
-                            <MenuItem value="P1">P1 - Crítica</MenuItem>
-                            <MenuItem value="P2">P2 - Alta</MenuItem>
-                            <MenuItem value="P3">P3 - Média</MenuItem>
-                            <MenuItem value="P4">P4 - Baixa</MenuItem>
-                        </TextField>
-                        <TextField select label="Categoria" size="small" value={filters.categoryId} onChange={(e) => setFilters(prev => ({ ...prev, categoryId: e.target.value }))} sx={inputSx}>
-                            <MenuItem value="">Todas</MenuItem>
-                            {categories.map(cat => (<MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>))}
-                        </TextField>
-                        <TextField select label="Responsável" size="small" value={filters.assigneeId} onChange={(e) => setFilters(prev => ({ ...prev, assigneeId: e.target.value }))} sx={inputSx}>
-                            <MenuItem value="">Todos</MenuItem>
-                            {users.map(user => (<MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>))}
-                        </TextField>
-                        <TextField select label="SLA" size="small" value={filters.slaBreached} onChange={(e) => setFilters(prev => ({ ...prev, slaBreached: e.target.value }))} sx={inputSx}>
-                            <MenuItem value="">Todos</MenuItem>
-                            <MenuItem value="true">Estourado</MenuItem>
-                            <MenuItem value="false">No Prazo</MenuItem>
-                        </TextField>
-                    </Box>
-                </Collapse>
             </Box>
+
+            <FilterDrawer
+                open={filterDrawerOpen}
+                onClose={() => setFilterDrawerOpen(false)}
+                onApply={handleApplyDrawerFilters}
+                onClear={handleClearDrawerOnly}
+                title="Filtros de incidentes"
+            >
+                <TextField
+                    select
+                    fullWidth
+                    label="Status"
+                    size="small"
+                    value={draftFilters.status}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="OPEN">Aberto</MenuItem>
+                    <MenuItem value="IN_PROGRESS">Em Andamento</MenuItem>
+                    <MenuItem value="PENDING">Pendente</MenuItem>
+                    <MenuItem value="RESOLVED">Resolvido</MenuItem>
+                    <MenuItem value="CLOSED">Fechado</MenuItem>
+                </TextField>
+                <TextField
+                    select
+                    fullWidth
+                    label="Prioridade"
+                    size="small"
+                    value={draftFilters.priority}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, priority: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todas</MenuItem>
+                    <MenuItem value="P1">P1 - Crítica</MenuItem>
+                    <MenuItem value="P2">P2 - Alta</MenuItem>
+                    <MenuItem value="P3">P3 - Média</MenuItem>
+                    <MenuItem value="P4">P4 - Baixa</MenuItem>
+                </TextField>
+                <TextField
+                    select
+                    fullWidth
+                    label="Categoria"
+                    size="small"
+                    value={draftFilters.categoryId}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todas</MenuItem>
+                    {categories.map((cat) => (
+                        <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    select
+                    fullWidth
+                    label="Responsável"
+                    size="small"
+                    value={draftFilters.assigneeId}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, assigneeId: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos</MenuItem>
+                    {users.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    select
+                    fullWidth
+                    label="SLA"
+                    size="small"
+                    value={draftFilters.slaBreached}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, slaBreached: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="true">Estourado</MenuItem>
+                    <MenuItem value="false">No Prazo</MenuItem>
+                </TextField>
+            </FilterDrawer>
 
             {/* KPI Cards */}
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 2, mb: 3 }}>

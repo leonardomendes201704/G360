@@ -5,11 +5,11 @@ import ProjectsListPage from '../ProjectsListPage';
 import { SnackbarProvider } from 'notistack';
 import { MemoryRouter } from 'react-router-dom';
 import * as projectService from '../../../services/project.service';
-import * as userService from '../../../services/user.service';
+import * as referenceService from '../../../services/reference.service';
 
 // Mock Services
 vi.mock('../../../services/project.service');
-vi.mock('../../../services/user.service');
+vi.mock('../../../services/reference.service');
 
 // Mock Child Components
 vi.mock('../../../components/modals/ProjectModal', () => ({
@@ -43,7 +43,7 @@ describe('ProjectsListPage', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         projectService.getProjects.mockResolvedValue(mockProjects);
-        userService.getUsers.mockResolvedValue(mockUsers);
+        referenceService.getReferenceUsers.mockResolvedValue(mockUsers);
     });
 
     it('should render projects list after loading', async () => {

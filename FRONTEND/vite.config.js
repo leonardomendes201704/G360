@@ -3,6 +3,17 @@ import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import path from 'path'
 
+const certsDir = path.resolve(__dirname, '../BACKEND/src/certs')
+const keyPath = path.join(certsDir, 'server.key')
+const certPath = path.join(certsDir, 'server.cert')
+const devHttps =
+  fs.existsSync(keyPath) && fs.existsSync(certPath)
+    ? {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath),
+      }
+    : undefined
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -20,9 +31,6 @@ export default defineConfig({
   server: {
     host: true, // Listen on all addresses (0.0.0.0)
     port: 5173, // Standard Vite Port
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, '../backend/src/certs/server.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, '../backend/src/certs/server.cert')),
-    }
-  }
+    ...(devHttps ? { https: devHttps } : {}),
+  },
 })

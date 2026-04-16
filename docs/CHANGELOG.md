@@ -5,6 +5,76 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-16]
+
+### Added
+- **Seed 3 áreas (workflow E2E):** três departamentos + centros de custo, gestores e colaboradores, projeto + tarefa de projeto + tarefa operacional + incidente + risco (owner = colaborador) + ativo + GMUD + despesa; script `npm run seed:three-areas:all` em todos os tenants. E2E `e2e/three-areas-isolation.spec.ts` (projetos por gestor; incidentes/riscos por colaborador TI). `data-testid="risks-view-list"` na página de riscos para alternar para lista.
+  - `BACKEND/src/scripts/seed-three-areas-workflow.js`
+  - `BACKEND/src/scripts/seed-three-areas-all-tenants.js`
+  - `BACKEND/package.json` (script `seed:three-areas:all`)
+  - `FRONTEND/e2e/three-areas-isolation.spec.ts`
+  - `FRONTEND/e2e/helpers/auth.helper.ts`
+  - `FRONTEND/src/pages/RisksPage.jsx`
+- **Seed de fornecedores:** script idempotente com 10 fornecedores de demonstração (CNPJ com dígitos válidos, classificações CRITICO/ESTRATEGICO/OPERACIONAL/OUTROS); execução em todos os tenants ativos (`npm run seed:suppliers:all`).
+  - `BACKEND/src/scripts/seed-suppliers.js`
+  - `BACKEND/src/scripts/seed-suppliers-all-tenants.js`
+  - `BACKEND/package.json` (script `seed:suppliers:all`)
+
+### Docs
+- Diario de trabalho para controle de horas: pasta `docs/trabalho-diario/` com `README.md` (convencao, template, exemplos); `CLAUDE.md` atualizado com regras obrigatorias de registro ao concluir entregas materiais; primeiro registro do dia em `2026-04-16.md`.
+  - `docs/trabalho-diario/README.md`
+  - `docs/trabalho-diario/2026-04-16.md`
+  - `CLAUDE.md`
+- Registro **retroativo** do trabalho de 2026-04-15 no diario (fonte: secao `[2026-04-15]` do changelog; horarios nao disponiveis).
+  - `docs/trabalho-diario/2026-04-15.md`
+
+---
+
+## [2026-04-15]
+
+### Changed
+- **Form controls radius:** Padrao unificado **8px** para campos outline, Autocomplete, Select e paineis de menu/popover (alinhado ao login). Token global `--g360-radius-input` em `index.css`; overrides em `lightPremiumTheme.js` e `darkPremiumTheme.js`; login usa a mesma variavel no `inputStyle`.
+  - `FRONTEND/src/index.css`
+  - `FRONTEND/src/theme/lightPremiumTheme.js`
+  - `FRONTEND/src/theme/darkPremiumTheme.js`
+  - `FRONTEND/src/pages/auth/LoginPage.jsx`
+- **Modais (Dialog):** Tema light — removido override duplicado de `.MuiDialog-paper` com `border-radius: 16px !important`; uso de `--g360-radius-modal` (**8px**) alinhado aos campos. `MuiDialog` nos temas JS com `paper.borderRadius: 8`.
+  - `FRONTEND/src/index.css`
+  - `FRONTEND/src/styles/lightPremiumTheme.css`
+  - `FRONTEND/src/theme/lightPremiumTheme.js`
+  - `FRONTEND/src/theme/darkPremiumTheme.js`
+- **TaskModal / inputs em Dialog:** `TaskModal` aplicava `borderRadius: 12px`/`10px` no `sx` dos `TextField`/`Select`, sobrescrevendo o tema; unificado a `G360_INPUT_RADIUS` (`--g360-radius-input`). `Paper` do Dialog deixou de usar 24px fixo. CSS light: `.MuiDialog-root .MuiOutlinedInput-root` com `border-radius` **8px** `!important` como rede de segurança.
+  - `FRONTEND/src/components/modals/TaskModal.jsx`
+  - `FRONTEND/src/styles/lightPremiumTheme.css`
+
+### Fixed
+- **Dropdown "Atribuir a" em nova tarefa vazio / validação "Atribuído a é obrigatório":** A lista de usuários vinha de `GET /users` (exige `CONFIG:READ`) ou o `TaskModal` era aberto sem a prop `members`. Ajuste: `GET /api/v1/reference/users` autorizado para perfis operacionais (Tarefas, Projetos, Incidentes, etc.); telas e dashboards passam a usar `getReferenceUsers()` e a popular `members` no modal.
+  - `BACKEND/src/routes/reference.routes.js`
+  - `FRONTEND/src/services/reference.service.js` (já existia; consumo ampliado)
+  - Vários modulos: `TasksPage`, `IncidentsPage`, dashboards, `ManagerDashboard`, etc.
+- **BUG-005:** Tema Light — botao `color="secondary"` + `variant="contained"` (ex.: "Declarar Problema" em Gestao de Problemas ITIL) voltou a exibir texto escuro; a regra US-010 aplicava `color: #fff` a todo `.MuiButton-contained`, sobrescrevendo o estilo de secundario. Restrito a `containedPrimary` e variantes semanticas (Error/Success/Warning/Info).
+  - `FRONTEND/src/styles/lightPremiumTheme.css`
+  - `docs/backlog/BUGS.md`
+  - `docs/backlog/_INDEX.md`
+
+### Changed
+- **US-021 (EP-007):** Gestao de Incidentes — filtros estruturados (status, prioridade, categoria, responsavel, SLA) no `FilterDrawer` off-canvas; barra compacta com contagem de filtros ativos e "Limpar tudo"; busca permanece na lista. Padrao documentado em `docs/patterns/filter-drawer.md`.
+  - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
+  - `docs/patterns/filter-drawer.md`
+  - `docs/backlog/EP-007-padronizacao-filtros-modulos/EPIC.md`
+  - `docs/backlog/EP-007-padronizacao-filtros-modulos/US-021-filtros-incidentes-drawer.md`
+  - `docs/backlog/_INDEX.md`
+- **US-018/US-019:** Modal Novo Tenant (`TenantAdminPage`): layout flex com area rolavel e footer fixo; fechamento imediato apos criacao com sucesso + snackbar; `await` em create/update; `TenantModal` (aba Empresas) com mesmo padrao e fechamento sem delay artificial.
+  - `FRONTEND/src/pages/admin/TenantAdminPage.jsx`
+  - `FRONTEND/src/components/modals/TenantModal.jsx`
+- **US-020:** `StatsCard`: titulos KPI em linha unica (`nowrap` + ellipsis + tooltip); teste Vitest.
+  - `FRONTEND/src/components/common/StatsCard.jsx`
+  - `FRONTEND/src/components/common/StatsCard.test.jsx`
+
+### Added
+- E2E Playwright `e2e/tenant-modal-and-kpi.spec.ts`; `data-testid` em opcoes de tenant no login e no footer do modal.
+- Helpers E2E: `E2E_ADMIN_PASSWORD`, `E2E_MANAGER_PASSWORD`, `E2E_COLLABORATOR_PASSWORD`, `E2E_PASSWORD`; `playwright.config` usa `http://localhost:5173` por padrao (`PLAYWRIGHT_BASE_URL` opcional).
+
 ## [2026-04-12]
 
 ### Changed

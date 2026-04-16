@@ -134,7 +134,7 @@ const LoginPage = () => {
     padding: '13px 13px 13px 42px',
     background: colors.inputBg,
     border: `1px solid ${colors.inputBorder}`,
-    borderRadius: '8px',
+    borderRadius: 'var(--g360-radius-input, 8px)',
     fontSize: '14px',
     color: colors.textPrimary,
     fontFamily: 'inherit',
@@ -348,6 +348,7 @@ const LoginPage = () => {
                   {tenantOptions.map((t) => (
                     <Box
                       key={t.id}
+                      data-testid={`tenant-option-${t.slug}`}
                       onClick={() => handleTenantSelect(t.slug)}
                       sx={{
                         p: 1.5, borderRadius: '8px', cursor: 'pointer',

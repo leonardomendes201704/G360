@@ -157,6 +157,7 @@ const lightPremiumTheme = createTheme({
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
+                    borderRadius: 8,
                     backgroundColor: '#ffffff',
                     '& fieldset': {
                         borderColor: '#e2e8f0',
@@ -167,6 +168,34 @@ const lightPremiumTheme = createTheme({
                     '&.Mui-focused fieldset': {
                         borderColor: '#2563eb',
                     },
+                },
+            },
+        },
+        MuiAutocomplete: {
+            styleOverrides: {
+                inputRoot: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiMenu: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiPopover: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 8,
+                },
+            },
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 8,
                 },
             },
         },

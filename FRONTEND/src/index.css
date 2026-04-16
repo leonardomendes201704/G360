@@ -14,15 +14,19 @@
   --text-main: #1a1a2e;
   --text-secondary: #64748b;
 
+  /* Campos de formulário, dropdowns e superfície de modais/dialogs (8px) */
+  --g360-radius-input: 8px;
+  --g360-radius-modal: 8px;
+
   /* Radius tokens — vary by component type (#5 Anti-IA) */
   --radius-sm: 6px;
   /* chips, badges, small controls */
   --radius-md: 10px;
-  /* buttons, inputs, table containers */
+  /* buttons, table containers (inputs usam --g360-radius-input) */
   --radius-lg: 14px;
   /* cards, panels */
   --radius-xl: 18px;
-  /* modals, large containers */
+  /* large containers (modais MUI usam --g360-radius-modal) */
 
   /* Accent color — breaks monotone blue (#6 Anti-IA) */
   --accent-amber: #f59e0b;

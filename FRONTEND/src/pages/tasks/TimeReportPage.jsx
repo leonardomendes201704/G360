@@ -8,7 +8,7 @@ import {
 import { ThemeContext } from '../../contexts/ThemeContext';
 // removed usePermission
 import { getTimeReport, exportTimeReport } from '../../services/task-time.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -65,7 +65,7 @@ const TimeReportPage = () => {
 
     // Load users
     useEffect(() => {
-        getUsers().then(setUsers).catch(() => { });
+        getReferenceUsers().then(setUsers).catch(() => { });
     }, []);
 
     // Fetch report

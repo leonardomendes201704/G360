@@ -12,7 +12,7 @@ import RiskDonutChart from '../components/risks/RiskDonutChart';
 import GlobalRiskModal from '../components/modals/GlobalRiskModal';
 import TaskModal from '../components/modals/TaskModal';
 import { getRisks, deleteRisk, updateRisk, getHeatmapMetrics } from '../services/corporate-risk.service';
-import { getUsers } from '../services/user.service';
+import { getReferenceUsers } from '../services/reference.service';
 import { createGeneralTask } from '../services/task.service';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import EmptyState from '../components/common/EmptyState';
@@ -60,7 +60,7 @@ const RisksPage = () => {
             const [risksData, metricsData, usersData] = await Promise.all([
                 getRisks(filters),
                 getHeatmapMetrics(),
-                getUsers()
+                getReferenceUsers()
             ]);
             setRisks(risksData);
             setHeatmapData(metricsData);
@@ -163,7 +163,7 @@ const RisksPage = () => {
                         <IconButton size="small" onClick={() => setViewMode('DASHBOARD')} sx={{ borderRadius: 1.5, bgcolor: viewMode === 'DASHBOARD' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'DASHBOARD' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
                             <Dashboard fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: 1.5, bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
+                        <IconButton data-testid="risks-view-list" size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: 1.5, bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
                             <ListIcon fontSize="small" />
                         </IconButton>
                     </Box>

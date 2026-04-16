@@ -85,9 +85,7 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
             }
             setSuccess(true);
             await onSuccess();
-            setTimeout(() => {
-                onClose();
-            }, 600);
+            onClose();
         } catch (err) {
             setError(err.response?.data?.error || 'Erro ao salvar');
         } finally {
@@ -96,10 +94,37 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
     };
 
     return (
-        <Dialog open={open} onClose={saving ? undefined : onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>{editData ? 'Editar Empresa' : 'Nova Empresa'}</DialogTitle>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogContent>
+        <Dialog
+            open={open}
+            onClose={saving ? undefined : onClose}
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+                sx: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    maxHeight: 'min(90vh, 800px)',
+                },
+            }}
+        >
+            <DialogTitle sx={{ flexShrink: 0 }}>{editData ? 'Editar Empresa' : 'Nova Empresa'}</DialogTitle>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    minHeight: 0,
+                    overflow: 'hidden',
+                }}
+            >
+                <DialogContent
+                    sx={{
+                        flex: '1 1 auto',
+                        minHeight: 0,
+                        overflowY: 'auto',
+                    }}
+                >
                     {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                     {success && <Alert severity="success" sx={{ mb: 2 }}>Empresa salva com sucesso!</Alert>}
 
@@ -159,7 +184,10 @@ const TenantModal = ({ open, onClose, onSuccess, editData }) => {
                     </Box>
 
                 </DialogContent>
-                <DialogActions>
+                <DialogActions
+                    data-testid="tenant-modal-footer"
+                    sx={{ flexShrink: 0, borderTop: 1, borderColor: 'divider', px: 3, py: 2 }}
+                >
                     <Button onClick={onClose} disabled={saving}>Cancelar</Button>
                     <Button
                         type="submit"

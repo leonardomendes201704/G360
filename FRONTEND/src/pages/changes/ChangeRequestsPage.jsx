@@ -15,7 +15,7 @@ import ChangeRequestList from '../../components/changes/ChangeRequestList';
 import ChangeCalendar from '../../components/changes/ChangeCalendar';
 import ChangeRequestDashboard from '../../components/changes/ChangeRequestDashboard';
 import { getChanges, createChange, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { getErrorMessage } from '../../utils/errorUtils';
 import EmptyState from '../../components/common/EmptyState';
@@ -203,7 +203,7 @@ const ChangeRequestsPage = () => {
 
     const fetchUsers = async () => {
         try {
-            const data = await getUsers();
+            const data = await getReferenceUsers();
             setUsers(data);
         } catch (error) {
             console.error('Error fetching users:', error);

@@ -9,7 +9,7 @@ import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
 
 import { getProjects, createProject, updateProject, deleteProject, submitForApproval } from '../../services/project.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 
 import logoImg from '../../assets/liotecnica_logo_official.png'; // New Official Logo
@@ -378,7 +378,7 @@ const ProjectsListPage = () => {
 
             const [projResponse, userData] = await Promise.all([
                 getProjects(apiFilters),
-                getUsers()
+                getReferenceUsers()
             ]);
 
             const pData = Array.isArray(projResponse) ? projResponse : projResponse.data;

@@ -8,7 +8,7 @@ import {
     FormControl, Chip, Autocomplete, Dialog
 } from '@mui/material';
 import { CheckCircle, Close, Add, Delete, CheckBox } from '@mui/icons-material';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 
 const schema = yup.object({
     title: yup.string().required('O Título é obrigatório'),
@@ -57,7 +57,7 @@ const ProjectTaskModal = ({
     useEffect(() => {
         const loadUsers = async () => {
             try {
-                const data = await getUsers();
+                const data = await getReferenceUsers();
                 setUsers(data);
             } catch (e) {
                 console.error('Error loading users:', e);

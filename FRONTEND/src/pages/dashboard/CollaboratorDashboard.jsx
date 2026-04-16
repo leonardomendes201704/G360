@@ -15,6 +15,7 @@ import ChangeModal from '../../components/modals/ChangeModal';
 // Services
 import projectService from '../../services/project.service';
 import { createGeneralTask, updateGeneralTask } from '../../services/task.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { createChange } from '../../services/change-request.service';
 import RecentActivities from '../../components/projects/RecentActivities';
 
@@ -37,6 +38,11 @@ const CollaboratorDashboard = ({ user }) => {
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isGmudModalOpen, setIsGmudModalOpen] = useState(false);
+    const [taskAssignees, setTaskAssignees] = useState([]);
+
+    useEffect(() => {
+        getReferenceUsers().then(setTaskAssignees).catch(() => setTaskAssignees([]));
+    }, []);
 
     const fetchStats = async () => {
         try {
@@ -353,7 +359,13 @@ const CollaboratorDashboard = ({ user }) => {
 
             {/* Modals */}
             <ProjectModal open={isProjectModalOpen} onClose={() => setIsProjectModalOpen(false)} onSave={handleCreateProject} />
-            <TaskModal open={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} onSave={handleCreateTask} isGeneralTask={true} />
+            <TaskModal
+                open={isTaskModalOpen}
+                onClose={() => setIsTaskModalOpen(false)}
+                onSave={handleCreateTask}
+                isGeneralTask={true}
+                members={taskAssignees.map((u) => ({ user: u }))}
+            />
             <ChangeModal open={isGmudModalOpen} onClose={() => setIsGmudModalOpen(false)} onSave={handleCreateGmud} />
         </Box>
     );

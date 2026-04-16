@@ -11,7 +11,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import LockIcon from '@mui/icons-material/Lock';
 import api from '../../services/api';
 import ticketService from '../../services/ticket.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getActiveSupportGroups } from '../../services/support-group.service';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -54,7 +54,7 @@ const TicketDetails = () => {
 
   useEffect(() => {
     if (!hasAgentPrivilege) return;
-    getUsers()
+    getReferenceUsers()
       .then((list) => setUsers(Array.isArray(list) ? list : []))
       .catch(() => setUsers([]));
     getActiveSupportGroups()

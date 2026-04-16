@@ -6,14 +6,12 @@ import { ThemeContext } from '../../../contexts/ThemeContext';
 import { SnackbarProvider } from 'notistack';
 import * as assetService from '../../../services/asset.service';
 import * as licenseService from '../../../services/software-license.service';
-import * as userService from '../../../services/user.service';
 import * as assetCategoryService from '../../../services/asset-category.service';
 import * as referenceService from '../../../services/reference.service';
 
 // Mock Services
 vi.mock('../../../services/asset.service');
 vi.mock('../../../services/software-license.service');
-vi.mock('../../../services/user.service');
 vi.mock('../../../services/asset-category.service');
 vi.mock('../../../services/reference.service');
 
@@ -70,8 +68,8 @@ describe('AssetsPage', () => {
         vi.clearAllMocks();
         assetService.getAssets.mockResolvedValue(mockAssets);
         licenseService.getLicenses.mockResolvedValue(mockLicenses);
-        userService.getUsers.mockResolvedValue([]);
         assetCategoryService.getAssetCategories.mockResolvedValue(mockCategories);
+        referenceService.getReferenceUsers.mockResolvedValue([]);
         referenceService.getReferenceSuppliers.mockResolvedValue([]);
         referenceService.getReferenceContracts.mockResolvedValue([]);
         referenceService.getReferenceCostCenters.mockResolvedValue([]);

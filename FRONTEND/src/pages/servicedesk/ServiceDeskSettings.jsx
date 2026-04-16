@@ -30,7 +30,7 @@ import {
   deactivateSupportGroup
 } from '../../services/support-group.service';
 import SlaPolicyService from '../../services/sla-policy.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { getIanaTimezones } from '../../utils/ianaTimezones';
 import { getBrazilFederalHolidaysForYears } from '../../utils/brazilFederalHolidays';
@@ -230,7 +230,7 @@ export const ServiceDeskSettingsPanel = ({ embedded = false }) => {
         getHelpdeskConfig(),
         getAllSupportGroups(),
         SlaPolicyService.getAll(),
-        getUsers().catch(() => [])
+        getReferenceUsers().catch(() => [])
       ]);
       setUseBiz(!!cfg.useBusinessCalendar);
       setAutoAssign(cfg.autoAssignOnCreate !== false);

@@ -1,8 +1,8 @@
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 const logger = require('../config/logger');
 
-/** Chave por utilizador autenticado (JWT) quando possível; senão IP. */
+/** Chave por utilizador autenticado (JWT) quando possível; senão IP (IPv6 via ipKeyGenerator). */
 function globalRateLimitKey(req) {
   const auth = req.headers?.authorization;
   if (auth && auth.startsWith('Bearer ') && process.env.JWT_SECRET) {
@@ -15,7 +15,8 @@ function globalRateLimitKey(req) {
       /* token inválido — cai no IP */
     }
   }
-  return req.ip || req.socket?.remoteAddress || 'unknown';
+  const raw = req.ip || req.socket?.remoteAddress || 'unknown';
+  return ipKeyGenerator(raw);
 }
 
 // Rate Limiter para Login - Proteção contra Brute Force

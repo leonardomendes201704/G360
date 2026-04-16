@@ -4,14 +4,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import GlobalRiskModal from '../GlobalRiskModal';
 import { SnackbarProvider } from 'notistack';
 import * as corporateRiskService from '../../../services/corporate-risk.service';
-import * as userService from '../../../services/user.service';
+import * as referenceService from '../../../services/reference.service';
 import * as departmentService from '../../../services/department.service';
 import * as costCenterService from '../../../services/cost-center.service';
 import * as assetService from '../../../services/asset.service';
 
 // Mock Services
 vi.mock('../../../services/corporate-risk.service');
-vi.mock('../../../services/user.service');
+vi.mock('../../../services/reference.service');
 vi.mock('../../../services/department.service');
 vi.mock('../../../services/cost-center.service');
 vi.mock('../../../services/asset.service');
@@ -37,7 +37,7 @@ describe('GlobalRiskModal', () => {
         vi.clearAllMocks();
         departmentService.getDepartments.mockResolvedValue(mockDepartments);
         costCenterService.getCostCenters.mockResolvedValue(mockCostCenters);
-        userService.getUsers.mockResolvedValue(mockUsers);
+        referenceService.getReferenceUsers.mockResolvedValue(mockUsers);
         assetService.getAssets.mockResolvedValue(mockAssets);
     });
 

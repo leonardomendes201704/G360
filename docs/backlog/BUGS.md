@@ -106,4 +106,29 @@
 
 ---
 
-*Ultima atualizacao: 2026-04-12*
+## BUG-005: Botao "Declarar Problema" ilegivel no tema Light (Gestao de Problemas ITIL)
+
+| Campo            | Valor                                          |
+|------------------|------------------------------------------------|
+| **ID**           | BUG-005                                        |
+| **Severidade**   | Media                                          |
+| **Status**       | Resolved                                       |
+| **Modulo**       | Service Desk / Problemas (ITIL)                |
+| **Historia**     | US-010 (regressao de contraste)                |
+| **Encontrado em**| 2026-04-15                                     |
+| **Resolvido em** | 2026-04-15                                     |
+
+**Passos para Reproduzir:**
+1. Ativar tema Light
+2. Acessar Problemas (ITIL) (`/servicedesk/problems`)
+3. Observar o botao "Declarar Problema" no canto superior direito
+
+**Resultado Esperado:** Label e icone com contraste adequado sobre o fundo do botao.
+
+**Resultado Atual:** Texto e icone brancos sobre fundo claro (ilegivel).
+
+**Correcao Aplicada:** A regra global de contraste (US-010) aplicava `color: #ffffff` a **todos** os `.MuiButton-contained`, sobrescrevendo o estilo de `.MuiButton-containedSecondary` (fundo claro + texto escuro). Ajustado para aplicar branco apenas a `containedPrimary`, `Error`, `Success`, `Warning` e `Info`. Arquivo: `FRONTEND/src/styles/lightPremiumTheme.css`.
+
+---
+
+*Ultima atualizacao: 2026-04-15*

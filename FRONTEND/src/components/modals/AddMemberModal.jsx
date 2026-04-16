@@ -17,7 +17,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import { Close, PersonAdd } from '@mui/icons-material';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 
 const ROLES = [
     { value: 'TECH_LEAD', label: 'Tech Lead' },
@@ -48,7 +48,7 @@ const AddMemberModal = ({ open, onClose, onSave, existingMemberIds = [], loading
     const fetchUsers = async () => {
         setLoadingUsers(true);
         try {
-            const data = await getUsers();
+            const data = await getReferenceUsers();
             setUsers(data || []);
         } catch (e) {
             console.error('Error fetching users:', e);

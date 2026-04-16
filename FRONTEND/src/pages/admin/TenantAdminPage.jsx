@@ -71,8 +71,8 @@ const TenantAdminPage = () => {
         try {
             await api.post('/tenants', formData);
             enqueueSnackbar('Tenant criado e provisionado com sucesso!', { variant: 'success' });
-            await Promise.all([fetchTenants(), fetchPoolStats()]);
             setCreateOpen(false);
+            await Promise.all([fetchTenants(), fetchPoolStats()]);
         } catch (err) {
             const msg = err.response?.data?.message || 'Erro ao criar tenant.';
             enqueueSnackbar(msg, { variant: 'error' });
@@ -183,12 +183,10 @@ const TenantAdminPage = () => {
         const handleSubmit = async (e) => {
             e.preventDefault();
             if (isEdit) {
-                // Update tenant data
-                handleUpdate(tenant.id, {
+                await handleUpdate(tenant.id, {
                     name: form.name, plan: form.plan, maxUsers: parseInt(form.maxUsers),
                     enabledModules: form.enabledModules.length > 0 ? form.enabledModules : null,
                 });
-                // Update admin if changed
                 const adminPayload = {};
                 if (form.adminEmail) adminPayload.email = form.adminEmail;
                 if (form.adminName) adminPayload.name = form.adminName;
@@ -201,7 +199,7 @@ const TenantAdminPage = () => {
                     }
                 }
             } else {
-                handleCreate({
+                await handleCreate({
                     name: form.name, slug: form.slug, plan: form.plan,
                     maxUsers: parseInt(form.maxUsers),
                     adminEmail: form.adminEmail || undefined,
@@ -213,19 +211,22 @@ const TenantAdminPage = () => {
         return (
             <Dialog
                 open={open}
-                onClose={onClose}
+                onClose={saving ? undefined : onClose}
                 maxWidth={false}
                 PaperProps={{
                     sx: {
                         background: cardBg, border: cardBorder, borderRadius: '24px',
                         width: '100%', maxWidth: isEdit ? '680px' : '560px', overflow: 'hidden',
                         boxShadow: modalShadow,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        maxHeight: 'min(90vh, 880px)',
                     }
                 }}
                 BackdropProps={{ sx: { backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.7)' } }}
             >
                 {/* Header */}
-                <div style={{ padding: '24px 32px', borderBottom: cardBorder, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ padding: '24px 32px', borderBottom: cardBorder, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <span className="material-icons-round" style={{ fontSize: '24px', color: '#2563eb' }}>
@@ -242,8 +243,25 @@ const TenantAdminPage = () => {
                 </div>
 
                 {/* Body */}
-                <form onSubmit={handleSubmit}>
-                    <div style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '70vh', overflowY: 'auto' }}>
+                <form
+                    onSubmit={handleSubmit}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        minHeight: 0,
+                        overflow: 'hidden',
+                    }}
+                >
+                    <div style={{
+                        padding: '32px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                        flex: 1,
+                        minHeight: 0,
+                        overflowY: 'auto',
+                    }}>
                         <div>
                             <label style={labelStyle}>Nome da Empresa *</label>
                             <input
@@ -433,8 +451,19 @@ const TenantAdminPage = () => {
                         )}
                     </div>
 
-                    {/* Footer */}
-                    <div style={{ padding: '20px 32px', borderTop: cardBorder, display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                    {/* Footer — fixo no rodape do modal; area acima rola */}
+                    <div
+                        data-testid="tenant-modal-footer"
+                        style={{
+                            padding: '20px 32px',
+                            borderTop: cardBorder,
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            gap: '12px',
+                            flexShrink: 0,
+                            background: cardBg,
+                        }}
+                    >
                         <button
                             type="button"
                             onClick={onClose}

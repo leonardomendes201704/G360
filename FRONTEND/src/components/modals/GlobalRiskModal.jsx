@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { createRisk, updateRisk } from '../../services/corporate-risk.service';
-import { getUsers } from '../../services/user.service';
+import { getReferenceUsers } from '../../services/reference.service';
 import { getDepartments } from '../../services/department.service';
 import { getCostCenters } from '../../services/cost-center.service';
 import { getAssets } from '../../services/asset.service';
@@ -127,7 +127,7 @@ const GlobalRiskModal = ({ open, onClose, onSave, riskToEdit, viewMode = false }
                 getDepartments(),
                 getCostCenters(),
                 getAssets(),
-                getUsers()
+                getReferenceUsers()
             ]).then(([depts, ccs, assetsList, usersList]) => {
                 setDepartments(depts);
                 setCostCenters(ccs);

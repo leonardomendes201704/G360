@@ -11,6 +11,9 @@
 | EP-002 | Componentes Reutilizaveis Base            | Fase 2 | Alta       | Closed | 5         | EP-001     |
 | EP-003 | Padronizacao Visual e Identidade          | Fase 3 | Media      | Closed | 4         | EP-002     |
 | EP-004 | Melhorias de UX - Dashboard e Modulos     | Fase 4 | Media      | Closed | 4         | EP-002, EP-003 |
+| EP-005 | Melhorias de UX - Administracao e Configuracao | Fase 5 | Media      | Closed | 2         | EP-002, EP-003 |
+| EP-006 | Melhorias de UX - Dashboard do Tenant (refinamentos) | Fase 6 | Media      | Closed | 1         | EP-004     |
+| EP-007 | Padronizacao de filtros em modulos (off-canvas)       | -      | Media      | Closed | 1         | EP-002     |
 
 ## Historias por Epico
 
@@ -51,33 +54,49 @@
 | US-016 | Padronizar KPIs do Dashboard                              | 3      | Media      | Resolved |
 | US-017 | Otimizar proporcao dos graficos e secoes do Dashboard     | 5      | Media      | Resolved |
 
+### EP-005 - Melhorias de UX - Administracao e Configuracao
+
+| ID     | Titulo                                                   | Pontos | Prioridade | Status |
+|--------|----------------------------------------------------------|--------|------------|--------|
+| US-018 | Footer fixo no modal Novo Tenant (botoes nao cortados)  | 3      | Media      | Resolved |
+| US-019 | Fechar modal e feedback claro ao salvar Novo Tenant      | 3      | Media      | Resolved |
+
+### EP-006 - Melhorias de UX - Dashboard do Tenant (refinamentos)
+
+| ID     | Titulo                                                   | Pontos | Prioridade | Status |
+|--------|----------------------------------------------------------|--------|------------|--------|
+| US-020 | KPIs do dashboard tenant: titulos sem quebra de linha     | 2      | Media      | Resolved |
+
+### EP-007 - Padronizacao de filtros em modulos (off-canvas)
+
+| ID     | Titulo                                                   | Pontos | Prioridade | Status |
+|--------|----------------------------------------------------------|--------|------------|--------|
+| US-021 | Filtros de Incidentes em drawer off-canvas                | 3      | Media      | Resolved |
+
 ## Resumo
 
 | Metrica                    | Valor |
 |----------------------------|-------|
-| Total de Epicos            | 4     |
-| Total de Historias         | 17    |
-| Total de Story Points      | 83    |
-| Total de Bugs              | 4     |
-| Historias Concluidas       | 17    |
-| Bugs Resolvidos            | 4     |
+| Total de Epicos            | 7     |
+| Total de Historias         | 21    |
+| Total de Story Points      | 94    |
+| Total de Bugs              | 5     |
+| Historias Concluidas       | 21    |
+| Bugs Resolvidos            | 5     |
 
 ## Proximos IDs Disponiveis
 
 | Tipo    | Proximo ID |
 |---------|------------|
-| Epic    | EP-005     |
-| Story   | US-018     |
-| Bug     | BUG-005    |
+| Epic    | EP-008     |
+| Story   | US-022     |
+| Bug     | BUG-006    |
 
 ## Ordem de Execucao Recomendada
 
 ```
-Fase 1 (EP-001) ──> Fase 2 (EP-002) ──> Fase 3 (EP-003) ──> Fase 4 (EP-004)
-  Bugs criticos      Componentes base     Padronizacao         Refinamento UX
-  4 historias        5 historias          4 historias          4 historias
-  23 pts             31 pts               20 pts               14 pts
+EP-001 ─> EP-002 ─> EP-003 ─> EP-004 (Dashboard UX, encerrado) ─> EP-005 (Admin/Config) ─> EP-006 (Dashboard tenant)
 ```
 
 ---
-*Ultima atualizacao: 2026-04-12*
+*Ultima atualizacao: 2026-04-15*

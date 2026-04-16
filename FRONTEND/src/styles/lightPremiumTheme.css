@@ -192,9 +192,10 @@ body.light-premium-theme,
     color: var(--light-text-primary) !important;
 }
 
-/* Modal input sizing/alignment */
+/* Modal input sizing/alignment — raio 8px (sx legado às vezes forçava 12px) */
 .light-premium-theme .MuiDialog-root .MuiOutlinedInput-root {
     min-height: 48px !important;
+    border-radius: var(--g360-radius-input, 8px) !important;
 }
 
 .light-premium-theme .modal-overlay .MuiOutlinedInput-root {
@@ -279,12 +280,12 @@ body.light-premium-theme,
     background-clip: text;
 }
 
-/* MUI Dialog */
+/* MUI Dialog — raio alinhado a --g360-radius-modal (evita 16px vs inputs 8px) */
 .light-premium-theme .MuiDialog-paper {
-    background: #FFFFFF !important;
+    background: var(--light-bg-secondary) !important;
     color: var(--light-text-primary) !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 16px !important;
+    border-radius: var(--g360-radius-modal, 8px) !important;
     overflow: hidden !important;
 }
 
@@ -553,14 +554,6 @@ body.light-premium-theme,
 /* Delete/action buttons stay red on hover */
 .light-premium-theme button[style*="color: #ef4444"] {
     color: #ef4444 !important;
-}
-
-/* MUI Dialog specific overrides */
-.light-premium-theme .MuiDialog-paper {
-    background: var(--light-bg-secondary) !important;
-    color: var(--light-text-primary) !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
 }
 
 .light-premium-theme .MuiDialogTitle-root {
@@ -925,13 +918,16 @@ body.light-premium-theme,
 
 /* --- BUTTON CONTRAST FIX (US-010) --- */
 
-/* Garantir texto branco em botoes com background de cor primaria */
+/* Garantir texto branco em botoes com fundo escuro/saturado (nao aplicar a .MuiButton-containedSecondary — ver regra acima) */
 .light-premium-theme button[style*="background: #2563eb"],
 .light-premium-theme button[style*="background:#2563eb"],
 .light-premium-theme button[style*="background: rgb(37, 99, 235)"],
 .light-premium-theme button[style*="background: linear-gradient(135deg, #2563eb"],
-.light-premium-theme .MuiButton-contained,
-.light-premium-theme .MuiButton-containedPrimary {
+.light-premium-theme .MuiButton-containedPrimary,
+.light-premium-theme .MuiButton-containedError,
+.light-premium-theme .MuiButton-containedSuccess,
+.light-premium-theme .MuiButton-containedWarning,
+.light-premium-theme .MuiButton-containedInfo {
     color: #ffffff !important;
 }
 
