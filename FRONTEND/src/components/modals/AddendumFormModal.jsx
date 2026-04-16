@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
-    Dialog, Box, Typography, IconButton, Grid, TextField,
+    Typography, Grid, TextField,
     InputAdornment, FormControl, FormLabel, RadioGroup,
     FormControlLabel, Radio, Button, Chip, CircularProgress
 } from '@mui/material';
-import { Close, NoteAdd, CloudUpload } from '@mui/icons-material';
+import { NoteAdd } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { createAddendum, updateAddendum } from '../../services/contract-details.service';
+import StandardModal from '../common/StandardModal';
 
 const AddendumFormModal = ({ open, onClose, contractId, addendum = null, onSaved }) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -87,206 +88,161 @@ const AddendumFormModal = ({ open, onClose, contractId, addendum = null, onSaved
         }
     };
 
-    if (!open) return null;
+    const primaryLabel = addendumType === 'SUPRESSAO'
+        ? 'Registrar redução'
+        : isEdit
+            ? 'Salvar aditivo'
+            : 'Registrar acréscimo';
 
     return (
-        <Dialog
-            open={true}
+        <StandardModal
+            open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                sx: {
-                    maxWidth: '640px',
-                    width: '95%',
-                    background: 'var(--modal-gradient)',
-                    border: '1px solid var(--modal-border)',
-                    borderRadius: '18px',
-                    boxShadow: '0 24px 60px rgba(15, 23, 42, 0.6)',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: { backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.7)' }
-            }}
+            title={isEdit ? 'Editar aditivo' : 'Novo termo aditivo'}
+            subtitle={isEdit ? 'Altere os dados do aditivo' : 'Registre um novo termo aditivo'}
+            icon="note_add"
+            size="detail"
+            loading={saving}
+            footer={
+                <>
+                    <Button type="button" onClick={onClose} disabled={saving}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color={addendumType === 'SUPRESSAO' ? 'error' : 'primary'}
+                        onClick={handleSave}
+                        disabled={saving}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                        startIcon={
+                            saving ? (
+                                <CircularProgress size={18} color="inherit" />
+                            ) : (
+                                <NoteAdd />
+                            )
+                        }
+                    >
+                        {primaryLabel}
+                    </Button>
+                </>
+            }
         >
-            {/* Header */}
-            <Box sx={{
-                p: '20px 28px', borderBottom: '1px solid var(--modal-border)',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{
-                        width: 42, height: 42, borderRadius: '12px',
-                        background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6',
-                        border: '1px solid rgba(59, 130, 246, 0.25)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <NoteAdd fontSize="small" />
-                    </Box>
-                    <Box>
-                        <Typography fontWeight="bold" sx={{ color: 'var(--modal-text)', fontSize: '1rem' }}>
-                            {isEdit ? 'Editar Aditivo' : 'Novo Termo Aditivo'}
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: 'var(--modal-text-muted)' }}>
-                            {isEdit ? 'Altere os dados do aditivo' : 'Registre um novo termo aditivo'}
-                        </Typography>
-                    </Box>
-                </Box>
-                <IconButton onClick={onClose} sx={{ color: 'var(--modal-text-muted)', '&:hover': { color: 'var(--modal-text)' } }}>
-                    <Close />
-                </IconButton>
-            </Box>
+            <FormControl component="fieldset" sx={{ mb: 3 }}>
+                <FormLabel component="legend" sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', mb: 1 }}>
+                    Tipo de movimentação
+                </FormLabel>
+                <RadioGroup row value={addendumType} onChange={(e) => setAddendumType(e.target.value)}>
+                    <FormControlLabel
+                        value="ACRESCIMO"
+                        control={<Radio color="success" />}
+                        label={<Typography sx={{ color: 'var(--modal-text)', fontSize: '14px' }}>Acréscimo (+)</Typography>}
+                    />
+                    <FormControlLabel
+                        value="SUPRESSAO"
+                        control={<Radio color="error" />}
+                        label={<Typography sx={{ color: 'var(--modal-text)', fontSize: '14px' }}>Supressão (-)</Typography>}
+                    />
+                </RadioGroup>
+            </FormControl>
 
-            {/* Body */}
-            <Box sx={{ p: '28px', overflowY: 'auto', maxHeight: '65vh' }}>
-                <FormControl component="fieldset" sx={{ mb: 3 }}>
-                    <FormLabel component="legend" sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', mb: 1 }}>
-                        Tipo de Movimentação
-                    </FormLabel>
-                    <RadioGroup row value={addendumType} onChange={(e) => setAddendumType(e.target.value)}>
-                        <FormControlLabel
-                            value="ACRESCIMO"
-                            control={<Radio color="success" />}
-                            label={<Typography sx={{ color: 'var(--modal-text)', fontSize: '14px' }}>Acréscimo (+)</Typography>}
-                        />
-                        <FormControlLabel
-                            value="SUPRESSAO"
-                            control={<Radio color="error" />}
-                            label={<Typography sx={{ color: 'var(--modal-text)', fontSize: '14px' }}>Supressão (-)</Typography>}
-                        />
-                    </RadioGroup>
-                </FormControl>
-
-                <Grid container spacing={2.5}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Número do Aditivo"
-                            fullWidth size="small"
-                            value={form.number}
-                            onChange={e => setForm({ ...form, number: e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            type="date" label="Data Assinatura"
-                            InputLabelProps={{ shrink: true }}
-                            fullWidth size="small"
-                            value={form.date}
-                            onChange={e => setForm({ ...form, date: e.target.value })}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                        <TextField
-                            type="number" label="Valor Mensal (Base)"
-                            fullWidth size="small"
-                            value={addendumMonthly}
-                            onChange={e => setAddendumMonthly(e.target.value)}
-                            InputProps={{ startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                        <TextField
-                            type="number" label="Meses"
-                            fullWidth size="small"
-                            value={addendumMonths}
-                            onChange={e => setAddendumMonths(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            type="number"
-                            label="Valor Total (Impacto)"
-                            fullWidth size="small"
-                            value={form.value}
-                            onChange={e => setForm({ ...form, value: e.target.value })}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                                style: {
-                                    color: addendumType === 'SUPRESSAO' ? '#f43f5e' : '#10b981',
-                                    fontWeight: 'bold'
-                                }
-                            }}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            type="date" label="Nova Vigência (Fim)"
-                            InputLabelProps={{ shrink: true }}
-                            fullWidth size="small"
-                            value={form.endDate}
-                            onChange={e => setForm({ ...form, endDate: e.target.value })}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Button
-                            component="label"
-                            variant="outlined"
-                            fullWidth
-                            sx={{
-                                height: '40px', textTransform: 'none', borderRadius: '10px',
-                                borderColor: 'var(--modal-border)', color: 'var(--modal-text-secondary)',
-                                '&:hover': { borderColor: '#3b82f6', color: '#3b82f6' }
-                            }}
-                            startIcon={<CloudUpload />}
-                        >
-                            {form.file ? form.file.name.substring(0, 20) + '...' : 'Anexar Documento'}
-                            <input type="file" hidden onChange={e => setForm({ ...form, file: e.target.files[0] })} />
-                        </Button>
-                        {form.file && (
-                            <Chip
-                                label={form.file.name}
-                                onDelete={() => setForm({ ...form, file: null })}
-                                size="small"
-                                sx={{ mt: 1 }}
-                            />
-                        )}
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Descrição / Justificativa"
-                            fullWidth size="small"
-                            multiline rows={2}
-                            value={form.description}
-                            onChange={e => setForm({ ...form, description: e.target.value })}
-                        />
-                    </Grid>
+            <Grid container spacing={2.5}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Número do aditivo"
+                        fullWidth size="small"
+                        value={form.number}
+                        onChange={e => setForm({ ...form, number: e.target.value })}
+                    />
                 </Grid>
-            </Box>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        type="date" label="Data assinatura"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth size="small"
+                        value={form.date}
+                        onChange={e => setForm({ ...form, date: e.target.value })}
+                    />
+                </Grid>
 
-            {/* Footer */}
-            <Box sx={{
-                p: '16px 28px', borderTop: '1px solid var(--modal-border)',
-                display: 'flex', justifyContent: 'flex-end', gap: 1.5,
-                backgroundColor: 'rgba(22, 29, 38, 0.5)'
-            }}>
-                <Button
-                    onClick={onClose}
-                    sx={{ color: 'var(--modal-text-secondary)', '&:hover': { bgcolor: 'var(--modal-surface-hover)' } }}
-                >
-                    Cancelar
-                </Button>
-                <Button
-                    variant="contained"
-                    onClick={handleSave}
-                    disabled={saving}
-                    sx={{
-                        background: addendumType === 'SUPRESSAO'
-                            ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-                            : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                        px: 3, textTransform: 'none', borderRadius: '10px', fontWeight: 600,
-                        boxShadow: addendumType === 'SUPRESSAO'
-                            ? '0 4px 12px rgba(239, 68, 68, 0.3)'
-                            : '0 4px 12px rgba(59, 130, 246, 0.3)',
-                    }}
-                    startIcon={saving ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <NoteAdd />}
-                >
-                    {addendumType === 'SUPRESSAO' ? 'Registrar Redução' : isEdit ? 'Salvar Aditivo' : 'Registrar Acréscimo'}
-                </Button>
-            </Box>
-        </Dialog>
+                <Grid item xs={12} sm={4}>
+                    <TextField
+                        type="number" label="Valor mensal (base)"
+                        fullWidth size="small"
+                        value={addendumMonthly}
+                        onChange={e => setAddendumMonthly(e.target.value)}
+                        InputProps={{ startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                    <TextField
+                        type="number" label="Meses"
+                        fullWidth size="small"
+                        value={addendumMonths}
+                        onChange={e => setAddendumMonths(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        type="number"
+                        label="Valor total (impacto)"
+                        fullWidth size="small"
+                        value={form.value}
+                        onChange={e => setForm({ ...form, value: e.target.value })}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                            style: {
+                                color: addendumType === 'SUPRESSAO' ? '#f43f5e' : '#10b981',
+                                fontWeight: 'bold'
+                            }
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        type="date" label="Nova vigência (fim)"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth size="small"
+                        value={form.endDate}
+                        onChange={e => setForm({ ...form, endDate: e.target.value })}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button
+                        component="label"
+                        variant="outlined"
+                        fullWidth
+                        sx={{
+                            height: '40px', textTransform: 'none', borderRadius: '10px',
+                            borderColor: 'var(--modal-border)', color: 'var(--modal-text-secondary)',
+                            '&:hover': { borderColor: '#3b82f6', color: '#3b82f6' }
+                        }}
+                        startIcon={<span className="material-icons-round" style={{ fontSize: 20 }}>cloud_upload</span>}
+                    >
+                        {form.file ? form.file.name.substring(0, 20) + '...' : 'Anexar documento'}
+                        <input type="file" hidden onChange={e => setForm({ ...form, file: e.target.files[0] })} />
+                    </Button>
+                    {form.file && (
+                        <Chip
+                            label={form.file.name}
+                            onDelete={() => setForm({ ...form, file: null })}
+                            size="small"
+                            sx={{ mt: 1 }}
+                        />
+                    )}
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TextField
+                        label="Descrição / justificativa"
+                        fullWidth size="small"
+                        multiline rows={2}
+                        value={form.description}
+                        onChange={e => setForm({ ...form, description: e.target.value })}
+                    />
+                </Grid>
+            </Grid>
+        </StandardModal>
     );
 };
 

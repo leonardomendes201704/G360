@@ -8,6 +8,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008:** Oito modais migrados para `StandardModal` (cabeçalho, corpo com scroll, rodapé sem gradiente; `loading` onde aplicável): `AssetCategoryModal`, `PaymentConditionModal`, `MemberModal`, `AddMemberModal`, `BudgetImportModal`, `BudgetItemModal` (`wide`), `SupplierModal` (`wide`), `AddendumFormModal` (`detail`; primário `primary` / `error` conforme acréscimo ou supressão).
+  - `FRONTEND/src/components/modals/AssetCategoryModal.jsx`
+  - `FRONTEND/src/components/modals/PaymentConditionModal.jsx`
+  - `FRONTEND/src/components/modals/MemberModal.jsx`
+  - `FRONTEND/src/components/modals/AddMemberModal.jsx`
+  - `FRONTEND/src/components/modals/BudgetImportModal.jsx`
+  - `FRONTEND/src/components/modals/BudgetItemModal.jsx`
+  - `FRONTEND/src/components/modals/SupplierModal.jsx`
+  - `FRONTEND/src/components/modals/AddendumFormModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008:** `UserImportModal` migrado para `StandardModal` (importação Azure AD na aba Usuários; `size="detail"`; `loading` durante importação; `data-testid="user-import-modal-footer"`).
   - `FRONTEND/src/components/modals/UserImportModal.jsx`
   - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`

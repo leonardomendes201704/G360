@@ -1,28 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {
-    Box, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-    IconButton, Typography
-} from '@mui/material';
-import { Close, PlaylistAdd, Check } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
+import { Check } from '@mui/icons-material';
 import { getReferenceAccounts, getMyScopedCostCenters, getReferenceSuppliers } from '../../services/reference.service';
+import StandardModal from '../common/StandardModal';
 
 const modalStyles = {
-    backdrop: { backdropFilter: 'blur(8px)', backgroundColor: 'var(--modal-backdrop, rgba(0, 0, 0, 0.7))' },
-    paper: {
-        borderRadius: '16px',
-        background: 'var(--modal-gradient)',
-        border: '1px solid var(--modal-border)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        color: 'var(--modal-text)',
-        maxWidth: '850px', width: '95%', m: 2,
-        maxHeight: '90vh', display: 'flex', flexDirection: 'column'
-    },
-    title: {
-        borderBottom: '1px solid var(--modal-border)',
-        padding: '24px 32px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-    },
     nativeInput: {
         background: 'var(--modal-surface-subtle)',
         border: '1px solid var(--modal-border)',
@@ -128,35 +111,30 @@ const BudgetItemModal = ({ open, onClose, onSave, item = null, isOBZ = false }) 
 
     const monthLabels = { jan: 'JAN', feb: 'FEV', mar: 'MAR', apr: 'ABR', may: 'MAI', jun: 'JUN', jul: 'JUL', aug: 'AGO', sep: 'SET', oct: 'OUT', nov: 'NOV', dec: 'DEZ' };
 
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            PaperProps={{ sx: modalStyles.paper }}
-            BackdropProps={{ sx: modalStyles.backdrop }}
-            TransitionProps={{ onExited: () => reset() }}
-            maxWidth="lg"
-        >
-            <DialogTitle sx={modalStyles.title}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{
-                        width: 44, height: 44, borderRadius: '12px',
-                        background: 'rgba(16, 185, 129, 0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <PlaylistAdd sx={{ color: '#10b981', fontSize: 24 }} />
-                    </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 600, color: 'var(--modal-text-strong)' }}>{item ? 'Editar Lançamento' : 'Novo Lançamento'}</Typography>
-                        <Typography sx={{ fontSize: '13px', color: 'var(--modal-text-secondary)' }}>Defina os valores mensais para esta conta</Typography>
-                    </Box>
-                </Box>
-                <IconButton onClick={onClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { color: 'var(--modal-text)', background: 'var(--modal-surface-hover)' } }}>
-                    <Close />
-                </IconButton>
-            </DialogTitle>
+    const handleClose = () => {
+        reset();
+        onClose();
+    };
 
-            <DialogContent sx={{ p: 3, overflow: 'auto', background: 'transparent !important' }}>
+    return (
+        <StandardModal
+            open={open}
+            onClose={handleClose}
+            title={item ? 'Editar lançamento' : 'Novo lançamento'}
+            subtitle="Valores mensais por conta"
+            icon="playlist_add"
+            size="wide"
+            footer={
+                <>
+                    <Button type="button" onClick={handleClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { background: 'var(--modal-surface-hover)' } }}>Cancelar</Button>
+                    <Button type="submit" form="itemForm" startIcon={<Check />}
+                        variant="contained"
+                        color="primary"
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
+                    >Salvar lançamento</Button>
+                </>
+            }
+        >
                 <form id="itemForm" onSubmit={handleSubmit(onSubmit)}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 2 }}>
@@ -271,19 +249,7 @@ const BudgetItemModal = ({ open, onClose, onSave, item = null, isOBZ = false }) 
                         </Box>
                     </Box>
                 </form>
-            </DialogContent>
-
-            <DialogActions sx={{ p: 3, borderTop: '1px solid var(--modal-border)', gap: 2 }}>
-                <Button onClick={onClose} sx={{ color: 'var(--modal-text-secondary)', '&:hover': { background: 'var(--modal-surface-hover)' } }}>Cancelar</Button>
-                <Button type="submit" form="itemForm" startIcon={<Check />}
-                    sx={{
-                        padding: '10px 24px', borderRadius: '10px', fontWeight: 600, textTransform: 'none',
-                        background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
-                        '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)' }
-                    }}
-                >Salvar Lançamento</Button>
-            </DialogActions>
-        </Dialog>
+        </StandardModal>
     );
 };
 

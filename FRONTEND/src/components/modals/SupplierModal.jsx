@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Dialog } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import StandardModal from '../common/StandardModal';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { maskCPF, maskCNPJ, maskPhone, unmask } from '../../utils/masks';
@@ -183,7 +184,7 @@ const SupplierModal = ({ open, onClose, onSave, supplier = null, loading = false
     onSave(cleanData);
   };
 
-  if (!open || !mounted) return null;
+  if (!mounted) return null;
 
   // Dark theme styles
   const inputStyle = {
@@ -231,79 +232,62 @@ const SupplierModal = ({ open, onClose, onSave, supplier = null, loading = false
     marginBottom: '16px'
   };
 
+  const title = isViewMode ? 'Detalhes do fornecedor' : supplier ? 'Editar fornecedor' : 'Novo fornecedor';
+  const subtitle = isViewMode
+    ? 'Visualização dos dados cadastrais'
+    : 'Cadastre fornecedores e parceiros comerciais';
+
   return (
-    <Dialog
-      open={true}
+    <StandardModal
+      open={open}
       onClose={onClose}
-      maxWidth={false}
-      PaperProps={{
-        sx: {
-          background: 'var(--modal-gradient)',
-          border: '1px solid var(--modal-border)',
-          borderRadius: '24px',
-          width: '90%',
-          maxWidth: '900px',
-          maxHeight: '90vh',
-          overflow: 'hidden',
-          boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          flexDirection: 'column'
-        }
-      }}
-      BackdropProps={{
-        sx: {
-          backdropFilter: 'blur(4px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)'
-        }
-      }}
-    >
-      {/* Header */}
-      <div style={{
-        padding: '28px 32px',
-        borderBottom: '1px solid var(--modal-border)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '48px', height: '48px',
-            background: 'rgba(6, 182, 212, 0.15)',
-            border: '1px solid rgba(6, 182, 212, 0.2)',
-            borderRadius: '12px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#06b6d4'
-          }}>
-            <span className="material-icons-round" style={{ fontSize: '24px' }}>store</span>
-          </div>
-          <div>
-            <div style={{ fontSize: '22px', fontWeight: 700, color: 'var(--modal-text)' }}>
-              {isViewMode ? 'Detalhes do Fornecedor' : (supplier ? 'Editar Fornecedor' : 'Novo Fornecedor')}
-            </div>
-            <div style={{ fontSize: '14px', color: 'var(--modal-text-muted)', marginTop: '4px' }}>
-              {isViewMode ? 'Visualização dos dados cadastrais' : 'Cadastre fornecedores e parceiros comerciais'}
-            </div>
-          </div>
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            width: '40px', height: '40px',
-            borderRadius: '12px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            color: 'var(--modal-text-muted)',
-            border: '1px solid transparent',
-            background: 'transparent'
+      title={title}
+      subtitle={subtitle}
+      icon="store"
+      size="wide"
+      loading={loading}
+      footer={
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 1,
           }}
         >
-          <span className="material-icons-round" style={{ fontSize: '24px' }}>close</span>
-        </button>
-      </div>
-
-      {/* Body */}
-      <div style={{ padding: '32px', overflowY: 'auto', maxHeight: 'calc(90vh - 200px)' }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <span className="material-icons-round" style={{ fontSize: 16 }}>info</span>
+            Os campos marcados com * são obrigatórios
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button type="button" onClick={onClose} disabled={loading}>
+              {isViewMode ? 'Fechar' : 'Cancelar'}
+            </Button>
+            {!isViewMode && (
+              <Button
+                type="submit"
+                form="supplierForm"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                sx={{ textTransform: 'none', fontWeight: 600 }}
+                startIcon={
+                  loading ? (
+                    <CircularProgress size={18} color="inherit" />
+                  ) : (
+                    <span className="material-icons-round" style={{ fontSize: 18 }}>save</span>
+                  )
+                }
+              >
+                {supplier ? 'Salvar alterações' : 'Salvar fornecedor'}
+              </Button>
+            )}
+          </Box>
+        </Box>
+      }
+    >
         <form id="supplierForm" onSubmit={handleSubmit(onSubmit)}>
 
           {/* Dados Empresariais */}
@@ -532,67 +516,7 @@ const SupplierModal = ({ open, onClose, onSave, supplier = null, loading = false
           </div>
 
         </form>
-      </div>
-
-      {/* Footer */}
-      <div style={{
-        padding: '24px 32px',
-        borderTop: '1px solid var(--modal-border)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px'
-      }}>
-        <div style={{ fontSize: '13px', color: 'var(--modal-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span className="material-icons-round" style={{ fontSize: '16px' }}>info</span>
-          Os campos marcados com * são obrigatórios
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{
-              padding: '12px 20px',
-              borderRadius: '12px',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: 'transparent',
-              color: 'var(--modal-text-secondary)',
-              border: '1px solid var(--modal-border)'
-            }}
-          >
-            {isViewMode ? 'Fechar' : 'Cancelar'}
-          </button>
-          {!isViewMode && (
-            <button
-              type="submit"
-              form="supplierForm"
-              disabled={loading}
-              style={{
-                padding: '12px 20px',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                background: 'linear-gradient(135deg, #06b6d4 0%, #2563eb 100%)',
-                color: 'var(--modal-text)',
-                border: 'none',
-                boxShadow: '0 4px 12px rgba(6, 182, 212, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <span className="material-icons-round" style={{ fontSize: '18px' }}>save</span>
-              {supplier ? 'Salvar Alterações' : 'Salvar Fornecedor'}
-            </button>
-          )}
-        </div>
-      </div>
-    </Dialog>
+    </StandardModal>
   );
 };
 

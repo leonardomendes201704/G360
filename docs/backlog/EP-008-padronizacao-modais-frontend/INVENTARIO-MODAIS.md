@@ -24,17 +24,17 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | # | Ficheiro |
 |---|----------|
 | 1 | `AccountModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
-| 2 | `AddendumFormModal.jsx` |
+| 2 | `AddendumFormModal.jsx` — migrado `StandardModal` (US-022 lote orçamento/contratos) |
 | 3 | `AddendumViewModal.jsx` |
-| 4 | `AddMemberModal.jsx` |
+| 4 | `AddMemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
 | 5 | `ApprovalDetailsModal.jsx` |
-| 6 | `AssetCategoryModal.jsx` |
+| 6 | `AssetCategoryModal.jsx` — migrado `StandardModal` (US-022) |
 | 7 | `AssetMaintenanceModal.jsx` |
 | 8 | `AssetModal.jsx` |
 | 9 | `AssetViewModal.jsx` |
 | 10 | `AzureConfigModal.jsx` — migrado `StandardModal` (pós-US-022, Integrações) |
-| 11 | `BudgetImportModal.jsx` |
-| 12 | `BudgetItemModal.jsx` |
+| 11 | `BudgetImportModal.jsx` — migrado `StandardModal` (US-022) |
+| 12 | `BudgetItemModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
 | 13 | `BudgetModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
 | 14 | `ChangeModal.jsx` |
 | 15 | `ChangeViewModal.jsx` |
@@ -52,10 +52,10 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 27 | `IncidentViewModal.jsx` |
 | 28 | `KnowledgeBaseModal.jsx` |
 | 29 | `LdapConfigModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
-| 30 | `MemberModal.jsx` |
+| 30 | `MemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
 | 31 | `MinuteModal.jsx` |
 | 32 | `NotificationsModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
-| 33 | `PaymentConditionModal.jsx` |
+| 33 | `PaymentConditionModal.jsx` — migrado `StandardModal` (US-022) |
 | 34 | `ProjectModal.jsx` |
 | 35 | `ProjectTaskModal.jsx` |
 | 36 | `ProposalModal.jsx` (dialog principal + dialog “nova categoria”) |
@@ -65,7 +65,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 40 | `RoleModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 41 | `SmtpConfigModal.jsx` — migrado `StandardModal` (pós-US-022) |
 | 42 | `SubmitExpenseModal.jsx` |
-| 43 | `SupplierModal.jsx` |
+| 43 | `SupplierModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
 | 44 | `SupplierViewModal.jsx` |
 | 45 | `TaskModal.jsx` |
 | 46 | `TeamModal.jsx` |
