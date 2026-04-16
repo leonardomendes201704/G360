@@ -1,11 +1,14 @@
 /**
- * Playwright para o G360 quando a porta 5173 já está ocupada (outro Vite/projeto).
- * Uso: npx playwright test --config=playwright.g360.config.ts
- * Opcional: PLAYWRIGHT_PORT=5181 npx playwright test --config=playwright.g360.config.ts
+ * Playwright alinhado à porta do Vite do G360 (predefinida 5176; evita conflito com outro frontend na 5173).
+ * Uso: npm run test:e2e  (package.json aponta para este ficheiro)
+ * Overrides: PLAYWRIGHT_PORT=5180 ou VITE_DEV_PORT=5177
  */
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = process.env.PLAYWRIGHT_PORT || '5180';
+const PORT =
+  process.env.PLAYWRIGHT_PORT ||
+  process.env.VITE_DEV_PORT ||
+  '5176';
 const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({

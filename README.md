@@ -89,7 +89,7 @@ O G360 foi projetado para empresas de medio e grande porte que necessitam consol
 ```
                     +-------------------+
                     |    Frontend       |
-                    |  React/Vite:5173  |
+                    |  React/Vite:5176  |
                     +--------+----------+
                              |
                              | HTTPS
@@ -154,7 +154,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/itbm?schema=public"
 JWT_SECRET="sua-chave-secreta"
 JWT_EXPIRES_IN="1d"
 REFRESH_TOKEN_EXPIRES_IN="7d"
-FRONTEND_URL="http://localhost:5173"
+FRONTEND_URL="http://localhost:5176"
 NODE_ENV="development"
 ```
 
@@ -175,7 +175,7 @@ cd FRONTEND
 npm run dev
 ```
 
-O backend estara disponivel em `https://localhost:8500` e o frontend em `https://localhost:5173`.
+O backend estara disponivel em `https://localhost:8500` e o frontend em `https://localhost:5176` (HTTP se sem certificados locais; ver `vite.config.js`).
 
 **Credenciais padrao (apos seed):**
 - Email: `admin@g360.com.br`

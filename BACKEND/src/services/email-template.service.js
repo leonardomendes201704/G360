@@ -1,6 +1,6 @@
 const config = {
     appName: 'G360 Enterprise',
-    baseUrl: 'http://localhost:5173', // Correct frontend port
+    baseUrl: 'http://localhost:5176', // Vite G360 (predefinido; ver FRONTEND_URL / vite.config)
     colors: {
         primary: '#2563eb', // Blue
         secondary: '#475569', // Slate

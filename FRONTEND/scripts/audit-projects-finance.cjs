@@ -1,7 +1,7 @@
 
 const { chromium } = require('playwright');
 
-const BASE_URL = 'https://localhost:5173';
+const BASE_URL = 'https://localhost:5176';
 
 const log = (msg, type = 'info') => {
     const colors = { info: '\x1b[36m%s\x1b[0m', success: '\x1b[32m%s\x1b[0m', error: '\x1b[31m%s\x1b[0m', warn: '\x1b[33m%s\x1b[0m' };

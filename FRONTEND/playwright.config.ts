@@ -17,7 +17,7 @@ export default defineConfig({
         }
     },
     use: {
-        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173',
+        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5176',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         ignoreHTTPSErrors: true,
@@ -34,7 +34,7 @@ export default defineConfig({
 
     webServer: {
         command: 'npm run dev',
-        url: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173',
+        url: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5176',
         reuseExistingServer: !process.env.CI,
         timeout: 120 * 1000,
     },

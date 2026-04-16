@@ -10,7 +10,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'https://localhost:5173';
+const BASE_URL = 'https://localhost:5176';
 const OUTPUT_DIR = path.join(__dirname, '..', 'screenshots-audit');
 
 // Credentials - try tenant admin first (most complete view)

@@ -52,7 +52,7 @@ const path = require('path');
     const S_FINAL = `FINAL-${timestamp}`;
     const S_TEMP = `TEMP-${timestamp}`; // Para criar e apagar
 
-    const BASE_URL = 'https://localhost:5173';
+    const BASE_URL = 'https://localhost:5176';
 
     try {
         console.log('--- INICIANDO SMOKE TEST CRUD COMPLETO (100%) ---');
@@ -512,7 +512,7 @@ async function createProjectWizard(page, name) {
     if (await page.isVisible('[data-testid="btn-novo-projeto"]')) {
         await page.click('[data-testid="btn-novo-projeto"]');
     } else {
-        await page.goto('https://localhost:5173/projects');
+        await page.goto('https://localhost:5176/projects');
         await page.click('[data-testid="btn-novo-projeto"]');
     }
 

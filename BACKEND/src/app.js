@@ -14,9 +14,9 @@ const TenantManager = require('./config/tenant-manager');
 // Helmet Configuration - Security Headers
 const app = express();
 
-// [PATCH] Redirect for legacy email links (Port 3000 -> 5173)
+// [PATCH] Redirect for legacy email links — alinhado à porta predefinida do Vite G360 (5176)
 // Intercepts requests to /tasks/:id on the backend and redirects to frontend
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5176';
 app.get('/tasks/:id', (req, res) => {
   const taskId = req.params.id;
   if (taskId) {

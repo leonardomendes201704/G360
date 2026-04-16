@@ -14,9 +14,9 @@ const { chromium } = require('playwright');
 
         // 1. Login
         console.log('1. Realizando Login...');
-        // Using 5173 as seen in audit script, assume HTTPS or HTTP. Trying HTTP first as standard Vite, but audit uses HTTPS.
+        // Porta predefinida G360 5176 (vite.config); audit/smoke usam HTTPS quando há certs.
         // Let's use the BASE_URL variable concept for easier change.
-        const BASE_URL = 'https://localhost:5173';
+        const BASE_URL = 'https://localhost:5176';
 
         await page.goto(`${BASE_URL}/login`);
         await page.fill('input[type="email"]', 'admin@liotencica.com.br');

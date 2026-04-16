@@ -274,7 +274,7 @@ Ao concluir uma **task**, **historia**, **bug** ou entrega com **impacto em UI, 
    - Preferir testes em `FRONTEND/e2e/` (spec novo ou alterado) com assercoes de UI e, quando fizer sentido, `expect(page).toHaveScreenshot(...)`; snapshots versionados em `e2e/**/*.spec.ts-snapshots/`.
    - Ou `page.screenshot({ path: ... })`, trace/reporter HTML — guardar sob pasta dedicada (ponto 3).
 3. **Pasta para evidencias ad-hoc** (prints nomeados, copias de report, etc.): `FRONTEND/e2e/evidence/<US-xxx|BUG-xxx|slug-curto>/`, com nomes descritivos (opcional: sufixo `YYYY-MM-DD`). Ver `FRONTEND/e2e/evidence/README.md`.
-4. **Config Playwright:** se a porta **5173** estiver ocupada por outro Vite, usar `npm run test:e2e` (baseado em `playwright.g360.config.ts`, porta predefinida **5180**). Variavel opcional: `PLAYWRIGHT_PORT`.
+4. **Porta dev:** Vite do G360 usa **5176** por predefinição (`VITE_DEV_PORT` para override), para não colidir com outro frontend na **5173**. Playwright: `playwright.config.ts` e `playwright.g360.config.ts` alinhados a **5176**; `PLAYWRIGHT_PORT` ou `PLAYWRIGHT_BASE_URL` se necessário.
 5. **No fecho da tarefa** (resposta ao utilizador e, quando existir, secao **Resolucao** no MD do work item): incluir subsecao **Evidencias E2E (Playwright)** com:
    - **caminhos** dos ficheiros de evidencia (relativos ao repo `G360/`, ou absolutos se for so fora do repo);
    - **comando(s)** utilizados (ex.: `npm run test:e2e -- e2e/config.spec.ts`);

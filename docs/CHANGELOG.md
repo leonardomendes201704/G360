@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **Porta dev Vite / Playwright:** frontend G360 na **5176** por predefinição (`VITE_DEV_PORT` opcional) para não colidir com outro projeto na **5173**; `playwright.config.ts`, `playwright.g360.config.ts`, `FRONTEND_URL` no backend e scripts em `FRONTEND/scripts/` alinhados.
+  - `FRONTEND/vite.config.js`
+  - `FRONTEND/playwright.config.ts`
+  - `FRONTEND/playwright.g360.config.ts`
+  - `BACKEND/src/app.js`
+  - `BACKEND/src/services/email-template.service.js`
+  - `README.md`, `CLAUDE.md`, `.cursor/rules/playwright-evidence.mdc`
 - **`AzureConfigModal`:** migrado para `StandardModal` (Integrações — Microsoft Azure AD); footer com Testar / Cancelar / Salvar; spec E2E `e2e/integrations-azure-modal.spec.ts` e `data-testid` `integration-open-*` em `IntegrationsTab`.
   - `FRONTEND/src/components/modals/AzureConfigModal.jsx`
   - `FRONTEND/src/components/config/IntegrationsTab.jsx`
@@ -57,7 +64,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/components/modals/DepartmentModal.jsx`
 
 ### Added
-- **Playwright:** `FRONTEND/playwright.g360.config.ts` — Vite do G360 numa porta livre (predefinido **5180**) quando `5173` está ocupada por outro projeto; scripts `npm run test:e2e` e `npm run test:e2e:update-snapshots` no `package.json` do frontend.
+- **Playwright:** `FRONTEND/playwright.g360.config.ts` — mesma porta predefinida do Vite (**5176**); `PLAYWRIGHT_PORT` / `VITE_DEV_PORT` para override; scripts `npm run test:e2e` e `npm run test:e2e:update-snapshots` no `package.json` do frontend.
 - **Testes** `StandardModal`: `FRONTEND/src/components/common/__tests__/StandardModal.test.jsx`
 - **Padrão** `docs/patterns/modal-shell.md` — API, presets, validação manual e comando Vitest.
 
@@ -131,7 +138,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 - E2E Playwright `e2e/tenant-modal-and-kpi.spec.ts`; `data-testid` em opcoes de tenant no login e no footer do modal.
-- Helpers E2E: `E2E_ADMIN_PASSWORD`, `E2E_MANAGER_PASSWORD`, `E2E_COLLABORATOR_PASSWORD`, `E2E_PASSWORD`; `playwright.config` usa `http://localhost:5173` por padrao (`PLAYWRIGHT_BASE_URL` opcional).
+- Helpers E2E: `E2E_ADMIN_PASSWORD`, `E2E_MANAGER_PASSWORD`, `E2E_COLLABORATOR_PASSWORD`, `E2E_PASSWORD`; `playwright.config` usa `http://localhost:5176` por padrao (`PLAYWRIGHT_BASE_URL` opcional).
 
 ## [2026-04-12]
 

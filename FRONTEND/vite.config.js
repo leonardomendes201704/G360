@@ -30,7 +30,8 @@ export default defineConfig({
   },
   server: {
     host: true, // Listen on all addresses (0.0.0.0)
-    port: 5173, // G360 — manter fixo; o Diário (Electron) usa 5175 no outro projeto
+    // Predefinido 5176 para nao colidir com outro Vite comum na 5173; override: VITE_DEV_PORT
+    port: Number(process.env.VITE_DEV_PORT || 5176),
     strictPort: true,
     ...(devHttps ? { https: devHttps } : {}),
   },

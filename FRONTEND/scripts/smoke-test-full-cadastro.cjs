@@ -20,7 +20,7 @@ const { chromium } = require('playwright');
 
         // 1. LOGIN (Gestor liotencica)
         console.log('1. Login (Gestor)...');
-        const BASE_URL = 'https://localhost:5173';
+        const BASE_URL = 'https://localhost:5176';
 
         await page.goto(`${BASE_URL}/login`);
         await page.fill('input[type="email"]', 'admin@liotencica.com.br');

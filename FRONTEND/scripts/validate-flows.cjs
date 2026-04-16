@@ -2,7 +2,7 @@
 const { chromium } = require('playwright');
 const path = require('path');
 
-const BASE_URL = 'https://localhost:5173';
+const BASE_URL = 'https://localhost:5176';
 
 // Helper for colored logs
 const log = (msg, type = 'info') => {
