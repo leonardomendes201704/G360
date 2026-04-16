@@ -293,6 +293,8 @@ const OrganizationPage = () => {
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            type="button"
+            data-testid={`org-tab-${tab.id}`}
             onClick={() => handleOrgTabClick(tab.id)}
             className={`org-tab-button ${activeTab === tab.id ? 'active' : 'inactive'}`}
           >

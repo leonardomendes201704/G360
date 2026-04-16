@@ -7,6 +7,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Added
+- **E2E modais Organização (US-022):** `e2e/organization-standard-modals.spec.ts` com snapshots `org-modal-*-shell-chromium-win32.png`; mocks alargados (`login` por email, GET `/fiscal-years`, `/roles`, `/users`, `/tenants`, `/tenants/dashboard-stats`, `/global-settings/system-health`); `data-testid` em abas da `OrganizationPage` e botões “Novo…” nas tabs; evidências em `e2e/evidence/US-022-org-modals/README.md`.
+  - `FRONTEND/e2e/helpers/mock-api-for-config-pages.ts`
+  - `FRONTEND/e2e/organization-standard-modals.spec.ts`
+  - `FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/`
+  - `FRONTEND/src/pages/config/OrganizationPage.jsx`
+  - `FRONTEND/src/components/config/FiscalYearTab.jsx`, `RolesTab.jsx`, `UsersTab.jsx`, `TenantsTab.jsx`
+
 ### Changed
 - **US-022 / EP-008:** `FiscalYearModal`, `RoleModal`, `UserModal` e `TenantModal` migrados para `StandardModal` (cabeçalho, corpo com scroll, rodapé sem gradiente; `RoleModal` em `size="wide"` para a matriz RBAC).
   - `FRONTEND/src/components/modals/FiscalYearModal.jsx`

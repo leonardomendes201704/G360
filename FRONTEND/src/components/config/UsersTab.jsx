@@ -83,7 +83,7 @@ const UsersTab = () => {
                     >
                         Importar do Azure
                     </Button>
-                    <Button startIcon={<Add />} variant="contained" onClick={handleAdd}>Novo Usuário Local</Button>
+                    <Button data-testid="user-add-local" startIcon={<Add />} variant="contained" onClick={handleAdd}>Novo Usuário Local</Button>
                 </Box>
             </Box>
             <TableContainer component={Paper}>

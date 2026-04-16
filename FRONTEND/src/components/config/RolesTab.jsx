@@ -58,7 +58,7 @@ const RolesTab = () => {
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h6">Perfis de Acesso</Typography>
-                <Button startIcon={<Add />} variant="contained" onClick={handleAdd}>Novo Perfil</Button>
+                <Button data-testid="role-add" startIcon={<Add />} variant="contained" onClick={handleAdd}>Novo Perfil</Button>
             </Box>
             <TableContainer component={Paper}>
                 <Table>

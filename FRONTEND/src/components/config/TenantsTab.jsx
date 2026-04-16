@@ -73,7 +73,7 @@ const TenantsTab = () => {
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Typography variant="h6">Empresas Registradas</Typography>
-                <Button variant="contained" startIcon={<Add />} onClick={handleCreate}>
+                <Button data-testid="tenant-add" variant="contained" startIcon={<Add />} onClick={handleCreate}>
                     Nova Empresa
                 </Button>
             </Box>

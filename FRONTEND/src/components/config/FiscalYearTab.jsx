@@ -119,7 +119,10 @@ const FiscalYearTab = () => {
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography sx={{ fontSize: '24px', fontWeight: 600, color: textPrimary }}>Configuracao de Ano Fiscal</Typography>
-                <Button onClick={handleAdd} sx={{
+                <Button
+                    data-testid="fiscal-year-add"
+                    onClick={handleAdd}
+                    sx={{
                     padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                     background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                     boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
