@@ -49,6 +49,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/components/modals/DepartmentModal.jsx`
 
 ### Added
+- **Playwright:** `FRONTEND/playwright.g360.config.ts` — Vite do G360 numa porta livre (predefinido **5180**) quando `5173` está ocupada por outro projeto; scripts `npm run test:e2e` e `npm run test:e2e:update-snapshots` no `package.json` do frontend.
 - **Testes** `StandardModal`: `FRONTEND/src/components/common/__tests__/StandardModal.test.jsx`
 - **Padrão** `docs/patterns/modal-shell.md` — API, presets, validação manual e comando Vitest.
 
