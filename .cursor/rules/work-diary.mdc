@@ -1,11 +1,11 @@
 ---
-description: Ao concluir tarefas no G360, registar entrada no diário central D:\Leonardo\Diario\diary.md (formato VisionAssets).
+description: Ao concluir tarefas no G360, registar entrada no diário central D:\Leonardo\Diario\diary.md (tom legível, formato VisionAssets).
 alwaysApply: true
 ---
 
 # Diário de trabalho (G360)
 
-Quando **concluíres uma tarefa** com entregável no repositório G360, **insere** em **`D:\Leonardo\Diario\diary.md`** uma entrada **no topo da lista** (após cabeçalho/nota, antes da primeira entrada `---`), no formato abaixo (igual ao VisionAssets), para manter **data/hora descendente**.
+Quando **concluíres uma tarefa** com entregável no repositório G360, **insere** em **`D:\Leonardo\Diario\diary.md`** uma entrada **no topo da lista** (após cabeçalho/nota, antes da primeira entrada `---`), no formato abaixo, para manter **data/hora descendente**.
 
 - O registo **canónico** é **fora** do Git deste projeto (`D:\Leonardo\Diario\`).
 - Se o ficheiro ou pasta não existir, cria `D:\Leonardo\Diario\` e segue o `README.md` desse diretório.
@@ -17,12 +17,21 @@ Quando **concluíres uma tarefa** com entregável no repositório G360, **insere
 
 **Quando:** YYYY-MM-DDTHH:mm (timezone: local)
 **Projeto:** G360
-**Título:** <uma linha>
+**Título:** <uma linha — linguagem natural; evitar jargão de commit>
 
-<parágrafo: o que foi feito; paths relativos ao repo se útil>
+Opcional: **Work item:** US-xxx / BUG-xxx
+
+<um ou dois parágrafos em prosa: contexto, o que mudou, para quê, resultado ou impacto>
 ```
 
-Opcional: mencionar US-xxx / BUG-xxx no texto.
+## Tom e redação (importante)
+
+O diário é **nota para ti** (e para leitura humana), não substituto do `CHANGELOG.md`.
+
+- **Título:** frase que um colega entenda sem abrir o repo (ex.: “Modal X ao padrão visual” em vez de “`FooModal.jsx` → `StandardModal`”).
+- **Corpo:** escrever como conversa curta: motivo, decisão, desfecho. Usar **“nós”/impessoal** (“alinhámos”, “ficou”, “combinámos”) quando fizer sentido.
+- **Detalhe técnico:** só o necessário; nomes de ficheiros ou paths **no fim** do parágrafo ou **uma linha** “Referência:” se ajudar mais tarde — evitar listas estilo lista de ficheiros do Git.
+- **IDs:** mencionar US/BUG no título ou linha opcional **Work item:**, não repetir o mesmo em cinco sítios.
 
 ## Exceções
 

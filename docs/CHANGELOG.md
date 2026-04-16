@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Docs
+- **Diário de trabalho (fora do Git):** orientação para entradas em prosa legível (`D:\Leonardo\Diario\README.md`); regra `.cursor/rules/work-diary.mdc` e secção em `CLAUDE.md` / `docs/trabalho-diario/README.md` alinhadas (título e texto humanos; changelog do repo mantém o detalhe técnico).
+
 ### Added
 - **E2E modais Organização (US-022):** `e2e/organization-standard-modals.spec.ts` com snapshots `org-modal-*-shell-chromium-win32.png`; mocks alargados (`login` por email, GET `/fiscal-years`, `/roles`, `/users`, `/tenants`, `/tenants/dashboard-stats`, `/global-settings/system-health`); `data-testid` em abas da `OrganizationPage` e botões “Novo…” nas tabs; evidências em `e2e/evidence/US-022-org-modals/README.md`.
   - `FRONTEND/e2e/helpers/mock-api-for-config-pages.ts`
