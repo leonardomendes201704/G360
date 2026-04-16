@@ -4,10 +4,6 @@ import {
   Typography,
   Button,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   MenuItem,
   FormControlLabel,
@@ -18,6 +14,7 @@ import { useSnackbar } from 'notistack';
 import approvalTierService from '../../services/approval-tier.service';
 import roleService from '../../services/role.service';
 import ConfirmDialog from '../common/ConfirmDialog';
+import StandardModal from '../common/StandardModal';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
@@ -294,9 +291,19 @@ const ApprovalTiersTab = () => {
         </table>
       </Box>
 
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: '16px', background: isDark ? '#1a222d' : '#fff' } }}>
-        <DialogTitle sx={{ color: textPrimary, fontWeight: 600 }}>{editingId ? 'Editar alçada' : 'Nova alçada'}</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+      <StandardModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingId ? 'Editar alçada' : 'Nova alçada'}
+        icon="layers"
+        size="form"
+        actions={[
+          { label: 'Cancelar', onClick: () => setModalOpen(false) },
+          { label: 'Salvar', onClick: handleSave },
+        ]}
+        contentSx={{ '& .MuiTextField-root, & .MuiFormControlLabel-root': { color: textPrimary } }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField label="Nome" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} fullWidth size="small" InputLabelProps={{ shrink: true }} />
           <TextField select label="Tipo de item" value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} fullWidth size="small">
             {ENTITY_OPTIONS.map((o) => (
@@ -322,16 +329,8 @@ const ApprovalTiersTab = () => {
           <FormControlLabel control={<Switch checked={form.globalScope} onChange={(e) => setForm((f) => ({ ...f, globalScope: e.target.checked }))} />} label="Escopo global (toda a empresa na faixa)" sx={{ color: textSecondary }} />
           <FormControlLabel control={<Switch checked={form.isActive} onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))} />} label="Alçada ativa" sx={{ color: textSecondary }} />
           <TextField label="Ordem" value={form.sortOrder} onChange={(e) => setForm((f) => ({ ...f, sortOrder: e.target.value }))} fullWidth size="small" type="number" InputLabelProps={{ shrink: true }} />
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setModalOpen(false)} sx={{ textTransform: 'none', color: textMuted }}>
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} variant="contained" sx={{ textTransform: 'none', borderRadius: '10px' }}>
-            Salvar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </StandardModal>
 
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir alçada" content="Tem certeza? A regra deixará de se aplicar." />
     </>

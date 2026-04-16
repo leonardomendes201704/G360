@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Typography, Button, IconButton, TextField, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, IconButton, TextField, CircularProgress } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import KnowledgeCategoryService from '../../services/knowledge-category.service';
 import ConfirmDialog from '../common/ConfirmDialog';
+import StandardModal from '../common/StandardModal';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 // Modal for creating/editing category
@@ -55,64 +56,66 @@ const CategoryModal = ({ open, onClose, onSuccess, editData }) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-            <DialogTitle>{editData ? 'Editar Categoria' : 'Nova Categoria'}</DialogTitle>
-            <DialogContent>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title={editData ? 'Editar Categoria' : 'Nova Categoria'}
+            icon="category"
+            maxWidth="xs"
+            loading={loading}
+            actions={[
+                { label: 'Cancelar', onClick: onClose },
+                { label: 'Salvar', onClick: handleSubmit },
+            ]}
+        >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                    label="Nome"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    fullWidth
+                    autoFocus
+                    InputLabelProps={labelProps(!!formData.name)}
+                />
+                <TextField
+                    label="Descricao (opcional)"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    fullWidth
+                    multiline
+                    rows={2}
+                    InputLabelProps={labelProps(!!formData.description)}
+                />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <TextField
-                        label="Nome"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        fullWidth
-                        autoFocus
-                        InputLabelProps={labelProps(!!formData.name)}
+                        label="Cor"
+                        type="color"
+                        value={formData.color}
+                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                        sx={{ width: 100 }}
+                        InputProps={{ sx: { height: 56 } }}
+                        InputLabelProps={{ shrink: true }}
                     />
-                    <TextField
-                        label="Descricao (opcional)"
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        fullWidth
-                        multiline
-                        rows={2}
-                        InputLabelProps={labelProps(!!formData.description)}
-                    />
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <TextField
-                            label="Cor"
-                            type="color"
-                            value={formData.color}
-                            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                            sx={{ width: 100 }}
-                            InputProps={{ sx: { height: 56 } }}
-                            InputLabelProps={{ shrink: true }}
-                        />
-                        <Box
-                            sx={{
-                                flex: 1,
-                                height: 40,
-                                bgcolor: formData.color,
-                                borderRadius: '8px',
-                                border: '2px solid rgba(255, 255, 255, 0.1)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontWeight: 600,
-                                fontSize: '13px'
-                            }}
-                        >
-                            Preview
-                        </Box>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            height: 40,
+                            bgcolor: formData.color,
+                            borderRadius: '8px',
+                            border: '2px solid rgba(255, 255, 255, 0.1)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 600,
+                            fontSize: '13px'
+                        }}
+                    >
+                        Preview
                     </Box>
                 </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="inherit">Cancelar</Button>
-                <Button onClick={handleSubmit} variant="contained" disabled={loading}>
-                    {loading ? <CircularProgress size={20} /> : 'Salvar'}
-                </Button>
-            </DialogActions>
-        </Dialog>
+            </Box>
+        </StandardModal>
     );
 };
 

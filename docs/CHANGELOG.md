@@ -8,6 +8,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — diálogos inline (config / admin / KB):** `KnowledgeCategoriesTab` (`CategoryModal` em `StandardModal` com `loading`); `TenantsTab` (confirmação de exclusão em `ConfirmDialog`); `ApprovalTiersTab` (formulário de alçada em `StandardModal`); `CabMembersTab` (adicionar membro em `StandardModal`); `DocumentViewer` (casca `StandardModal`, ícone `picture_as_pdf`).
+  - `FRONTEND/src/components/config/KnowledgeCategoriesTab.jsx`
+  - `FRONTEND/src/components/config/TenantsTab.jsx`
+  - `FRONTEND/src/components/config/ApprovalTiersTab.jsx`
+  - `FRONTEND/src/components/admin/CabMembersTab.jsx`
+  - `FRONTEND/src/components/knowledge-base/DocumentViewer.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — Contratos e propostas:** `ContractModal` (`wide`; wizard/edição; rodapé só em modo edição), `ContractCreationWizard` (tipo extra em `StandardModal`), `ProposalModal` (`detail`; `loading`; «Nova categoria» em segundo modal).
   - `FRONTEND/src/components/modals/ContractModal.jsx`
   - `FRONTEND/src/components/modals/ContractCreationWizard.jsx`

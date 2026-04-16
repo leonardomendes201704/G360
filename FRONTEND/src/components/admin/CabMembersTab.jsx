@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Button, IconButton, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete, TextField } from '@mui/material';
+import { Box, Button, IconButton, Typography, Autocomplete, TextField } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import userService from '../../services/user.service';
 import roleService from '../../services/role.service';
 import ConfirmDialog from '../common/ConfirmDialog';
+import StandardModal from '../common/StandardModal';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 const CabMembersTab = () => {
@@ -187,27 +188,26 @@ const CabMembersTab = () => {
                 </Box>
             </Box>
 
-            <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: cardBg, border: cardBorder, borderRadius: '16px' } }}>
-                <DialogTitle sx={{ color: textPrimary, borderBottom: cardBorder }}>Adicionar Membro ao CAB</DialogTitle>
-                <DialogContent>
-                    <Box pt={2}>
-                        <Autocomplete
-                            options={allUsers.filter(u => !members.some(m => m.id === u.id))}
-                            getOptionLabel={(option) => `${option.name} (${option.email})`}
-                            value={selectedUser}
-                            onChange={(e, v) => setSelectedUser(v)}
-                            renderInput={(params) => <TextField {...params} label="Selecione o Usuario" fullWidth sx={inputSx} />}
-                            sx={{ '& .MuiAutocomplete-listbox': { background: inputBg } }}
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions sx={{ borderTop: cardBorder, p: 2 }}>
-                    <Button onClick={() => setOpenModal(false)} sx={{ color: textSecondary }}>Cancelar</Button>
-                    <Button onClick={handleAddMember} disabled={!selectedUser} sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', borderRadius: '8px', px: 3, '&:disabled': { opacity: 0.5 } }}>
-                        Adicionar
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <StandardModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title="Adicionar Membro ao CAB"
+                icon="group_add"
+                size="form"
+                actions={[
+                    { label: 'Cancelar', onClick: () => setOpenModal(false) },
+                    { label: 'Adicionar', onClick: handleAddMember, disabled: !selectedUser },
+                ]}
+            >
+                <Autocomplete
+                    options={allUsers.filter(u => !members.some(m => m.id === u.id))}
+                    getOptionLabel={(option) => `${option.name} (${option.email})`}
+                    value={selectedUser}
+                    onChange={(e, v) => setSelectedUser(v)}
+                    renderInput={(params) => <TextField {...params} label="Selecione o Usuario" fullWidth sx={inputSx} />}
+                    sx={{ '& .MuiAutocomplete-listbox': { background: inputBg } }}
+                />
+            </StandardModal>
 
             <ConfirmDialog
                 open={confirmOpen}

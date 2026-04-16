@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Button, Paper, Table, TableBody,
-    TableCell, TableContainer, TableHead, TableRow, Chip, IconButton, Switch, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+    TableCell, TableContainer, TableHead, TableRow, Chip, IconButton, Switch, Tooltip,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import tenantService from '../../services/tenant.service';
 import TenantModal from '../../components/modals/TenantModal';
+import ConfirmDialog from '../common/ConfirmDialog';
 
 const TenantsTab = () => {
     const [tenants, setTenants] = useState([]);
@@ -140,26 +141,18 @@ const TenantsTab = () => {
                 editData={editData}
             />
 
-            {/* Dialog de Confirmação de Exclusão */}
-            <Dialog
+            <ConfirmDialog
                 open={deleteConfirmOpen}
-                onClose={() => setDeleteConfirmOpen(false)}
-            >
-                <DialogTitle>Confirmar Exclusão</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Tem certeza que deseja excluir a empresa <strong>{tenantToDelete?.name}</strong>?
-                        <br />
-                        Esta ação é irreversível e excluirá todos os dados associados.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDeleteConfirmOpen(false)}>Cancelar</Button>
-                    <Button onClick={handleConfirmDelete} color="error" autoFocus>
-                        Excluir
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                onClose={() => { setDeleteConfirmOpen(false); setTenantToDelete(null); }}
+                onConfirm={handleConfirmDelete}
+                title="Confirmar exclusão"
+                content={
+                    `Tem certeza que deseja excluir a empresa "${tenantToDelete?.name || ''}"? ` +
+                    'Esta ação é irreversível e excluirá todos os dados associados.'
+                }
+                confirmText="Excluir"
+                variant="danger"
+            />
         </Box>
     );
 };

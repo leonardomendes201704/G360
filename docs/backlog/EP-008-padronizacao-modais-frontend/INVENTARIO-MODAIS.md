@@ -81,12 +81,12 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 
 | Ficheiro | Notas |
 |----------|--------|
-| `components/config/KnowledgeCategoriesTab.jsx` | `CategoryModal` inline + `ConfirmDialog` |
-| `components/config/TenantsTab.jsx` | `TenantModal` + `Dialog` confirmacao exclusao |
-| `components/config/ApprovalTiersTab.jsx` | `Dialog` + `ConfirmDialog` |
+| `components/config/KnowledgeCategoriesTab.jsx` | `CategoryModal` em `StandardModal` + `ConfirmDialog` (US-022) |
+| `components/config/TenantsTab.jsx` | `TenantModal` + `ConfirmDialog` exclusao (US-022) |
+| `components/config/ApprovalTiersTab.jsx` | `StandardModal` (form alçada) + `ConfirmDialog` (US-022) |
 | `components/config/IntegrationsTab.jsx` | Usa `AzureConfigModal`, `SmtpConfigModal` (sem Dialog directo) |
 | `components/admin/FreezeWindowsTab.jsx` | ~~`Dialog` inline~~ → `StandardModal` (US-022) |
-| `components/admin/CabMembersTab.jsx` | `Dialog` + `ConfirmDialog` |
+| `components/admin/CabMembersTab.jsx` | `StandardModal` (adicionar membro) + `ConfirmDialog` (US-022) |
 
 ---
 
@@ -94,7 +94,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 
 | Ficheiro | Notas |
 |----------|--------|
-| `components/knowledge-base/DocumentViewer.jsx` | `Dialog` |
+| `components/knowledge-base/DocumentViewer.jsx` | `StandardModal` (US-022) |
 | `components/projects/tabs/ProjectCosts.jsx` | `ConfirmDialog` |
 
 ---
