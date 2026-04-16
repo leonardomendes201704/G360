@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — Projetos / tarefas / KB:** `ProjectModal` (`wide`, `rocket_launch`, `loading`), `TaskModal` (`wide`; título/subtítulo dinâmicos; abas no corpo; rodapé no shell; removido estado `mounted` e gradiente do `Paper`), `KnowledgeBaseModal` (artigo + diálogo «Nova Categoria» em `StandardModal`).
+  - `FRONTEND/src/components/modals/ProjectModal.jsx`
+  - `FRONTEND/src/components/modals/TaskModal.jsx`
+  - `FRONTEND/src/components/modals/KnowledgeBaseModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — ITSM incidentes:** `IncidentCreateModal` (`form`, `loading`), `IncidentViewModal` (`detail`, abas e `IncidentViewDataField` no âmbito do módulo), `IncidentModal` (`detail`, `loading` do prop; formulário e abas CSS existentes; escalonamento em segundo `StandardModal` com `color="warning"`; exclusão/finalizar/salvar em botões MUI).
   - `FRONTEND/src/components/modals/IncidentCreateModal.jsx`
   - `FRONTEND/src/components/modals/IncidentViewModal.jsx`

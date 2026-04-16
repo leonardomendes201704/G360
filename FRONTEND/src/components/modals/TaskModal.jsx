@@ -7,9 +7,10 @@ import { useSnackbar } from 'notistack';
 import { AuthContext } from '../../contexts/AuthContext';
 import {
   Box, Typography, TextField, Select, MenuItem, Button, IconButton,
-  FormControl, InputLabel, Dialog
+  FormControl, InputLabel,
 } from '@mui/material';
-import { CheckCircle, Close, Add, Delete, CheckBox, CheckBoxOutlineBlank, Assignment, Shield, Bolt } from '@mui/icons-material';
+import { CheckCircle, Add, Delete, CheckBox, CheckBoxOutlineBlank, Assignment, Shield, Bolt } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
 import {
   getTaskComments, addTaskComment, deleteTaskComment,
   getTaskAttachments, addTaskAttachment, deleteTaskAttachment,
@@ -42,7 +43,6 @@ const DarkTaskModal = ({
   const { user } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
 
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('detalhes');
   const [viewMode, setViewMode] = useState(!!task);
   const [comments, setComments] = useState([]);
@@ -60,11 +60,6 @@ const DarkTaskModal = ({
   const status = watch('status');
   const title = watch('title');
   const assigneeId = watch('assigneeId');
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
 
   const apiMethods = {
     getComments: isGeneralTask ? getGeneralTaskComments : getTaskComments,
@@ -177,130 +172,172 @@ const DarkTaskModal = ({
     onSave(payload);
   };
 
-  if (!open || !mounted) return null;
+  if (!open) return null;
+
+  const modalTitle = riskId
+    ? (task ? 'Editar Plano de Ação' : 'Novo Plano de Ação')
+    : (task
+        ? (viewMode ? (title || task.title || 'Tarefa') : 'Editando Tarefa')
+        : 'Nova Tarefa');
+  const modalSubtitle = riskId
+    ? 'Defina as ações para mitigar ou tratar o risco'
+    : (projectName
+        ? `${projectName} · Prazos e responsáveis`
+        : 'Gerencie os detalhes, prazos e responsáveis');
+
+  const footerActions = (
+    <Box sx={{
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: 1,
+    }}>
+        {viewMode ? (
+          <>
+            {task && onDelete ? (
+              <Button
+                type="button"
+                onClick={() => onDelete(task.id)}
+                sx={{
+                  color: '#ef4444',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  '&:hover': { background: 'rgba(239, 68, 68, 0.1)' }
+                }}
+              >
+                Excluir
+              </Button>
+            ) : <Box />}
+            <Box sx={{ display: 'flex', gap: 1.5, ml: 'auto' }}>
+              <Button
+                type="button"
+                onClick={onClose}
+                variant="outlined"
+                sx={{ textTransform: 'none' }}
+              >
+                Fechar
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={() => setViewMode(false)}
+                sx={{ textTransform: 'none' }}
+              >
+                Editar
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            {task && onDelete ? (
+              <Button
+                type="button"
+                onClick={() => onDelete(task.id)}
+                sx={{
+                  color: '#ef4444',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  '&:hover': { background: 'rgba(239, 68, 68, 0.1)' }
+                }}
+              >
+                Excluir
+              </Button>
+            ) : <Box />}
+            <Box sx={{ display: 'flex', gap: 1.5, ml: 'auto' }}>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={task ? () => setViewMode(true) : onClose}
+                sx={{ textTransform: 'none' }}
+              >
+                {task ? 'Voltar' : 'Cancelar'}
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                onClick={handleSubmit(onSubmit, (errors) => {
+                  console.error('Form Validation Errors:', errors);
+                  enqueueSnackbar('Verifique os campos obrigatórios na aba Detalhes.', { variant: 'error' });
+                  setActiveTab('detalhes');
+                })}
+                disabled={loading}
+                sx={{ textTransform: 'none' }}
+              >
+                {task ? 'Salvar Alterações' : 'Criar Tarefa'}
+              </Button>
+            </Box>
+          </>
+        )}
+    </Box>
+  );
 
   return (
-    <Dialog
+    <StandardModal
       open={open}
       onClose={onClose}
-      TransitionProps={{ onEntered: () => setMounted(true) }}
-      PaperProps={{
-        sx: {
-          width: '100%',
-          maxWidth: '800px',
-          height: 'auto',
-          maxHeight: '90vh',
-          borderRadius: G360_MODAL_SURFACE_RADIUS,
-          background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%) !important',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          color: '#f8fafc !important',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }
-      }}
-      BackdropProps={{
-        sx: {
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)'
-        }
+      title={modalTitle}
+      subtitle={modalSubtitle}
+      icon={riskId ? 'shield' : 'assignment'}
+      size="wide"
+      loading={loading}
+      footer={footerActions}
+      contentSx={{
+        p: 0,
+        pt: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        overflow: 'hidden',
       }}
     >
-      {/* Header */}
-      <Box sx={{
-        padding: { xs: '16px 16px 0 16px', md: '24px 24px 0 24px' },
-        borderBottom: '1px solid var(--modal-border-strong)',
-        background: 'var(--modal-header-gradient)'
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-            <Box sx={{
-              width: '40px',
-              height: '40px',
-              borderRadius: G360_INPUT_RADIUS,
-              background: riskId
-                ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' // Amber for Risk Plan
-                : (task ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'),
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: riskId
-                ? '0 4px 12px rgba(245, 158, 11, 0.3)'
-                : (task ? '0 4px 12px rgba(59, 130, 246, 0.3)' : '0 4px 12px rgba(34, 197, 94, 0.3)')
-            }}>
-              {riskId ? (
-                <Shield sx={{ color: '#fff', fontSize: '24px' }} />
-              ) : (
-                task ? <Assignment sx={{ color: '#fff', fontSize: '24px' }} /> : <CheckCircle sx={{ color: '#fff', fontSize: '24px' }} />
-              )}
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                {riskId ? (task ? 'Editar Plano de Ação' : 'Novo Plano de Ação') : (task ? (viewMode ? (title || task.title) : '✏️ Editando Tarefa') : 'Nova Tarefa')}
-              </Typography>
-              <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                {riskId ? 'Defina as ações para mitigar ou tratar o risco' : 'Gerencie os detalhes, prazos e responsáveis'}
-              </Typography>
-            </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(85dvh, 800px)' }}>
+        <Box sx={{ flexShrink: 0, px: { xs: 2, md: 2.5 }, pt: 1, borderBottom: '1px solid var(--modal-border-strong)' }}>
+          <Box sx={{ display: 'flex', gap: 0 }}>
+            {['detalhes', 'comentarios', 'anexos'].filter((tab, idx) => idx === 0 || task).map(tab => (
+              <Button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                sx={{
+                  padding: '12px 0',
+                  marginRight: '24px',
+                  background: 'none',
+                  border: 'none',
+                  color: activeTab === tab ? '#3b82f6' : 'var(--modal-text-muted)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  position: 'relative',
+                  textTransform: 'none',
+                  minWidth: 'auto',
+                  '&:hover': { color: 'var(--modal-text)', background: 'none' },
+                  '&::after': activeTab === tab ? {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: '-1px',
+                    left: 0,
+                    width: '100%',
+                    height: '2px',
+                    background: '#3b82f6',
+                    borderRadius: '2px 2px 0 0'
+                  } : {}
+                }}
+              >
+                {tab === 'detalhes' ? 'Detalhes' : tab === 'comentarios' ? `Comentários ${comments.length > 0 ? `(${comments.length})` : ''}` : `Anexos ${attachments.length > 0 ? `(${attachments.length})` : ''}`}
+              </Button>
+            ))}
           </Box>
-          <IconButton
-            onClick={onClose}
-            sx={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              background: 'var(--modal-surface-hover)',
-              color: 'var(--modal-text-muted)',
-              '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-            }}
-          >
-            <Close fontSize="small" />
-          </IconButton>
         </Box>
 
-        {/* Tabs */}
-        <Box sx={{ display: 'flex', gap: 0 }}>
-          {['detalhes', 'comentarios', 'anexos'].filter((tab, idx) => idx === 0 || task).map(tab => (
-            <Button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              sx={{
-                padding: '12px 0',
-                marginRight: '24px',
-                background: 'none',
-                border: 'none',
-                color: activeTab === tab ? '#3b82f6' : 'var(--modal-text-muted)',
-                fontSize: '14px',
-                fontWeight: 500,
-                position: 'relative',
-                textTransform: 'none',
-                minWidth: 'auto',
-                '&:hover': { color: 'var(--modal-text)', background: 'none' },
-                '&::after': activeTab === tab ? {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-1px',
-                  left: 0,
-                  width: '100%',
-                  height: '2px',
-                  background: '#3b82f6',
-                  borderRadius: '2px 2px 0 0'
-                } : {}
-              }}
-            >
-              {tab === 'detalhes' ? 'Detalhes' : tab === 'comentarios' ? `Comentários ${comments.length > 0 ? `(${comments.length})` : ''}` : `Anexos ${attachments.length > 0 ? `(${attachments.length})` : ''}`}
-            </Button>
-          ))}
-        </Box>
-      </Box>
-
-      {/* Content */}
       <Box sx={{
         flex: 1,
+        minHeight: 0,
         overflowY: 'auto',
         padding: { xs: '16px', md: '24px' },
-        background: 'transparent', // Transparent to show Dialog gradient
+        background: 'transparent',
         '&::-webkit-scrollbar': { width: '6px' },
         '&::-webkit-scrollbar-track': { background: 'transparent' },
         '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
@@ -999,142 +1036,8 @@ const DarkTaskModal = ({
           </Box>
         )}
       </Box>
-
-      {/* Footer */}
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: { xs: '12px 16px', md: '16px 24px' },
-        borderTop: '1px solid var(--modal-border-strong)',
-        background: 'var(--modal-surface-subtle)'
-      }}>
-        {viewMode ? (
-          /* View Mode Footer */
-          <>
-            {task && onDelete ? (
-              <Button
-                type="button"
-                onClick={() => onDelete(task.id)}
-                sx={{
-                  color: '#ef4444',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': { background: 'rgba(239, 68, 68, 0.1)' }
-                }}
-              >
-                🗑️ Excluir
-              </Button>
-            ) : <Box />}
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
-              <Button
-                type="button"
-                onClick={onClose}
-                sx={{
-                  background: 'transparent',
-                  border: '1px solid var(--modal-border)',
-                  color: 'var(--modal-text-secondary)',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': {
-                    borderColor: 'var(--modal-text-muted)',
-                    background: 'var(--modal-surface-hover)',
-                    color: 'var(--modal-text)'
-                  }
-                }}
-              >
-                Fechar
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setViewMode(false)}
-                sx={{
-                  background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                  color: '#fff',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                  '&:hover': { boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
-                }}
-              >
-                ✏️ Editar
-              </Button>
-            </Box>
-          </>
-        ) : (
-          /* Edit/Create Mode Footer */
-          <>
-            {task ? (
-              <Button
-                type="button"
-                onClick={() => onDelete(task.id)}
-                sx={{
-                  color: '#ef4444',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': { background: 'rgba(239, 68, 68, 0.1)' }
-                }}
-              >
-                🗑️ Excluir
-              </Button>
-            ) : <Box />}
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
-              <Button
-                type="button"
-                onClick={task ? () => setViewMode(true) : onClose}
-                sx={{
-                  background: 'transparent',
-                  border: '1px solid var(--modal-border)',
-                  color: 'var(--modal-text-secondary)',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': {
-                    borderColor: 'var(--modal-text-muted)',
-                    background: 'var(--modal-surface-hover)',
-                    color: 'var(--modal-text)'
-                  }
-                }}
-              >
-                {task ? 'Voltar' : 'Cancelar'}
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSubmit(onSubmit, (errors) => {
-                  console.error('Form Validation Errors:', errors);
-                  enqueueSnackbar('Verifique os campos obrigatórios na aba Detalhes.', { variant: 'error' });
-                  setActiveTab('detalhes');
-                })}
-                disabled={loading}
-                sx={{
-                  background: 'var(--modal-surface-alt)',
-                  color: 'var(--modal-text)',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': { background: '#334155' },
-                  '&:disabled': { opacity: 0.5 }
-                }}
-              >
-                ✓ {task ? 'Salvar Alterações' : 'Criar Tarefa'}
-              </Button>
-            </Box>
-          </>
-        )}
       </Box>
-    </Dialog>
+    </StandardModal>
   );
 };
 

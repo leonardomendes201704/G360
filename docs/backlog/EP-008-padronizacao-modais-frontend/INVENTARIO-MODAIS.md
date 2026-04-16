@@ -50,13 +50,13 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 25 | `IncidentCreateModal.jsx` — migrado `StandardModal` (US-022 ITSM; `form`; `loading`; primário `error`) |
 | 26 | `IncidentModal.jsx` — migrado `StandardModal` (US-022 ITSM; `detail`; escalonamento em segundo `StandardModal`; rodapé MUI) |
 | 27 | `IncidentViewModal.jsx` — migrado `StandardModal` (US-022 ITSM; `detail`; `IncidentViewDataField` extraído) |
-| 28 | `KnowledgeBaseModal.jsx` |
+| 28 | `KnowledgeBaseModal.jsx` — migrado `StandardModal` (US-022; artigo + `NewCategoryDialog` em `StandardModal`) |
 | 29 | `LdapConfigModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 30 | `MemberModal.jsx` — migrado `StandardModal` (US-022 equipas) |
 | 31 | `MinuteModal.jsx` — migrado `StandardModal` (US-022) |
 | 32 | `NotificationsModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
 | 33 | `PaymentConditionModal.jsx` — migrado `StandardModal` (US-022) |
-| 34 | `ProjectModal.jsx` |
+| 34 | `ProjectModal.jsx` — migrado `StandardModal` (US-022; `wide`; wizard/edição no corpo) |
 | 35 | `ProjectTaskModal.jsx` — migrado `StandardModal` (US-022; `data-testid` no Paper) |
 | 36 | `ProposalModal.jsx` (dialog principal + dialog “nova categoria”) |
 | 37 | `RescheduleModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
@@ -67,7 +67,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 42 | `SubmitExpenseModal.jsx` — migrado `StandardModal` (US-022 despesas; `form`; `loading`) |
 | 43 | `SupplierModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
 | 44 | `SupplierViewModal.jsx` — migrado `StandardModal` (US-022, `wide`) |
-| 45 | `TaskModal.jsx` |
+| 45 | `TaskModal.jsx` — migrado `StandardModal` (US-022; `wide`; abas + formulário; rodapé no shell; sem `mounted`) |
 | 46 | `TeamModal.jsx` — migrado `StandardModal` (US-022) |
 | 47 | `TenantModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 48 | `UserImportModal.jsx` — migrado `StandardModal` (US-022, aba Usuários) |
