@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Added
+- **E2E Azure modal:** mocks em `FRONTEND/e2e/helpers/mock-api-for-config-pages.ts` para `integrations-azure-modal.spec.ts` sem backend; snapshot `e2e/integrations-azure-modal.spec.ts-snapshots/integrations-azure-modal-shell-chromium-win32.png`.
+
 ### Changed
 - **Porta dev Vite / Playwright:** frontend G360 na **5176** por predefinição (`VITE_DEV_PORT` opcional) para não colidir com outro projeto na **5173**; `playwright.config.ts`, `playwright.g360.config.ts`, `FRONTEND_URL` no backend e scripts em `FRONTEND/scripts/` alinhados.
   - `FRONTEND/vite.config.js`

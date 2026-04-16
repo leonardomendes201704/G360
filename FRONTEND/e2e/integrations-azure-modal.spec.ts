@@ -1,14 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { loginAs } from './helpers/auth.helper';
 import { navigateTo } from './helpers/navigation.helper';
+import { installApiMocksForConfigIntegrationFlows } from './helpers/mock-api-for-config-pages';
 
 /**
  * Evidência visual: modal Azure AD em StandardModal (Integrações).
- * Requer backend + seed com credenciais em auth.helper.
+ * Com mocks de API — não exige backend; use credenciais reais só para validação manual.
  */
 test.describe('Integrações: modal Azure AD (StandardModal)', () => {
     test('abre Configuração Azure AD a partir da aba Integrações', async ({ page }) => {
-        await loginAs(page, 'admin');
+        await installApiMocksForConfigIntegrationFlows(page);
+
+        await loginAs(page, 'manager');
         await navigateTo(page, 'config');
 
         await page.getByRole('button', { name: /Integracoes/i }).click();
