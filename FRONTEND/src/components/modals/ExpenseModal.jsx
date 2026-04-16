@@ -3,11 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
-    Box, Button, IconButton, TextField, MenuItem, Typography, Chip, CircularProgress, Select, Dialog
+    Box, Button, TextField, MenuItem, Typography, Chip, CircularProgress, Select
 } from '@mui/material';
 import {
-    Close, ReceiptLong, CloudUpload, Description, AttachMoney
+    CloudUpload, Description, AttachMoney
 } from '@mui/icons-material';
+import StandardModal from '../common/StandardModal';
 import { useSnackbar } from 'notistack';
 
 import { getReferenceSuppliers, getReferenceContracts, getReferenceAccounts, getReferenceCostCenters } from '../../services/reference.service';
@@ -102,7 +103,6 @@ const ExpenseModal = ({
     isViewMode = false,
     isProjectContext = false
 }) => {
-    const [mounted, setMounted] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
     const [suppliers, setSuppliers] = useState([]);
@@ -135,8 +135,6 @@ const ExpenseModal = ({
     useEffect(() => {
         setValue('contractId', '');
     }, [watchedSupplierId, setValue]);
-
-    useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 
     useEffect(() => {
         if (open) {
@@ -202,86 +200,41 @@ const ExpenseModal = ({
     };
 
     return (
-        <Dialog
+        <StandardModal
             open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                sx: {
-                    width: '100%',
-                    maxWidth: '720px',
-                    maxHeight: '90vh',
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--modal-surface-hover)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
-        >
-            {/* Header */}
-            <Box sx={{
-                padding: '24px 24px 20px 24px',
-                borderBottom: '1px solid var(--modal-border-strong)',
-                background: 'var(--modal-header-gradient)'
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-                        <Box sx={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '10px',
-                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                        }}>
-                            <ReceiptLong sx={{ color: 'var(--modal-text)', fontSize: '22px' }} />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600, letterSpacing: '-0.01em' }}>
-                                {isViewMode ? 'Detalhes da Despesa' : (expense ? 'Editar Despesa' : 'Nova Despesa')}
-                            </Typography>
-                            <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                                Lançamento oficial de custos e despesas
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <IconButton
-                        onClick={onClose}
-                        sx={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '8px',
-                            background: 'var(--modal-surface-hover)',
-                            color: 'var(--modal-text-muted)',
-                            '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-                        }}
-                    >
-                        <Close fontSize="small" />
-                    </IconButton>
-                </Box>
-            </Box>
-
-            {/* Content */}
-            <Box sx={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '24px',
+            title={isViewMode ? 'Detalhes da Despesa' : (expense ? 'Editar Despesa' : 'Nova Despesa')}
+            subtitle="Lançamento oficial de custos e despesas"
+            icon="receipt_long"
+            size="detail"
+            footer={
+                <>
+                    <Button variant="outlined" onClick={onClose} sx={{ textTransform: 'none', fontWeight: 500 }}>
+                        {isViewMode ? 'Fechar' : 'Cancelar'}
+                    </Button>
+                    {!isViewMode && (
+                        <Button
+                            type="submit"
+                            form="expenseFormDark"
+                            variant="contained"
+                            color="success"
+                            sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                            ✓ {expense ? 'Salvar Alterações' : 'Lançar Despesa'}
+                        </Button>
+                    )}
+                </>
+            }
+            contentSx={{
+                px: 3,
                 background: 'var(--modal-bg)',
                 '&::-webkit-scrollbar': { width: '6px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
                 '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
                 '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
-            }}>
+            }}
+        >
+            <Box>
                 {loadingDeps ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
                         <CircularProgress sx={{ color: '#3b82f6' }} />
@@ -663,60 +616,7 @@ const ExpenseModal = ({
                     </form>
                 )}
             </Box>
-
-            {/* Footer */}
-            <Box sx={{
-                padding: '16px 24px',
-                borderTop: '1px solid var(--modal-border-strong)',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 1.5,
-                background: 'var(--modal-surface-subtle)'
-            }}>
-                <Button
-                    onClick={onClose}
-                    sx={{
-                        background: 'transparent',
-                        border: '1px solid var(--modal-border)',
-                        color: 'var(--modal-text-secondary)',
-                        borderRadius: '8px',
-                        padding: '10px 20px',
-                        fontSize: '14px',
-                        fontWeight: 500,
-                        textTransform: 'none',
-                        '&:hover': {
-                            borderColor: 'var(--modal-text-muted)',
-                            background: 'var(--modal-surface-hover)',
-                            color: 'var(--modal-text)'
-                        }
-                    }}
-                >
-                    {isViewMode ? 'Fechar' : 'Cancelar'}
-                </Button>
-                {!isViewMode && (
-                    <Button
-                        type="submit"
-                        form="expenseFormDark"
-                        sx={{
-                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                            color: 'var(--modal-text)',
-                            borderRadius: '8px',
-                            padding: '10px 24px',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                            '&:hover': {
-                                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                                boxShadow: '0 6px 16px rgba(16, 185, 129, 0.4)'
-                            }
-                        }}
-                    >
-                        ✓ {expense ? 'Salvar Alterações' : 'Lançar Despesa'}
-                    </Button>
-                )}
-            </Box>
-        </Dialog>
+        </StandardModal>
     );
 };
 

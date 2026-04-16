@@ -42,8 +42,8 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 17 | `ContractModal.jsx` |
 | 18 | `CostCenterModal.jsx` — migrado `StandardModal` (US-022 lote 2) |
 | 19 | `DepartmentModal.jsx` — migrado `StandardModal` (US-022 lote 1) |
-| 20 | `ExpenseApprovalModal.jsx` |
-| 21 | `ExpenseModal.jsx` |
+| 20 | `ExpenseApprovalModal.jsx` — migrado `StandardModal` (US-022 despesas; `form`; `loading`; primário `success`) |
+| 21 | `ExpenseModal.jsx` — migrado `StandardModal` (US-022 despesas; `detail`; `receipt_long`; primário `success`) |
 | 22 | `FiscalYearModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 23 | `FollowUpModal.jsx` — migrado `StandardModal` (US-022) |
 | 24 | `GlobalRiskModal.jsx` — migrado `StandardModal` (US-022 riscos; `wide`; wizard + CSS legado no corpo) |
@@ -64,7 +64,7 @@ Cada ficheiro abaixo declara ou compoe `Dialog` (directamente ou via sub-dialogs
 | 39 | `RiskViewModal.jsx` — migrado `StandardModal` (US-022; `detail`; `RiskViewBadge` / `RiskViewField` extraídos) |
 | 40 | `RoleModal.jsx` — migrado `StandardModal` (US-022 lote org/fiscal) |
 | 41 | `SmtpConfigModal.jsx` — migrado `StandardModal` (pós-US-022) |
-| 42 | `SubmitExpenseModal.jsx` |
+| 42 | `SubmitExpenseModal.jsx` — migrado `StandardModal` (US-022 despesas; `form`; `loading`) |
 | 43 | `SupplierModal.jsx` — migrado `StandardModal` (US-022, `size="wide"`) |
 | 44 | `SupplierViewModal.jsx` — migrado `StandardModal` (US-022, `wide`) |
 | 45 | `TaskModal.jsx` |

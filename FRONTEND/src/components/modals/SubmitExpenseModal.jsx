@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, IconButton, TextField, Typography, Chip, Dialog } from '@mui/material';
-import { Close, Send, CloudUpload, Description } from '@mui/icons-material';
+import { Box, Button, TextField, Typography, Chip } from '@mui/material';
+import { Send, CloudUpload, Description } from '@mui/icons-material';
 import { getFileURL } from '../../utils/urlUtils';
+import StandardModal from '../common/StandardModal';
 
 const darkInputStyles = {
     '& .MuiOutlinedInput-root': {
@@ -79,73 +80,35 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
     if (!expense) return null;
 
     return (
-        <Dialog
+        <StandardModal
             open={open}
             onClose={onClose}
-            maxWidth={false}
-            PaperProps={{
-                sx: {
-                    width: '100%',
-                    maxWidth: '520px',
-                    background: 'var(--modal-bg)',
-                    borderRadius: '16px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--modal-surface-hover)',
-                    overflow: 'hidden',
-                }
-            }}
-            BackdropProps={{
-                sx: {
-                    backdropFilter: 'blur(4px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                }
-            }}
-        >
-            {/* Header */}
-            <Box sx={{
-                padding: '24px 24px 20px 24px',
-                borderBottom: '1px solid var(--modal-border-strong)',
-                background: 'var(--modal-header-gradient)'
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-                        <Box sx={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '10px',
-                            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
-                        }}>
-                            <Send sx={{ color: 'white', fontSize: '20px' }} />
-                        </Box>
-                        <Box>
-                            <Typography sx={{ color: 'var(--modal-text)', fontSize: '18px', fontWeight: 600 }}>
-                                Enviar para Aprovação
-                            </Typography>
-                            <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '13px', mt: 0.25 }}>
-                                Preencha os dados obrigatórios para submeter
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <IconButton
-                        onClick={onClose}
-                        sx={{
-                            width: '36px', height: '36px', borderRadius: '8px',
-                            background: 'var(--modal-surface-hover)',
-                            color: 'var(--modal-text-muted)',
-                            '&:hover': { background: 'var(--modal-border-strong)', color: 'var(--modal-text)' }
-                        }}
+            title="Enviar para Aprovação"
+            subtitle="Preencha os dados obrigatórios para submeter"
+            icon="send"
+            size="form"
+            loading={submitting}
+            footer={
+                <>
+                    <Button variant="outlined" onClick={onClose} disabled={submitting} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                        startIcon={<Send />}
+                        sx={{ textTransform: 'none', fontWeight: 600 }}
                     >
-                        <Close fontSize="small" />
-                    </IconButton>
-                </Box>
-            </Box>
-
-            {/* Expense Summary */}
+                        {submitting ? 'Enviando...' : 'Enviar para Aprovação'}
+                    </Button>
+                </>
+            }
+            contentSx={{ pt: 2 }}
+        >
             <Box sx={{
-                mx: 3, mt: 3, mb: 2,
+                mb: 2,
                 padding: '14px 16px',
                 borderRadius: '10px',
                 background: 'var(--modal-surface-subtle)',
@@ -163,8 +126,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                 </Box>
             </Box>
 
-            {/* Valor Editável */}
-            <Box sx={{ px: 3, mb: 1 }}>
+            <Box sx={{ mb: 1 }}>
                 <Typography sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 }}>
                     Valor (R$)
                 </Typography>
@@ -181,9 +143,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                 />
             </Box>
 
-            {/* Form Fields */}
-            <Box sx={{ px: 3, pb: 2 }}>
-                {/* Dates */}
+            <Box sx={{ pb: 1 }}>
                 <Box sx={{ display: 'flex', gap: 2, mb: 2.5 }}>
                     <Box sx={{ flex: 1 }}>
                         <Typography sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 }}>
@@ -215,7 +175,6 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                     </Box>
                 </Box>
 
-                {/* Invoice Number */}
                 <Box sx={{ mb: 2.5 }}>
                     <Typography sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 }}>
                         Nº Nota Fiscal <span style={{ color: '#ef4444' }}>*</span>
@@ -231,7 +190,6 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                     />
                 </Box>
 
-                {/* File Upload */}
                 <Box sx={{
                     padding: '16px',
                     borderRadius: '12px',
@@ -301,60 +259,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                     )}
                 </Box>
             </Box>
-
-            {/* Footer */}
-            <Box sx={{
-                padding: '16px 24px',
-                borderTop: '1px solid var(--modal-border-strong)',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 1.5,
-                background: 'var(--modal-surface-subtle)'
-            }}>
-                <Button
-                    onClick={onClose}
-                    sx={{
-                        background: 'transparent',
-                        border: '1px solid var(--modal-border)',
-                        color: 'var(--modal-text-secondary)',
-                        borderRadius: '8px',
-                        padding: '10px 20px',
-                        fontSize: '14px',
-                        fontWeight: 500,
-                        textTransform: 'none',
-                        '&:hover': {
-                            borderColor: 'var(--modal-text-muted)',
-                            background: 'var(--modal-surface-hover)',
-                            color: 'var(--modal-text)'
-                        }
-                    }}
-                >
-                    Cancelar
-                </Button>
-                <Button
-                    onClick={handleSubmit}
-                    disabled={submitting}
-                    sx={{
-                        background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                        color: 'white',
-                        borderRadius: '8px',
-                        padding: '10px 24px',
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                        '&:hover': {
-                            background: 'linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 100%)',
-                            boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)'
-                        },
-                        '&:disabled': { opacity: 0.6 }
-                    }}
-                    startIcon={<Send />}
-                >
-                    {submitting ? 'Enviando...' : 'Enviar para Aprovação'}
-                </Button>
-            </Box>
-        </Dialog>
+        </StandardModal>
     );
 };
 

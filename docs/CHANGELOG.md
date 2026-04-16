@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Changed
+- **US-022 / EP-008 — domínio Despesas:** `ExpenseModal` (`detail`; formulário `react-hook-form` + `expenseFormDark`), `ExpenseApprovalModal` (`form`; aprovação com NF e anexo; `loading`), `SubmitExpenseModal` (`form`; envio para aprovação; `loading`); botões sem gradiente (`contained`/`success` ou `primary`).
+  - `FRONTEND/src/components/modals/ExpenseModal.jsx`
+  - `FRONTEND/src/components/modals/ExpenseApprovalModal.jsx`
+  - `FRONTEND/src/components/modals/SubmitExpenseModal.jsx`
+  - `docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md`
+
+### Changed
 - **US-022 / EP-008 — domínio Riscos:** `RiskModal` (`detail`, `loading`, salvar `contained`/`error`), `RiskViewModal` (`detail`; `RiskViewBadge` e `RiskViewField` no âmbito do módulo), `GlobalRiskModal` (`wide`; stepper + formulário HTML/CSS legado no corpo; rodapé MUI Cancelar / Voltar / Próximo / Concluir).
   - `FRONTEND/src/components/modals/RiskModal.jsx`
   - `FRONTEND/src/components/modals/RiskViewModal.jsx`
