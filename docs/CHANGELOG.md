@@ -33,6 +33,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022 / QA:** Rodada 9 — modais **41–45** (`modal-evidence-batch-09.spec.ts`, `modal-evidence-batch-09-api-mocks.ts`): SMTP em Integrações, submeter despesa (Financeiro), novo fornecedor / visualizar fornecedor, nova tarefa geral em `/tasks`. Mocks: despesas `PREVISTO`, fornecedores, integrações SMTP, `GET /tasks` + `POST /tasks`. Assert do **42** no título do modal (`#g360-modal-title-*`) para evitar colisão com o botão «Enviar para Aprovação». Snapshots em `FRONTEND/e2e/modal-evidence-batch-09.spec.ts-snapshots/`.
 
 ### Changed
+- **UX / navegação:** `DarkSidebar` — o corpo do menu deixou de ser um componente React definido **dentro** do pai (cada navegação criava um tipo novo e o React **desmontava/remontava** o sidebar inteiro: scroll do menu ia para o topo e perdia-se o foco). O markup passa a ser JSX reutilizado (`sidebarMarkup`); itens usam `Link` do React Router (`component={Link}`, `to={path}`) em vez de `navigate()` + `onClick`, mantendo navegação SPA e melhor foco. `textDecoration: 'none'` nos itens.
+  - `FRONTEND/src/components/layout/DarkSidebar.jsx`
 - **US-022 / QA:** `ProjectTeams` (`MembersTable`) — ação **Editar** membro com `data-testid="project-member-edit"` para E2E; `TableActionButton` repassa props extra ao `Box`.
   - `FRONTEND/src/components/projects/tabs/ProjectTeams.jsx`
 - **US-022:** `AssetsPage` — botão **Categorias** (`data-testid="btn-gerir-categorias"`) abre **`AssetCategoryModal`** (criar/editar categorias com `createAssetCategory` / `updateAssetCategory`).

@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { Box, Collapse, Drawer, IconButton, Tooltip, useTheme } from '@mui/material';
 import { ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material';
@@ -12,7 +12,6 @@ const SIDEBAR_WIDTH_EXPANDED = 260;
 const SIDEBAR_WIDTH_COLLAPSED = 72;
 
 const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleMobile }) => {
-    const navigate = useNavigate();
     const location = useLocation();
     const { user } = useContext(AuthContext);
     const { mode } = useContext(ThemeContext); // Consumir modo
@@ -148,7 +147,9 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
     const itemHoverColor = mode === 'dark' ? '#f1f5f9' : '#1e293b';
     const separatorColor = mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
-    const SidebarContent = () => (
+    // Não definir isto como <Component /> interno: a função nova a cada render faz o React
+    // desmontar/remontar todo o menu (scroll volta ao topo, perde-se o foco).
+    const sidebarMarkup = (
         <Box
             sx={{
                 width: sidebarWidth,
@@ -256,9 +257,10 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
                                     arrow
                                 >
                                     <Box
+                                        component={Link}
+                                        to={item.path}
                                         data-testid={`nav-${item.path.replace('/', '').replace('/', '-')}`}
                                         onClick={() => {
-                                            navigate(item.path);
                                             if (isMobile && toggleMobile) toggleMobile();
                                         }}
                                         sx={{
@@ -271,6 +273,7 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
                                             py: item.indent ? 1 : 1.5,
                                             borderRadius: '12px',
                                             cursor: 'pointer',
+                                            textDecoration: 'none',
                                             transition: 'all 0.2s ease',
                                             color: isActive(item.path) ? '#2563eb' : itemColor,
                                             background: isActive(item.path)
@@ -353,12 +356,12 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
                     },
                 }}
             >
-                <SidebarContent />
+                {sidebarMarkup}
             </Drawer>
         );
     }
 
-    return <SidebarContent />;
+    return sidebarMarkup;
 };
 
 // Export constants for MainLayout
