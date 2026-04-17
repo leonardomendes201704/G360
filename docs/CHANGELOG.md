@@ -8,6 +8,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Docs
+- **US-022 / QA:** `modals-evidence-handbook.html` — conteúdo principal (`body`) com **80%** da largura da janela em ecrã (antes ~A4 fixo); impressão/PDF mantém largura total.
 - **US-022 / QA:** Dossiê `docs/qa/modals-evidence-handbook.html` — secção das 49 evidências passou de **grelha** para **tabela** (colunas Nº, ficheiro, âmbito, como testar, evidência); miniaturas na última coluna com **lightbox** ao clique (tamanho real, setas e ← →, Escape). Gerador `docs/qa/_gen-modal-grid.mjs` e patch `docs/qa/_patch-handbook.mjs` atualizados (`modal-evidence-table-wrap`).
 - Cursor: regra **agent-long-commands** — comandos longos (Playwright, install, build) em **background** com acompanhamento do output, para reduzir bloqueio do chat e prompts «Run in background» (`.cursor/rules/agent-long-commands.mdc`).
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).

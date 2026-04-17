@@ -17,7 +17,8 @@
       font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
       color: var(--ink);
       line-height: 1.45;
-      max-width: 210mm;
+      width: 80%;
+      max-width: 100%;
       margin: 0 auto;
       padding: 12mm 14mm 18mm;
       background: var(--page-bg);
@@ -291,7 +292,7 @@
     .ev-lb-prev:disabled,
     .ev-lb-next:disabled { opacity: 0.25; cursor: not-allowed; }
     @media print {
-      body { padding: 10mm 12mm; max-width: none; }
+      body { padding: 10mm 12mm; max-width: none; width: auto; }
       a[href^="#"] { color: inherit; text-decoration: none; }
       .no-print { display: none !important; }
       h2 { page-break-before: auto; }
