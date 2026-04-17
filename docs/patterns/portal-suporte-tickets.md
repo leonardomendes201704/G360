@@ -11,7 +11,7 @@ O **Portal de Suporte** é a área do utilizador final para **abrir e acompanhar
 
 Dados carregados no portal (entre outros): `ticketService.getAll()`, catálogo de serviços, categorias, ativos, grupos de suporte.
 
-Na lista: **indicadores** (totais por estado, clicáveis para filtrar), **busca** textual e **filtros** laterais (status, serviço, categoria) aplicados em memória sobre os chamados do solicitante.
+Na lista: **indicadores** (totais por estado, clicáveis para filtrar; cores alinhadas aos chips de status), **busca** textual e **filtros** laterais (status, serviço, categoria) aplicados em memória sobre os chamados do solicitante; **ordenação** ao clicar nos cabeçalhos das colunas e **paginação** da grelha.
 
 ## Abrir um chamado
 

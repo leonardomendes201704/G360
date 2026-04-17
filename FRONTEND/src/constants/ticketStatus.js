@@ -27,6 +27,35 @@ export const TICKET_STATUS_LABEL_PT = Object.freeze({
   [TicketStatus.CLOSED]: 'Encerrado',
 });
 
+/** Ordem lógica dos estados (para ordenação na lista). */
+export const TICKET_STATUS_SORT_ORDER = Object.freeze([
+  TicketStatus.OPEN,
+  TicketStatus.IN_PROGRESS,
+  TicketStatus.WAITING_USER,
+  TicketStatus.RESOLVED,
+  TicketStatus.CLOSED,
+]);
+
+export function getTicketStatusSortIndex(status) {
+  const i = TICKET_STATUS_SORT_ORDER.indexOf(status);
+  return i === -1 ? 999 : i;
+}
+
+/**
+ * Cor do tema equivalente ao `<Chip color={TICKET_STATUS_CHIP_COLOR[status]} />` (KPIs / barras coloridas).
+ * @param {import('@mui/material/styles').Theme} theme
+ * @param {string} status
+ */
+export function getTicketStatusThemeColor(theme, status) {
+  const chip = TICKET_STATUS_CHIP_COLOR[status] ?? 'default';
+  if (chip === 'default') {
+    return theme.palette.mode === 'dark' ? theme.palette.grey[400] : theme.palette.grey[700];
+  }
+  const key = chip;
+  const palette = theme.palette[key];
+  return palette?.main ?? theme.palette.grey[500];
+}
+
 /**
  * Rótulo em PT-BR para exibição (lista, chips). Valores desconhecidos retornam o código bruto.
  * @param {string | null | undefined} status

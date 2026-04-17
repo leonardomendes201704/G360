@@ -8,6 +8,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
+  TableSortLabel,
   Paper,
   Chip,
   Button,
@@ -53,7 +55,9 @@ import {
   getTicketStatusLabel,
   stripTicketTitleStatusSuffix,
   TICKET_STATUS_CHIP_COLOR,
-  TICKET_STATUS_LABEL_PT
+  TICKET_STATUS_LABEL_PT,
+  getTicketStatusSortIndex,
+  getTicketStatusThemeColor
 } from '../../constants/ticketStatus';
 
 const DEFAULT_PORTAL_FILTERS = { status: 'ALL', serviceId: '', categoryId: '' };
@@ -94,6 +98,11 @@ const PortalPage = () => {
   const [appliedFilters, setAppliedFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
   const [draftFilters, setDraftFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+
+  const [orderBy, setOrderBy] = useState('createdAt');
+  const [order, setOrder] = useState('desc');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     fetchData();
@@ -368,6 +377,72 @@ const PortalPage = () => {
     setListSearch('');
   };
 
+  useEffect(() => {
+    setPage(0);
+  }, [listSearch, appliedFilters]);
+
+  const handleRequestSort = (property) => {
+    if (orderBy === property) {
+      setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setOrderBy(property);
+      setOrder(property === 'createdAt' ? 'desc' : 'asc');
+    }
+  };
+
+  const sortedTickets = useMemo(() => {
+    const list = [...filteredTickets];
+    const mult = order === 'asc' ? 1 : -1;
+    list.sort((a, b) => {
+      let cmp = 0;
+      switch (orderBy) {
+        case 'code':
+          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
+          break;
+        case 'title':
+          cmp = stripTicketTitleStatusSuffix(a.title || '').localeCompare(
+            stripTicketTitleStatusSuffix(b.title || ''),
+            'pt-BR',
+            { sensitivity: 'base' }
+          );
+          break;
+        case 'service':
+          cmp = String(a.service?.name || '').localeCompare(String(b.service?.name || ''), 'pt-BR', {
+            sensitivity: 'base'
+          });
+          break;
+        case 'createdAt':
+          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+        case 'status': {
+          const ia = getTicketStatusSortIndex(a.status);
+          const ib = getTicketStatusSortIndex(b.status);
+          cmp = ia - ib;
+          if (cmp === 0) {
+            cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
+          }
+          break;
+        }
+        default:
+          cmp = 0;
+      }
+      return mult * cmp;
+    });
+    return list;
+  }, [filteredTickets, orderBy, order]);
+
+  const paginatedTickets = useMemo(
+    () => sortedTickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [sortedTickets, page, rowsPerPage]
+  );
+
+  useEffect(() => {
+    const maxPage = Math.max(0, Math.ceil(sortedTickets.length / rowsPerPage) - 1);
+    if (page > maxPage) {
+      setPage(maxPage);
+    }
+  }, [sortedTickets.length, rowsPerPage, page]);
+
   if (loading) {
     return (
       <Box p={4} display="flex" justifyContent="center">
@@ -450,7 +525,7 @@ const PortalPage = () => {
           title="Total"
           value={portalKpis.total}
           iconName="confirmation_number"
-          hexColor="#2563eb"
+          hexColor={theme.palette.primary.main}
           titleLineClamp={2}
           active={
             appliedFilters.status === 'ALL' &&
@@ -464,7 +539,7 @@ const PortalPage = () => {
           title={TICKET_STATUS_LABEL_PT[TicketStatus.OPEN]}
           value={portalKpis.open}
           iconName="fiber_new"
-          hexColor="#0284c7"
+          hexColor={getTicketStatusThemeColor(theme, TicketStatus.OPEN)}
           titleLineClamp={2}
           active={appliedFilters.status === TicketStatus.OPEN}
           onClick={() => applyKpiStatusFilter(TicketStatus.OPEN)}
@@ -473,7 +548,7 @@ const PortalPage = () => {
           title={TICKET_STATUS_LABEL_PT[TicketStatus.IN_PROGRESS]}
           value={portalKpis.inProgress}
           iconName="pending_actions"
-          hexColor="#f59e0b"
+          hexColor={getTicketStatusThemeColor(theme, TicketStatus.IN_PROGRESS)}
           titleLineClamp={2}
           active={appliedFilters.status === TicketStatus.IN_PROGRESS}
           onClick={() => applyKpiStatusFilter(TicketStatus.IN_PROGRESS)}
@@ -482,7 +557,7 @@ const PortalPage = () => {
           title={TICKET_STATUS_LABEL_PT[TicketStatus.WAITING_USER]}
           value={portalKpis.waiting}
           iconName="hourglass_empty"
-          hexColor="#9333ea"
+          hexColor={getTicketStatusThemeColor(theme, TicketStatus.WAITING_USER)}
           titleLineClamp={2}
           active={appliedFilters.status === TicketStatus.WAITING_USER}
           onClick={() => applyKpiStatusFilter(TicketStatus.WAITING_USER)}
@@ -491,7 +566,7 @@ const PortalPage = () => {
           title={TICKET_STATUS_LABEL_PT[TicketStatus.RESOLVED]}
           value={portalKpis.resolved}
           iconName="task_alt"
-          hexColor="#10b981"
+          hexColor={getTicketStatusThemeColor(theme, TicketStatus.RESOLVED)}
           titleLineClamp={2}
           active={appliedFilters.status === TicketStatus.RESOLVED}
           onClick={() => applyKpiStatusFilter(TicketStatus.RESOLVED)}
@@ -500,7 +575,7 @@ const PortalPage = () => {
           title={TICKET_STATUS_LABEL_PT[TicketStatus.CLOSED]}
           value={portalKpis.closed}
           iconName="lock"
-          hexColor="#64748b"
+          hexColor={getTicketStatusThemeColor(theme, TicketStatus.CLOSED)}
           titleLineClamp={2}
           active={appliedFilters.status === TicketStatus.CLOSED}
           onClick={() => applyKpiStatusFilter(TicketStatus.CLOSED)}
@@ -585,14 +660,54 @@ const PortalPage = () => {
       </Stack>
 
       <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
-        <Table>
+        <Table size="medium">
           <TableHead sx={{ bgcolor: 'grey.50' }}>
             <TableRow>
-              <TableCell>Código</TableCell>
-              <TableCell>Título</TableCell>
-              <TableCell>Serviço</TableCell>
-              <TableCell>Data</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell sortDirection={orderBy === 'code' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'code'}
+                  direction={orderBy === 'code' ? order : 'asc'}
+                  onClick={() => handleRequestSort('code')}
+                >
+                  Código
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === 'title' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'title'}
+                  direction={orderBy === 'title' ? order : 'asc'}
+                  onClick={() => handleRequestSort('title')}
+                >
+                  Título
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === 'service' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'service'}
+                  direction={orderBy === 'service' ? order : 'asc'}
+                  onClick={() => handleRequestSort('service')}
+                >
+                  Serviço
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === 'createdAt' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'createdAt'}
+                  direction={orderBy === 'createdAt' ? order : 'asc'}
+                  onClick={() => handleRequestSort('createdAt')}
+                >
+                  Data
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === 'status' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'status'}
+                  direction={orderBy === 'status' ? order : 'asc'}
+                  onClick={() => handleRequestSort('status')}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
               <TableCell align="center" sx={{ width: 56 }}>
                 Ação
               </TableCell>
@@ -612,12 +727,12 @@ const PortalPage = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredTickets.map((t) => (
+              paginatedTickets.map((t) => (
                 <TableRow key={t.id} hover>
                   <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>{t.code}</TableCell>
                   <TableCell>{stripTicketTitleStatusSuffix(t.title)}</TableCell>
                   <TableCell>{t.service?.name || '-'}</TableCell>
-                  <TableCell>{new Date(t.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(t.createdAt).toLocaleDateString('pt-BR')}</TableCell>
                   <TableCell>
                     <Chip
                       label={getTicketStatusLabel(t.status)}
@@ -641,6 +756,22 @@ const PortalPage = () => {
             )}
           </TableBody>
         </Table>
+        {tickets.length > 0 && filteredTickets.length > 0 ? (
+          <TablePagination
+            component="div"
+            count={sortedTickets.length}
+            page={page}
+            onPageChange={(_, newPage) => setPage(newPage)}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            labelRowsPerPage="Linhas por página"
+            labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
+          />
+        ) : null}
       </TableContainer>
 
       <FilterDrawer
