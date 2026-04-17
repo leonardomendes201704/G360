@@ -15,8 +15,10 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import { CheckCircle, DoneAll, HourglassTop, PlayArrow, Refresh, Timeline } from '@mui/icons-material';
+import { Refresh, Timeline } from '@mui/icons-material';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import StatsCard from '../common/StatsCard';
+import KpiGrid from '../common/KpiGrid';
 
 /**
  * ChangeRequestDashboard - Dashboard de Acompanhamento de GMUDs
@@ -153,112 +155,33 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
 
             {loading && <LinearProgress sx={{ mb: 2 }} />}
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 2, mb: 3 }}>
-                {[
-                    { key: 'pending', label: 'Pendentes', value: stats.pending, color: '#f59e0b', icon: <HourglassTop fontSize="small" /> },
-                    { key: 'approved', label: 'Aprovadas', value: stats.approved, color: '#10b981', icon: <CheckCircle fontSize="small" /> },
-                    { key: 'executing', label: 'Em execucao', value: stats.executing, color: '#3b82f6', icon: <PlayArrow fontSize="small" /> }
-                ].map((card) => (
-                    <Card
-                        key={card.key}
-                        sx={{
-                            p: 2.5,
-                            bgcolor: cardBg,
-                            border: panelBorder,
-                            borderRadius: '16px',
-                            backdropFilter: 'blur(10px)',
-                            boxShadow: cardShadow,
-                            position: 'relative',
-                            overflow: 'hidden',
-                            '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                height: 3,
-                                background: card.color
-                            }
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                            <Typography sx={{ fontSize: 12, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                                {card.label}
-                            </Typography>
-                            <Box sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '10px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: `${card.color}20`,
-                                color: card.color
-                            }}>
-                                {card.icon}
-                            </Box>
-                        </Box>
-                        <Typography sx={{ fontSize: 30, fontWeight: 700, color: textPrimary }}>
-                            {card.value}
-                        </Typography>
-                    </Card>
-                ))}
-
-                <Card
-                    sx={{
-                        p: 2.5,
-                        bgcolor: cardBg,
-                        border: panelBorder,
-                        borderRadius: '16px',
-                        backdropFilter: 'blur(10px)',
-                        boxShadow: cardShadow,
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: 3,
-                            background: '#3b82f6'
-                        }
-                    }}
-                >
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                        <Typography sx={{ fontSize: 12, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                            Finalizadas
-                        </Typography>
-                        <Box sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'rgba(59, 130, 246, 0.15)',
-                            color: '#3b82f6'
-                        }}>
-                            <DoneAll fontSize="small" />
-                        </Box>
-                    </Box>
-                    <Typography sx={{ fontSize: 30, fontWeight: 700, color: textPrimary }}>
-                        {stats.finalizedTotal}
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                        <Chip
-                            label={`Sucesso ${stats.finalizedSuccess}`}
-                            size="small"
-                            sx={{ bgcolor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600, fontSize: 10 }}
-                        />
-                        <Chip
-                            label={`Falha ${stats.finalizedFail}`}
-                            size="small"
-                            sx={{ bgcolor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: 600, fontSize: 10 }}
-                        />
-                    </Box>
-                </Card>
-            </Box>
+            <KpiGrid maxColumns={4} mb={3}>
+                <StatsCard
+                    title="Pendentes"
+                    value={stats.pending}
+                    iconName="hourglass_top"
+                    hexColor="#f59e0b"
+                />
+                <StatsCard
+                    title="Aprovadas"
+                    value={stats.approved}
+                    iconName="check_circle"
+                    hexColor="#10b981"
+                />
+                <StatsCard
+                    title="Em execucao"
+                    value={stats.executing}
+                    iconName="play_arrow"
+                    hexColor="#3b82f6"
+                />
+                <StatsCard
+                    title="Finalizadas"
+                    value={stats.finalizedTotal}
+                    iconName="done_all"
+                    hexColor="#3b82f6"
+                    subtitle={`Sucesso ${stats.finalizedSuccess} · Falha ${stats.finalizedFail}`}
+                />
+            </KpiGrid>
 
             <Card
                 sx={{
