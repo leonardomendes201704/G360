@@ -8,10 +8,11 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getAssets, createAsset, updateAsset, deleteAsset } from '../../services/asset.service';
 import { getLicenses, createLicense, updateLicense, deleteLicense } from '../../services/software-license.service';
 import { getReferenceUsers } from '../../services/reference.service';
-import { getAssetCategories } from '../../services/asset-category.service';
+import { getAssetCategories, createAssetCategory, updateAssetCategory } from '../../services/asset-category.service';
 import { getReferenceSuppliers } from '../../services/reference.service';
 
 import AssetModal from '../../components/modals/AssetModal';
+import AssetCategoryModal from '../../components/modals/AssetCategoryModal';
 import AssetViewModal from '../../components/modals/AssetViewModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
@@ -77,6 +78,8 @@ const AssetsPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [deleteType, setDeleteType] = useState('ASSET');
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
 
   // Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -274,6 +277,29 @@ const AssetsPage = () => {
   const handleViewToEdit = (item) => { setViewModalOpen(false); setSelectedItem(item); setIsViewMode(false); setModalOpen(true); };
   const handleOpenEdit = (item) => { setSelectedItem(item); setIsViewMode(false); setModalOpen(true); handleMenuClose(); };
   const handleOpenNew = () => { setSelectedItem(null); setIsViewMode(false); setModalOpen(true); };
+
+  const handleOpenCategories = () => {
+    setEditingCategory(null);
+    setCategoryModalOpen(true);
+  };
+
+  const handleSaveCategory = async (data) => {
+    try {
+      if (editingCategory?.id) {
+        await updateAssetCategory(editingCategory.id, data);
+        enqueueSnackbar('Categoria atualizada!', { variant: 'success' });
+      } else {
+        await createAssetCategory(data);
+        enqueueSnackbar('Categoria criada!', { variant: 'success' });
+      }
+      setCategoryModalOpen(false);
+      setEditingCategory(null);
+      loadData();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, 'Erro ao salvar categoria.'), { variant: 'error' });
+    }
+  };
+
   const handleDeleteClick = (asset) => {
     handleMenuClose();
     setAssets(prev => prev.filter(a => a.id !== asset.id));
@@ -393,7 +419,21 @@ const AssetsPage = () => {
             </button>
           </Box>
           {canWrite && (
-            <Button data-testid="btn-novo-ativo" onClick={handleOpenNew} sx={{
+            <>
+              <Button
+                data-testid="btn-gerir-categorias"
+                onClick={handleOpenCategories}
+                variant="outlined"
+                sx={{
+                  padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                  borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(15, 23, 42, 0.2)', color: textPrimary,
+                  '&:hover': { borderColor: '#2563eb', background: 'rgba(37, 99, 235, 0.08)' }
+                }}
+                startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>category</span>}
+              >
+                Categorias
+              </Button>
+              <Button data-testid="btn-novo-ativo" onClick={handleOpenNew} sx={{
               padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
@@ -401,6 +441,7 @@ const AssetsPage = () => {
             }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
               Novo Ativo
             </Button>
+            </>
           )}
         </Box>
       </Box>
@@ -1134,6 +1175,12 @@ const AssetsPage = () => {
       </Menu>
 
       {/* Modals */}
+      <AssetCategoryModal
+        open={categoryModalOpen}
+        onClose={() => { setCategoryModalOpen(false); setEditingCategory(null); }}
+        onSave={handleSaveCategory}
+        category={editingCategory}
+      />
       <AssetModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSaveAsset} onSaveLicense={handleSaveLicense} asset={selectedItem} users={users} categories={categories} isViewMode={isViewMode} />
       <AssetViewModal open={viewModalOpen} onClose={() => setViewModalOpen(false)} asset={selectedItem} onEdit={canEdit ? handleViewToEdit : undefined} />
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Ativo" content="Tem certeza que deseja excluir este ativo? Esta acao nao pode ser desfeita." />

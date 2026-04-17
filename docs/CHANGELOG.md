@@ -9,12 +9,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ### Docs
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).
-- **US-022 / QA:** Grelha do dossiê atualizada para **10** PNG Playwright (rodada 1 + integrações/Azure + organização) e **39** pendentes; `docs/qa/_gen-modal-grid.mjs` mapeia modais 1–5 para `modal-evidence-batch-01*.png`.
+- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–10** para PNG Playwright: rodadas **batch-01** (01–05) e **batch-02** (06–10); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook.
 
 ### Test
 - **US-022 / QA:** Rodada 1 de evidências Playwright dos modais **01–05** (`modal-evidence-batch-01.spec.ts`) com mocks de API (`modal-evidence-batch-01-api-mocks.ts`) — screenshots do **diálogo** apenas (mais estáveis). Snapshots em `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/`.
+- **US-022 / QA:** Rodada 2 — modais **06–10** (`modal-evidence-batch-02.spec.ts`, `modal-evidence-batch-02-api-mocks.ts`), incluindo mock `GET /tasks/time/active` para evitar cliques no **FloatingTimer**. Snapshots em `FRONTEND/e2e/modal-evidence-batch-02.spec.ts-snapshots/`.
 
 ### Changed
+- **US-022:** `AssetsPage` — botão **Categorias** (`data-testid="btn-gerir-categorias"`) abre **`AssetCategoryModal`** (criar/editar categorias com `createAssetCategory` / `updateAssetCategory`).
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **US-022:** `ProjectDetailsPage` passa a usar **`AddMemberModal`** no fluxo «Adicionar membro»; **`MemberModal`** mantém-se para editar/visualizar.
 
 ## [2026-04-16]

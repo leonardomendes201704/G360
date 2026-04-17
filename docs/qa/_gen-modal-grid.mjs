@@ -57,13 +57,18 @@ const rows = [
 ];
 
 const batch01 = '../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/';
+const batch02 = '../../FRONTEND/e2e/modal-evidence-batch-02.spec.ts-snapshots/';
 const snaps = {
   1: `${batch01}modal-evidence-01-account-shell-chromium-win32.png`,
   2: `${batch01}modal-evidence-02-addendum-form-shell-chromium-win32.png`,
   3: `${batch01}modal-evidence-03-addendum-view-shell-chromium-win32.png`,
   4: `${batch01}modal-evidence-04-add-member-shell-chromium-win32.png`,
   5: `${batch01}modal-evidence-05-approval-details-shell-chromium-win32.png`,
-  10: '../../FRONTEND/e2e/integrations-azure-modal.spec.ts-snapshots/integrations-azure-modal-shell-chromium-win32.png',
+  6: `${batch02}modal-evidence-06-asset-category-shell-chromium-win32.png`,
+  7: `${batch02}modal-evidence-07-asset-maintenance-shell-chromium-win32.png`,
+  8: `${batch02}modal-evidence-08-asset-modal-shell-chromium-win32.png`,
+  9: `${batch02}modal-evidence-09-asset-view-shell-chromium-win32.png`,
+  10: `${batch02}modal-evidence-10-azure-config-shell-chromium-win32.png`,
   22: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-fiscal-year-shell-chromium-win32.png',
   40: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png',
   47: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png',
