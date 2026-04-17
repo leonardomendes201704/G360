@@ -26,6 +26,7 @@ import usePersistedFilters from '../../hooks/usePersistedFilters';
 import { useUndoToast } from '../../hooks/useUndoToast';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import FilterDrawer from '../../components/common/FilterDrawer';
+import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import { Delete as DeleteIcon, Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
@@ -452,10 +453,14 @@ const IncidentsPage = () => {
             </KpiGrid>
 
             {/* Table Section */}
-            <Box sx={{ borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
-                <Box sx={{ p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${borderSubtle}` }}>
-                    <Typography fontWeight={600} color={textPrimary}>Lista de Incidentes</Typography>
-                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+            <DataListShell
+                title="Lista de Incidentes"
+                titleIcon="format_list_bulleted"
+                accentColor="#f59e0b"
+                count={filteredIncidents.length}
+                sx={{ borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}
+                toolbar={(
+                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                         <ExportButton data={filteredIncidents} columns={EXPORT_COLUMNS.incidents} filename="incidentes" compact />
                         <TextField
                             placeholder="Buscar incidente..."
@@ -478,8 +483,8 @@ const IncidentsPage = () => {
                             </Tooltip>
                         </Paper>
                     </Box>
-                </Box>
-
+                )}
+            >
                 {loading ? (
                     <Box sx={{ p: 2 }}><TableSkeleton rows={5} columns={8} /></Box>
                 ) : filteredIncidents.length === 0 ? (
@@ -534,7 +539,7 @@ const IncidentsPage = () => {
                         </Box>
                     </Box>
                 )}
-            </Box>
+            </DataListShell>
 
             <IncidentModal
                 open={modalOpen}

@@ -13,6 +13,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
  * @param {import('react').ReactNode} [toolbar] — Área à direita (busca, botões)
  * @param {import('react').ReactNode} children
  * @param {object} [sx] — Estilos do contentor exterior (ex.: mesmo `cardStyle` da página)
+ * @param {string} [className] — Classe CSS no contentor exterior (ex.: tema premium da página)
  */
 const DataListShell = ({
   title,
@@ -22,6 +23,7 @@ const DataListShell = ({
   toolbar,
   children,
   sx = {},
+  className,
 }) => {
   const { mode } = useContext(ThemeContext);
   const isDark = mode === 'dark';
@@ -31,6 +33,7 @@ const DataListShell = ({
 
   return (
     <Box
+      className={className}
       sx={{
         borderRadius: '16px',
         overflow: 'hidden',

@@ -14,6 +14,7 @@ import debounce from 'lodash/debounce';
 import ProjectModal from '../../components/modals/ProjectModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 
@@ -756,12 +757,18 @@ const ProjectsListPage = () => {
                 </FilterDrawer>
 
                 {/* Projects Table */}
-                <div className="pl-projects-table-card">
-                    <div className="pl-table-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
-                        <div className="pl-table-title">
-                            <span className="material-icons-round">list_alt</span>
-                            Lista de Projetos
-                        </div>
+                <DataListShell
+                    className="pl-projects-table-card"
+                    title="Lista de Projetos"
+                    titleIcon="list_alt"
+                    accentColor="#2563eb"
+                    count={totalProjects}
+                    sx={{
+                        bgcolor: 'transparent',
+                        boxShadow: 'none',
+                        border: '1px solid var(--pl-border-subtle)',
+                    }}
+                    toolbar={(
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, justifyContent: 'flex-end', minWidth: '260px' }}>
                             <div className="pl-search-input-container" style={{ flex: '1 1 220px', maxWidth: '360px' }}>
                                 <span className="material-icons-round">search</span>
@@ -774,10 +781,9 @@ const ProjectsListPage = () => {
                                     onChange={(e) => handleFilterChange('search', e.target.value)}
                                 />
                             </div>
-                            <span className="pl-table-count">{totalProjects} projetos</span>
                         </div>
-                    </div>
-
+                    )}
+                >
                     {loading ? (
                         <div className="pl-loading">
                             <div className="pl-loading-spinner"></div>
@@ -1070,9 +1076,8 @@ const ProjectsListPage = () => {
                                 </div>
                             )}
                         </>
-                    )
-                    }
-                </div >
+                    )}
+                </DataListShell>
             </div >
 
             <ProjectModal

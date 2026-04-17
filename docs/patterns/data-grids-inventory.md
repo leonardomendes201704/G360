@@ -14,12 +14,12 @@ Componentes base existentes:
 | Área | Ficheiro | Notas |
 |------|----------|--------|
 | Helpdesk | `FRONTEND/src/pages/helpdesk/PortalPage.jsx` | Referência; `TableSortLabel` + `TablePagination`. |
-| Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | `<table>` + CSS; ordenação própria. |
-| Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: `IncidentList` (`<table>`); Kanban alternativo. |
+| Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | `<table>` + CSS; ordenação própria; cabeçalho **`DataListShell`** + classe `pl-projects-table-card`. |
+| Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: `IncidentList` (`<table>`); casca **`DataListShell`**; Kanban alternativo. |
 | GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | `ChangeRequestList` (MUI `Table`); paginação custom. |
 | Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |
 | Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`; cabeçalho **`DataListShell`** (export + busca). |
-| Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | `ArticleTable` (MUI `TableContainer`). |
+| Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | Modo lista: **`DataListShell`** + `ArticleTable` (`embedded`); grelha inalterada. |
 | Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning — não só tabela. |
 | Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | `<table>` (lista de ativos + licenças); **`DataListShell`** em ambas as secções; `filteredLicenses` em `useMemo`. |
 

@@ -8,10 +8,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Changed
-- **EP-009:** Casca **`DataListShell`** na lista de **Contratos** (export + busca; contagem filtrada) e em **Ativos** — tabela principal e **Licenças de Software**; `filteredLicenses` centralizado em `useMemo`.
+- **EP-009:** **`DataListShell`** — **Contratos**, **Ativos** (lista + licenças); **Base de conhecimento** (lista com `ArticleTable` `embedded`), **Projetos** (`pl-projects-table-card`; teste ordenação `within(tabela)`), **Incidentes**. Prop **`className`** no shell.
   - `FRONTEND/src/pages/contracts/ContractsPage.jsx`
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`
+  - `FRONTEND/src/pages/projects/__tests__/ProjectsListPage_sorting.test.jsx`
+  - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
+  - `FRONTEND/src/components/common/DataListShell.jsx`
   - `docs/patterns/data-grids-inventory.md`
+  - `docs/patterns/data-grid-shell.md`
 
 ---
 

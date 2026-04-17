@@ -13,6 +13,7 @@ import FilterAlt from '@mui/icons-material/FilterAlt';
 import Refresh from '@mui/icons-material/Refresh';
 import FilterDrawer from '../components/common/FilterDrawer';
 import EmptyState from '../components/common/EmptyState';
+import DataListShell from '../components/common/DataListShell';
 import {
     Search as SearchIcon,
     Add as AddIcon,
@@ -201,8 +202,13 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
 
-const ArticleTable = ({ articles, onView, onEdit, onDelete, canUpdate, canDelete, theme }) => (
-    <TableContainer component={Paper} sx={{ bgcolor: theme.cardBg, border: theme.cardBorder, borderRadius: '12px', boxShadow: 'none' }}>
+const ArticleTable = ({ articles, onView, onEdit, onDelete, canUpdate, canDelete, theme, embedded = false }) => (
+    <TableContainer
+        component={embedded ? Box : Paper}
+        sx={embedded
+            ? { overflowX: 'auto', bgcolor: 'transparent', boxShadow: 'none', border: 'none' }
+            : { bgcolor: theme.cardBg, border: theme.cardBorder, borderRadius: '12px', boxShadow: 'none' }}
+    >
         <Table>
             <TableHead>
                 <TableRow>
@@ -773,15 +779,24 @@ export default function KnowledgeBasePage() {
                     <>
                         {/* CONDITIONAL RENDER: LIST OR GRID */}
                         {viewMode === 'list' ? (
-                            <ArticleTable
-                                articles={articles}
-                                onView={handleOpenViewer}
-                                onEdit={handleEditClick}
-                                onDelete={handleDeleteClick}
-                                canUpdate={canUpdate}
-                                canDelete={canDelete}
-                                theme={themeTokens}
-                            />
+                            <DataListShell
+                                title="Artigos"
+                                titleIcon="menu_book"
+                                accentColor="#2563eb"
+                                count={articles.length}
+                                sx={{ bgcolor: panelBg, border: cardBorder, borderRadius: '16px', overflow: 'hidden' }}
+                            >
+                                <ArticleTable
+                                    embedded
+                                    articles={articles}
+                                    onView={handleOpenViewer}
+                                    onEdit={handleEditClick}
+                                    onDelete={handleDeleteClick}
+                                    canUpdate={canUpdate}
+                                    canDelete={canDelete}
+                                    theme={themeTokens}
+                                />
+                            </DataListShell>
                         ) : (
                             <Box
                                 sx={{

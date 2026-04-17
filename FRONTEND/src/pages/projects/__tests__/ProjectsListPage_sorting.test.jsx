@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProjectsListPage from '../ProjectsListPage';
 import { SnackbarProvider } from 'notistack';
@@ -61,7 +61,8 @@ describe('ProjectsListPage Sorting', () => {
         renderWithProviders(<ProjectsListPage />);
         await waitFor(() => expect(screen.queryByText('Carregando...')).not.toBeInTheDocument());
 
-        const statusHeader = screen.getAllByText(/Status/i)[1]; // The table header
+        const table = screen.getByTestId('tabela-projetos');
+        const statusHeader = within(table).getByText('Status');
         fireEvent.click(statusHeader);
 
         // First click sets status ASC
@@ -70,7 +71,7 @@ describe('ProjectsListPage Sorting', () => {
         });
 
         // Click again for DESC
-        const statusHeaderUpdated = screen.getAllByText(/Status/i)[1];
+        const statusHeaderUpdated = within(screen.getByTestId('tabela-projetos')).getByText('Status');
         fireEvent.click(statusHeaderUpdated);
 
         await waitFor(() => {

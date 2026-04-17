@@ -24,6 +24,7 @@ Inventário por ecrã: [data-grids-inventory.md](data-grids-inventory.md).
 - `toolbar` (ReactNode) — tipicamente busca, botões ou `ExportButton`
 - `children` — conteúdo abaixo do cabeçalho (tabela, barras, empty state)
 - `sx` — estilos extra no contentor externo (`borderRadius`, sombra, etc.)
+- `className` — opcional no contentor (ex.: `pl-projects-table-card` para tema premium da página)
 
 O contentor aplica `border` + `borderRadius` coerentes com tema claro/escuro (`ThemeContext`).
 
