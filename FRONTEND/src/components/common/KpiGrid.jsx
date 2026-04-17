@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 
 /**
  * KpiGrid — Grid responsivo para exibir StatsCards.
- * Ate 7 colunas em `lg` quando `maxColumns` >= 7.
+ * Em `md` ate 5 colunas; em `lg` ate `min(maxColumns, 7)`.
  *
  * @param {ReactNode} children - StatsCard components
  * @param {number}    [maxColumns=6] - Maximo de colunas por linha (ate 7 em ecras grandes)
@@ -17,7 +17,7 @@ const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3, clampChildHeight
             gridTemplateColumns: {
                 xs: 'repeat(2, 1fr)',
                 sm: 'repeat(3, 1fr)',
-                md: `repeat(${Math.min(maxColumns, 4)}, 1fr)`,
+                md: `repeat(${Math.min(maxColumns, 5)}, 1fr)`,
                 lg: `repeat(${Math.min(maxColumns, 7)}, 1fr)`,
             },
             gap,

@@ -168,58 +168,59 @@ const ServiceDeskDashboard = () => {
         </FormControl>
       </Box>
 
-      {/* KPI DASHBOARD */}
-      {filterStatus === 'ALL' && !loading && metrics && (
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
-            Indicadores ({metrics.periodDays} dias)
-          </Typography>
-          <KpiGrid maxColumns={3} mb={3} clampChildHeight={false} gap={2}>
-            <StatsCard
-              title="MTTR"
-              value={metrics.mttrHours != null ? `${metrics.mttrHours.toFixed(1)} h` : '—'}
-              iconName="schedule"
-              hexColor="#2563eb"
-            />
-            <StatsCard
-              title="1ª resposta média"
-              value={metrics.meanFirstResponseHours != null ? `${metrics.meanFirstResponseHours.toFixed(1)} h` : '—'}
-              iconName="mark_chat_read"
-              hexColor="#0284c7"
-              titleLineClamp={2}
-            />
-            <StatsCard
-              title="Conformidade SLA"
-              value={metrics.slaCompliancePct != null ? `${metrics.slaCompliancePct}%` : '—'}
-              iconName="verified"
-              hexColor={
-                metrics.slaCompliancePct == null
-                  ? '#64748b'
-                  : metrics.slaCompliancePct >= 90
-                    ? '#059669'
-                    : '#d97706'
-              }
-            />
-            <StatsCard
-              title="Resolvidos no período"
-              value={metrics.resolvedInPeriod ?? 0}
-              iconName="done_all"
-              hexColor="#06b6d4"
-              titleLineClamp={2}
-            />
+      {/* KPI DASHBOARD — 5 por linha em md+ quando há métricas de período (10 cartões); senão 6 cartões */}
+      {filterStatus === 'ALL' && !loading && (
+        <Box sx={{ mb: 4 }}>
+          {metrics && (
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
+              Indicadores ({metrics.periodDays} dias)
+            </Typography>
+          )}
+          <KpiGrid maxColumns={5} mb={0} clampChildHeight={false} gap={2}>
+            {metrics && (
+              <>
+                <StatsCard
+                  title="MTTR"
+                  value={metrics.mttrHours != null ? `${metrics.mttrHours.toFixed(1)} h` : '—'}
+                  iconName="schedule"
+                  hexColor="#2563eb"
+                />
+                <StatsCard
+                  title="1ª resposta média"
+                  value={metrics.meanFirstResponseHours != null ? `${metrics.meanFirstResponseHours.toFixed(1)} h` : '—'}
+                  iconName="mark_chat_read"
+                  hexColor="#0284c7"
+                  titleLineClamp={2}
+                />
+                <StatsCard
+                  title="Conformidade SLA"
+                  value={metrics.slaCompliancePct != null ? `${metrics.slaCompliancePct}%` : '—'}
+                  iconName="verified"
+                  hexColor={
+                    metrics.slaCompliancePct == null
+                      ? '#64748b'
+                      : metrics.slaCompliancePct >= 90
+                        ? '#059669'
+                        : '#d97706'
+                  }
+                />
+                <StatsCard
+                  title="Resolvidos no período"
+                  value={metrics.resolvedInPeriod ?? 0}
+                  iconName="done_all"
+                  hexColor="#06b6d4"
+                  titleLineClamp={2}
+                />
+              </>
+            )}
+            <StatsCard title="Total de chamados" value={totalTickets} iconName="confirmation_number" hexColor="#2563eb" />
+            <StatsCard title="Atendidos" value={resolvedTickets} iconName="task_alt" hexColor="#10b981" />
+            <StatsCard title="Fila em aberto" value={totalOpen} iconName="pending_actions" hexColor="#f59e0b" />
+            <StatsCard title="Taxa sucesso SLA" value={`${slaCompliance}%`} iconName="trending_up" hexColor="#059669" />
+            <StatsCard title="Taxa fracasso SLA" value={`${slaFailure}%`} iconName="trending_down" hexColor="#ef4444" />
+            <StatsCard title="Estouros ativos" value={slaBreachedActive} iconName="error_outline" hexColor="#dc2626" />
           </KpiGrid>
         </Box>
-      )}
-
-      {filterStatus === 'ALL' && !loading && (
-        <KpiGrid maxColumns={3} mb={4} clampChildHeight={false} gap={2}>
-          <StatsCard title="Total de chamados" value={totalTickets} iconName="confirmation_number" hexColor="#2563eb" />
-          <StatsCard title="Atendidos" value={resolvedTickets} iconName="task_alt" hexColor="#10b981" />
-          <StatsCard title="Fila em aberto" value={totalOpen} iconName="pending_actions" hexColor="#f59e0b" />
-          <StatsCard title="Taxa sucesso SLA" value={`${slaCompliance}%`} iconName="trending_up" hexColor="#059669" />
-          <StatsCard title="Taxa fracasso SLA" value={`${slaFailure}%`} iconName="trending_down" hexColor="#ef4444" />
-          <StatsCard title="Estouros ativos" value={slaBreachedActive} iconName="error_outline" hexColor="#dc2626" />
-        </KpiGrid>
       )}
 
       <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
