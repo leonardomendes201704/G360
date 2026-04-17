@@ -1,0 +1,38 @@
+---
+description: Comandos de terminal longos (Playwright, install, build) — executar em background e seguir o output, para evitar bloqueio do chat e prompts «Run in background» no Cursor.
+alwaysApply: true
+---
+
+# Comandos longos no terminal (G360)
+
+## Objetivo
+
+Reduzir prompts do tipo **«Agent is waiting for a command to finish — Run in background»** e evitar que o agente fique bloqueado à espera de tarefas que podem demorar **minutos**.
+
+## Quando usar execução em **background**
+
+Preferir **não bloquear** o terminal do agente (equivalente a **Run in background** no Cursor) quando o comando for tipicamente longo, por exemplo:
+
+- **Playwright** (`npx playwright test`, suites completas ou vários specs)
+- **`npm install` / `pnpm install` / `yarn`**
+- **Builds** (`npm run build`, `vite build`, etc.)
+- **Testes E2E** em lote (`modal-evidence-batch-*.spec.ts`, etc.)
+- Qualquer comando que o utilizador ou o contexto indiquem como **demorado**
+
+Comandos **curtos e previsíveis** (segundos), como `git status`, `node -e`, geração de fragmentos HTML (`node docs/qa/_gen-modal-grid.mjs`), podem continuar em modo **bloqueante** até concluir.
+
+## Como proceder (agente)
+
+1. Lançar o comando longo com **execução em background** desde o início (não esperar o primeiro timeout da UI).
+2. **Acompanhar o resultado**: ler o ficheiro de output do terminal / estado até o comando terminar (`exit_code` no rodapé do output, ou polling com intervalos razoáveis).
+3. Se o comando **falhar**, inspecionar o **stderr/stdout** completo (incluindo o fim do ficheiro) antes de concluir ou pedir ao utilizador para correr manualmente.
+4. Não assumir sucesso sem ver **exit code 0** (ou equivalente) quando aplicável.
+
+## Relação com outras regras
+
+- **`playwright-evidence.mdc`**: continua a definir **o quê** validar com Playwright; esta regra define **como** correr esses testes sem bloquear o fluxo do agente.
+- **`CLAUDE.md`**: commits e changelog mantêm-se; só muda a **forma de execução** dos comandos longos.
+
+## Idioma
+
+Mensagens ao utilizador em **pt-BR** quando fizer sentido; nomes de ficheiros e comandos como no repositório.

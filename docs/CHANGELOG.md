@@ -8,6 +8,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Docs
+- Cursor: regra **agent-long-commands** — comandos longos (Playwright, install, build) em **background** com acompanhamento do output, para reduzir bloqueio do chat e prompts «Run in background» (`.cursor/rules/agent-long-commands.mdc`).
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).
 - **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–35** para PNG Playwright: rodadas **batch-01** a **batch-07** (01–05 … 31–35); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **35** / pendente **14**).
 
