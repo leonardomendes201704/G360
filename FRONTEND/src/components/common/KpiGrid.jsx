@@ -8,8 +8,9 @@ import { Box } from '@mui/material';
  * @param {number}    [maxColumns=6] - Maximo de colunas por linha (ate 7 em ecras grandes)
  * @param {number}    [gap=2] - Espacamento entre cards (MUI spacing)
  * @param {number}    [mb=3] - Margin bottom (MUI spacing)
+ * @param {boolean}   [clampChildHeight=true] - Se true, limita altura dos filhos (evita cards muito altos na grelha geral)
  */
-const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3 }) => (
+const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3, clampChildHeight = true }) => (
     <Box
         sx={{
             display: 'grid',
@@ -21,9 +22,13 @@ const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3 }) => (
             },
             gap,
             mb,
-            '& > *': {
-                maxHeight: '180px',
-            }
+            ...(clampChildHeight
+                ? {
+                    '& > *': {
+                        maxHeight: '180px',
+                    },
+                }
+                : {}),
         }}
     >
         {children}

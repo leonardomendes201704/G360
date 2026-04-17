@@ -28,6 +28,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **Ativos / UI:** Dashboard — secções **Qualidade de Cadastro** e **Top Valores** com **`StatsCard`** + **`KpiGrid`** (5 indicadores de qualidade; até 5 ativos e 5 licenças no top, com subtítulo posição/fornecedor).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+- **Ativos / UI:** Dashboard — **Qualidade** / **Top Valores**: secções em **coluna única** (largura total) para não espremer cartões; **KpiGrid** `maxColumns` 3 (qualidade) e 2 (tops), `clampChildHeight={false}`, `gap` maior. **`StatsCard`**: `titleLineClamp`, valor com `clamp`/`wordBreak`, subtítulo até 2 linhas; **`KpiGrid`** prop `clampChildHeight`.
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `FRONTEND/src/components/common/StatsCard.jsx`
+  - `FRONTEND/src/components/common/KpiGrid.jsx`
 - **Ativos / UX:** Vista **Hardware** (lista) — filtros (busca, status, categoria) no componente **`FilterDrawer`** + barra compacta (**Filtros**, badge, **Limpar tudo**), alinhado a Incidentes/GMUD. Teste unitário ajustado (`AuthContext` no provider).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
   - `FRONTEND/src/pages/assets/__tests__/AssetsPage.test.jsx`

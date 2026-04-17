@@ -20,8 +20,9 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  * @param {boolean} accentBar - Exibe barra colorida no topo com icone (padrao: true)
  * @param {boolean} active - Destaque visual (borda colorida)
  * @param {function} onClick - Handler de clique
+ * @param {number}   [titleLineClamp=1] - Linhas do titulo (1 = uma linha + ellipsis; 2+ = line-clamp multilinha)
  */
-const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = true, active = false, onClick }) => {
+const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = true, active = false, onClick, titleLineClamp = 1 }) => {
 
     // Escurece uma cor hex em 25%
     const darken = (hex, amount = 0.25) => {
@@ -87,11 +88,20 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             {/* Corpo */}
             <Box sx={{ p: 2, pt: accentBar ? 1.5 : 2 }}>
                 {/* Valor */}
-                <Typography sx={{ fontSize: '36px', fontWeight: 800, color: darkColor, lineHeight: 1, mb: 0.5 }}>
+                <Typography
+                    sx={{
+                        fontSize: { xs: 'clamp(1.1rem, 4vw, 2.25rem)', sm: '2.25rem' },
+                        fontWeight: 800,
+                        color: darkColor,
+                        lineHeight: 1.1,
+                        mb: 0.5,
+                        wordBreak: 'break-word',
+                    }}
+                >
                     {value}
                 </Typography>
 
-                {/* Titulo — uma linha (ellipsis se nao couber) */}
+                {/* Titulo — 1 linha (padrao) ou varias linhas com line-clamp */}
                 <Typography
                     component="div"
                     title={typeof title === 'string' ? title : undefined}
@@ -102,9 +112,20 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
                         color: darkColor,
                         opacity: 0.85,
                         mb: subtitle ? 0.25 : 0,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        ...(titleLineClamp > 1
+                            ? {
+                                display: '-webkit-box',
+                                WebkitLineClamp: titleLineClamp,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                whiteSpace: 'normal',
+                                lineHeight: 1.35,
+                            }
+                            : {
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }),
                     }}
                 >
                     {title}
@@ -112,7 +133,19 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
 
                 {/* Subtitle */}
                 {subtitle && (
-                    <Typography sx={{ fontSize: '11px', color: darkColor, opacity: 0.6, fontWeight: 500 }}>
+                    <Typography
+                        sx={{
+                            fontSize: '11px',
+                            color: darkColor,
+                            opacity: 0.6,
+                            fontWeight: 500,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            lineHeight: 1.35,
+                        }}
+                    >
                         {subtitle}
                     </Typography>
                 )}

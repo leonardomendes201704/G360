@@ -691,7 +691,8 @@ const AssetsPage = () => {
             </Box>
           </Box>
 
-          <Box className="assets-charts-grid">
+          {/* Uma coluna: evita KPIs espremidos ao meio da linha (antes 50% + 50%) */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3, width: '100%' }}>
             {/* Qualidade de Cadastro */}
             <Box sx={{ ...cardStyle, p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -700,12 +701,12 @@ const AssetsPage = () => {
                   Qualidade de Cadastro
                 </Typography>
               </Box>
-              <KpiGrid maxColumns={5} mb={0}>
-                <StatsCard title="Sem centro de custo" value={kpis.missingCostCenter} iconName="account_balance" hexColor="#f59e0b" subtitle="Ativos sem CC" />
-                <StatsCard title="Sem fornecedor" value={kpis.missingSupplier} iconName="storefront" hexColor="#ea580c" />
-                <StatsCard title="Sem contrato" value={kpis.missingContract} iconName="description" hexColor="#dc2626" />
-                <StatsCard title="Sem categoria" value={kpis.missingCategory} iconName="label_off" hexColor="#64748b" />
-                <StatsCard title="Valor medio por ativo" value={formatCurrency(kpis.avgAssetValue)} iconName="payments" hexColor="#06b6d4" />
+              <KpiGrid maxColumns={3} mb={0} clampChildHeight={false} gap={2}>
+                <StatsCard titleLineClamp={2} title="Sem centro de custo" value={kpis.missingCostCenter} iconName="account_balance" hexColor="#f59e0b" subtitle="Ativos sem CC" />
+                <StatsCard titleLineClamp={2} title="Sem fornecedor" value={kpis.missingSupplier} iconName="storefront" hexColor="#ea580c" />
+                <StatsCard titleLineClamp={2} title="Sem contrato" value={kpis.missingContract} iconName="description" hexColor="#dc2626" />
+                <StatsCard titleLineClamp={2} title="Sem categoria" value={kpis.missingCategory} iconName="label_off" hexColor="#64748b" />
+                <StatsCard titleLineClamp={2} title="Valor medio por ativo" value={formatCurrency(kpis.avgAssetValue)} iconName="payments" hexColor="#06b6d4" />
               </KpiGrid>
             </Box>
 
@@ -721,10 +722,11 @@ const AssetsPage = () => {
                 Ativos
               </Typography>
               {kpis.topAssets.length > 0 ? (
-                <KpiGrid maxColumns={5} mb={3}>
+                <KpiGrid maxColumns={2} mb={3} clampChildHeight={false} gap={2}>
                   {kpis.topAssets.map((asset, i) => (
                     <StatsCard
                       key={asset.id}
+                      titleLineClamp={2}
                       title={asset.name}
                       value={formatCurrency(asset.value)}
                       iconName="computer"
@@ -740,10 +742,11 @@ const AssetsPage = () => {
                 Licenças
               </Typography>
               {kpis.topLicenses.length > 0 ? (
-                <KpiGrid maxColumns={5} mb={0}>
+                <KpiGrid maxColumns={2} mb={0} clampChildHeight={false} gap={2}>
                   {kpis.topLicenses.map((lic, i) => (
                     <StatsCard
                       key={lic.id}
+                      titleLineClamp={2}
                       title={lic.name}
                       value={formatCurrency(lic.total)}
                       iconName="key"
