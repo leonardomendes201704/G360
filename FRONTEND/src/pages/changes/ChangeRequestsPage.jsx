@@ -718,7 +718,7 @@ const ChangeRequestsPage = () => {
             {/* LIST/CALENDAR VIEW - Stat Cards */}
             {viewMode !== 'DASHBOARD' && (
                 <>
-                    <KpiGrid maxColumns={5}>
+                    <KpiGrid maxColumns={8}>
                         {statCards.map((card) => (
                             <StatsCard
                                 key={card.key}
@@ -730,74 +730,32 @@ const ChangeRequestsPage = () => {
                                 onClick={() => handleKpiClick(card.key)}
                             />
                         ))}
+                        {backendMetrics?.summary && (
+                            <>
+                                <StatsCard
+                                    title="Taxa de Sucesso"
+                                    value={`${backendMetrics.summary.successRate}%`}
+                                    iconName="verified"
+                                    hexColor="#10b981"
+                                    subtitle="GMUDs executadas com sucesso"
+                                />
+                                <StatsCard
+                                    title="MTTR (Tempo Medio)"
+                                    value={`${backendMetrics.summary.mttrHours}h`}
+                                    iconName="timer"
+                                    hexColor="#2563eb"
+                                    subtitle="Duracao media de execucao"
+                                />
+                                <StatsCard
+                                    title="Entrega no Prazo"
+                                    value={`${backendMetrics.summary.onTimeRate}%`}
+                                    iconName="event_available"
+                                    hexColor="#3b82f6"
+                                    subtitle="Dentro da janela planejada"
+                                />
+                            </>
+                        )}
                     </KpiGrid>
-
-                    {/* Advanced Metrics from Backend */}
-                    {backendMetrics && backendMetrics.summary && (
-                        <Box sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: 2,
-                            mb: 3
-                        }}>
-                            {/* Success Rate */}
-                            <Box sx={{
-                                p: 2.5,
-                                borderRadius: '16px',
-                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(16, 185, 129, 0.2)',
-                            }}>
-                                <Typography sx={{ fontSize: 11, fontWeight: 500, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5 }}>
-                                    Taxa de Sucesso
-                                </Typography>
-                                <Typography sx={{ fontSize: 28, fontWeight: 700, color: '#10b981', lineHeight: 1 }}>
-                                    {backendMetrics.summary.successRate}%
-                                </Typography>
-                                <Typography sx={{ fontSize: 11, color: textSecondary, mt: 0.5 }}>
-                                    GMUDs executadas com sucesso
-                                </Typography>
-                            </Box>
-
-                            {/* MTTR */}
-                            <Box sx={{
-                                p: 2.5,
-                                borderRadius: '16px',
-                                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.05) 100%)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(37, 99, 235, 0.2)',
-                            }}>
-                                <Typography sx={{ fontSize: 11, fontWeight: 500, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5 }}>
-                                    MTTR (Tempo Medio)
-                                </Typography>
-                                <Typography sx={{ fontSize: 28, fontWeight: 700, color: '#818cf8', lineHeight: 1 }}>
-                                    {backendMetrics.summary.mttrHours}h
-                                </Typography>
-                                <Typography sx={{ fontSize: 11, color: textSecondary, mt: 0.5 }}>
-                                    Duracao media de execucao
-                                </Typography>
-                            </Box>
-
-                            {/* On-Time Delivery */}
-                            <Box sx={{
-                                p: 2.5,
-                                borderRadius: '16px',
-                                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(59, 130, 246, 0.2)',
-                            }}>
-                                <Typography sx={{ fontSize: 11, fontWeight: 500, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5 }}>
-                                    Entrega no Prazo
-                                </Typography>
-                                <Typography sx={{ fontSize: 28, fontWeight: 700, color: '#60a5fa', lineHeight: 1 }}>
-                                    {backendMetrics.summary.onTimeRate}%
-                                </Typography>
-                                <Typography sx={{ fontSize: 11, color: textSecondary, mt: 0.5 }}>
-                                    Dentro da janela planejada
-                                </Typography>
-                            </Box>
-                        </Box>
-                    )}
 
                     {/* Table Section */}
                     <Box
