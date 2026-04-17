@@ -1,0 +1,26 @@
+# PostgreSQL dedicado ao G360 (desenvolvimento local).
+# Uso: na raiz do repo → docker compose up -d
+# Porta no host: 5433 (evita colisão com Postgres padrão na 5432).
+# Credenciais alinhadas a BACKEND/.env (DATABASE_URL).
+
+services:
+  g360-postgres:
+    image: postgres:16-alpine
+    container_name: g360-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: g360_dev
+      POSTGRES_PASSWORD: G360localDev2026
+      POSTGRES_DB: g360
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - g360_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U g360_dev -d g360"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  g360_pgdata:

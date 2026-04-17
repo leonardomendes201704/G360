@@ -7,6 +7,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-17]
 
+### Added
+- **Dev / Docker:** `docker-compose.yml` na raiz — serviço **`g360-postgres`** (PostgreSQL 16 Alpine), porta no host **`127.0.0.1:5433`**, volume **`g360_pgdata`**, credenciais alinhadas ao `DATABASE_URL` local (`g360_dev` / base `g360`). Comandos: `docker compose up -d` (na raiz); parar: `docker compose down`. No Windows, se `docker` não estiver no PATH, usar o executável do Docker Desktop (ex.: `C:\Program Files\Docker\Docker\resources\bin\docker.exe`).
+  - `docker-compose.yml`
+
 ### Docs
 - **US-022 / QA:** `modals-evidence-handbook.html` — conteúdo principal (`body`) com **80%** da largura da janela em ecrã (antes ~A4 fixo); impressão/PDF mantém largura total.
 - **US-022 / QA:** Dossiê `docs/qa/modals-evidence-handbook.html` — secção das 49 evidências passou de **grelha** para **tabela** (colunas Nº, ficheiro, âmbito, como testar, evidência); miniaturas na última coluna com **lightbox** ao clique (tamanho real, setas e ← →, Escape). Gerador `docs/qa/_gen-modal-grid.mjs` e patch `docs/qa/_patch-handbook.mjs` atualizados (`modal-evidence-table-wrap`).
