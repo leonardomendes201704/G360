@@ -1,7 +1,6 @@
 import React, { useMemo, useContext } from 'react';
 import {
     Box,
-    Card,
     Chip,
     Divider,
     IconButton,
@@ -29,10 +28,8 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
     const isDark = mode === 'dark';
     const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
     const textSecondary = isDark ? '#94a3b8' : '#475569';
-    const cardBg = isDark ? 'rgba(22, 29, 38, 0.6)' : '#ffffff';
     const panelBg = isDark ? 'rgba(22, 29, 38, 0.5)' : '#ffffff';
     const panelBorder = isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)';
-    const cardShadow = isDark ? '0 10px 30px rgba(0,0,0,0.25)' : '0 10px 30px rgba(15, 23, 42, 0.08)';
 
     const stats = useMemo(() => {
         const pending = changes.filter((c) => ['PENDING_APPROVAL', 'DRAFT'].includes(c.status)).length;
@@ -155,7 +152,13 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
 
             {loading && <LinearProgress sx={{ mb: 2 }} />}
 
-            <KpiGrid maxColumns={4} mb={3}>
+            <KpiGrid maxColumns={5} mb={3}>
+                <StatsCard
+                    title="Total de GMUDs"
+                    value={changes.length}
+                    iconName="sync_alt"
+                    hexColor="#2563eb"
+                />
                 <StatsCard
                     title="Pendentes"
                     value={stats.pending}
@@ -178,32 +181,10 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
                     title="Finalizadas"
                     value={stats.finalizedTotal}
                     iconName="done_all"
-                    hexColor="#3b82f6"
+                    hexColor="#6366f1"
                     subtitle={`Sucesso ${stats.finalizedSuccess} · Falha ${stats.finalizedFail}`}
                 />
             </KpiGrid>
-
-            <Card
-                sx={{
-                    p: 2.5,
-                    mb: 3,
-                    bgcolor: cardBg,
-                    border: panelBorder,
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: cardShadow,
-                    background: isDark
-                        ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7))'
-                        : 'linear-gradient(135deg, #ffffff, #f8fafc)'
-                }}
-            >
-                <Typography sx={{ fontSize: 12, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Total de GMUDs
-                </Typography>
-                <Typography sx={{ fontSize: 32, fontWeight: 700, color: textPrimary, mt: 0.5 }}>
-                    {changes.length}
-                </Typography>
-            </Card>
 
             <Box
                 sx={{

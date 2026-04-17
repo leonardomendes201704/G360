@@ -74,7 +74,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 - **GMUD / UI:** `ChangeRequestsPage` — KPIs da vista Lista/Calendário com **`StatsCard`** + **`KpiGrid`** (5 cartões); clique aplica filtro de grupo de status; tendência vs. mês anterior em `subtitle`.
   - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
-- **GMUD / UI:** `ChangeRequestDashboard` — bloco **Acompanhamento de GMUDs** (vista Dashboard) com **`StatsCard`** + **`KpiGrid`** (4 cartões); finalizadas com `subtitle` Sucesso/Falha (substitui chips).
+- **GMUD / UI:** `ChangeRequestDashboard` — bloco **Acompanhamento de GMUDs** (vista Dashboard) com **`StatsCard`** + **`KpiGrid`**; **Total de GMUDs** integrado na grelha (5 cartões); finalizadas com `subtitle` Sucesso/Falha.
   - `FRONTEND/src/components/changes/ChangeRequestDashboard.jsx`
 
 ## [2026-04-16]
