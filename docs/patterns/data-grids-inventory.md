@@ -16,11 +16,11 @@ Componentes base existentes:
 | Helpdesk | `FRONTEND/src/pages/helpdesk/PortalPage.jsx` | Referência; `TableSortLabel` + `TablePagination`. |
 | Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | `<table>` + CSS; ordenação própria; cabeçalho **`DataListShell`** + classe `pl-projects-table-card`. |
 | Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: `IncidentList` (`<table>`); casca **`DataListShell`**; Kanban alternativo. |
-| GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | `ChangeRequestList` (MUI `Table`); paginação custom. |
+| GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | `ChangeRequestList` (MUI `Table`); paginação custom; casca **`DataListShell`**. |
 | Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |
 | Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`; cabeçalho **`DataListShell`** (export + busca). |
 | Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | Modo lista: **`DataListShell`** + `ArticleTable` (`embedded`); grelha inalterada. |
-| Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning — não só tabela. |
+| Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning; modo **lista** com **`DataListShell`** (`TaskList` + bulk). |
 | Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | `<table>` (lista de ativos + licenças); **`DataListShell`** em ambas as secções; `filteredLicenses` em `useMemo`. |
 
 ---

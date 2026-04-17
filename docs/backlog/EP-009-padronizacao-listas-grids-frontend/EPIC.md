@@ -33,4 +33,4 @@ Reduzir duplicacao de cartoes/cabecalhos de lista e alinhar listagens ao padrao 
 
 Depende conceptualmente de EP-002 (componentes base). `StandardGrid` ja existia (US-005); EP-009 foca documentacao e adocao.
 
-**Migracao `DataListShell`:** Fornecedores (US-023); Contratos; Ativos (lista + licencas); Base de conhecimento (lista); Projetos; Incidentes.
+**Migracao `DataListShell`:** Fornecedores (US-023); Contratos; Ativos (lista + licencas); Base de conhecimento (lista); Projetos; Incidentes; Tarefas (lista); GMUD.

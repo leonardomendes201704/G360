@@ -19,6 +19,7 @@ import TaskPlanningGrid from '../../components/tasks/TaskPlanningGrid';
 import TaskModal from '../../components/modals/TaskModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
+import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import { Delete as DeleteIcon, Done as DoneIcon } from '@mui/icons-material';
@@ -810,7 +811,19 @@ const TasksPage = () => {
 
             {/* Content based on viewMode */}
             {viewMode === 'LIST' ? (
-                <>
+                <DataListShell
+                    title="Lista de Tarefas"
+                    titleIcon="assignment"
+                    accentColor="#2563eb"
+                    count={filteredTasks.length}
+                    sx={{
+                        borderRadius: '16px',
+                        background: cardBg,
+                        border: `1px solid ${borderColor}`,
+                        boxShadow: cardShadow,
+                        overflow: 'hidden',
+                    }}
+                >
                     <BulkActionsBar
                         selectedCount={selectedIds.length}
                         totalCount={filteredTasks.length}
@@ -845,7 +858,7 @@ const TasksPage = () => {
                             }
                         }}
                     />
-                </>
+                </DataListShell>
             ) : viewMode === 'PLANNING' ? (
                 <TaskPlanningGrid
                     tasks={filteredTasks}

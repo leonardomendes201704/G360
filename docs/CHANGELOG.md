@@ -8,6 +8,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Changed
+- **EP-009:** **`DataListShell`** — **Tarefas** (modo lista: `TaskList` + `BulkActionsBar`), **GMUD** (export, busca, toggle Lista/Calendário).
+  - `FRONTEND/src/pages/tasks/TasksPage.jsx`
+  - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **EP-009:** **`DataListShell`** — **Contratos**, **Ativos** (lista + licenças); **Base de conhecimento** (lista com `ArticleTable` `embedded`), **Projetos** (`pl-projects-table-card`; teste ordenação `within(tabela)`), **Incidentes**. Prop **`className`** no shell.
   - `FRONTEND/src/pages/contracts/ContractsPage.jsx`
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`

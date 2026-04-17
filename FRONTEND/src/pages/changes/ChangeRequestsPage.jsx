@@ -22,6 +22,7 @@ import { getReferenceUsers } from '../../services/reference.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { getErrorMessage } from '../../utils/errorUtils';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import TableSkeleton from '../../components/common/TableSkeleton';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
@@ -758,7 +759,11 @@ const ChangeRequestsPage = () => {
                     </KpiGrid>
 
                     {/* Table Section */}
-                    <Box
+                    <DataListShell
+                        title="Lista de GMUDs"
+                        titleIcon="sync_alt"
+                        accentColor="#667eea"
+                        count={filteredChanges.length}
                         sx={{
                             borderRadius: '16px',
                             background: cardBg,
@@ -766,19 +771,8 @@ const ChangeRequestsPage = () => {
                             border: `1px solid ${borderColor}`,
                             overflow: 'hidden'
                         }}
-                    >
-                        {/* Table Header with Search */}
-                        <Box sx={{
-                            p: 2.5,
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            borderBottom: `1px solid ${filterHeaderBorder}`
-                        }}>
-                            <Typography fontWeight={600} color={textPrimary}>
-                                Lista de GMUDs
-                            </Typography>
-                            <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                        toolbar={(
+                            <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                                 <ExportButton data={filteredChanges} columns={EXPORT_COLUMNS.changes} filename="gmuds" compact />
                                 <TextField
                                     placeholder="Buscar GMUD..."
@@ -797,7 +791,6 @@ const ChangeRequestsPage = () => {
                                         ...inputSx
                                     }}
                                 />
-                                {/* View Toggle */}
                                 <Paper
                                     elevation={0}
                                     sx={{
@@ -839,9 +832,8 @@ const ChangeRequestsPage = () => {
                                     </Tooltip>
                                 </Paper>
                             </Box>
-                        </Box>
-
-                        {/* CONTENT AREA */}
+                        )}
+                    >
                         {loading ? (
                             <Box sx={{ p: 2 }}>
                                 <TableSkeleton rows={5} columns={9} />
@@ -967,7 +959,7 @@ const ChangeRequestsPage = () => {
                                 </Box>
                             </Box>
                         )}
-                    </Box>
+                    </DataListShell>
                 </>
             )}
 
