@@ -28,7 +28,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **Ativos / UI:** Dashboard — secções **Qualidade de Cadastro** e **Top Valores** com **`StatsCard`** + **`KpiGrid`** (5 indicadores de qualidade; até 5 ativos e 5 licenças no top, com subtítulo posição/fornecedor).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
-- **Ativos / UI:** Dashboard — **Qualidade** / **Top Valores**: **50/50** na mesma linha (`assets-charts-grid`); **Qualidade** com `KpiGrid` `maxColumns={2}` dentro da meia largura; `minWidth: 0` nos painéis; `clampChildHeight={false}` e **`StatsCard`** com `titleLineClamp` / valor responsivo (ver commit anterior).
+- **Ativos / UI:** Dashboard — **Qualidade** / **Top Valores**: **50/50** na mesma linha (`assets-charts-grid`); **Qualidade** com `KpiGrid` `maxColumns={2}` dentro da meia largura; **Top Valores** (Ativos e Licenças) com **3 KPIs por linha** (`maxColumns={3}`); `minWidth: 0` nos painéis; `clampChildHeight={false}` e **`StatsCard`** com `titleLineClamp` / valor responsivo (ver commit anterior).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
   - `FRONTEND/src/components/common/StatsCard.jsx`
   - `FRONTEND/src/components/common/KpiGrid.jsx`

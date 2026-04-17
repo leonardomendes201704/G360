@@ -721,7 +721,7 @@ const AssetsPage = () => {
                 Ativos
               </Typography>
               {kpis.topAssets.length > 0 ? (
-                <KpiGrid maxColumns={2} mb={3} clampChildHeight={false} gap={2}>
+                <KpiGrid maxColumns={3} mb={3} clampChildHeight={false} gap={2}>
                   {kpis.topAssets.map((asset, i) => (
                     <StatsCard
                       key={asset.id}
@@ -741,7 +741,7 @@ const AssetsPage = () => {
                 Licenças
               </Typography>
               {kpis.topLicenses.length > 0 ? (
-                <KpiGrid maxColumns={2} mb={0} clampChildHeight={false} gap={2}>
+                <KpiGrid maxColumns={3} mb={0} clampChildHeight={false} gap={2}>
                   {kpis.topLicenses.map((lic, i) => (
                     <StatsCard
                       key={lic.id}
