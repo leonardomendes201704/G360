@@ -38,18 +38,16 @@ import AddIcon from '@mui/icons-material/Add';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 
 import StandardModal from '../../components/common/StandardModal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import {
+  getTicketStatusLabel,
+  stripTicketTitleStatusSuffix,
+  TICKET_STATUS_CHIP_COLOR
+} from '../../constants/ticketStatus';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-const STATUS_COLORS = {
-  OPEN: 'info',
-  IN_PROGRESS: 'warning',
-  WAITING_USER: 'secondary',
-  RESOLVED: 'success',
-  CLOSED: 'default'
-};
 
 const PortalPage = () => {
   const [tickets, setTickets] = useState([]);
@@ -350,7 +348,9 @@ const PortalPage = () => {
               <TableCell>Serviço</TableCell>
               <TableCell>Data</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Ação</TableCell>
+              <TableCell align="center" sx={{ width: 56 }}>
+                Ação
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -363,17 +363,27 @@ const PortalPage = () => {
             ) : (
               tickets.map((t) => (
                 <TableRow key={t.id} hover>
-                  <TableCell fontWeight="bold">{t.code}</TableCell>
-                  <TableCell>{t.title}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>{t.code}</TableCell>
+                  <TableCell>{stripTicketTitleStatusSuffix(t.title)}</TableCell>
                   <TableCell>{t.service?.name || '-'}</TableCell>
                   <TableCell>{new Date(t.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Chip label={t.status} color={STATUS_COLORS[t.status]} size="small" />
+                    <Chip
+                      label={getTicketStatusLabel(t.status)}
+                      color={TICKET_STATUS_CHIP_COLOR[t.status] ?? 'default'}
+                      size="small"
+                    />
                   </TableCell>
-                  <TableCell>
-                    <Button component={RouterLink} to={`/portal/tickets/${t.id}`} variant="outlined" size="small">
-                      Ver
-                    </Button>
+                  <TableCell align="center" sx={{ width: 56 }}>
+                    <IconButton
+                      component={RouterLink}
+                      to={`/portal/tickets/${t.id}`}
+                      size="small"
+                      color="primary"
+                      aria-label="Ver chamado"
+                    >
+                      <VisibilityIcon fontSize="small" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))

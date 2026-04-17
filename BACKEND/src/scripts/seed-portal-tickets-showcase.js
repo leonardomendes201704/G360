@@ -1,6 +1,6 @@
 /**
  * Cria até 5 chamados por serviço do catálogo (um por estado do workflow), para testar o Portal de Suporte.
- * Títulos estáveis `[Seed Portal] {nome do serviço} — {STATUS}` — idempotente (não duplica se já existir).
+ * Títulos estáveis `[Seed Portal] {nome do serviço} (1..5)` — idempotente por serviço/estado/requester (não duplica se já existir).
  *
  * Estados: OPEN, IN_PROGRESS, WAITING_USER, RESOLVED, CLOSED (alinhados a `TicketController.updateStatus`).
  *
@@ -13,8 +13,9 @@ const TicketService = require('../services/ticket.service');
 const STATUSES = ['OPEN', 'IN_PROGRESS', 'WAITING_USER', 'RESOLVED', 'CLOSED'];
 const PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 
-function buildTitle(serviceName, status) {
-    return `[Seed Portal] ${serviceName} — ${status}`;
+/** @param {number} slotIndex 1..5 (ordem alinhada a STATUSES) */
+function buildTitle(serviceName, slotIndex) {
+    return `[Seed Portal] ${serviceName} (${slotIndex})`;
 }
 
 async function seedPortalTicketsShowcase(prisma, options = {}) {
@@ -67,10 +68,16 @@ async function seedPortalTicketsShowcase(prisma, options = {}) {
 
     let prioIdx = 0;
     for (const svc of services) {
-        for (const status of STATUSES) {
-            const title = buildTitle(svc.name, status);
+        for (let idx = 0; idx < STATUSES.length; idx++) {
+            const status = STATUSES[idx];
+            const title = buildTitle(svc.name, idx + 1);
             const existing = await prisma.ticket.findFirst({
-                where: { serviceId: svc.id, title },
+                where: {
+                    serviceId: svc.id,
+                    status,
+                    requesterId: user.id,
+                    title: { startsWith: `[Seed Portal] ${svc.name}` },
+                },
             });
             if (existing) {
                 skipped += 1;

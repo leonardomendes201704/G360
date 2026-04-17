@@ -38,7 +38,7 @@ cd BACKEND
 npm run seed:portal-tickets:all
 ```
 
-- **Idempotência:** títulos `[Seed Portal] {nome do serviço} — {STATUS}`; execuções repetidas não duplicam.
+- **Idempotência:** por **serviço** + **estado** + **solicitante** + título com prefixo `[Seed Portal] {nome do serviço}`; títulos novos no formato `[Seed Portal] {nome} (1..5)` (slot por ordem dos estados). Execuções repetidas não duplicam. Seeds antigos com sufixo ` — STATUS` continuam reconhecidos; na UI do portal o título é mostrado **sem** esse sufixo.
 - **Solicitante:** `SEED_PORTAL_REQUESTER_EMAIL` ou `SEED_APPROVALS_USER_EMAIL` ou `admin@g360.com.br`; se o email não existir, usa o primeiro utilizador ativo (com aviso).
 - **Catálogo grande:** `SEED_PORTAL_MAX_SERVICES=N` processa só os **N** primeiros serviços ativos (ordenados por nome).
 - **Pré-requisito:** serviços ativos no catálogo (ex.: `npm run seed:catalog` / catálogo ITIL por tenant).

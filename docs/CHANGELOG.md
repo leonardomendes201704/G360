@@ -28,6 +28,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
 ### Changed
+- **Portal de Suporte (`/portal`):** Lista — coluna **Código** em **uma linha** (`whiteSpace: nowrap`); **título** na UI **sem** sufixo de estado legado (` — OPEN` …); chips de **status** em **PT-BR** (`TicketStatus`, `getTicketStatusLabel` em `constants/ticketStatus.js`); ação **Ver** como **ícone de olho** (`Visibility`). Detalhe do chamado (`TicketDetails`) — chip e título alinhados.
+  - `FRONTEND/src/constants/ticketStatus.js`
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+  - `FRONTEND/src/pages/helpdesk/TicketDetails.jsx`
+  - `FRONTEND/src/pages/helpdesk/__tests__/PortalPage.test.jsx`
+- **Dev / seed (portal):** `seed-portal-tickets-showcase.js` — títulos `[Seed Portal] {serviço} (1..5)`; idempotência por `serviceId` + `status` + `requesterId` + prefixo de título `[Seed Portal] {serviço}`.
+  - `BACKEND/src/scripts/seed-portal-tickets-showcase.js`
 - **Service Desk:** Indicadores numéricos da **Central de Serviços** em **`StatsCard`** + **`KpiGrid`** unificado (**5 cartões por linha** em `md`+); total de chamados, atendidos, fila, taxas SLA, estouros; **Indicadores (N dias)** — MTTR, 1ª resposta média, conformidade SLA, resolvidos no período. **`KpiGrid`:** até **5** colunas no breakpoint `md` (antes máx. 4).
   - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
   - `FRONTEND/src/components/common/KpiGrid.jsx`
@@ -50,7 +57,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **Docs / padrões:** `docs/patterns/minhas-aprovacoes.md` — fluxo da tela **Minhas aprovações**, API, tipos e estados; seed de demonstração.
 - **Docs / padrões:** `docs/patterns/portal-suporte-tickets.md` — fluxo do **Portal de Suporte** (`/portal`), estados de chamado, relação com catálogo de serviços; seed de demonstração.
 - **Dev / seed:** `npm run seed:approvals-showcase:all` — um item pendente por tipo (despesa, custo projeto, ata, GMUD, projeto baseline, proposta, orçamento) para testes da esteira; `BACKEND/src/scripts/seed-approvals-showcase.js` + `seed-approvals-showcase-all-tenants.js`; entrada em `BACKEND/package.json`.
-- **Dev / seed:** `npm run seed:portal-tickets:all` — até **5** chamados por serviço do catálogo (um por estado: OPEN … CLOSED), títulos `[Seed Portal] …`; `BACKEND/src/scripts/seed-portal-tickets-showcase.js` + `seed-portal-tickets-showcase-all-tenants.js`.
+- **Dev / seed:** `npm run seed:portal-tickets:all` — até **5** chamados por serviço do catálogo (um por estado: OPEN … CLOSED), títulos `[Seed Portal] {serviço} (1..5)`; `BACKEND/src/scripts/seed-portal-tickets-showcase.js` + `seed-portal-tickets-showcase-all-tenants.js`.
 - **Dev / tenant modelo:** script `BACKEND/src/scripts/seed-model-tenant-devcraft.js` + npm `npm run seed:devcraft` — provisiona o tenant **`devcraft`** (schema `tenant_devcraft`) com `prisma db push`, registo no catálogo, seed base (`TenantService.seedTenant`), integrações placeholder (Azure/LDAP desligadas), catálogo ITIL, 10 fornecedores e fluxo **3 áreas** (departamentos, CC, projetos, tarefas gerais/de projeto, incidentes, riscos, ativos, GMUD, despesas). Admin padrão: `admin@devcraft.local` / `DevCraft@2026` (override: `DEVCRAFT_ADMIN_EMAIL`, `DEVCRAFT_ADMIN_PASSWORD`). Idempotente: reexecutar sincroniza schema e reforça seeds ITIL/fornecedores/3 áreas.
   - `BACKEND/src/scripts/seed-model-tenant-devcraft.js`
   - `BACKEND/package.json` (script `seed:devcraft`)

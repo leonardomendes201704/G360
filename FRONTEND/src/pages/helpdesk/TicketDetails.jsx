@@ -14,14 +14,11 @@ import ticketService from '../../services/ticket.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import { getActiveSupportGroups } from '../../services/support-group.service';
 import { AuthContext } from '../../contexts/AuthContext';
-
-const STATUS_COLORS = {
-  'OPEN': 'info',
-  'IN_PROGRESS': 'warning',
-  'WAITING_USER': 'secondary',
-  'RESOLVED': 'success',
-  'CLOSED': 'default'
-};
+import {
+  getTicketStatusLabel,
+  stripTicketTitleStatusSuffix,
+  TICKET_STATUS_CHIP_COLOR
+} from '../../constants/ticketStatus';
 
 const TicketDetails = () => {
   const { id } = useParams();
@@ -204,14 +201,18 @@ const TicketDetails = () => {
       }}>
         <Box>
           <Typography variant="h5" fontWeight="800" sx={{ letterSpacing: '-0.5px', color: mode==='dark'?'#f8fafc':'#0f172a' }}>
-            <span style={{ color: mode==='dark'?'#94a3b8':'#64748b', marginRight: '8px' }}>#{ticket.code}</span> 
-            {ticket.title}
+            <span style={{ color: mode==='dark'?'#94a3b8':'#64748b', marginRight: '8px' }}>#{ticket.code}</span>
+            {stripTicketTitleStatusSuffix(ticket.title)}
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5, color: mode==='dark'?'#94a3b8':'#64748b' }}>
             Aberto em {new Date(ticket.createdAt).toLocaleString()} por <b style={{ color: mode==='dark'?'#e2e8f0':'#334155' }}>{ticket.requester?.name}</b>
           </Typography>
         </Box>
-        <Chip label={ticket.status} color={STATUS_COLORS[ticket.status]} sx={{ fontWeight: 800, borderRadius: 2, px: 1 }} />
+        <Chip
+          label={getTicketStatusLabel(ticket.status)}
+          color={TICKET_STATUS_CHIP_COLOR[ticket.status] ?? 'default'}
+          sx={{ fontWeight: 800, borderRadius: 2, px: 1 }}
+        />
       </Box>
 
       <Grid container spacing={3}>
