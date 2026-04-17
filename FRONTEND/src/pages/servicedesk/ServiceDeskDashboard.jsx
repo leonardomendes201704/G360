@@ -9,9 +9,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
-import SpeedIcon from '@mui/icons-material/Speed';
-import WarningIcon from '@mui/icons-material/Warning';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import ticketService from '../../services/ticket.service';
 import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
@@ -173,16 +170,44 @@ const ServiceDeskDashboard = () => {
 
       {/* KPI DASHBOARD */}
       {filterStatus === 'ALL' && !loading && metrics && (
-        <Box sx={{ mb: 3, p: 2, borderRadius: 1, bgcolor: mode === 'dark' ? 'rgba(30,41,59,0.6)' : 'rgba(248,250,252,0.95)', border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}` }}>
-          <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1 }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
             Indicadores ({metrics.periodDays} dias)
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            <Chip label={`MTTR: ${metrics.mttrHours != null ? `${metrics.mttrHours.toFixed(1)} h` : '—'}`} color="primary" variant="outlined" />
-            <Chip label={`1ª resposta média: ${metrics.meanFirstResponseHours != null ? `${metrics.meanFirstResponseHours.toFixed(1)} h` : '—'}`} variant="outlined" />
-            <Chip label={`Conformidade SLA: ${metrics.slaCompliancePct != null ? `${metrics.slaCompliancePct}%` : '—'}`} color={metrics.slaCompliancePct >= 90 ? 'success' : 'warning'} variant="outlined" />
-            <Chip label={`Resolvidos no período: ${metrics.resolvedInPeriod}`} variant="outlined" />
-          </Box>
+          <KpiGrid maxColumns={3} mb={3} clampChildHeight={false} gap={2}>
+            <StatsCard
+              title="MTTR"
+              value={metrics.mttrHours != null ? `${metrics.mttrHours.toFixed(1)} h` : '—'}
+              iconName="schedule"
+              hexColor="#2563eb"
+            />
+            <StatsCard
+              title="1ª resposta média"
+              value={metrics.meanFirstResponseHours != null ? `${metrics.meanFirstResponseHours.toFixed(1)} h` : '—'}
+              iconName="mark_chat_read"
+              hexColor="#0284c7"
+              titleLineClamp={2}
+            />
+            <StatsCard
+              title="Conformidade SLA"
+              value={metrics.slaCompliancePct != null ? `${metrics.slaCompliancePct}%` : '—'}
+              iconName="verified"
+              hexColor={
+                metrics.slaCompliancePct == null
+                  ? '#64748b'
+                  : metrics.slaCompliancePct >= 90
+                    ? '#059669'
+                    : '#d97706'
+              }
+            />
+            <StatsCard
+              title="Resolvidos no período"
+              value={metrics.resolvedInPeriod ?? 0}
+              iconName="done_all"
+              hexColor="#06b6d4"
+              titleLineClamp={2}
+            />
+          </KpiGrid>
         </Box>
       )}
 
