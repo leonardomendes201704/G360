@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Seed Portal de Suporte — chamados demo por serviço do catálogo (todos os estados).
+ * Portal de Suporte — gera chamados por serviço do catálogo (todos os estados); textos neutros.
  *
  * Uso:
  *   node src/scripts/seed-portal-tickets-showcase-all-tenants.js
@@ -9,7 +9,7 @@
  * Opcional:
  *   SEED_PORTAL_REQUESTER_EMAIL — utilizador que aparece como solicitante (default admin@g360.com.br ou primeiro ativo)
  *   SEED_PORTAL_MAX_SERVICES=N — processa só os N primeiros serviços ativos (catálogos grandes)
- *   --reset  ou  SEED_PORTAL_CLEANUP=1 — apaga chamados `[Seed Portal]` antes de criar de novo (dept/CC alinhados ao tenant)
+ *   --reset  ou  SEED_PORTAL_CLEANUP=1 — apaga chamados gerados por este script antes de recriar (dept/CC no tenant)
  */
 
 require('dotenv').config();
@@ -27,13 +27,13 @@ async function main() {
         process.env.SEED_PORTAL_CLEANUP === '1' ||
         process.env.SEED_PORTAL_CLEANUP === 'true';
 
-    console.log('🌱 Seed Portal de Suporte (chamados por serviço × estados)\n');
+    console.log('🌱 Portal de Suporte — chamados por serviço × estados\n');
     console.log(`   Solicitante alvo: ${email}`);
     if (maxServices != null) {
         console.log(`   Limite de serviços: ${maxServices}`);
     }
     if (cleanupFirst) {
-        console.log('   Modo: limpar chamados [Seed Portal] e recriar (dept/CC resolvidos no tenant)');
+        console.log('   Modo: limpar chamados de showcase e recriar (dept/CC resolvidos no tenant)');
     }
     console.log('');
 

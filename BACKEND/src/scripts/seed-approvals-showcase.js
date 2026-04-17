@@ -1,6 +1,6 @@
 /**
  * Cria um item pendente por tipo na esteira "Minhas aprovações" para o utilizador indicado.
- * Idempotente (descrições / códigos estáveis com prefixo [Seed Aprovações]).
+ * Textos neutros (ambiente de produção). Idempotente por códigos estáveis e descrições conhecidas.
  *
  * Pré-requisitos: pelo menos um utilizador ativo (ou o email em SEED_APPROVALS_USER_EMAIL). Fornecedor / conta / exercício são criados se ausentes.
  *
@@ -9,7 +9,17 @@
  */
 const { Prisma } = require('@prisma/client');
 
-const PREFIX = '[Seed Aprovações]';
+/** Textos estáveis para idempotência (sem referência a demo/seed) */
+const DEPT_NAME = 'Direção de operações — matriz';
+const CC_NAME = 'Centro de custo — operações diretas';
+const PRJ_BASELINE_NAME = 'Projeto — baseline em aprovação';
+const PRJ_CTX_NAME = 'Projeto — custos, atas e propostas';
+const EXPENSE_DESC = 'Despesa operacional — manutenção preventiva';
+const PROJECT_COST_DESC = 'Custo de projeto — infraestrutura';
+const MINUTE_TITLE = 'Ata — alinhamento de projeto';
+const PROPOSAL_DESC = 'Proposta comparativa — fornecedor preferencial';
+const BUDGET_NAME = 'Orçamento anual — revisão';
+const GMUD_TITLE = 'Alteração — janela de manutenção programada';
 
 async function ensureSupplier(prisma) {
     let s = await prisma.supplier.findFirst({ where: { isActive: true } });
@@ -21,8 +31,8 @@ async function ensureSupplier(prisma) {
     if (existing) return existing;
     return prisma.supplier.create({
         data: {
-            name: 'Fornecedor (seed Minhas Aprovações)',
-            tradeName: 'Seed Aprovações',
+            name: 'Materiais Silva Comércio Ltda',
+            tradeName: 'Materiais Silva',
             document: doc,
             documentType: 'CNPJ',
             classification: 'OPERACIONAL',
@@ -39,7 +49,7 @@ async function ensureAccountingAccount(prisma) {
     return prisma.accountingAccount.create({
         data: {
             code: 'SEED-APPROVAL-ACC',
-            name: 'Conta (seed Minhas Aprovações)',
+            name: 'Despesas correntes — operações',
             type: 'DESPESA',
         },
     });
@@ -89,10 +99,10 @@ async function seedApprovalsShowcase(prisma, options = {}) {
 
     const dept = await prisma.department.upsert({
         where: { code: DEPT_CODE },
-        update: { name: `${PREFIX} Depto demo` },
+        update: { name: DEPT_NAME },
         create: {
             code: DEPT_CODE,
-            name: `${PREFIX} Depto demo`,
+            name: DEPT_NAME,
             budget: new Prisma.Decimal('100000'),
         },
     });
@@ -100,14 +110,14 @@ async function seedApprovalsShowcase(prisma, options = {}) {
     const cc = await prisma.costCenter.upsert({
         where: { code: CC_CODE },
         update: {
-            name: `${PREFIX} Centro de custo`,
+            name: CC_NAME,
             departmentId: dept.id,
             managerId: user.id,
             isActive: true,
         },
         create: {
             code: CC_CODE,
-            name: `${PREFIX} Centro de custo`,
+            name: CC_NAME,
             departmentId: dept.id,
             managerId: user.id,
             isActive: true,
@@ -117,7 +127,7 @@ async function seedApprovalsShowcase(prisma, options = {}) {
     await prisma.project.upsert({
         where: { code: PRJ_BASELINE_CODE },
         update: {
-            name: `${PREFIX} Projeto baseline pendente`,
+            name: PRJ_BASELINE_NAME,
             approvalStatus: 'PENDING_APPROVAL',
             costCenterId: cc.id,
             managerId: user.id,
@@ -126,8 +136,8 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         },
         create: {
             code: PRJ_BASELINE_CODE,
-            name: `${PREFIX} Projeto baseline pendente`,
-            description: 'Seed Minhas Aprovações — baseline',
+            name: PRJ_BASELINE_NAME,
+            description: 'Planeamento inicial e aprovação de orçamento.',
             type: 'INTERNO',
             status: 'PLANNING',
             priority: 'MEDIUM',
@@ -143,7 +153,7 @@ async function seedApprovalsShowcase(prisma, options = {}) {
     const projectCtx = await prisma.project.upsert({
         where: { code: PRJ_CTX_CODE },
         update: {
-            name: `${PREFIX} Projeto (custos/atas/propostas)`,
+            name: PRJ_CTX_NAME,
             approvalStatus: 'APPROVED',
             approvedAt: new Date(),
             approvedBy: user.id,
@@ -153,8 +163,8 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         },
         create: {
             code: PRJ_CTX_CODE,
-            name: `${PREFIX} Projeto (custos/atas/propostas)`,
-            description: 'Seed Minhas Aprovações',
+            name: PRJ_CTX_NAME,
+            description: 'Acompanhamento operacional e documentação associada.',
             type: 'INTERNO',
             status: 'IN_PROGRESS',
             priority: 'MEDIUM',
@@ -169,12 +179,20 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         },
     });
 
-    const expDesc = `${PREFIX} Despesa operacional`;
-    let exp = await prisma.expense.findFirst({ where: { description: expDesc } });
+    let exp = await prisma.expense.findFirst({
+        where: {
+            createdBy: user.id,
+            OR: [
+                { description: EXPENSE_DESC },
+                { description: '[Seed Aprovações] Despesa operacional' },
+                { description: { startsWith: '[Seed Aprovações] Despesa' } },
+            ],
+        },
+    });
     if (!exp) {
         exp = await prisma.expense.create({
             data: {
-                description: expDesc,
+                description: EXPENSE_DESC,
                 type: 'OPERACIONAL',
                 amount: new Prisma.Decimal('350.00'),
                 date: new Date(),
@@ -189,21 +207,28 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         exp = await prisma.expense.update({
             where: { id: exp.id },
             data: {
+                description: EXPENSE_DESC,
                 status: 'AGUARDANDO_APROVACAO',
                 costCenterId: cc.id,
             },
         });
     }
 
-    const pcDesc = `${PREFIX} Custo de projeto`;
     let pc = await prisma.projectCost.findFirst({
-        where: { projectId: projectCtx.id, description: pcDesc },
+        where: {
+            projectId: projectCtx.id,
+            OR: [
+                { description: PROJECT_COST_DESC },
+                { description: '[Seed Aprovações] Custo de projeto' },
+                { description: { startsWith: '[Seed Aprovações] Custo' } },
+            ],
+        },
     });
     if (!pc) {
         pc = await prisma.projectCost.create({
             data: {
                 projectId: projectCtx.id,
-                description: pcDesc,
+                description: PROJECT_COST_DESC,
                 type: 'OPEX',
                 amount: new Prisma.Decimal('1200.00'),
                 date: new Date(),
@@ -215,22 +240,27 @@ async function seedApprovalsShowcase(prisma, options = {}) {
     } else {
         pc = await prisma.projectCost.update({
             where: { id: pc.id },
-            data: { status: 'AGUARDANDO_APROVACAO' },
+            data: { description: PROJECT_COST_DESC, status: 'AGUARDANDO_APROVACAO' },
         });
     }
 
-    const minuteTitle = `${PREFIX} Ata de reunião`;
     let minute = await prisma.meetingMinute.findFirst({
-        where: { projectId: projectCtx.id, title: minuteTitle },
+        where: {
+            projectId: projectCtx.id,
+            OR: [
+                { title: MINUTE_TITLE },
+                { title: { startsWith: '[Seed Aprovações] Ata' } },
+            ],
+        },
     });
     if (!minute) {
         minute = await prisma.meetingMinute.create({
             data: {
                 projectId: projectCtx.id,
-                title: minuteTitle,
+                title: MINUTE_TITLE,
                 date: new Date(),
-                fileUrl: '/uploads/seed-approval-minute.pdf',
-                fileName: 'seed-approval-minute.pdf',
+                fileUrl: '/uploads/ata-reuniao-projeto.pdf',
+                fileName: 'ata-reuniao-projeto.pdf',
                 status: 'PENDING',
                 topics: [],
             },
@@ -238,13 +268,23 @@ async function seedApprovalsShowcase(prisma, options = {}) {
     } else {
         minute = await prisma.meetingMinute.update({
             where: { id: minute.id },
-            data: { status: 'PENDING' },
+            data: {
+                title: MINUTE_TITLE,
+                status: 'PENDING',
+                fileUrl: '/uploads/ata-reuniao-projeto.pdf',
+                fileName: 'ata-reuniao-projeto.pdf',
+            },
         });
     }
 
-    const propDesc = `${PREFIX} Proposta comparativa`;
     let proposal = await prisma.projectProposal.findFirst({
-        where: { projectId: projectCtx.id, description: propDesc },
+        where: {
+            projectId: projectCtx.id,
+            OR: [
+                { description: PROPOSAL_DESC },
+                { description: { startsWith: '[Seed Aprovações] Proposta' } },
+            ],
+        },
     });
     if (!proposal) {
         proposal = await prisma.projectProposal.create({
@@ -253,25 +293,31 @@ async function seedApprovalsShowcase(prisma, options = {}) {
                 supplierId: supplier.id,
                 value: new Prisma.Decimal('45000'),
                 status: 'AGUARDANDO_APROVACAO',
-                description: propDesc,
+                description: PROPOSAL_DESC,
                 category: 'SERVICO',
             },
         });
     } else {
         proposal = await prisma.projectProposal.update({
             where: { id: proposal.id },
-            data: { status: 'AGUARDANDO_APROVACAO' },
+            data: { description: PROPOSAL_DESC, status: 'AGUARDANDO_APROVACAO' },
         });
     }
 
-    const budgetName = `${PREFIX} Orçamento exercício`;
-    let budget = await prisma.budget.findFirst({ where: { name: budgetName } });
+    let budget = await prisma.budget.findFirst({
+        where: {
+            OR: [
+                { name: BUDGET_NAME },
+                { name: { startsWith: '[Seed Aprovações] Orçamento' } },
+            ],
+        },
+    });
     if (!budget) {
         budget = await prisma.budget.create({
             data: {
                 fiscalYearId: fiscalYear.id,
-                name: budgetName,
-                description: 'Seed Minhas Aprovações',
+                name: BUDGET_NAME,
+                description: 'Consolidação de rubricas para o exercício corrente.',
                 status: 'PENDING_APPROVAL',
                 totalOpex: new Prisma.Decimal('10000'),
                 totalCapex: new Prisma.Decimal('5000'),
@@ -283,14 +329,18 @@ async function seedApprovalsShowcase(prisma, options = {}) {
                 accountId: account.id,
                 costCenterId: cc.id,
                 type: 'OPEX',
-                description: 'Linha seed',
+                description: 'Rubrica — despesas recorrentes',
                 jan: new Prisma.Decimal('1000'),
             },
         });
     } else {
         await prisma.budget.update({
             where: { id: budget.id },
-            data: { status: 'PENDING_APPROVAL' },
+            data: {
+                name: BUDGET_NAME,
+                description: 'Consolidação de rubricas para o exercício corrente.',
+                status: 'PENDING_APPROVAL',
+            },
         });
         const itemCount = await prisma.budgetItem.count({ where: { budgetId: budget.id } });
         if (itemCount === 0) {
@@ -300,7 +350,7 @@ async function seedApprovalsShowcase(prisma, options = {}) {
                     accountId: account.id,
                     costCenterId: cc.id,
                     type: 'OPEX',
-                    description: 'Linha seed',
+                    description: 'Rubrica — despesas recorrentes',
                     jan: new Prisma.Decimal('1000'),
                 },
             });
@@ -314,9 +364,9 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         gmud = await prisma.changeRequest.create({
             data: {
                 code: GMUD_CODE,
-                title: `${PREFIX} GMUD demonstração`,
-                description: 'Seed Minhas Aprovações',
-                justification: 'Demonstração do fluxo de aprovação',
+                title: GMUD_TITLE,
+                description: 'Pedido formal de alteração para atualização controlada do ambiente.',
+                justification: 'Janela acordada com as áreas de negócio.',
                 type: 'NORMAL',
                 riskLevel: 'BAIXO',
                 impact: 'BAIXO',
@@ -341,7 +391,12 @@ async function seedApprovalsShowcase(prisma, options = {}) {
         });
         gmud = await prisma.changeRequest.update({
             where: { id: gmud.id },
-            data: { status: 'PENDING_APPROVAL' },
+            data: {
+                status: 'PENDING_APPROVAL',
+                title: GMUD_TITLE,
+                description: 'Pedido formal de alteração para atualização controlada do ambiente.',
+                justification: 'Janela acordada com as áreas de negócio.',
+            },
         });
     }
 

@@ -1,6 +1,6 @@
 /**
  * Cria até 5 chamados por serviço do catálogo (um por estado do workflow), para testar o Portal de Suporte.
- * Títulos estáveis `[Seed Portal] {nome do serviço} (1..5)` — idempotente por serviço/estado/requester (não duplica se já existir).
+ * Textos alinhados a produção (sem prefixos de demo). Idempotente por serviço + estado + solicitante + título exacto.
  *
  * Estados: OPEN, IN_PROGRESS, WAITING_USER, RESOLVED, CLOSED (alinhados a `TicketController.updateStatus`).
  *
@@ -9,35 +9,47 @@
  *
  * @param {import('@prisma/client').PrismaClient} prisma
  * @param {{ userEmail?: string, verbose?: boolean, maxServices?: number|null, cleanupFirst?: boolean }} [options]
- *   maxServices — limita quantos serviços ativos processar (default: todos; use p.ex. 10 em catálogos muito grandes).
- *   cleanupFirst — remove antes todos os chamados cujo título começa por `[Seed Portal]` (re-seed limpo).
+ *   cleanupFirst — remove chamados gerados por execuções anteriores deste script (critérios abaixo), depois recria.
  */
 const TicketService = require('../services/ticket.service');
 
 const STATUSES = ['OPEN', 'IN_PROGRESS', 'WAITING_USER', 'RESOLVED', 'CLOSED'];
 const PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
-const SEED_TITLE_PREFIX = '[Seed Portal]';
+
+/** Prefixo legado (apenas para limpeza / migração de bases antigas) */
+const LEGACY_PORTAL_PREFIX = '[Seed Portal]';
 
 /** @param {number} slotIndex 1..5 (ordem alinhada a STATUSES) */
 function buildTitle(serviceName, slotIndex) {
-    return `${SEED_TITLE_PREFIX} ${serviceName} (${slotIndex})`;
+    return `${serviceName} — requisição ${slotIndex}`;
+}
+
+function buildDescription(categoryName, serviceName, status) {
+    return `Registado via portal de suporte. Categoria: ${categoryName || '—'}. Serviço: ${serviceName}. Estado: ${status}.`;
 }
 
 /**
- * Remove chamados de demonstração do seed (título começa por `[Seed Portal]`).
+ * Remove chamados criados por versões anteriores deste script (títulos legados ou texto de descrição conhecido).
  * @param {import('@prisma/client').PrismaClient} prisma
- * @returns {Promise<number>} número de registos apagados
+ * @param {string} requesterId
+ * @returns {Promise<number>}
  */
-async function deleteSeedPortalTickets(prisma) {
+async function deleteSeedPortalTickets(prisma, requesterId) {
     const result = await prisma.ticket.deleteMany({
-        where: { title: { startsWith: SEED_TITLE_PREFIX } },
+        where: {
+            requesterId,
+            OR: [
+                { title: { startsWith: LEGACY_PORTAL_PREFIX } },
+                { description: { contains: 'Demonstração Portal de Suporte' } },
+                { description: { startsWith: 'Registado via portal de suporte.' } },
+            ],
+        },
     });
     return result.count;
 }
 
 /**
- * Resolve departamento e centro de custo para o seed: valida perfil do utilizador; senão escolhe registos no tenant.
- * Atualiza o utilizador solicitante quando ambos os IDs forem resolvidos (demo consistente).
+ * Resolve departamento e centro de custo: valida perfil do utilizador; senão escolhe registos no tenant.
  * @param {import('@prisma/client').PrismaClient} prisma
  * @param {{ id: string, departmentId?: string|null, costCenterId?: string|null }} user
  */
@@ -129,17 +141,15 @@ async function seedPortalTicketsShowcase(prisma, options = {}) {
 
     let deleted = 0;
     if (options.cleanupFirst === true) {
-        deleted = await deleteSeedPortalTickets(prisma);
+        deleted = await deleteSeedPortalTickets(prisma, user.id);
         if (options.verbose) {
-            console.log(`  Removidos ${deleted} chamado(s) [Seed Portal] existentes.`);
+            console.log(`  Removidos ${deleted} chamado(s) de showcase do portal existentes.`);
         }
     }
 
     const { departmentId: seedDeptId, costCenterId: seedCcId } = await resolveSeedDepartmentCostCenter(prisma, user);
     if (options.verbose && (seedDeptId || seedCcId)) {
-        console.log(
-            `  Snapshots departamento/centro de custo: ${seedDeptId || '—'} / ${seedCcId || '—'}`
-        );
+        console.log(`  Departamento / centro de custo (snapshots): ${seedDeptId || '—'} / ${seedCcId || '—'}`);
     }
 
     const allServices = await prisma.serviceCatalog.findMany({
@@ -172,7 +182,7 @@ async function seedPortalTicketsShowcase(prisma, options = {}) {
                     serviceId: svc.id,
                     status,
                     requesterId: user.id,
-                    title: { startsWith: `${SEED_TITLE_PREFIX} ${svc.name}` },
+                    title,
                 },
             });
             if (existing) {
@@ -196,7 +206,7 @@ async function seedPortalTicketsShowcase(prisma, options = {}) {
             const data = {
                 code,
                 title,
-                description: `Demonstração Portal de Suporte (seed). Categoria: ${svc.category?.name || '—'}. Serviço: ${svc.name}. Estado: ${status}.`,
+                description: buildDescription(svc.category?.name, svc.name, status),
                 status,
                 priority: prio,
                 categoryId: svc.categoryId,
@@ -252,5 +262,5 @@ module.exports = {
     resolveSeedDepartmentCostCenter,
     STATUSES,
     buildTitle,
-    SEED_TITLE_PREFIX,
+    LEGACY_PORTAL_PREFIX,
 };

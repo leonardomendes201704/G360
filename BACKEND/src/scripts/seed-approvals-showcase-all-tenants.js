@@ -16,7 +16,7 @@ const { seedApprovalsShowcase } = require('./seed-approvals-showcase');
 
 async function main() {
     const email = process.env.SEED_APPROVALS_USER_EMAIL || 'admin@g360.com.br';
-    console.log('🌱 Seed Minhas Aprovações (showcase)\n');
+    console.log('🌱 Minhas aprovações — preenchimento da fila\n');
     console.log(`   Utilizador alvo: ${email}\n`);
 
     let tenants;
@@ -62,7 +62,7 @@ async function main() {
     await TenantManager.disconnectAll();
 
     console.log(`\n========================================`);
-    console.log(`📊 Minhas Aprovações seed: ${ok} OK / ${failed} falha(s) / ${tenants.length} tenant(s)`);
+    console.log(`📊 Minhas aprovações: ${ok} OK / ${failed} falha(s) / ${tenants.length} tenant(s)`);
     console.log(`========================================\n`);
 
     process.exit(failed > 0 ? 1 : 0);

@@ -24,6 +24,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Changed
+- **Dados de exemplo / aspeto de produção:** Removidos prefixos `[Seed Portal]` e `[Seed Aprovações]` dos textos gravados em **chamados**, **aprovações** e entidades ligadas. Novos títulos/descrições neutros (PT-BR). Script **`npm run db:sanitize-labels`** aplica `UPDATE` em todos os tenants ativos para limpar registos legados. Seeds `seed-portal-tickets-showcase.js` e `seed-approvals-showcase.js` atualizados; documentação em `docs/patterns/portal-suporte-tickets.md` e `minhas-aprovacoes.md`.
+  - `BACKEND/src/scripts/sanitize-production-like-labels.js`
+  - `BACKEND/src/scripts/seed-portal-tickets-showcase.js`
+  - `BACKEND/src/scripts/seed-approvals-showcase.js`
+  - `BACKEND/package.json`
+
+### Changed
 - **Dev / seed (portal):** Chamados `[Seed Portal]` passam a gravar **departamento e centro de custo** resolvidos no tenant (perfil do solicitante ou primeiro dept por nome + CC ativo, preferindo CC do mesmo dept). Utilizador solicitante é atualizado quando ambos são encontrados. **`npm run seed:portal-tickets:reset`** (`--reset`) remove chamados de demo existentes e recria com snapshots corretos.
   - `BACKEND/src/scripts/seed-portal-tickets-showcase.js`
   - `BACKEND/src/scripts/seed-portal-tickets-showcase-all-tenants.js`
