@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import {
     Box,
     Typography,
     TextField,
-    InputAdornment,
     Button,
-    Chip,
     IconButton,
     Menu,
     MenuItem,
     CircularProgress,
-    Collapse
 } from '@mui/material';
+import FilterAlt from '@mui/icons-material/FilterAlt';
+import Refresh from '@mui/icons-material/Refresh';
+import FilterDrawer from '../components/common/FilterDrawer';
 import EmptyState from '../components/common/EmptyState';
 import {
     Search as SearchIcon,
@@ -20,8 +20,6 @@ import {
     Visibility as VisibilityIcon,
     Folder as FolderIcon,
     TrendingUp as TrendingUpIcon,
-    FilterList as FilterIcon,
-    Refresh as RefreshIcon,
     ViewModule as GridViewIcon,
     ViewList as ListViewIcon,
     MoreVert as MoreVertIcon,
@@ -37,6 +35,8 @@ import DocumentViewer from '../components/knowledge-base/DocumentViewer.jsx';
 import { useSnackbar } from 'notistack';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
+
+const KB_FILTER_DEFAULTS = { search: '', categoryId: '' };
 
 // Stat Card Component - Premium Design
 const StatCard = ({ title, value, icon, colorScheme, theme }) => {
@@ -223,30 +223,6 @@ const ArticleCard = ({ article, onView, onMenuClick, theme }) => (
     </Box>
 );
 
-// Category Pill Component
-const CategoryPill = ({ label, count, active, onClick, color, theme }) => (
-    <Box
-        component="button"
-        onClick={onClick}
-        sx={{
-            padding: '8px 16px',
-            bgcolor: active ? (color || '#2563eb') : theme.surfaceBg,
-            border: 'none',
-            color: active ? 'white' : theme.textSecondary,
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: 500,
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            '&:hover': {
-                bgcolor: active ? (color || '#5558e3') : theme.surfaceBg
-            }
-        }}
-    >
-        {label} {count !== undefined && `(${count})`}
-    </Box>
-);
-
 // View Toggle Button
 const ViewToggleBtn = ({ active, icon, onClick, theme }) => (
     <Box
@@ -384,7 +360,6 @@ export default function KnowledgeBasePage() {
     const cardBg = isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff';
     const cardBorder = isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(15, 23, 42, 0.08)';
     const panelBg = isDark ? 'rgba(22, 29, 38, 0.5)' : '#ffffff';
-    const filterBg = isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#ffffff';
     const surfaceBg = isDark ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9';
     const tagBg = isDark ? 'rgba(55, 65, 81, 0.5)' : '#eef2f6';
     const tagText = isDark ? '#9ca3af' : '#64748b';
@@ -402,9 +377,50 @@ export default function KnowledgeBasePage() {
     const [stats, setStats] = useState(null);
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filters, setFilters] = useState({ search: '', categoryId: '' });
+    const [filters, setFilters] = useState({ ...KB_FILTER_DEFAULTS });
     const [viewMode, setViewMode] = useState('list'); // DEFAULT TO LIST VIEW
-    const [showFilters, setShowFilters] = useState(true);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState({ categoryId: '' });
+
+    const drawerInputSx = useMemo(
+        () => ({
+            '& .MuiOutlinedInput-root': {
+                bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
+                borderRadius: 2,
+                '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
+                '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
+                '&.Mui-focused fieldset': { borderColor: '#2563eb' },
+            },
+            '& .MuiInputLabel-root': { color: textSecondary },
+            '& .MuiSelect-icon': { color: textSecondary },
+        }),
+        [isDark, textSecondary]
+    );
+
+    const activeDrawerFilterCount = useMemo(
+        () => (filters.categoryId ? 1 : 0),
+        [filters.categoryId]
+    );
+
+    const openFilterDrawer = () => {
+        setDraftFilters({ categoryId: filters.categoryId || '' });
+        setFilterDrawerOpen(true);
+    };
+
+    const handleApplyDrawerFilters = () => {
+        setFilters((prev) => ({ ...prev, categoryId: draftFilters.categoryId }));
+    };
+
+    const handleClearDrawerOnly = () => {
+        setDraftFilters({ categoryId: '' });
+        setFilters((prev) => ({ ...prev, categoryId: '' }));
+    };
+
+    const clearAllFilters = () => {
+        setFilters({ ...KB_FILTER_DEFAULTS });
+        setDraftFilters({ categoryId: '' });
+    };
+
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
@@ -417,10 +433,6 @@ export default function KnowledgeBasePage() {
         },
         '& .MuiInputLabel-root': { color: textSecondary },
         '& .MuiSelect-icon': { color: textSecondary }
-    };
-
-    const clearFilters = () => {
-        setFilters({ search: '', categoryId: '' });
     };
 
     // Modal State
@@ -670,116 +682,120 @@ export default function KnowledgeBasePage() {
                 />
             </Box>
 
-            {/* FILTER SECTION */}
-            <Box sx={{
-                mb: 3,
-                background: filterBg,
-                border: cardBorder,
-                borderRadius: '16px',
-                overflow: 'hidden'
-            }}>
-                <Box sx={{
+            {/* Filtros — barra compacta + drawer (categoria); busca e vista na mesma linha */}
+            <Box
+                sx={{
+                    mb: 3,
                     p: 2,
+                    borderRadius: '16px',
+                    bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
+                    border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
                     alignItems: 'center',
-                    borderBottom: showFilters ? cardBorder : 'none'
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-                        <FilterIcon fontSize="small" />
-                        <Typography fontWeight={600}>Filtros</Typography>
-                        {(() => {
-                            const activeCount = [filters.search, filters.categoryId].filter(Boolean).length;
-                            return activeCount > 0 ? (
-                                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
-                            ) : null;
-                        })()}
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Button
-                            size="small"
-                            startIcon={<RefreshIcon />}
-                            onClick={clearFilters}
-                            sx={{
-                                color: textSecondary,
-                                textTransform: 'none',
-                                '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.06)' }
-                            }}
-                        >
-                            Limpar
-                        </Button>
+                    gap: 2,
+                    justifyContent: 'space-between',
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                    <Button
+                        size="medium"
+                        startIcon={<FilterAlt />}
+                        onClick={openFilterDrawer}
+                        sx={{
+                            color: isDark ? '#f1f5f9' : '#0f172a',
+                            textTransform: 'none',
+                            fontWeight: 600,
+                            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+                        }}
+                    >
+                        Filtros
+                    </Button>
+                    {activeDrawerFilterCount > 0 ? (
                         <Box
                             sx={{
-                                display: 'flex',
-                                bgcolor: surfaceBg,
-                                border: cardBorder,
-                                borderRadius: '8px',
-                                padding: '4px'
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: '10px',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                bgcolor: 'rgba(37, 99, 235, 0.15)',
+                                color: '#2563eb',
                             }}
                         >
-                            {/* Inverted Icons logic: ListViewIcon sets 'list', GridViewIcon sets 'grid' */}
-                            <ViewToggleBtn
-                                active={viewMode === 'list'}
-                                icon={<ListViewIcon sx={{ fontSize: 18 }} />}
-                                onClick={() => setViewMode('list')}
-                                theme={themeTokens}
-                            />
-                            <ViewToggleBtn
-                                active={viewMode === 'grid'}
-                                icon={<GridViewIcon sx={{ fontSize: 18 }} />}
-                                onClick={() => setViewMode('grid')}
-                                theme={themeTokens}
-                            />
+                            {activeDrawerFilterCount}
                         </Box>
-                        <IconButton
-                            size="small"
-                            onClick={() => setShowFilters(!showFilters)}
-                            sx={{ color: textSecondary }}
-                        >
-                            <span className="material-icons-round" style={{ fontSize: '18px' }}>{showFilters ? 'expand_less' : 'expand_more'}</span>
-                        </IconButton>
-                    </Box>
+                    ) : null}
+                    <TextField
+                        label="Buscar"
+                        placeholder="Título, conteúdo ou tags..."
+                        size="small"
+                        value={filters.search}
+                        onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
+                        sx={{ ...inputSx, minWidth: 220, flex: '1 1 240px', maxWidth: 480 }}
+                    />
+                    <Button
+                        size="small"
+                        startIcon={<Refresh />}
+                        onClick={clearAllFilters}
+                        sx={{
+                            color: isDark ? '#94a3b8' : '#64748b',
+                            textTransform: 'none',
+                            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+                        }}
+                    >
+                        Limpar tudo
+                    </Button>
                 </Box>
-
-                <Collapse in={showFilters}>
-                    <Box sx={{ p: 3 }}>
-                        {/* ... Filters content same as before ... */}
-                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 2, mb: 2 }}>
-                            <TextField
-                                label="Buscar"
-                                placeholder="Pesquisar por titulo, conteudo ou tags..."
-                                size="small"
-                                value={filters.search}
-                                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                                sx={inputSx}
-                            />
-                        </Box>
-                        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                            <CategoryPill
-                                label="Todos"
-                                count={totalArticles}
-                                active={filters.categoryId === ''}
-                                onClick={() => setFilters({ ...filters, categoryId: '' })}
-                                theme={themeTokens}
-                            />
-                            {stats?.categories?.map((cat) => (
-                                <CategoryPill
-                                    key={cat.id}
-                                    label={cat.name}
-                                    count={cat.value}
-                                    color={cat.color}
-                                    active={filters.categoryId === cat.id}
-                                    onClick={() => setFilters({
-                                        ...filters,
-                                        categoryId: filters.categoryId === cat.id ? '' : cat.id
-                                    })}
-                                    theme={themeTokens}
-                                />
-                            ))}
-                        </Box>
-                    </Box>
-                </Collapse>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        bgcolor: surfaceBg,
+                        border: cardBorder,
+                        borderRadius: '8px',
+                        padding: '4px',
+                        ml: { xs: 0, sm: 'auto' },
+                    }}
+                >
+                    <ViewToggleBtn
+                        active={viewMode === 'list'}
+                        icon={<ListViewIcon sx={{ fontSize: 18 }} />}
+                        onClick={() => setViewMode('list')}
+                        theme={themeTokens}
+                    />
+                    <ViewToggleBtn
+                        active={viewMode === 'grid'}
+                        icon={<GridViewIcon sx={{ fontSize: 18 }} />}
+                        onClick={() => setViewMode('grid')}
+                        theme={themeTokens}
+                    />
+                </Box>
             </Box>
+
+            <FilterDrawer
+                open={filterDrawerOpen}
+                onClose={() => setFilterDrawerOpen(false)}
+                onApply={handleApplyDrawerFilters}
+                onClear={handleClearDrawerOnly}
+                title="Filtros da base de conhecimento"
+            >
+                <TextField
+                    select
+                    fullWidth
+                    label="Categoria"
+                    size="small"
+                    value={draftFilters.categoryId}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
+                    sx={drawerInputSx}
+                >
+                    <MenuItem value="">Todas as categorias</MenuItem>
+                    {stats?.categories?.map((cat) => (
+                        <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name} {cat.value != null ? `(${cat.value})` : ''}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </FilterDrawer>
 
             {/* ARTICLES SECTION */}
             <Box

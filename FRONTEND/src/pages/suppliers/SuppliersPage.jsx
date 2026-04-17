@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
-import { Box, Typography, Button, IconButton, Tooltip, TextField, Collapse, useTheme, MenuItem, Checkbox } from '@mui/material';
+import { Box, Typography, Button, IconButton, Tooltip, TextField, MenuItem, Checkbox } from '@mui/material';
 import { FilterAlt, Refresh, Delete as DeleteIcon } from '@mui/icons-material';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
+import FilterDrawer from '../../components/common/FilterDrawer';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
 import SupplierModal from '../../components/modals/SupplierModal';
@@ -18,9 +19,14 @@ import { useUndoToast } from '../../hooks/useUndoToast';
 
 import './SuppliersPage.css';
 
+const SUPPLIER_DRAWER_DEFAULTS = {
+  status: '',
+  category: '',
+  rating: '',
+};
+
 const SuppliersPage = () => {
   const { mode } = useContext(ThemeContext);
-  const theme = useTheme();
   const isDark = mode === 'dark';
   const { hasPermission } = useContext(AuthContext);
   const canWrite = hasPermission('SUPPLIERS', 'CREATE');
@@ -30,7 +36,8 @@ const SuppliersPage = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(true);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [draftFilters, setDraftFilters] = useState({ ...SUPPLIER_DRAWER_DEFAULTS });
 
   // Modal States
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,9 +51,7 @@ const SuppliersPage = () => {
   const [selectedIds, setSelectedIds] = useState([]);
 
   const [filters, setFilters, clearFilters] = usePersistedFilters('suppliers', {
-    status: '',
-    category: '',
-    rating: ''
+    ...SUPPLIER_DRAWER_DEFAULTS,
   });
 
   const fetchSuppliers = async () => {
@@ -84,6 +89,50 @@ const SuppliersPage = () => {
       return matchesSearch && matchesStatus && matchesCategory && matchesRating;
     });
   }, [suppliers, searchTerm, filters]);
+
+  const activeDrawerFilterCount = useMemo(
+    () =>
+      (filters.status ? 1 : 0) +
+      (filters.category ? 1 : 0) +
+      (filters.rating ? 1 : 0),
+    [filters.status, filters.category, filters.rating]
+  );
+
+  const drawerInputSx = useMemo(
+    () => ({
+      '& .MuiOutlinedInput-root': {
+        bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+        borderRadius: 2,
+        color: isDark ? '#f1f5f9' : '#0f172a',
+        '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)' },
+        '&:hover fieldset': { borderColor: 'rgba(6, 182, 212, 0.5)' },
+        '&.Mui-focused fieldset': { borderColor: '#06b6d4' },
+      },
+      '& .MuiInputLabel-root': { color: isDark ? '#94a3b8' : '#64748b' },
+      '& .MuiSelect-icon': { color: isDark ? '#94a3b8' : '#64748b' },
+    }),
+    [isDark]
+  );
+
+  const openFilterDrawer = () => {
+    setDraftFilters({ ...filters });
+    setFilterDrawerOpen(true);
+  };
+
+  const handleApplyDrawerFilters = () => {
+    setFilters({ ...draftFilters });
+  };
+
+  const handleClearDrawerOnly = () => {
+    setDraftFilters({ ...SUPPLIER_DRAWER_DEFAULTS });
+    setFilters({ ...SUPPLIER_DRAWER_DEFAULTS });
+  };
+
+  const clearAllFilters = () => {
+    clearFilters();
+    setDraftFilters({ ...SUPPLIER_DRAWER_DEFAULTS });
+    setSearchTerm('');
+  };
 
   // KPIs
   const kpis = useMemo(() => ({
@@ -204,24 +253,9 @@ const SuppliersPage = () => {
   const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
   const textSecondary = isDark ? '#64748b' : '#475569';
   const textMuted = isDark ? '#94a3b8' : '#64748b';
-  const borderSubtle = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
   const tableBorder = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.08)';
   const tableHeaderBg = isDark ? '#1c2632' : '#f8fafc';
   const tableRowHover = isDark ? '#1c2632' : '#f1f5f9';
-
-  // Theme-aware input style
-  const inputSx = {
-    '& .MuiOutlinedInput-root': {
-      bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-      borderRadius: 2,
-      color: textPrimary,
-      '& fieldset': { borderColor: borderSubtle },
-      '&:hover fieldset': { borderColor: 'rgba(6, 182, 212, 0.5)' },
-      '&.Mui-focused fieldset': { borderColor: '#06b6d4' }
-    },
-    '& .MuiInputLabel-root': { color: textMuted },
-    '& .MuiSelect-icon': { color: textMuted }
-  };
 
   return (
     <Box className="suppliers-page">
@@ -256,106 +290,117 @@ const SuppliersPage = () => {
         </Box>
       </Box>
 
-      {/* Filters Section */}
-      <Box sx={{ ...cardStyle, mb: 3, borderRadius: '16px', overflow: 'hidden' }}>
-        <Box sx={{
+      {/* Filtros — barra compacta + drawer */}
+      <Box
+        sx={{
+          mb: 3,
+          borderRadius: '16px',
+          bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
+          border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
           p: 2,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: showFilters ? '1px solid ' + tableBorder : 'none'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-            <FilterAlt fontSize="small" />
-            <Typography fontWeight={600}>Filtros</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              size="small"
-              startIcon={<Refresh />}
-              onClick={clearFilters}
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Button
+            size="medium"
+            startIcon={<FilterAlt />}
+            onClick={openFilterDrawer}
+            sx={{
+              color: isDark ? '#f1f5f9' : '#0f172a',
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+            }}
+          >
+            Filtros
+          </Button>
+          {activeDrawerFilterCount > 0 ? (
+            <Box
               sx={{
-                color: textSecondary,
-                textTransform: 'none',
-                '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.06)' }
+                px: 1,
+                py: 0.25,
+                borderRadius: '10px',
+                fontSize: '10px',
+                fontWeight: 700,
+                bgcolor: 'rgba(6, 182, 212, 0.15)',
+                color: '#06b6d4',
               }}
             >
-              Limpar
-            </Button>
-            <IconButton
-              size="small"
-              onClick={() => setShowFilters(!showFilters)}
-              sx={{ color: textSecondary }}
-            >
-              <span className="material-icons-round" style={{ fontSize: '18px' }}>
-                {showFilters ? 'expand_less' : 'expand_more'}
-              </span>
-            </IconButton>
-          </Box>
+              {activeDrawerFilterCount}
+            </Box>
+          ) : null}
         </Box>
-
-        <Collapse in={showFilters}>
-          <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2 }}>
-            <TextField
-              label="Razão Social / Nome"
-              placeholder="Buscar fornecedor..."
-              size="small"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                ...inputSx,
-                '& .MuiOutlinedInput-root': {
-                  ...inputSx['& .MuiOutlinedInput-root'],
-                  height: '40px'
-                }
-              }}
-            />
-
-            <TextField
-              select
-              label="Status"
-              size="small"
-              value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todos os Status</MenuItem>
-              <MenuItem value="active">Ativo</MenuItem>
-              <MenuItem value="pending">Pendente de Aprovação</MenuItem>
-              <MenuItem value="inactive">Inativo</MenuItem>
-            </TextField>
-
-            <TextField
-              select
-              label="Categoria"
-              size="small"
-              value={filters.category}
-              onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todas as Categorias</MenuItem>
-              <MenuItem value="TECNOLOGIA">Tecnologia</MenuItem>
-              <MenuItem value="SERVICOS">Serviços</MenuItem>
-              <MenuItem value="INFRAESTRUTURA">Infraestrutura</MenuItem>
-              <MenuItem value="CONSULTORIA">Consultoria</MenuItem>
-            </TextField>
-
-            <TextField
-              select
-              label="Avaliação"
-              size="small"
-              value={filters.rating}
-              onChange={(e) => setFilters(prev => ({ ...prev, rating: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todas as Avaliações</MenuItem>
-              <MenuItem value="5">***** 5 estrelas</MenuItem>
-              <MenuItem value="4">**** 4+ estrelas</MenuItem>
-              <MenuItem value="3">*** 3+ estrelas</MenuItem>
-            </TextField>
-          </Box>
-        </Collapse>
+        <Button
+          size="small"
+          startIcon={<Refresh />}
+          onClick={clearAllFilters}
+          sx={{
+            color: isDark ? '#94a3b8' : '#64748b',
+            textTransform: 'none',
+            ml: { xs: 0, sm: 'auto' },
+            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+          }}
+        >
+          Limpar tudo
+        </Button>
       </Box>
+
+      <FilterDrawer
+        open={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        onApply={handleApplyDrawerFilters}
+        onClear={handleClearDrawerOnly}
+        title="Filtros de fornecedores"
+      >
+        <TextField
+          select
+          fullWidth
+          label="Status"
+          size="small"
+          value={draftFilters.status}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todos os Status</MenuItem>
+          <MenuItem value="active">Ativo</MenuItem>
+          <MenuItem value="pending">Pendente de Aprovação</MenuItem>
+          <MenuItem value="inactive">Inativo</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Categoria"
+          size="small"
+          value={draftFilters.category}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, category: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todas as Categorias</MenuItem>
+          <MenuItem value="TECNOLOGIA">Tecnologia</MenuItem>
+          <MenuItem value="SERVICOS">Serviços</MenuItem>
+          <MenuItem value="INFRAESTRUTURA">Infraestrutura</MenuItem>
+          <MenuItem value="CONSULTORIA">Consultoria</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Avaliação"
+          size="small"
+          value={draftFilters.rating}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, rating: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todas as Avaliações</MenuItem>
+          <MenuItem value="5">***** 5 estrelas</MenuItem>
+          <MenuItem value="4">**** 4+ estrelas</MenuItem>
+          <MenuItem value="3">*** 3+ estrelas</MenuItem>
+        </TextField>
+      </FilterDrawer>
 
       {/* Stats Cards */}
       <Box className="suppliers-stats-grid">
@@ -438,11 +483,53 @@ const SuppliersPage = () => {
 
       {/* Table Section */}
       <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid ' + tableBorder }}>
+        <Box sx={{
+          p: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid ' + tableBorder,
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+        >
           <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
             <span className="material-icons-round" style={{ fontSize: '20px', color: '#06b6d4' }}>list</span>
             Lista de Fornecedores
           </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              flex: '1 1 240px',
+              justifyContent: 'flex-end',
+              minWidth: 0,
+              maxWidth: 400,
+              ml: { xs: 0, md: 2 },
+              background: isDark ? '#1c2632' : '#f8fafc',
+              border: '1px solid ' + tableBorder,
+              borderRadius: '12px',
+              padding: '10px 16px',
+            }}
+          >
+            <span className="material-icons-round" style={{ fontSize: '20px', color: textMuted }}>search</span>
+            <input
+              type="text"
+              placeholder="Buscar por nome, fantasia ou CNPJ..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: isDark ? '#f1f5f9' : '#0f172a',
+                fontSize: '14px',
+              }}
+            />
+          </Box>
         </Box>
 
         <BulkActionsBar

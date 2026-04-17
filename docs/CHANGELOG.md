@@ -33,6 +33,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022 / QA:** Rodada 9 — modais **41–45** (`modal-evidence-batch-09.spec.ts`, `modal-evidence-batch-09-api-mocks.ts`): SMTP em Integrações, submeter despesa (Financeiro), novo fornecedor / visualizar fornecedor, nova tarefa geral em `/tasks`. Mocks: despesas `PREVISTO`, fornecedores, integrações SMTP, `GET /tasks` + `POST /tasks`. Assert do **42** no título do modal (`#g360-modal-title-*`) para evitar colisão com o botão «Enviar para Aprovação». Snapshots em `FRONTEND/e2e/modal-evidence-batch-09.spec.ts-snapshots/`.
 
 ### Changed
+- **KB / Fornecedores / UX:** `KnowledgeBasePage` — filtros inline (`Collapse`, pills) substituídos por **`FilterDrawer`** (categoria a partir das categorias do dashboard) + barra com **Filtros**, busca textual e **Limpar tudo**; toggle lista/grelha mantido. `SuppliersPage` — **`FilterDrawer`** (status, categoria, avaliação), barra compacta + **Limpar tudo**; busca no cabeçalho da tabela; `usePersistedFilters` mantido.
+  - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
+  - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`
 - **Contratos / UX:** `ContractsPage` — filtros inline (`Collapse` + grelha) substituídos por barra compacta + **`FilterDrawer`** (Status, Tipo, Período); badge com número de filtros ativos; **Limpar tudo** na barra (filtros do drawer + texto de busca da tabela); busca só no cabeçalho da lista.
   - `FRONTEND/src/pages/contracts/ContractsPage.jsx`
 - **UX / navegação:** `DarkSidebar` — o corpo do menu deixou de ser um componente React definido **dentro** do pai (cada navegação criava um tipo novo e o React **desmontava/remontava** o sidebar inteiro: scroll do menu ia para o topo e perdia-se o foco). O markup passa a ser JSX reutilizado (`sidebarMarkup`); itens usam `Link` do React Router (`component={Link}`, `to={path}`) em vez de `navigate()` + `onClick`, mantendo navegação SPA e melhor foco. `textDecoration: 'none'` nos itens.
