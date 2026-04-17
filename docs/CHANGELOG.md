@@ -48,7 +48,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 - **Docs / padrões:** `docs/patterns/minhas-aprovacoes.md` — fluxo da tela **Minhas aprovações**, API, tipos e estados; seed de demonstração.
+- **Docs / padrões:** `docs/patterns/portal-suporte-tickets.md` — fluxo do **Portal de Suporte** (`/portal`), estados de chamado, relação com catálogo de serviços; seed de demonstração.
 - **Dev / seed:** `npm run seed:approvals-showcase:all` — um item pendente por tipo (despesa, custo projeto, ata, GMUD, projeto baseline, proposta, orçamento) para testes da esteira; `BACKEND/src/scripts/seed-approvals-showcase.js` + `seed-approvals-showcase-all-tenants.js`; entrada em `BACKEND/package.json`.
+- **Dev / seed:** `npm run seed:portal-tickets:all` — até **5** chamados por serviço do catálogo (um por estado: OPEN … CLOSED), títulos `[Seed Portal] …`; `BACKEND/src/scripts/seed-portal-tickets-showcase.js` + `seed-portal-tickets-showcase-all-tenants.js`.
 - **Dev / tenant modelo:** script `BACKEND/src/scripts/seed-model-tenant-devcraft.js` + npm `npm run seed:devcraft` — provisiona o tenant **`devcraft`** (schema `tenant_devcraft`) com `prisma db push`, registo no catálogo, seed base (`TenantService.seedTenant`), integrações placeholder (Azure/LDAP desligadas), catálogo ITIL, 10 fornecedores e fluxo **3 áreas** (departamentos, CC, projetos, tarefas gerais/de projeto, incidentes, riscos, ativos, GMUD, despesas). Admin padrão: `admin@devcraft.local` / `DevCraft@2026` (override: `DEVCRAFT_ADMIN_EMAIL`, `DEVCRAFT_ADMIN_PASSWORD`). Idempotente: reexecutar sincroniza schema e reforça seeds ITIL/fornecedores/3 áreas.
   - `BACKEND/src/scripts/seed-model-tenant-devcraft.js`
   - `BACKEND/package.json` (script `seed:devcraft`)
