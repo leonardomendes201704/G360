@@ -70,6 +70,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`
   - `FRONTEND/src/pages/tasks/TasksPage.jsx`
   - `FRONTEND/src/pages/tasks/__tests__/TasksPage.test.jsx`
+- **Incidentes / UI:** `IncidentsPage` — KPIs com **`StatsCard`** + **`KpiGrid`** (5 cartões); clique mantém o comportamento anterior (filtro por status ou SLA estourado).
+  - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
 ## [2026-04-16]
 

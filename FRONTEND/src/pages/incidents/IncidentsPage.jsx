@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import { useTheme } from '@mui/material/styles';
 import {
-    Add, Search, FilterAlt, Refresh, Warning, CheckCircle,
-    Loop, DoneAll, ErrorOutline, AccessTime, FormatListBulleted, ViewKanban
+    Add, Search, FilterAlt, Refresh, FormatListBulleted, ViewKanban
 } from '@mui/icons-material';
 import {
     Box, Typography, Button, TextField, MenuItem, InputAdornment,
@@ -27,6 +26,8 @@ import usePersistedFilters from '../../hooks/usePersistedFilters';
 import { useUndoToast } from '../../hooks/useUndoToast';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import FilterDrawer from '../../components/common/FilterDrawer';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import { Delete as DeleteIcon, Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
 
 const DRAWER_FILTER_DEFAULTS = {
@@ -234,12 +235,22 @@ const IncidentsPage = () => {
 
 
     const statCards = [
-        { key: 'open', label: 'Abertos', value: kpis.open, icon: <Warning />, color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.15)' },
-        { key: 'inProgress', label: 'Em Andamento', value: kpis.inProgress, icon: <Loop />, color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.15)' },
-        { key: 'resolved', label: 'Resolvidos', value: kpis.resolved, icon: <CheckCircle />, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)' },
-        { key: 'resolvedToday', label: 'Resolvidos Hoje', value: kpis.resolvedToday, icon: <DoneAll />, color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.15)' },
-        { key: 'slaBreached', label: 'SLA Estourado', value: kpis.slaBreached, icon: <ErrorOutline />, color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.15)' }
+        { key: 'open', label: 'Abertos', value: kpis.open, iconName: 'warning', color: '#f59e0b' },
+        { key: 'inProgress', label: 'Em Andamento', value: kpis.inProgress, iconName: 'loop', color: '#3b82f6' },
+        { key: 'resolved', label: 'Resolvidos', value: kpis.resolved, iconName: 'check_circle', color: '#10b981' },
+        { key: 'resolvedToday', label: 'Resolvidos Hoje', value: kpis.resolvedToday, iconName: 'done_all', color: '#3b82f6' },
+        { key: 'slaBreached', label: 'SLA Estourado', value: kpis.slaBreached, iconName: 'error_outline', color: '#ef4444' }
     ];
+
+    const handleKpiClick = (cardKey) => {
+        if (cardKey === 'slaBreached') setFilters((prev) => ({ ...prev, slaBreached: 'true', status: '' }));
+        else if (cardKey === 'resolvedToday') setFilters((prev) => ({ ...prev, status: 'RESOLVED', slaBreached: '' }));
+        else setFilters((prev) => ({
+            ...prev,
+            status: cardKey === 'open' ? 'OPEN' : cardKey === 'inProgress' ? 'IN_PROGRESS' : cardKey === 'resolved' ? 'RESOLVED' : '',
+            slaBreached: ''
+        }));
+    };
 
     const openFilterDrawer = () => {
         setDraftFilters({
@@ -427,39 +438,18 @@ const IncidentsPage = () => {
                 </TextField>
             </FilterDrawer>
 
-            {/* KPI Cards */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 2, mb: 3 }}>
-                {statCards.map((card, idx) => (
-                    <Box
+            <KpiGrid maxColumns={5}>
+                {statCards.map((card) => (
+                    <StatsCard
                         key={card.key}
-                        sx={{
-                            p: 2.5, borderRadius: '16px',
-                            background: cardBg,
-                            backdropFilter: isDark ? 'blur(10px)' : 'none',
-                            border: cardBorder,
-                            boxShadow: cardShadow,
-                            position: 'relative', overflow: 'hidden',
-                            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer',
-                            animation: `kpiSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${idx * 0.08}s both`,
-                            '@keyframes kpiSlideIn': {
-                                '0%': { opacity: 0, transform: 'translateY(20px) scale(0.98)' },
-                                '100%': { opacity: 1, transform: 'translateY(0) scale(1)' },
-                            },
-                            '&:hover': { transform: 'translateY(-4px)', borderColor: 'rgba(37, 99, 235, 0.3)', boxShadow: isDark ? '0 12px 28px rgba(0, 0, 0, 0.4)' : '0 12px 28px rgba(0, 0, 0, 0.1)' },
-                            '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: 3, borderRadius: '16px 16px 0 0', background: card.color }
-                        }}
-                        onClick={() => {
-                            if (card.key === 'slaBreached') setFilters(prev => ({ ...prev, slaBreached: 'true', status: '' }));
-                            else if (card.key === 'resolvedToday') setFilters(prev => ({ ...prev, status: 'RESOLVED', slaBreached: '' }));
-                            else setFilters(prev => ({ ...prev, status: card.key === 'open' ? 'OPEN' : card.key === 'inProgress' ? 'IN_PROGRESS' : card.key === 'resolved' ? 'RESOLVED' : '', slaBreached: '' }));
-                        }}
-                    >
-                        <Box sx={{ width: 40, height: 40, borderRadius: 2.5, bgcolor: card.bgColor, color: card.color, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1.5 }}>{card.icon}</Box>
-                        <Typography sx={{ fontSize: 11, fontWeight: 500, color: textSecondary, textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5 }}>{card.label}</Typography>
-                        <Typography sx={{ fontSize: 32, fontWeight: 700, color: textPrimary, lineHeight: 1 }}>{card.value}</Typography>
-                    </Box>
+                        title={card.label}
+                        value={card.value}
+                        iconName={card.iconName}
+                        hexColor={card.color}
+                        onClick={() => handleKpiClick(card.key)}
+                    />
                 ))}
-            </Box>
+            </KpiGrid>
 
             {/* Table Section */}
             <Box sx={{ borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
