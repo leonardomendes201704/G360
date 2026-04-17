@@ -31,6 +31,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022:** `AssetsPage` — botão **Categorias** (`data-testid="btn-gerir-categorias"`) abre **`AssetCategoryModal`** (criar/editar categorias com `createAssetCategory` / `updateAssetCategory`).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **US-022:** `ProjectDetailsPage` passa a usar **`AddMemberModal`** no fluxo «Adicionar membro»; **`MemberModal`** mantém-se para editar/visualizar.
+- **ITSM / Projetos / Tarefas:** Filtros alinhados à página de **Incidentes** — componente **`FilterDrawer`** (painel lateral direito, Aplicar / Limpar), barra compacta com botão **Filtros**, contagem de filtros ativos e **Limpar tudo**. **GMUD** (`ChangeRequestsPage`): removido o bloco expansível (`Collapse`); incluído filtro **Data agendada — fim** (`dateTo`) no drawer. **Projetos** (`ProjectsListPage`): status, gerente e tech lead no drawer; **busca** passou para o cabeçalho da tabela. **Tarefas gerais** (`TasksPage`): busca na barra ao lado de **Limpar tudo**; prioridade **Crítica** no drawer; teste unitário ajustado (filtro por prioridade).
+  - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`
+  - `FRONTEND/src/pages/tasks/TasksPage.jsx`
+  - `FRONTEND/src/pages/tasks/__tests__/TasksPage.test.jsx`
 
 ## [2026-04-16]
 

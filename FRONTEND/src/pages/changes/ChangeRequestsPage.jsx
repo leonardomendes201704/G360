@@ -6,8 +6,9 @@ import {
 } from '@mui/icons-material';
 import {
     Box, Paper, Typography, Button, TextField, MenuItem,
-    InputAdornment, IconButton, Collapse, Tooltip, useTheme
+    InputAdornment, IconButton, Tooltip, useTheme
 } from '@mui/material';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -25,11 +26,22 @@ import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import ChangeModal from '../../components/modals/ChangeModal';
 import ChangeViewModal from '../../components/modals/ChangeViewModal';
 
+const GMUD_DRAWER_FILTER_DEFAULTS = {
+    status: '',
+    risk: '',
+    type: '',
+    impact: '',
+    responsibleId: '',
+    dateFrom: '',
+    dateTo: '',
+};
+
 const ChangeRequestsPage = () => {
     const [changes, setChanges] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showFilters, setShowFilters] = useState(true);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState(GMUD_DRAWER_FILTER_DEFAULTS);
 
     // Theme context
     const { mode } = useContext(ThemeContext);
@@ -73,6 +85,11 @@ const ChangeRequestsPage = () => {
         dateFrom: '',
         dateTo: ''
     });
+
+    const activeDrawerFilterCount = useMemo(
+        () => [filters.status, filters.risk, filters.type, filters.impact, filters.responsibleId, filters.dateFrom, filters.dateTo].filter(Boolean).length,
+        [filters.status, filters.risk, filters.type, filters.impact, filters.responsibleId, filters.dateFrom, filters.dateTo]
+    );
 
     // Pagination
     const [page, setPage] = useState(1);
@@ -345,16 +362,33 @@ const ChangeRequestsPage = () => {
     };
 
     const clearFilters = () => {
+        setDraftFilters({ ...GMUD_DRAWER_FILTER_DEFAULTS });
         setFilters({
             search: '',
-            status: '',
-            risk: '',
-            type: '',
-            impact: '',
-            responsibleId: '',
-            dateFrom: '',
-            dateTo: ''
+            ...GMUD_DRAWER_FILTER_DEFAULTS,
         });
+    };
+
+    const openFilterDrawer = () => {
+        setDraftFilters({
+            status: filters.status,
+            risk: filters.risk,
+            type: filters.type,
+            impact: filters.impact,
+            responsibleId: filters.responsibleId,
+            dateFrom: filters.dateFrom,
+            dateTo: filters.dateTo,
+        });
+        setFilterDrawerOpen(true);
+    };
+
+    const handleApplyDrawerFilters = () => {
+        setFilters((prev) => ({ ...prev, ...draftFilters }));
+    };
+
+    const handleClearDrawerOnly = () => {
+        setDraftFilters({ ...GMUD_DRAWER_FILTER_DEFAULTS });
+        setFilters((prev) => ({ ...prev, ...GMUD_DRAWER_FILTER_DEFAULTS }));
     };
 
     // Stat Cards Configuration
@@ -521,7 +555,7 @@ const ChangeRequestsPage = () => {
                 </Box>
             </Box>
 
-            {/* Filters Section */}
+            {/* Filtros — barra compacta + drawer (padrão incidentes) */}
             <Box
                 sx={{
                     mb: 3,
@@ -538,140 +572,167 @@ const ChangeRequestsPage = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-                        <FilterAlt fontSize="small" />
-                        <Typography fontWeight={600}>Filtros</Typography>
-                        {(() => {
-                            const activeCount = [filters.status, filters.risk, filters.type, filters.impact, filters.responsibleId, filters.dateFrom, filters.dateTo].filter(Boolean).length;
-                            return activeCount > 0 ? (
-                                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
-                            ) : null;
-                        })()}
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
                         <Button
-                            size="small"
-                            startIcon={<Refresh />}
-                            onClick={clearFilters}
+                            size="medium"
+                            startIcon={<FilterAlt />}
+                            onClick={openFilterDrawer}
                             sx={{
-                                color: textMuted,
+                                color: textPrimary,
                                 textTransform: 'none',
-                                '&:hover': { bgcolor: filterHoverBg }
+                                fontWeight: 600,
+                                '&:hover': { bgcolor: filterHoverBg },
                             }}
                         >
-                            Limpar
+                            Filtros
                         </Button>
-                        <IconButton
-                            size="small"
-                            onClick={() => setShowFilters(!showFilters)}
-                            sx={{ color: textMuted }}
-                        >
-                            <span className="material-icons-round">{showFilters ? 'expand_less' : 'expand_more'}</span>
-                        </IconButton>
+                        {activeDrawerFilterCount > 0 ? (
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                                {activeDrawerFilterCount}
+                            </Box>
+                        ) : null}
                     </Box>
+                    <Button
+                        size="small"
+                        startIcon={<Refresh />}
+                        onClick={clearFilters}
+                        sx={{
+                            color: textMuted,
+                            textTransform: 'none',
+                            '&:hover': { bgcolor: filterHoverBg }
+                        }}
+                    >
+                        Limpar tudo
+                    </Button>
                 </Box>
-
-                <Collapse in={showFilters}>
-                    <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2 }}>
-                        <TextField
-                            select
-                            label="Status"
-                            size="small"
-                            value={filters.status}
-                            onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="">Todos os Status</MenuItem>
-                            <MenuItem value="GROUP_PENDING">Todas Pendentes (Rascunho + Pendente)</MenuItem>
-                            <MenuItem value="GROUP_APPROVED">Todas Aprovadas (Aguardando + Aprovadas)</MenuItem>
-                            <MenuItem value="GROUP_COMPLETED">Todas Concluidas (Completas + Fechadas)</MenuItem>
-                            <MenuItem value="GROUP_REJECTED">Todas Rejeitadas (Rejeitadas + Falhas)</MenuItem>
-                            <MenuItem value="DRAFT">Rascunho</MenuItem>
-                            <MenuItem value="PENDING_APPROVAL">Pendente Aprovação</MenuItem>
-                            <MenuItem value="APPROVED">Aprovada</MenuItem>
-                            <MenuItem value="APPROVED_WAITING_EXECUTION">Aguardando Execução</MenuItem>
-                            <MenuItem value="EXECUTED">Em Execução</MenuItem>
-                            <MenuItem value="COMPLETED">Concluída</MenuItem>
-                            <MenuItem value="REJECTED">Rejeitada</MenuItem>
-                            <MenuItem value="FAILED">Falha</MenuItem>
-                        </TextField>
-
-                        <TextField
-                            select
-                            label="Prioridade/Risco"
-                            size="small"
-                            value={filters.risk}
-                            onChange={(e) => setFilters(prev => ({ ...prev, risk: e.target.value }))}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="">Todas as Prioridades</MenuItem>
-                            <MenuItem value="CRITICO">Crítica</MenuItem>
-                            <MenuItem value="ALTO">Alta</MenuItem>
-                            <MenuItem value="MEDIO">Média</MenuItem>
-                            <MenuItem value="BAIXO">Baixa</MenuItem>
-                        </TextField>
-
-                        <TextField
-                            select
-                            label="Tipo de Mudança"
-                            size="small"
-                            value={filters.type}
-                            onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="">Todos os Tipos</MenuItem>
-                            <MenuItem value="EMERGENCIAL">Emergencial</MenuItem>
-                            <MenuItem value="PADRAO">Padrão</MenuItem>
-                            <MenuItem value="NORMAL">Planejada</MenuItem>
-                        </TextField>
-
-                        <TextField
-                            type="date"
-                            label="Data Início"
-                            size="small"
-                            value={filters.dateFrom}
-                            onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-                            InputLabelProps={{ shrink: true }}
-                            sx={{
-                                ...inputSx,
-                                minWidth: 200,
-                                '& .MuiOutlinedInput-root': {
-                                    ...inputSx['& .MuiOutlinedInput-root'],
-                                    height: '40px'
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            select
-                            label="Responsável"
-                            size="small"
-                            value={filters.responsibleId}
-                            onChange={(e) => setFilters(prev => ({ ...prev, responsibleId: e.target.value }))}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="">Todos os Responsáveis</MenuItem>
-                            {users.map(user => (
-                                <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
-                            ))}
-                        </TextField>
-
-                        <TextField
-                            select
-                            label="Impacto"
-                            size="small"
-                            value={filters.impact}
-                            onChange={(e) => setFilters(prev => ({ ...prev, impact: e.target.value }))}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="">Todos os Impactos</MenuItem>
-                            <MenuItem value="MAIOR">Alto</MenuItem>
-                            <MenuItem value="SIGNIFICATIVO">Médio</MenuItem>
-                            <MenuItem value="MENOR">Baixo</MenuItem>
-                        </TextField>
-                    </Box>
-                </Collapse>
             </Box>
+
+            <FilterDrawer
+                open={filterDrawerOpen}
+                onClose={() => setFilterDrawerOpen(false)}
+                onApply={handleApplyDrawerFilters}
+                onClear={handleClearDrawerOnly}
+                title="Filtros de GMUD"
+            >
+                <TextField
+                    select
+                    fullWidth
+                    label="Status"
+                    size="small"
+                    value={draftFilters.status}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos os Status</MenuItem>
+                    <MenuItem value="GROUP_PENDING">Todas Pendentes (Rascunho + Pendente)</MenuItem>
+                    <MenuItem value="GROUP_APPROVED">Todas Aprovadas (Aguardando + Aprovadas)</MenuItem>
+                    <MenuItem value="GROUP_COMPLETED">Todas Concluidas (Completas + Fechadas)</MenuItem>
+                    <MenuItem value="GROUP_REJECTED">Todas Rejeitadas (Rejeitadas + Falhas)</MenuItem>
+                    <MenuItem value="DRAFT">Rascunho</MenuItem>
+                    <MenuItem value="PENDING_APPROVAL">Pendente Aprovação</MenuItem>
+                    <MenuItem value="APPROVED">Aprovada</MenuItem>
+                    <MenuItem value="APPROVED_WAITING_EXECUTION">Aguardando Execução</MenuItem>
+                    <MenuItem value="EXECUTED">Em Execução</MenuItem>
+                    <MenuItem value="COMPLETED">Concluída</MenuItem>
+                    <MenuItem value="REJECTED">Rejeitada</MenuItem>
+                    <MenuItem value="FAILED">Falha</MenuItem>
+                </TextField>
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Prioridade/Risco"
+                    size="small"
+                    value={draftFilters.risk}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, risk: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todas as Prioridades</MenuItem>
+                    <MenuItem value="CRITICO">Crítica</MenuItem>
+                    <MenuItem value="ALTO">Alta</MenuItem>
+                    <MenuItem value="MEDIO">Média</MenuItem>
+                    <MenuItem value="BAIXO">Baixa</MenuItem>
+                </TextField>
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Tipo de Mudança"
+                    size="small"
+                    value={draftFilters.type}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, type: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos os Tipos</MenuItem>
+                    <MenuItem value="EMERGENCIAL">Emergencial</MenuItem>
+                    <MenuItem value="PADRAO">Padrão</MenuItem>
+                    <MenuItem value="NORMAL">Planejada</MenuItem>
+                </TextField>
+
+                <TextField
+                    type="date"
+                    fullWidth
+                    label="Data agendada — início"
+                    size="small"
+                    value={draftFilters.dateFrom}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, dateFrom: e.target.value }))}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{
+                        ...inputSx,
+                        '& .MuiOutlinedInput-root': {
+                            ...inputSx['& .MuiOutlinedInput-root'],
+                            height: '40px'
+                        }
+                    }}
+                />
+
+                <TextField
+                    type="date"
+                    fullWidth
+                    label="Data agendada — fim"
+                    size="small"
+                    value={draftFilters.dateTo}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, dateTo: e.target.value }))}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{
+                        ...inputSx,
+                        '& .MuiOutlinedInput-root': {
+                            ...inputSx['& .MuiOutlinedInput-root'],
+                            height: '40px'
+                        }
+                    }}
+                />
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Responsável"
+                    size="small"
+                    value={draftFilters.responsibleId}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, responsibleId: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos os Responsáveis</MenuItem>
+                    {users.map(user => (
+                        <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>
+                    ))}
+                </TextField>
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Impacto"
+                    size="small"
+                    value={draftFilters.impact}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, impact: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="">Todos os Impactos</MenuItem>
+                    <MenuItem value="MAIOR">Alto</MenuItem>
+                    <MenuItem value="SIGNIFICATIVO">Médio</MenuItem>
+                    <MenuItem value="MENOR">Baixo</MenuItem>
+                </TextField>
+            </FilterDrawer>
 
             {/* DASHBOARD VIEW */}
             {viewMode === 'DASHBOARD' && (

@@ -76,30 +76,19 @@ describe('TasksPage', () => {
         expect(ones.length).toBeGreaterThanOrEqual(2); // One for TODO, One for DONE
     });
 
-    it('should filter tasks by status', async () => {
+    it('should filter tasks by priority via drawer', async () => {
         renderWithProviders(<TasksPage />);
         await waitFor(() => expect(screen.getByText('Tarefas Gerais')).toBeInTheDocument());
 
-        // Initial Kanban view (light mode)
         expect(screen.getByTestId('kanban-view')).toHaveTextContent('Kanban Items: 2');
 
-        // Filter by Status "DONE"
-        // Find the status select. It's the first select in the filters area.
-        // We can use getAllByRole('combobox') or querySelector. Use container querySelector for safety like we learned.
+        fireEvent.click(screen.getByRole('button', { name: /Filtros/i }));
+        const prioritySelect = await screen.findByLabelText(/Prioridade/i);
+        fireEvent.mouseDown(prioritySelect);
+        const alta = await screen.findByRole('option', { name: /^Alta$/i });
+        fireEvent.click(alta);
+        fireEvent.click(screen.getByRole('button', { name: /Aplicar/i }));
 
-        // Wait, looking at code: InputLabel is "Status".
-        // Let's rely on firing event on the hidden input or finding the select if it's native.
-        // The code uses `TextField select` which renders a MUI Select.
-        // Unlike native select, MUI select is harder to test with fireEvent.change on the visible element.
-        // We use `mouseDown` on the select button then `click` on the option.
-
-        // However, standard testing library approach:
-        const statusSelect = screen.getByLabelText(/Status/i);
-        fireEvent.mouseDown(statusSelect);
-        const option = await screen.findByRole('option', { name: 'Concluído' });
-        fireEvent.click(option);
-
-        // Expect filtered count
         expect(screen.getByTestId('kanban-view')).toHaveTextContent('Kanban Items: 1');
     });
 

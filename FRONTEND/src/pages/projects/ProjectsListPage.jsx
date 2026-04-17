@@ -1,5 +1,12 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback, useContext, useMemo } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import {
+    Box, Button, TextField, MenuItem, FormGroup, FormControlLabel, Checkbox, Typography,
+} from '@mui/material';
+import FilterAlt from '@mui/icons-material/FilterAlt';
+import Refresh from '@mui/icons-material/Refresh';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import debounce from 'lodash/debounce';
@@ -115,7 +122,23 @@ const formatDate = (dateString) => {
     return date.toLocaleDateString('pt-BR');
 };
 
+const PROJECT_DRAWER_DEFAULTS = {
+    status: [],
+    managerId: 'ALL',
+    techLeadId: 'ALL',
+};
+
+const PROJECT_STATUS_OPTIONS = [
+    { value: 'PLANNING', label: 'Planejamento' },
+    { value: 'IN_PROGRESS', label: 'Em Execução' },
+    { value: 'COMPLETED', label: 'Concluído' },
+    { value: 'PAUSED', label: 'Pausado' },
+    { value: 'CANCELLED', label: 'Cancelado' },
+];
+
 const ProjectsListPage = () => {
+    const { mode } = useContext(ThemeContext);
+    const isDark = mode === 'dark';
     const { hasPermission } = useContext(AuthContext);
     const canWrite = hasPermission('PROJECTS', 'CREATE');
     const canDeletePerm = hasPermission('PROJECTS', 'DELETE_PROJECT');
@@ -135,7 +158,25 @@ const ProjectsListPage = () => {
         techLeadId: 'ALL'
     });
 
-    const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState(PROJECT_DRAWER_DEFAULTS);
+
+    const activeDrawerFilterCount = useMemo(
+        () => filters.status.length + (filters.managerId !== 'ALL' ? 1 : 0) + (filters.techLeadId !== 'ALL' ? 1 : 0),
+        [filters.status, filters.managerId, filters.techLeadId]
+    );
+
+    const drawerInputSx = useMemo(() => ({
+        '& .MuiOutlinedInput-root': {
+            bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+            borderRadius: 2,
+            '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
+            '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
+            '&.Mui-focused fieldset': { borderColor: '#2563eb' },
+        },
+        '& .MuiInputLabel-root': { color: isDark ? '#94a3b8' : '#64748b' },
+        '& .MuiSelect-icon': { color: isDark ? '#94a3b8' : '#64748b' },
+    }), [isDark]);
 
     const [orderBy, setOrderBy] = useState('name');
     const [orderDirection, setOrderDirection] = useState('asc');
@@ -412,6 +453,40 @@ const ProjectsListPage = () => {
         debouncedFetch(newFilters, 1, orderBy, orderDirection); // fetch page 1 on filter
     };
 
+    const openFilterDrawer = () => {
+        setDraftFilters({
+            status: [...filters.status],
+            managerId: filters.managerId,
+            techLeadId: filters.techLeadId,
+        });
+        setFilterDrawerOpen(true);
+    };
+
+    const handleApplyDrawerFilters = () => {
+        const next = {
+            ...filters,
+            status: [...draftFilters.status],
+            managerId: draftFilters.managerId,
+            techLeadId: draftFilters.techLeadId,
+        };
+        setFilters(next);
+        fetchData(next, 1, orderBy, orderDirection);
+    };
+
+    const handleClearDrawerOnly = () => {
+        const next = { ...filters, ...PROJECT_DRAWER_DEFAULTS };
+        setDraftFilters({ ...PROJECT_DRAWER_DEFAULTS });
+        setFilters(next);
+        fetchData(next, 1, orderBy, orderDirection);
+    };
+
+    const clearAllFilters = () => {
+        const next = { search: '', ...PROJECT_DRAWER_DEFAULTS };
+        setDraftFilters({ ...PROJECT_DRAWER_DEFAULTS });
+        setFilters(next);
+        fetchData(next, 1, orderBy, orderDirection);
+    };
+
     const handleSave = async (data) => {
         try {
             if (selectedProject) {
@@ -604,133 +679,137 @@ const ProjectsListPage = () => {
                     </div>
                 </div>
 
-                {/* Filter Section */}
-                <div className="pl-filter-section">
-                    <div className="pl-filter-row">
-                        <div className="pl-search-input-container">
-                            <span className="material-icons-round">search</span>
-                            <input
-                                data-testid="input-busca-projeto"
-                                type="text"
-                                className="pl-search-input"
-                                placeholder="Buscar por nome ou código..."
-                                value={filters.search}
-                                onChange={(e) => handleFilterChange('search', e.target.value)}
+                {/* Filtros — barra compacta + drawer (padrão incidentes) */}
+                <Box
+                    sx={{
+                        mb: 3,
+                        borderRadius: '16px',
+                        bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
+                        border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
+                        p: 2,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Button
+                            size="medium"
+                            startIcon={<FilterAlt />}
+                            onClick={openFilterDrawer}
+                            sx={{
+                                color: isDark ? '#f1f5f9' : '#0f172a',
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+                            }}
+                        >
+                            Filtros
+                        </Button>
+                        {activeDrawerFilterCount > 0 ? (
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                                {activeDrawerFilterCount}
+                            </Box>
+                        ) : null}
+                    </Box>
+                    <Button
+                        size="small"
+                        startIcon={<Refresh />}
+                        onClick={clearAllFilters}
+                        sx={{
+                            color: isDark ? '#94a3b8' : '#64748b',
+                            textTransform: 'none',
+                            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+                        }}
+                    >
+                        Limpar tudo
+                    </Button>
+                </Box>
+
+                <FilterDrawer
+                    open={filterDrawerOpen}
+                    onClose={() => setFilterDrawerOpen(false)}
+                    onApply={handleApplyDrawerFilters}
+                    onClear={handleClearDrawerOnly}
+                    title="Filtros de projetos"
+                >
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: isDark ? '#e2e8f0' : '#334155' }}>
+                        Status
+                    </Typography>
+                    <FormGroup sx={{ gap: 0.5 }}>
+                        {PROJECT_STATUS_OPTIONS.map((option) => (
+                            <FormControlLabel
+                                key={option.value}
+                                control={(
+                                    <Checkbox
+                                        size="small"
+                                        checked={draftFilters.status.includes(option.value)}
+                                        onChange={() => {
+                                            setDraftFilters((prev) => {
+                                                const nextStatus = prev.status.includes(option.value)
+                                                    ? prev.status.filter((s) => s !== option.value)
+                                                    : [...prev.status, option.value];
+                                                return { ...prev, status: nextStatus };
+                                            });
+                                        }}
+                                    />
+                                )}
+                                label={option.label}
+                                sx={{ '& .MuiFormControlLabel-label': { fontSize: 14 } }}
                             />
-                        </div>
-
-                        <div className="pl-filter-select-container" style={{ position: 'relative' }}>
-                            <span className="pl-filter-label">Status</span>
-                            <div
-                                className="pl-filter-select"
-                                onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
-                                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-                            >
-                                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {filters.status.length === 0 ? 'Todos' :
-                                        filters.status.map(s => {
-                                            const labels = { PLANNING: 'Planejamento', IN_PROGRESS: 'Em Execução', COMPLETED: 'Concluído', PAUSED: 'Pausado', CANCELLED: 'Cancelado' };
-                                            return labels[s] || s;
-                                        }).join(', ')
-                                    }
-                                </span>
-                                <span className="material-icons-round" style={{ fontSize: '18px', marginLeft: '4px' }}>
-                                    {statusDropdownOpen ? 'expand_less' : 'expand_more'}
-                                </span>
-                            </div>
-                            {statusDropdownOpen && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: 0,
-                                    right: 0,
-                                    background: 'var(--card-bg, #fff)',
-                                    border: '1px solid var(--border-color, #e2e8f0)',
-                                    borderRadius: '8px',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                    zIndex: 1000,
-                                    marginTop: '4px',
-                                    overflow: 'hidden'
-                                }}>
-                                    {[
-                                        { value: 'PLANNING', label: 'Planejamento' },
-                                        { value: 'IN_PROGRESS', label: 'Em Execução' },
-                                        { value: 'COMPLETED', label: 'Concluído' },
-                                        { value: 'PAUSED', label: 'Pausado' },
-                                        { value: 'CANCELLED', label: 'Cancelado' }
-                                    ].map(option => (
-                                        <div
-                                            key={option.value}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                const newStatus = filters.status.includes(option.value)
-                                                    ? filters.status.filter(s => s !== option.value)
-                                                    : [...filters.status, option.value];
-                                                handleFilterChange('status', newStatus);
-                                            }}
-                                            style={{
-                                                padding: '10px 12px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '8px',
-                                                cursor: 'pointer',
-                                                transition: 'background 0.2s',
-                                                background: filters.status.includes(option.value) ? 'rgba(37, 99, 235, 0.1)' : 'transparent'
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(37, 99, 235, 0.08)'}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = filters.status.includes(option.value) ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={filters.status.includes(option.value)}
-                                                onChange={() => { }}
-                                                style={{ accentColor: '#2563eb' }}
-                                            />
-                                            <span>{option.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="pl-filter-select-container">
-                            <span className="pl-filter-label">Gerente</span>
-                            <select
-                                className="pl-filter-select"
-                                value={filters.managerId}
-                                onChange={(e) => handleFilterChange('managerId', e.target.value)}
-                            >
-                                <option value="ALL">Todos</option>
-                                {users.map(u => (
-                                    <option key={u.id} value={u.id}>{u.name}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="pl-filter-select-container">
-                            <span className="pl-filter-label">Tech Lead</span>
-                            <select
-                                className="pl-filter-select"
-                                value={filters.techLeadId}
-                                onChange={(e) => handleFilterChange('techLeadId', e.target.value)}
-                            >
-                                <option value="ALL">Todos</option>
-                                {users.map(u => (
-                                    <option key={u.id} value={u.id}>{u.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                        ))}
+                    </FormGroup>
+                    <TextField
+                        select
+                        fullWidth
+                        label="Gerente de projeto"
+                        size="small"
+                        value={draftFilters.managerId}
+                        onChange={(e) => setDraftFilters((prev) => ({ ...prev, managerId: e.target.value }))}
+                        sx={drawerInputSx}
+                    >
+                        <MenuItem value="ALL">Todos</MenuItem>
+                        {users.map((u) => (
+                            <MenuItem key={u.id} value={u.id}>{u.name}</MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        fullWidth
+                        label="Tech Lead"
+                        size="small"
+                        value={draftFilters.techLeadId}
+                        onChange={(e) => setDraftFilters((prev) => ({ ...prev, techLeadId: e.target.value }))}
+                        sx={drawerInputSx}
+                    >
+                        <MenuItem value="ALL">Todos</MenuItem>
+                        {users.map((u) => (
+                            <MenuItem key={u.id} value={u.id}>{u.name}</MenuItem>
+                        ))}
+                    </TextField>
+                </FilterDrawer>
 
                 {/* Projects Table */}
                 <div className="pl-projects-table-card">
-                    <div className="pl-table-header">
+                    <div className="pl-table-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
                         <div className="pl-table-title">
                             <span className="material-icons-round">list_alt</span>
                             Lista de Projetos
                         </div>
-                        <span className="pl-table-count">{totalProjects} projetos</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, justifyContent: 'flex-end', minWidth: '260px' }}>
+                            <div className="pl-search-input-container" style={{ flex: '1 1 220px', maxWidth: '360px' }}>
+                                <span className="material-icons-round">search</span>
+                                <input
+                                    data-testid="input-busca-projeto"
+                                    type="text"
+                                    className="pl-search-input"
+                                    placeholder="Buscar por nome ou código..."
+                                    value={filters.search}
+                                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                                />
+                            </div>
+                            <span className="pl-table-count">{totalProjects} projetos</span>
+                        </div>
                     </div>
 
                     {loading ? (

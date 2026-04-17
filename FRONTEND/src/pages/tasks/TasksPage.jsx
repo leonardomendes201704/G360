@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useContext } from 'react';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Typography, Paper, Button, IconButton, TextField, Collapse, MenuItem, CircularProgress, useTheme, Chip, Checkbox, ListItemText } from '@mui/material';
-import { FilterAlt, Refresh, Add, Search, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Box, Typography, Paper, Button, TextField, MenuItem, CircularProgress, useTheme, Chip, Checkbox, ListItemText, InputAdornment } from '@mui/material';
+import { FilterAlt, Refresh, Add, Search } from '@mui/icons-material';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -26,6 +27,12 @@ import autoTable from 'jspdf-autotable';
 import { format, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import logoImg from '../../assets/liotecnica_logo_official.png';
+
+const TASK_DRAWER_DEFAULTS = {
+    status: [],
+    priority: 'ALL',
+    assignee: 'ALL',
+};
 
 const TasksPage = () => {
     const { id: urlTaskId } = useParams(); // Get ID from URL
@@ -85,7 +92,8 @@ const TasksPage = () => {
     const [assigneeFilter, setAssigneeFilter] = useState('ALL');
     const [selectedIds, setSelectedIds] = useState([]);
     const [search, setSearch] = useState('');
-    const [showFilters, setShowFilters] = useState(true);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState(TASK_DRAWER_DEFAULTS);
 
     // Fetch data (existing logic)
     const fetchData = useCallback(async () => {
@@ -129,10 +137,38 @@ const TasksPage = () => {
     };
 
     const clearFilters = () => {
+        setDraftFilters({ ...TASK_DRAWER_DEFAULTS });
         setStatusFilter([]);
         setPriorityFilter('ALL');
         setAssigneeFilter('ALL');
         setSearch('');
+    };
+
+    const activeDrawerFilterCount = useMemo(
+        () => (statusFilter.length > 0 ? 1 : 0) + (priorityFilter !== 'ALL' ? 1 : 0) + (assigneeFilter !== 'ALL' ? 1 : 0),
+        [statusFilter, priorityFilter, assigneeFilter]
+    );
+
+    const openFilterDrawer = () => {
+        setDraftFilters({
+            status: [...statusFilter],
+            priority: priorityFilter,
+            assignee: assigneeFilter,
+        });
+        setFilterDrawerOpen(true);
+    };
+
+    const handleApplyDrawerFilters = () => {
+        setStatusFilter([...draftFilters.status]);
+        setPriorityFilter(draftFilters.priority);
+        setAssigneeFilter(draftFilters.assignee);
+    };
+
+    const handleClearDrawerOnly = () => {
+        setDraftFilters({ ...TASK_DRAWER_DEFAULTS });
+        setStatusFilter([]);
+        setPriorityFilter('ALL');
+        setAssigneeFilter('ALL');
     };
 
     // --- CRUD Handlers ---
@@ -666,7 +702,7 @@ const TasksPage = () => {
                 ))}
             </Box>
 
-            {/* Filters Section */}
+            {/* Filtros — barra compacta + drawer (padrão incidentes) */}
             <Box
                 sx={{
                     background: filterBg,
@@ -674,27 +710,54 @@ const TasksPage = () => {
                     border: `1px solid ${filterBorder}`,
                     borderRadius: '16px',
                     mb: 3,
-                    overflow: 'hidden'
+                    overflow: 'hidden',
                 }}
             >
-                <Box sx={{
-                    p: 2,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderBottom: showFilters ? `1px solid ${filterHeaderBorder}` : 'none'
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-                        <FilterAlt fontSize="small" />
-                        <Typography fontWeight={600}>Filtros</Typography>
-                        {(() => {
-                            const activeCount = [statusFilter.length > 0, priorityFilter !== 'ALL', assigneeFilter !== 'ALL', search].filter(Boolean).length;
-                            return activeCount > 0 ? (
-                                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
-                            ) : null;
-                        })()}
+                <Box
+                    sx={{
+                        p: 2,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: 2,
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
+                        <Button
+                            size="medium"
+                            startIcon={<FilterAlt />}
+                            onClick={openFilterDrawer}
+                            sx={{
+                                color: textPrimary,
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                '&:hover': { bgcolor: filterHoverBg },
+                            }}
+                        >
+                            Filtros
+                        </Button>
+                        {activeDrawerFilterCount > 0 ? (
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                                {activeDrawerFilterCount}
+                            </Box>
+                        ) : null}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1, justifyContent: 'flex-end', minWidth: '240px' }}>
+                        <TextField
+                            placeholder="Buscar tarefas..."
+                            size="small"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Search sx={{ color: textMuted, fontSize: 20 }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{ ...inputSx, minWidth: 200, maxWidth: 360, flex: '1 1 200px' }}
+                        />
                         <Button
                             size="small"
                             startIcon={<Refresh />}
@@ -702,112 +765,102 @@ const TasksPage = () => {
                             sx={{
                                 color: textMuted,
                                 textTransform: 'none',
-                                '&:hover': { bgcolor: filterHoverBg }
+                                flexShrink: 0,
+                                '&:hover': { bgcolor: filterHoverBg },
                             }}
                         >
-                            Limpar
+                            Limpar tudo
                         </Button>
-                        <IconButton
-                            size="small"
-                            onClick={() => setShowFilters(!showFilters)}
-                            sx={{ color: textMuted }}
-                        >
-                            <span className="material-icons-round">{showFilters ? 'expand_less' : 'expand_more'}</span>
-                        </IconButton>
                     </Box>
                 </Box>
-
-                <Collapse in={showFilters}>
-                    <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 2 }}>
-                        <TextField
-                            select
-                            label="Status"
-                            size="small"
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
-                            SelectProps={{
-                                multiple: true,
-                                renderValue: (selected) => {
-                                    if (selected.length === 0) return 'Todos';
-                                    const labels = { OVERDUE: 'Em Atraso', TODO: 'A Fazer', ON_HOLD: 'Em Pausa', IN_PROGRESS: 'Em Progresso', DONE: 'Concluído', CANCELLED: 'Cancelada' };
-                                    return selected.map(s => labels[s] || s).join(', ');
-                                }
-                            }}
-                            sx={{ ...inputSx, minWidth: 200 }}
-                        >
-                            <MenuItem value="OVERDUE">
-                                <Checkbox checked={statusFilter.includes('OVERDUE')} size="small" />
-                                <ListItemText primary="Em Atraso" />
-                            </MenuItem>
-                            <MenuItem value="TODO">
-                                <Checkbox checked={statusFilter.includes('TODO')} size="small" />
-                                <ListItemText primary="A Fazer" />
-                            </MenuItem>
-                            <MenuItem value="ON_HOLD">
-                                <Checkbox checked={statusFilter.includes('ON_HOLD')} size="small" />
-                                <ListItemText primary="Em Pausa" />
-                            </MenuItem>
-                            <MenuItem value="IN_PROGRESS">
-                                <Checkbox checked={statusFilter.includes('IN_PROGRESS')} size="small" />
-                                <ListItemText primary="Em Progresso" />
-                            </MenuItem>
-                            <MenuItem value="DONE">
-                                <Checkbox checked={statusFilter.includes('DONE')} size="small" />
-                                <ListItemText primary="Concluído" />
-                            </MenuItem>
-                            <MenuItem value="CANCELLED">
-                                <Checkbox checked={statusFilter.includes('CANCELLED')} size="small" />
-                                <ListItemText primary="Cancelada" />
-                            </MenuItem>
-                        </TextField>
-
-                        <TextField
-                            select
-                            label="Prioridade"
-                            size="small"
-                            value={priorityFilter}
-                            onChange={(e) => setPriorityFilter(e.target.value)}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="ALL">Todas</MenuItem>
-                            <MenuItem value="HIGH">Alta</MenuItem>
-                            <MenuItem value="MEDIUM">Media</MenuItem>
-                            <MenuItem value="LOW">Baixa</MenuItem>
-                        </TextField>
-
-                        <TextField
-                            select
-                            label="Responsavel"
-                            size="small"
-                            value={assigneeFilter}
-                            onChange={(e) => setAssigneeFilter(e.target.value)}
-                            sx={inputSx}
-                        >
-                            <MenuItem value="ALL">Todos</MenuItem>
-                            {assignees.map((assignee) => (
-                                <MenuItem key={assignee.id} value={assignee.id.toString()}>
-                                    {assignee.name || assignee.email}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-
-                        <TextField
-                            label="Buscar"
-                            placeholder="Buscar tarefas..."
-                            size="small"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            sx={{
-                                ...inputSx,
-                                '& .MuiOutlinedInput-root': {
-                                    ...inputSx['& .MuiOutlinedInput-root'],
-                                    height: '40px'
-                                }
-                            }}
-                        />
-                    </Box>
-                </Collapse>
             </Box>
+
+            <FilterDrawer
+                open={filterDrawerOpen}
+                onClose={() => setFilterDrawerOpen(false)}
+                onApply={handleApplyDrawerFilters}
+                onClear={handleClearDrawerOnly}
+                title="Filtros de tarefas"
+            >
+                <TextField
+                    select
+                    fullWidth
+                    label="Status"
+                    size="small"
+                    value={draftFilters.status}
+                    onChange={(e) => setDraftFilters((prev) => ({
+                        ...prev,
+                        status: typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value,
+                    }))}
+                    SelectProps={{
+                        multiple: true,
+                        renderValue: (selected) => {
+                            if (selected.length === 0) return 'Todos';
+                            const labels = { OVERDUE: 'Em Atraso', TODO: 'A Fazer', ON_HOLD: 'Em Pausa', IN_PROGRESS: 'Em Progresso', DONE: 'Concluído', CANCELLED: 'Cancelada' };
+                            return selected.map((s) => labels[s] || s).join(', ');
+                        },
+                    }}
+                    sx={{ ...inputSx, minWidth: 200 }}
+                >
+                    <MenuItem value="OVERDUE">
+                        <Checkbox checked={draftFilters.status.includes('OVERDUE')} size="small" />
+                        <ListItemText primary="Em Atraso" />
+                    </MenuItem>
+                    <MenuItem value="TODO">
+                        <Checkbox checked={draftFilters.status.includes('TODO')} size="small" />
+                        <ListItemText primary="A Fazer" />
+                    </MenuItem>
+                    <MenuItem value="ON_HOLD">
+                        <Checkbox checked={draftFilters.status.includes('ON_HOLD')} size="small" />
+                        <ListItemText primary="Em Pausa" />
+                    </MenuItem>
+                    <MenuItem value="IN_PROGRESS">
+                        <Checkbox checked={draftFilters.status.includes('IN_PROGRESS')} size="small" />
+                        <ListItemText primary="Em Progresso" />
+                    </MenuItem>
+                    <MenuItem value="DONE">
+                        <Checkbox checked={draftFilters.status.includes('DONE')} size="small" />
+                        <ListItemText primary="Concluído" />
+                    </MenuItem>
+                    <MenuItem value="CANCELLED">
+                        <Checkbox checked={draftFilters.status.includes('CANCELLED')} size="small" />
+                        <ListItemText primary="Cancelada" />
+                    </MenuItem>
+                </TextField>
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Prioridade"
+                    size="small"
+                    value={draftFilters.priority}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, priority: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="ALL">Todas</MenuItem>
+                    <MenuItem value="CRITICAL">Crítica</MenuItem>
+                    <MenuItem value="HIGH">Alta</MenuItem>
+                    <MenuItem value="MEDIUM">Média</MenuItem>
+                    <MenuItem value="LOW">Baixa</MenuItem>
+                </TextField>
+
+                <TextField
+                    select
+                    fullWidth
+                    label="Responsável"
+                    size="small"
+                    value={draftFilters.assignee}
+                    onChange={(e) => setDraftFilters((prev) => ({ ...prev, assignee: e.target.value }))}
+                    sx={inputSx}
+                >
+                    <MenuItem value="ALL">Todos</MenuItem>
+                    {assignees.map((assignee) => (
+                        <MenuItem key={assignee.id} value={assignee.id.toString()}>
+                            {assignee.name || assignee.email}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </FilterDrawer>
 
             {/* Content based on viewMode */}
             {viewMode === 'LIST' ? (
