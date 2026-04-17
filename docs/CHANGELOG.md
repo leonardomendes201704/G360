@@ -5,6 +5,17 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-17]
+
+### Test
+- **US-022 / QA:** Rodada 1 de evidências Playwright dos modais **01–05** (`modal-evidence-batch-01.spec.ts`) com mocks de API (`modal-evidence-batch-01-api-mocks.ts`) — screenshots do **diálogo** apenas (mais estáveis). Snapshots em `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/`.
+
+### Changed
+- **US-022:** `ProjectDetailsPage` passa a usar **`AddMemberModal`** no fluxo «Adicionar membro»; **`MemberModal`** mantém-se para editar/visualizar.
+
+### Docs
+- **US-022 / QA:** Grelha do dossiê atualizada para **10** PNG Playwright (rodada 1 + integrações/Azure + organização) e **39** pendentes; `docs/qa/_gen-modal-grid.mjs` mapeia modais 1–5 para `modal-evidence-batch-01*.png`.
+
 ## [2026-04-16]
 
 ### Docs

@@ -294,49 +294,49 @@
 
   <h2 id="grelha-49">Grelha das 49 evidências — <code class="path">components/modals/</code></h2>
   <p class="legend-grid">
-    <span class="tag e2e">Playwright</span> <strong>5</strong> modais com captura automática no repositório (PNG). &nbsp;
-    <span class="tag manual">Pendente</span> <strong>44</strong> com moldura para <strong>captura manual</strong> — substituir o conteúdo cinzento por print ou colar &lt;img&gt; no HTML antes do PDF.
+    <span class="tag e2e">Playwright</span> <strong>10</strong> modais com captura automática no repositório (PNG). &nbsp;
+    <span class="tag manual">Pendente</span> <strong>39</strong> com moldura para <strong>captura manual</strong> — substituir o conteúdo cinzento por print ou colar &lt;img&gt; no HTML antes do PDF.
   </p>
-  <p class="muted">Regenerar a grelha (após editar dados): <code class="path">node docs/qa/_gen-modal-grid.mjs</code> e voltar a aplicar este patch, ou editar <code class="path">modals-evidence-handbook.html</code> diretamente.</p>
+  <p class="muted">Regenerar a grelha (após editar dados): <code class="path">node docs/qa/_gen-modal-grid.mjs</code> → <code class="path">node docs/qa/_patch-handbook.mjs</code>. Capturas automáticas 01–05: <code class="path">FRONTEND/e2e/modal-evidence-batch-01.spec.ts</code> (mocks em <code class="path">modal-evidence-batch-01-api-mocks.ts</code>).</p>
 
   <div class="modal-grid">
   <article class="modal-tile" id="modal-01">
     <div class="tile-head"><span class="tile-num">01</span> <code class="path">AccountModal.jsx</code></div>
-    <div class="tile-visual">
-      <span class="badge-pend">Pendente</span>
-      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>
+    <div class="tile-visual has-img">
+      <span class="badge-snap">Playwright</span>
+      <img src="../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-01-account-shell-chromium-win32.png" alt="Evidência AccountModal.jsx" />
     </div>
     <div class="tile-foot"><strong>âmbito:</strong> Plano de contas / conta.<br /><strong>Como testar:</strong> Financeiro → contas; criar ou editar.</div>
   </article>
   <article class="modal-tile" id="modal-02">
     <div class="tile-head"><span class="tile-num">02</span> <code class="path">AddendumFormModal.jsx</code></div>
-    <div class="tile-visual">
-      <span class="badge-pend">Pendente</span>
-      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>
+    <div class="tile-visual has-img">
+      <span class="badge-snap">Playwright</span>
+      <img src="../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-02-addendum-form-shell-chromium-win32.png" alt="Evidência AddendumFormModal.jsx" />
     </div>
     <div class="tile-foot"><strong>âmbito:</strong> Acréscimo/supressão contratual.<br /><strong>Como testar:</strong> Contratos / addendums.</div>
   </article>
   <article class="modal-tile" id="modal-03">
     <div class="tile-head"><span class="tile-num">03</span> <code class="path">AddendumViewModal.jsx</code></div>
-    <div class="tile-visual">
-      <span class="badge-pend">Pendente</span>
-      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>
+    <div class="tile-visual has-img">
+      <span class="badge-snap">Playwright</span>
+      <img src="../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-03-addendum-view-shell-chromium-win32.png" alt="Evidência AddendumViewModal.jsx" />
     </div>
     <div class="tile-foot"><strong>âmbito:</strong> Visualização addendum.<br /><strong>Como testar:</strong> Abrir addendum existente.</div>
   </article>
   <article class="modal-tile" id="modal-04">
     <div class="tile-head"><span class="tile-num">04</span> <code class="path">AddMemberModal.jsx</code></div>
-    <div class="tile-visual">
-      <span class="badge-pend">Pendente</span>
-      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>
+    <div class="tile-visual has-img">
+      <span class="badge-snap">Playwright</span>
+      <img src="../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-04-add-member-shell-chromium-win32.png" alt="Evidência AddMemberModal.jsx" />
     </div>
     <div class="tile-foot"><strong>âmbito:</strong> Membro na equipa.<br /><strong>Como testar:</strong> Equipas / projeto → adicionar.</div>
   </article>
   <article class="modal-tile" id="modal-05">
     <div class="tile-head"><span class="tile-num">05</span> <code class="path">ApprovalDetailsModal.jsx</code></div>
-    <div class="tile-visual">
-      <span class="badge-pend">Pendente</span>
-      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>
+    <div class="tile-visual has-img">
+      <span class="badge-snap">Playwright</span>
+      <img src="../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-05-approval-details-shell-chromium-win32.png" alt="Evidência ApprovalDetailsModal.jsx" />
     </div>
     <div class="tile-foot"><strong>âmbito:</strong> Detalhes de aprovação.<br /><strong>Como testar:</strong> Aprovações → ver detalhe.</div>
   </article>

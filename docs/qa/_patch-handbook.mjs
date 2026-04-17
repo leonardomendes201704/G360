@@ -9,28 +9,27 @@ const fragPath = path.join(__dirname, '_modal-grid-fragment.html');
 let book = fs.readFileSync(bookPath, 'utf8');
 const frag = fs.readFileSync(fragPath, 'utf8');
 
-const start = book.indexOf('<h2 id="e2e">');
-const end = book.indexOf('<h2 id="inventario">');
-if (start === -1 || end === -1) throw new Error('markers not found');
+/** Substitui apenas o bloco `<div class="modal-grid">…</div>` antes da nota de snapshots. */
+const pattern = /<div class="modal-grid">[\s\S]*?\r?\n  <\/div>\r?\n\r?\n  <p class="note">/;
+if (!pattern.test(book)) throw new Error('modal-grid block not found');
 
-const replacement = `  <h2 id="grelha-49">Grelha das 49 evidências — <code class="path">components/modals/</code></h2>
-  <p class="legend-grid">
-    <span class="tag e2e">Playwright</span> <strong>5</strong> modais com captura automática no repositório (PNG). &nbsp;
-    <span class="tag manual">Pendente</span> <strong>44</strong> com moldura para <strong>captura manual</strong> — substituir o conteúdo cinzento por print ou colar &lt;img&gt; no HTML antes do PDF.
-  </p>
-  <p class="muted">Regenerar a grelha (após editar dados): <code class="path">node docs/qa/_gen-modal-grid.mjs</code> e voltar a aplicar este patch, ou editar <code class="path">modals-evidence-handbook.html</code> diretamente.</p>
-
-  <div class="modal-grid">
+const newGrid = `<div class="modal-grid">
 ${frag.trimEnd()}
   </div>
 
-  <p class="note">
-    <strong>Snapshots E2E:</strong> os PNG estão em <code class="path">FRONTEND/e2e/*.spec.ts-snapshots/</code> (Chromium win32). <strong>Login</strong> (<code class="path">auth-login-page-chromium-win32.png</code>) não é modal.
-  </p>
+  <p class="note">`;
 
-`;
+book = book.replace(pattern, newGrid);
 
-book = book.slice(0, start) + replacement + book.slice(end);
+/** Atualiza contadores na legenda (Playwright vs pendente) — ajustar ao mapa em _gen-modal-grid.mjs. */
+book = book.replace(
+    /<span class="tag e2e">Playwright<\/span> <strong>\d+<\/strong>/,
+    '<span class="tag e2e">Playwright</span> <strong>10</strong>'
+);
+book = book.replace(
+    /<span class="tag manual">Pendente<\/span> <strong>\d+<\/strong>/,
+    '<span class="tag manual">Pendente</span> <strong>39</strong>'
+);
 
 fs.writeFileSync(bookPath, book, 'utf8');
 console.log('Patched', bookPath);

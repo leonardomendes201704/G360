@@ -32,6 +32,7 @@ import ProposalModal from '../../components/modals/ProposalModal';
 import FollowUpModal from '../../components/modals/FollowUpModal';
 import ProjectTaskModal from '../../components/modals/ProjectTaskModal';
 import MemberModal from '../../components/modals/MemberModal';
+import AddMemberModal from '../../components/modals/AddMemberModal';
 import TeamModal from '../../components/modals/TeamModal';
 
 // Tabs
@@ -84,6 +85,8 @@ const ProjectDetailsPage = () => {
     const [followUpModalOpen, setFollowUpModalOpen] = useState(false);
     const [taskModalOpen, setTaskModalOpen] = useState(false);
     const [memberModalOpen, setMemberModalOpen] = useState(false);
+    const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
+    const [memberSaving, setMemberSaving] = useState(false);
     const [teamModalOpen, setTeamModalOpen] = useState(false);
     const [editingTeam, setEditingTeam] = useState(null);
     const [memberToEdit, setMemberToEdit] = useState(null);
@@ -163,7 +166,7 @@ const ProjectDetailsPage = () => {
     const handleAddCost = () => setExpenseModalOpen(true);
     const handleAddProposal = () => setProposalModalOpen(true);
     const handleAddFollowUp = () => setFollowUpModalOpen(true);
-    const handleAddMember = () => { setMemberToEdit(null); setMemberViewMode(false); setMemberModalOpen(true); };
+    const handleAddMember = () => { setMemberToEdit(null); setMemberViewMode(false); setAddMemberModalOpen(true); };
     const handleCreateTeam = () => { setEditingTeam(null); setTeamModalOpen(true); };
 
     const handleViewMember = (member) => {
@@ -455,6 +458,29 @@ const ProjectDetailsPage = () => {
                 allTasks={project.tasks || []}
             />
 
+            {addMemberModalOpen && (
+                <AddMemberModal
+                    open={addMemberModalOpen}
+                    onClose={() => { if (!memberSaving) setAddMemberModalOpen(false); }}
+                    existingMemberIds={(project.members || []).map((m) => m.userId)}
+                    loading={memberSaving}
+                    onSave={async (memberData) => {
+                        setMemberSaving(true);
+                        try {
+                            await addProjectMember(project.id, memberData);
+                            setToast({ open: true, message: 'Membro adicionado com sucesso!', severity: 'success' });
+                            setAddMemberModalOpen(false);
+                            fetchProject();
+                        } catch (err) {
+                            console.error(err);
+                            setToast({ open: true, message: 'Erro ao adicionar membro', severity: 'error' });
+                        } finally {
+                            setMemberSaving(false);
+                        }
+                    }}
+                />
+            )}
+
             {memberModalOpen && (
                 <MemberModal
                     open={memberModalOpen}
@@ -466,9 +492,6 @@ const ProjectDetailsPage = () => {
                             if (memberToEdit) {
                                 await updateProjectMember(project.id, memberToEdit.userId, memberData.role);
                                 setToast({ open: true, message: 'Membro atualizado com sucesso!', severity: 'success' });
-                            } else {
-                                await addProjectMember(project.id, memberData);
-                                setToast({ open: true, message: 'Membro adicionado com sucesso!', severity: 'success' });
                             }
                             setMemberModalOpen(false);
                             setMemberToEdit(null);
@@ -476,7 +499,7 @@ const ProjectDetailsPage = () => {
                             fetchProject();
                         } catch (err) {
                             console.error(err);
-                            setToast({ open: true, message: memberToEdit ? 'Erro ao atualizar membro' : 'Erro ao adicionar membro', severity: 'error' });
+                            setToast({ open: true, message: 'Erro ao atualizar membro', severity: 'error' });
                         }
                     }}
                 />
