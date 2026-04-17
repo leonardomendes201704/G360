@@ -22,13 +22,14 @@ const KpiGrid = ({ children, maxColumns = 6, gap = 1.5, mb = 3, clampChildHeight
             },
             gap,
             mb,
-            ...(clampChildHeight
-                ? {
-                    '& > *': {
+            '& > *': {
+                minWidth: 0,
+                ...(clampChildHeight
+                    ? {
                         maxHeight: '180px',
-                    },
-                }
-                : {}),
+                    }
+                    : {}),
+            },
         }}
     >
         {children}

@@ -21,8 +21,30 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  * @param {boolean} active - Destaque visual (borda colorida)
  * @param {function} onClick - Handler de clique
  * @param {number}   [titleLineClamp=1] - Linhas do titulo (1 = uma linha + ellipsis; 2+ = line-clamp multilinha)
+ * @param {string|object} [valueFontSize] - `fontSize` do valor principal (string ou breakpoints MUI, ex: `{ xs: '1rem', sm: '1.25rem' }`). Omite para o padrao compacto.
+ * @param {object} [valueSx] - `sx` extra fundido no Typography do valor (sobrepoe parcialmente estilos padrao).
  */
-const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, trend, subtitle, accentBar = true, active = false, onClick, titleLineClamp = 1 }) => {
+const DEFAULT_VALUE_FONT_SIZE = {
+    xs: 'clamp(0.875rem, 2.4vw, 1.25rem)',
+    sm: '1.25rem',
+};
+
+const StatsCard = ({
+    title,
+    value,
+    icon,
+    iconName,
+    color = 'primary',
+    hexColor,
+    trend,
+    subtitle,
+    accentBar = true,
+    active = false,
+    onClick,
+    titleLineClamp = 1,
+    valueFontSize,
+    valueSx = {},
+}) => {
 
     // Escurece uma cor hex em 25%
     const darken = (hex, amount = 0.25) => {
@@ -89,13 +111,23 @@ const StatsCard = ({ title, value, icon, iconName, color = 'primary', hexColor, 
             <Box sx={{ p: 2, pt: accentBar ? 1.5 : 2 }}>
                 {/* Valor */}
                 <Typography
+                    component="div"
+                    title={
+                        value != null && (typeof value === 'string' || typeof value === 'number')
+                            ? String(value)
+                            : undefined
+                    }
                     sx={{
-                        fontSize: { xs: 'clamp(1.1rem, 4vw, 2.25rem)', sm: '2.25rem' },
+                        fontSize: valueFontSize ?? DEFAULT_VALUE_FONT_SIZE,
                         fontWeight: 800,
                         color: darkColor,
                         lineHeight: 1.1,
                         mb: 0.5,
-                        wordBreak: 'break-word',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        minWidth: 0,
+                        ...valueSx,
                     }}
                 >
                     {value}
