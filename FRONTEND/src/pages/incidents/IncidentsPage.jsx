@@ -9,7 +9,7 @@ import {
     IconButton, Tooltip, Paper
 } from '@mui/material';
 
-import { getIncidents, getIncidentCategories, createIncident, updateIncident, deleteIncident } from '../../services/incident.service';
+import { getIncidents, getIncidentKPIs, getIncidentCategories, createIncident, updateIncident, deleteIncident } from '../../services/incident.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import IncidentModal from '../../components/modals/IncidentModal';
 import IncidentViewModal from '../../components/modals/IncidentViewModal';
@@ -57,6 +57,7 @@ const IncidentsPage = () => {
     const [incidents, setIncidents] = useState([]);
     const [users, setUsers] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [kpis, setKpis] = useState({ open: 0, inProgress: 0, resolved: 0, slaBreached: 0, resolvedToday: 0 });
     const [loading, setLoading] = useState(true);
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
     const [draftFilters, setDraftFilters] = useState(DRAWER_FILTER_DEFAULTS);
@@ -101,28 +102,6 @@ const IncidentsPage = () => {
         });
     }, [incidents, filters]);
 
-    /** Mesmo universo que a grelha (busca + filtros do drawer); alinhado ao backend em /incidents/kpis */
-    const kpis = useMemo(() => {
-        const startOfToday = new Date();
-        startOfToday.setHours(0, 0, 0, 0);
-        let open = 0;
-        let inProgress = 0;
-        let resolved = 0;
-        let resolvedToday = 0;
-        let slaBreached = 0;
-        for (const inc of filteredIncidents) {
-            if (inc.status === 'OPEN') open += 1;
-            if (inc.status === 'IN_PROGRESS') inProgress += 1;
-            if (inc.status === 'RESOLVED') resolved += 1;
-            if (inc.resolvedAt) {
-                const rd = new Date(inc.resolvedAt);
-                if (rd >= startOfToday) resolvedToday += 1;
-            }
-            if (inc.slaBreached && inc.status !== 'CLOSED') slaBreached += 1;
-        }
-        return { open, inProgress, resolved, resolvedToday, slaBreached };
-    }, [filteredIncidents]);
-
     const paginatedIncidents = useMemo(() => {
         const startIndex = (page - 1) * rowsPerPage;
         return filteredIncidents.slice(startIndex, startIndex + rowsPerPage);
@@ -133,12 +112,14 @@ const IncidentsPage = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [incData, catData, usersData] = await Promise.all([
+            const [incData, kpiData, catData, usersData] = await Promise.all([
                 getIncidents(),
+                getIncidentKPIs(),
                 getIncidentCategories(),
                 getReferenceUsers()
             ]);
             setIncidents(incData);
+            setKpis(kpiData);
             setCategories(catData);
             setUsers(usersData);
         } catch (error) {

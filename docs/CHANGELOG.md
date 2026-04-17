@@ -23,9 +23,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-17]
 
-### Changed
-- **Incidentes:** KPIs da lista (**Abertos**, **Em Andamento**, etc.) calculados a partir do **mesmo conjunto** que a grelha (`filteredIncidents` — busca + filtros do drawer), em vez de totais globais do endpoint `/incidents/kpis`; deixa de haver discrepância entre número nos cartões e linhas visíveis.
+### Reverted
+- **Incidentes:** Revertida alteração que derivava os KPIs da lista a partir de `filteredIncidents`; a página volta a usar **`GET /incidents/kpis`** (`getIncidentKPIs`), como antes.
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
+
+### Changed
 - **UI / KPIs:** **`StatsCard`** — valor principal com fonte **mais compacta** por defeito (`~1.25rem` em `sm+`, clamp em `xs`), **uma linha** (`nowrap` + `ellipsis`), `title` nativo para ver o valor completo ao pairar; props opcionais **`valueFontSize`** e **`valueSx`**. **`KpiGrid`** — `minWidth: 0` nos filhos para o ellipsis funcionar em grelha.
   - `FRONTEND/src/components/common/StatsCard.jsx`
   - `FRONTEND/src/components/common/KpiGrid.jsx`
