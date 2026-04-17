@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>G360 — Evidência de modais (StandardModal / US-022) — QA</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --page-bg: #fff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      line-height: 1.45;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 12mm 14mm 18mm;
+      background: var(--page-bg);
+      font-size: 10.5pt;
+    }
+    h1 {
+      font-size: 18pt;
+      margin: 0 0 6px;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+    }
+    h2 {
+      font-size: 13pt;
+      margin: 22px 0 10px;
+      color: var(--ink);
+      page-break-after: avoid;
+    }
+    h3 {
+      font-size: 11pt;
+      margin: 14px 0 6px;
+      color: #1e293b;
+      page-break-after: avoid;
+    }
+    .meta, .muted { color: var(--muted); font-size: 9.5pt; }
+    .meta { margin-bottom: 18px; }
+    .toc {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+    }
+    .toc ul { margin: 6px 0 0; padding-left: 18px; }
+    .toc a { color: var(--accent); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      page-break-inside: avoid;
+      background: #fff;
+    }
+    .card h3 { margin-top: 0; }
+    .tag {
+      display: inline-block;
+      font-size: 8pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      margin-right: 6px;
+    }
+    .tag.e2e { background: #ecfdf5; color: #047857; }
+    .tag.manual { background: #fff7ed; color: #c2410c; }
+    table.inv {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin: 8px 0 16px;
+    }
+    table.inv th, table.inv td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.inv th { background: #f1f5f9; font-weight: 600; }
+    table.inv tr:nth-child(even) td { background: #fafafa; }
+    figure.evidence {
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    figure.evidence img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    figure.evidence figcaption {
+      font-size: 9pt;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .screenshot-slot {
+      min-height: 120px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 9pt;
+      text-align: center;
+      padding: 16px;
+      margin: 8px 0;
+      page-break-inside: avoid;
+    }
+    ol.steps, ul.steps { margin: 6px 0; padding-left: 18px; }
+    ol.steps li, ul.steps li { margin: 4px 0; }
+    code.path {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 8.5pt;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .note {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 10px 12px;
+      margin: 12px 0;
+      font-size: 9.5pt;
+    }
+    footer.doc-foot {
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+    @media print {
+      body { padding: 10mm 12mm; max-width: none; }
+      a[href^="#"] { color: inherit; text-decoration: none; }
+      .no-print { display: none !important; }
+      h2 { page-break-before: auto; }
+      .card, figure.evidence { break-inside: avoid; }
+    }
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>G360 — Evidência de modais (shell StandardModal)</h1>
+    <p class="meta">
+      <strong>Work items:</strong> EP-008 · US-022 &nbsp;|&nbsp;
+      <strong>Documento:</strong> entrega a QA (descrição, testes, imagens onde existem)<br />
+      <strong>Gerado para impressão/PDF:</strong> usar o navegador → Imprimir → Guardar como PDF.
+    </p>
+  </header>
+
+  <section class="toc no-print">
+    <strong>Índice</strong>
+    <ul>
+      <li><a href="#como-pdf">Como gerar o PDF</a></li>
+      <li><a href="#criterios">Critérios visuais comuns (StandardModal)</a></li>
+      <li><a href="#e2e">Evidências Playwright (imagens no repositório)</a></li>
+      <li><a href="#inventario">Inventário — <code>components/modals/</code></a></li>
+      <li><a href="#inline">Tabs, páginas e confirmações</a></li>
+      <li><a href="#excecoes">Exceções (não usam StandardModal)</a></li>
+      <li><a href="#slots">Áreas para capturas manuais</a></li>
+    </ul>
+  </section>
+
+  <h2 id="como-pdf">Como gerar o PDF</h2>
+  <ol class="steps">
+    <li>Abrir este ficheiro no Chrome ou Edge: <code class="path">docs/qa/modals-evidence-handbook.html</code></li>
+    <li>As imagens embutidas usam caminhos relativos ao ficheiro; mantenha a pasta do repositório intacta.</li>
+    <li><kbd>Ctrl+P</kbd> → Destino: <strong>Guardar como PDF</strong> → Margens normais → Fundos gráficos: <strong>ativado</strong> (para ver bordas e tags).</li>
+  </ol>
+
+  <h2 id="criterios">Critérios visuais comuns (regressão rápida)</h2>
+  <ul class="steps">
+    <li>Cabeçalho com título, ícone Material (quando definido) e botão fechar.</li>
+    <li>Corpo com scroll quando o conteúdo excede a altura; rodapé com ações visíveis.</li>
+    <li>Tema claro/escuro coerente com o restante G360.</li>
+    <li><strong>ConfirmDialog:</strong> mensagem centrada, botões Cancelar + ação (ex.: Excluir em vermelho).</li>
+    <li>Estado <em>loading</em>: último botão primário com spinner e fecho bloqueado quando aplicável.</li>
+  </ul>
+
+  <h2 id="e2e">Evidências Playwright (capturas no repositório)</h2>
+  <p class="muted">Estas imagens são geradas pelos testes E2E (Playwright) em Windows/Chromium. Caminhos relativos a partir de <code class="path">docs/qa/</code>.</p>
+
+  <div class="card">
+    <span class="tag e2e">E2E</span>
+    <h3>Organização — Ano fiscal</h3>
+    <p><strong>Componente:</strong> <code class="path">FiscalYearModal.jsx</code></p>
+    <p><strong>Descrição:</strong> Criação de ano fiscal com subtítulo de período; shell StandardModal.</p>
+    <p><strong>Como testar (reproduzir evidência):</strong></p>
+    <ol class="steps">
+      <li>Login como utilizador com acesso a Configuração (ex.: manager).</li>
+      <li>Ir a <code class="path">/config</code> → separador <strong>Ano fiscal</strong> (<code>org-tab-fiscal</code>).</li>
+      <li>Clicar em adicionar ano fiscal (<code>fiscal-year-add</code>).</li>
+      <li>Verificar textos visíveis: «Novo Ano Fiscal», «Período contábil».</li>
+    </ol>
+    <figure class="evidence">
+      <img src="../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-fiscal-year-shell-chromium-win32.png" alt="Evidência: modal Novo Ano Fiscal" width="900" />
+      <figcaption>Ficheiro: <code class="path">org-modal-fiscal-year-shell-chromium-win32.png</code></figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <span class="tag e2e">E2E</span>
+    <h3>Organização — Perfil (role)</h3>
+    <p><strong>Componente:</strong> <code class="path">RoleModal.jsx</code></p>
+    <p><strong>Descrição:</strong> Novo perfil de governança com matriz de permissões.</p>
+    <p><strong>Como testar:</strong></p>
+    <ol class="steps">
+      <li><code class="path">/config</code> → separador <strong>Perfis</strong> (<code>org-tab-perfis</code>).</li>
+      <li>Clicar <code>role-add</code>.</li>
+      <li>Verificar: «Novo Perfil de Governança», «Matriz de permissões».</li>
+    </ol>
+    <figure class="evidence">
+      <img src="../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png" alt="Evidência: modal Novo Perfil" width="900" />
+      <figcaption><code class="path">org-modal-role-shell-chromium-win32.png</code></figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <span class="tag e2e">E2E</span>
+    <h3>Organização — Utilizador local</h3>
+    <p><strong>Componente:</strong> <code class="path">UserModal.jsx</code></p>
+    <p><strong>Descrição:</strong> Criação de utilizador local (conta e permissões).</p>
+    <p><strong>Como testar:</strong></p>
+    <ol class="steps">
+      <li><code class="path">/config</code> → <strong>Usuários</strong> (<code>org-tab-usuarios</code>).</li>
+      <li>Clicar <code>user-add-local</code>.</li>
+      <li>Verificar: «Novo Usuário Local», «Conta e permissões».</li>
+    </ol>
+    <figure class="evidence">
+      <img src="../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-user-shell-chromium-win32.png" alt="Evidência: modal Novo Usuário" width="900" />
+      <figcaption><code class="path">org-modal-user-shell-chromium-win32.png</code></figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <span class="tag e2e">E2E</span>
+    <h3>Organização — Empresa (tenant)</h3>
+    <p><strong>Componente:</strong> <code class="path">TenantModal.jsx</code></p>
+    <p><strong>Descrição:</strong> Nova empresa no contexto super-admin; dados da empresa e administrador.</p>
+    <p><strong>Como testar:</strong></p>
+    <ol class="steps">
+      <li>Login <strong>admin</strong> (super).</li>
+      <li><code class="path">/config/organization</code> → separador empresas/tenants visível.</li>
+      <li>Clicar <code>tenant-add</code>.</li>
+      <li>Verificar: «Nova Empresa», «Dados da empresa e administrador».</li>
+    </ol>
+    <figure class="evidence">
+      <img src="../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png" alt="Evidência: modal Nova Empresa" width="900" />
+      <figcaption><code class="path">org-modal-tenant-shell-chromium-win32.png</code></figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <span class="tag e2e">E2E</span>
+    <h3>Integrações — Azure AD</h3>
+    <p><strong>Componente:</strong> <code class="path">AzureConfigModal.jsx</code></p>
+    <p><strong>Descrição:</strong> Configuração Microsoft Entra ID (Azure AD).</p>
+    <p><strong>Como testar:</strong></p>
+    <ol class="steps">
+      <li><code class="path">/config</code> → botão/separador <strong>Integrações</strong>.</li>
+      <li>Clicar <code>integration-open-AZURE</code>.</li>
+      <li>Verificar: «Configuração Azure AD», «Integração Microsoft Entra ID».</li>
+    </ol>
+    <figure class="evidence">
+      <img src="../../FRONTEND/e2e/integrations-azure-modal.spec.ts-snapshots/integrations-azure-modal-shell-chromium-win32.png" alt="Evidência: modal Azure AD" width="900" />
+      <figcaption><code class="path">integrations-azure-modal-shell-chromium-win32.png</code></figcaption>
+    </figure>
+  </div>
+
+  <p class="note">
+    <strong>Nota:</strong> Existe snapshot de login (<code class="path">auth-login-page-chromium-win32.png</code>) — não é modal; pode ignorar-se neste dossiê ou anexar apenas se o escopo de QA incluir a página inicial.
+  </p>
+
+  <h2 id="inventario">Inventário — componentes em <code class="path">FRONTEND/src/components/modals/</code></h2>
+  <p class="muted">Todos abaixo foram migrados para <strong>StandardModal</strong> (US-022). Para cada um, o teste genérico é: abrir o ecrã de domínio correspondente, acionar a criação/edição/visualização que dispara o modal e validar cabeçalho, scroll do corpo e rodapé.</p>
+
+  <table class="inv" aria-label="Modais por ficheiro">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Ficheiro</th>
+        <th>Descrição / âmbito</th>
+        <th>Como testar (orientação)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>AccountModal.jsx</td><td>Plano de contas / conta contabilística.</td><td>Financeiro → contas; criar ou editar conta.</td></tr>
+      <tr><td>2</td><td>AddendumFormModal.jsx</td><td>Acréscimo/supressão contratual (formulário).</td><td>Contratos / detalhe onde addendums são geridos.</td></tr>
+      <tr><td>3</td><td>AddendumViewModal.jsx</td><td>Visualização de addendum.</td><td>Abrir addendum existente na lista/detalhe.</td></tr>
+      <tr><td>4</td><td>AddMemberModal.jsx</td><td>Adicionar membro a equipa.</td><td>Equipas / projeto → adicionar membro.</td></tr>
+      <tr><td>5</td><td>ApprovalDetailsModal.jsx</td><td>Detalhes de aprovação.</td><td>Fluxo de aprovações → ver detalhe.</td></tr>
+      <tr><td>6</td><td>AssetCategoryModal.jsx</td><td>Categoria de ativo.</td><td>Ativos / categorias.</td></tr>
+      <tr><td>7</td><td>AssetMaintenanceModal.jsx</td><td>Manutenção de ativo.</td><td>Ativo → registo de manutenção.</td></tr>
+      <tr><td>8</td><td>AssetModal.jsx</td><td>Edição/criação de ativo (amplo).</td><td>Página de ativos.</td></tr>
+      <tr><td>9</td><td>AssetViewModal.jsx</td><td>Leitura de ativo.</td><td>Visualizar ativo.</td></tr>
+      <tr><td>10</td><td>AzureConfigModal.jsx</td><td>Azure AD (ver evidência E2E).</td><td>Config → Integrações → Azure.</td></tr>
+      <tr><td>11</td><td>BudgetImportModal.jsx</td><td>Importação de orçamento.</td><td>Orçamento → importar.</td></tr>
+      <tr><td>12</td><td>BudgetItemModal.jsx</td><td>Linha de orçamento.</td><td>Detalhe orçamento → linha.</td></tr>
+      <tr><td>13</td><td>BudgetModal.jsx</td><td>Orçamento (criar/editar).</td><td>Módulo financeiro / orçamentos.</td></tr>
+      <tr><td>14</td><td>ChangeModal.jsx</td><td>GMUD / mudança (ITSM).</td><td>ITSM mudanças → nova/editar.</td></tr>
+      <tr><td>15</td><td>ChangeViewModal.jsx</td><td>Visualização GMUD.</td><td>Lista → ver mudança.</td></tr>
+      <tr><td>16</td><td>ContractCreationWizard.jsx</td><td>Assistente novo contrato (inclui sub-modal tipo).</td><td>Contratos → novo contrato.</td></tr>
+      <tr><td>17</td><td>ContractModal.jsx</td><td>Contrato (wizard/edição).</td><td>Contratos.</td></tr>
+      <tr><td>18</td><td>CostCenterModal.jsx</td><td>Centro de custo.</td><td>Config / centros de custo ou equivalente.</td></tr>
+      <tr><td>19</td><td>DepartmentModal.jsx</td><td>Departamento.</td><td>Organização / departamentos.</td></tr>
+      <tr><td>20</td><td>ExpenseApprovalModal.jsx</td><td>Aprovar despesa (NF, anexos).</td><td>Despesas / aprovação.</td></tr>
+      <tr><td>21</td><td>ExpenseModal.jsx</td><td>Detalhe/editar despesa.</td><td>Lista de despesas.</td></tr>
+      <tr><td>22</td><td>FiscalYearModal.jsx</td><td>Ano fiscal (ver evidência E2E).</td><td>Config organização → ano fiscal.</td></tr>
+      <tr><td>23</td><td>FollowUpModal.jsx</td><td>Follow-up.</td><td>Contexto onde follow-ups são criados.</td></tr>
+      <tr><td>24</td><td>GlobalRiskModal.jsx</td><td>Risco global (wizard).</td><td>Riscos.</td></tr>
+      <tr><td>25</td><td>IncidentCreateModal.jsx</td><td>Criar incidente.</td><td>ITSM incidentes → novo.</td></tr>
+      <tr><td>26</td><td>IncidentModal.jsx</td><td>Incidente (edição, abas).</td><td>Abrir incidente.</td></tr>
+      <tr><td>27</td><td>IncidentViewModal.jsx</td><td>Visualizar incidente.</td><td>Ver incidente.</td></tr>
+      <tr><td>28</td><td>KnowledgeBaseModal.jsx</td><td>Artigo KB + nova categoria (sub-modal).</td><td>Base de conhecimento.</td></tr>
+      <tr><td>29</td><td>LdapConfigModal.jsx</td><td>Configuração LDAP.</td><td>Config → integrações / LDAP.</td></tr>
+      <tr><td>30</td><td>MemberModal.jsx</td><td>Membro (equipa).</td><td>Gestão de equipa.</td></tr>
+      <tr><td>31</td><td>MinuteModal.jsx</td><td>Ata de reunião.</td><td>Módulo de atas.</td></tr>
+      <tr><td>32</td><td>NotificationsModal.jsx</td><td>Preferências de notificações.</td><td>Onde o utilizador configura alertas.</td></tr>
+      <tr><td>33</td><td>PaymentConditionModal.jsx</td><td>Condição de pagamento.</td><td>Cadastros / condições.</td></tr>
+      <tr><td>34</td><td>ProjectModal.jsx</td><td>Projeto (criar/editar).</td><td>Projetos.</td></tr>
+      <tr><td>35</td><td>ProjectTaskModal.jsx</td><td>Tarefa de projeto.</td><td>Projeto → tarefa.</td></tr>
+      <tr><td>36</td><td>ProposalModal.jsx</td><td>Proposta comercial (+ categoria extra).</td><td>Propostas.</td></tr>
+      <tr><td>37</td><td>RescheduleModal.jsx</td><td>Reagendar.</td><td>Fluxo com reagendamento (ex. despesa/tarefa).</td></tr>
+      <tr><td>38</td><td>RiskModal.jsx</td><td>Risco (edição).</td><td>Riscos.</td></tr>
+      <tr><td>39</td><td>RiskViewModal.jsx</td><td>Visualizar risco.</td><td>Lista de riscos.</td></tr>
+      <tr><td>40</td><td>RoleModal.jsx</td><td>Perfil (ver evidência E2E).</td><td>Config → perfis.</td></tr>
+      <tr><td>41</td><td>SmtpConfigModal.jsx</td><td>SMTP.</td><td>Config → email/SMTP ou integrações.</td></tr>
+      <tr><td>42</td><td>SubmitExpenseModal.jsx</td><td>Submeter despesa para aprovação.</td><td>Despesas → enviar.</td></tr>
+      <tr><td>43</td><td>SupplierModal.jsx</td><td>Fornecedor.</td><td>Fornecedores.</td></tr>
+      <tr><td>44</td><td>SupplierViewModal.jsx</td><td>Ver fornecedor.</td><td>Lista fornecedores.</td></tr>
+      <tr><td>45</td><td>TaskModal.jsx</td><td>Tarefa / plano de ação.</td><td>Tarefas / dashboard.</td></tr>
+      <tr><td>46</td><td>TeamModal.jsx</td><td>Equipa.</td><td>Gestão de equipas.</td></tr>
+      <tr><td>47</td><td>TenantModal.jsx</td><td>Tenant (ver evidência E2E).</td><td>Super-admin empresas.</td></tr>
+      <tr><td>48</td><td>UserImportModal.jsx</td><td>Importação de utilizadores.</td><td>Utilizadores → importar.</td></tr>
+      <tr><td>49</td><td>UserModal.jsx</td><td>Utilizador (ver evidência E2E).</td><td>Config → utilizadores.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="inline">Tabs de configuração, páginas e confirmações</h2>
+  <table class="inv">
+    <thead>
+      <tr><th>Local</th><th>O quê</th><th>Como testar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>KnowledgeCategoriesTab</td><td>Categoria KB + ConfirmDialog eliminar</td><td>Config / categorias KB; criar/editar; eliminar com confirmação.</td></tr>
+      <tr><td>TenantsTab</td><td>TenantModal + ConfirmDialog exclusão</td><td>Config empresas; excluir empresa.</td></tr>
+      <tr><td>ApprovalTiersTab</td><td>Alçadas + confirmação</td><td>Config alçadas; criar/editar/eliminar.</td></tr>
+      <tr><td>CabMembersTab</td><td>Membro CAB + confirmação</td><td>Admin CAB; adicionar/remover.</td></tr>
+      <tr><td>FreezeWindowsTab</td><td>Janelas de congelação</td><td>Admin janelas; abrir modal.</td></tr>
+      <tr><td>DocumentViewer</td><td>PDF/anexo KB</td><td>Abrir documento na KB.</td></tr>
+      <tr><td>FinancePage</td><td>Duplicar orçamento</td><td>Financeiro → duplicar orçamento; preencher nome.</td></tr>
+      <tr><td>ServiceDeskDashboard</td><td>Resolver chamado</td><td>Mesa; resolver com nota.</td></tr>
+      <tr><td>ManagerOverview</td><td>Info score</td><td>Dashboard gestor → ícone ajuda score.</td></tr>
+      <tr><td>ServiceDeskSettings</td><td>Grupo suporte</td><td>Config helpdesk; novo/editar grupo.</td></tr>
+      <tr><td>CatalogAdmin</td><td>Catálogo (4 modais)</td><td>Catálogo serviço; categoria, serviço, SLA, form builder.</td></tr>
+      <tr><td>MyApprovalsPage</td><td>Rejeitar</td><td>Minhas aprovações → rejeitar com motivo.</td></tr>
+      <tr><td>ActivityLogPage</td><td>Detalhe log</td><td>Admin auditoria → linha → detalhe.</td></tr>
+      <tr><td>TenantAdminPage</td><td>Form tenant</td><td>Admin tenants → criar/editar.</td></tr>
+      <tr><td>ProblemManagement</td><td>Problema ITIL</td><td>Gestão problemas; criar e «Mission Control».</td></tr>
+      <tr><td>PortalPage</td><td>Solicitar serviço</td><td>Portal → fluxo serviço → formulário.</td></tr>
+      <tr><td>ProjectCosts.jsx</td><td>ConfirmDialog eliminar</td><td>Custos projeto → eliminar despesa.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="excecoes">Exceções (ainda <code>Dialog</code> MUI directo)</h2>
+  <table class="inv">
+    <thead>
+      <tr><th>Componente</th><th>Motivo</th><th>Como testar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>CommandPalette.jsx</td><td>Palette de comandos (UX específica).</td><td>Atalho de palette (conforme app); ver lista e fechar.</td></tr>
+      <tr><td>PortalPage (wizard)</td><td>Wizard «Novo chamado» com gradiente e passos.</td><td>Portal → novo chamado → percorrer passos 1–2.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="slots">Áreas para evidência manual (opcional)</h2>
+  <p class="muted">Imprima ou cole capturas nas caixas abaixo para módulos prioritários do teu plano de QA.</p>
+  <div class="screenshot-slot">Módulo prioritário 1 — colar captura ou anexar no PDF</div>
+  <div class="screenshot-slot">Módulo prioritário 2 — colar captura ou anexar no PDF</div>
+  <div class="screenshot-slot">Módulo prioritário 3 — colar captura ou anexar no PDF</div>
+
+  <footer class="doc-foot">
+    Referência: <code class="path">docs/backlog/EP-008-padronizacao-modais-frontend/INVENTARIO-MODAIS.md</code> ·
+    Padrão: <code class="path">docs/patterns/modal-shell.md</code>.<br />
+    Documento estático: não substitui testes automatizados; as imagens E2E dependem de <code class="path">FRONTEND/e2e/*.spec.ts</code>.
+  </footer>
+
+</body>
+</html>

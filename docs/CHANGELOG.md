@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Docs
+- **US-022 / QA:** Dossiê HTML imprimível com evidências E2E (snapshots Playwright), inventário de modais, passos de teste e exceções — `docs/qa/modals-evidence-handbook.html`.
+
 ### Changed
 - **US-022 / EP-008 — páginas (`pages/`):** Migração de diálogos MUI inline para **`StandardModal`** onde aplicável: duplicação de orçamento (`FinancePage`), resolver chamado (`ServiceDeskDashboard`), modal do score (`ManagerOverview`), grupo de suporte (`ServiceDeskSettings`), catálogo/serviço/SLA/form builder (`CatalogAdmin`), rejeição (`MyApprovalsPage`), detalhe do log (`ActivityLogPage`), formulário tenant (`TenantAdminPage`), dois fluxos em `ProblemManagement`, formulário «Solicitar chamado» (`PortalPage`; wizard «Novo chamado» mantém `Dialog` customizado). Imports não utilizados removidos (`GlobalSettingsPage`).
   - `FRONTEND/src/pages/finance/FinancePage.jsx`
