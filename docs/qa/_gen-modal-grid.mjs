@@ -59,6 +59,7 @@ const rows = [
 const batch01 = '../../FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/';
 const batch02 = '../../FRONTEND/e2e/modal-evidence-batch-02.spec.ts-snapshots/';
 const batch03 = '../../FRONTEND/e2e/modal-evidence-batch-03.spec.ts-snapshots/';
+const batch04 = '../../FRONTEND/e2e/modal-evidence-batch-04.spec.ts-snapshots/';
 const snaps = {
   1: `${batch01}modal-evidence-01-account-shell-chromium-win32.png`,
   2: `${batch01}modal-evidence-02-addendum-form-shell-chromium-win32.png`,
@@ -75,6 +76,11 @@ const snaps = {
   13: `${batch03}modal-evidence-13-budget-modal-shell-chromium-win32.png`,
   14: `${batch03}modal-evidence-14-change-modal-shell-chromium-win32.png`,
   15: `${batch03}modal-evidence-15-change-view-shell-chromium-win32.png`,
+  16: `${batch04}modal-evidence-16-contract-creation-wizard-shell-chromium-win32.png`,
+  17: `${batch04}modal-evidence-17-contract-modal-shell-chromium-win32.png`,
+  18: `${batch04}modal-evidence-18-cost-center-shell-chromium-win32.png`,
+  19: `${batch04}modal-evidence-19-department-shell-chromium-win32.png`,
+  20: `${batch04}modal-evidence-20-expense-approval-shell-chromium-win32.png`,
   22: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-fiscal-year-shell-chromium-win32.png',
   40: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png',
   47: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png',

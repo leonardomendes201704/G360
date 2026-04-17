@@ -6,6 +6,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
 import ExpenseModal from '../../components/modals/ExpenseModal';
+import ExpenseApprovalModal from '../../components/modals/ExpenseApprovalModal';
 import SubmitExpenseModal from '../../components/modals/SubmitExpenseModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
@@ -39,6 +40,7 @@ const ExpensesPage = () => {
     const [deleteId, setDeleteId] = useState(null);
     const [submitModalOpen, setSubmitModalOpen] = useState(false);
     const [submitItem, setSubmitItem] = useState(null);
+    const [approvalModalOpen, setApprovalModalOpen] = useState(false);
 
     // Deletion Request Utils
     const [deletionModalOpen, setDeletionModalOpen] = useState(false);
@@ -201,6 +203,7 @@ const ExpensesPage = () => {
             await updateExpense(data.id, data);
             enqueueSnackbar('Despesa aprovada e NF anexada!', { variant: 'success' });
             setApprovalModalOpen(false);
+            setSelectedItem(null);
             fetchExpenses();
         } catch (e) {
             enqueueSnackbar(getErrorMessage(e, 'Erro ao aprovar despesa'), { variant: 'error' });
@@ -498,20 +501,9 @@ const ExpensesPage = () => {
                                             })()}
                                             {/* Aprovar - apenas Gestores/Admin e AGUARDANDO_APROVACAO */}
                                             {item.status === 'AGUARDANDO_APROVACAO' && canApproveOrEditExpense && (
-                                                <Tooltip title="Aprovar e Provisionar" arrow>
+                                                <Tooltip title="Aprovar e anexar NF" arrow>
                                                     <IconButton
-                                                        onClick={() => {
-                                                            const confirmApprove = async () => {
-                                                                try {
-                                                                    await updateExpense(item.id, { status: 'APROVADO' });
-                                                                    enqueueSnackbar('Despesa aprovada e provisionada!', { variant: 'success' });
-                                                                    fetchExpenses();
-                                                                } catch (e) {
-                                                                    enqueueSnackbar(getErrorMessage(e, 'Erro ao aprovar. Verifique se há NF anexada.'), { variant: 'error' });
-                                                                }
-                                                            };
-                                                            confirmApprove();
-                                                        }}
+                                                        onClick={() => handleOpenApproval(item)}
                                                         sx={actionBtnStyle('success')}
                                                     >
                                                         <span className="material-icons-round" style={{ fontSize: '16px' }}>check_circle</span>
@@ -552,6 +544,12 @@ const ExpensesPage = () => {
             </Box>
 
             <ExpenseModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} expense={selectedItem} />
+            <ExpenseApprovalModal
+                open={approvalModalOpen}
+                onClose={() => { setApprovalModalOpen(false); setSelectedItem(null); }}
+                onConfirm={handleConfirmApproval}
+                expense={selectedItem}
+            />
             <SubmitExpenseModal open={submitModalOpen} onClose={() => { setSubmitModalOpen(false); setSubmitItem(null); }} onSubmit={handleSubmitForApproval} expense={submitItem} />
             <ConfirmDialog open={confirmOpen} title="Excluir Despesa" content="Tem certeza que deseja excluir esta despesa? Esta ação não pode ser desfeita." onConfirm={handleConfirmDelete} onClose={() => setConfirmOpen(false)} />
 
