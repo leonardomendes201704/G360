@@ -8,7 +8,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Docs
-- **US-022 / QA:** Dossiê HTML imprimível com evidências E2E (snapshots Playwright), inventário de modais, passos de teste e exceções — `docs/qa/modals-evidence-handbook.html`.
+- **US-022 / QA:** Dossiê HTML imprimível (`docs/qa/modals-evidence-handbook.html`): inventário de modais, passos de teste, exceções; **grelha `#grelha-49`** com **49** tiles (um por ficheiro em `components/modals/`) — 5 com PNG Playwright no repositório e 44 com placeholder para captura manual. Regeneração: `node docs/qa/_gen-modal-grid.mjs` → `node docs/qa/_patch-handbook.mjs`; fragmento gerado em `docs/qa/_modal-grid-fragment.html`.
+  - `docs/qa/modals-evidence-handbook.html`
+  - `docs/qa/_gen-modal-grid.mjs`
+  - `docs/qa/_patch-handbook.mjs`
+  - `docs/qa/_modal-grid-fragment.html`
 
 ### Changed
 - **US-022 / EP-008 — páginas (`pages/`):** Migração de diálogos MUI inline para **`StandardModal`** onde aplicável: duplicação de orçamento (`FinancePage`), resolver chamado (`ServiceDeskDashboard`), modal do score (`ManagerOverview`), grupo de suporte (`ServiceDeskSettings`), catálogo/serviço/SLA/form builder (`CatalogAdmin`), rejeição (`MyApprovalsPage`), detalhe do log (`ActivityLogPage`), formulário tenant (`TenantAdminPage`), dois fluxos em `ProblemManagement`, formulário «Solicitar chamado» (`PortalPage`; wizard «Novo chamado» mantém `Dialog` customizado). Imports não utilizados removidos (`GlobalSettingsPage`).
