@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { 
-  Button, TextField, Tooltip, Card, CardContent,
-  Box, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, Grid, TableContainer, Paper,
+  TextField, Tooltip,
+  Box, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, TableContainer, Paper,
   CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Chip, Avatar, useTheme, keyframes
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -14,6 +14,8 @@ import WarningIcon from '@mui/icons-material/Warning';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ticketService from '../../services/ticket.service';
 import StandardModal from '../../components/common/StandardModal';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 const STATUS_COLORS = {
   'OPEN': 'info',
@@ -185,57 +187,14 @@ const ServiceDeskDashboard = () => {
       )}
 
       {filterStatus === 'ALL' && !loading && (
-        <Box 
-          sx={{ 
-            display: 'grid', 
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, 
-            gap: 3, 
-            mb: 4,
-            width: '100%'
-          }}
-        >
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">TOTAL DE CHAMADOS</Typography>
-              <Typography variant="h5" fontWeight="bold">{totalTickets}</Typography>
-            </CardContent>
-          </Card>
-          
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">ATENDIDOS</Typography>
-              <Typography variant="h5" fontWeight="bold" color="primary">{resolvedTickets}</Typography>
-            </CardContent>
-          </Card>
-          
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">FILA EM ABERTO</Typography>
-              <Typography variant="h5" fontWeight="bold">{totalOpen}</Typography>
-            </CardContent>
-          </Card>
-          
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">TAXA SUCESSO SLA</Typography>
-              <Typography variant="h5" fontWeight="bold" color="success.main">{slaCompliance}%</Typography>
-            </CardContent>
-          </Card>
-          
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">TAXA FRACASSO SLA</Typography>
-              <Typography variant="h5" fontWeight="bold" color="error">{slaFailure}%</Typography>
-            </CardContent>
-          </Card>
-          
-          <Card elevation={1} sx={{ borderRadius: 1, height: '100%' }}>
-            <CardContent sx={{ pb: '16px !important' }}>
-              <Typography variant="caption" color="text.secondary" fontWeight="bold">ESTOUROS ATIVOS</Typography>
-              <Typography variant="h5" fontWeight="bold" color="error">{slaBreachedActive}</Typography>
-            </CardContent>
-          </Card>
-        </Box>
+        <KpiGrid maxColumns={3} mb={4} clampChildHeight={false} gap={2}>
+          <StatsCard title="Total de chamados" value={totalTickets} iconName="confirmation_number" hexColor="#2563eb" />
+          <StatsCard title="Atendidos" value={resolvedTickets} iconName="task_alt" hexColor="#10b981" />
+          <StatsCard title="Fila em aberto" value={totalOpen} iconName="pending_actions" hexColor="#f59e0b" />
+          <StatsCard title="Taxa sucesso SLA" value={`${slaCompliance}%`} iconName="trending_up" hexColor="#059669" />
+          <StatsCard title="Taxa fracasso SLA" value={`${slaFailure}%`} iconName="trending_down" hexColor="#ef4444" />
+          <StatsCard title="Estouros ativos" value={slaBreachedActive} iconName="error_outline" hexColor="#dc2626" />
+        </KpiGrid>
       )}
 
       <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>

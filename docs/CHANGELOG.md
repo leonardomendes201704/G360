@@ -28,6 +28,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
 ### Changed
+- **Service Desk:** Indicadores numéricos da **Central de Serviços** passam para o padrão **`StatsCard`** + **`KpiGrid`** (3 colunas em ecrã médio/grande): total de chamados, atendidos, fila em aberto, taxas de sucesso/fracasso SLA, estouros ativos.
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
 - **UI / KPIs:** **`StatsCard`** — valor principal com fonte **mais compacta** por defeito (`~1.25rem` em `sm+`, clamp em `xs`), **uma linha** (`nowrap` + `ellipsis`), `title` nativo para ver o valor completo ao pairar; props opcionais **`valueFontSize`** e **`valueSx`**. **`KpiGrid`** — `minWidth: 0` nos filhos para o ellipsis funcionar em grelha.
   - `FRONTEND/src/components/common/StatsCard.jsx`
   - `FRONTEND/src/components/common/KpiGrid.jsx`
