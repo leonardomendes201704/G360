@@ -91,7 +91,8 @@ class TicketController {
           requesterId: true,
           assigneeId: true,
           departmentId: true,
-          costCenterId: true
+          costCenterId: true,
+          requester: { select: { departmentId: true, costCenterId: true } }
         }
       });
       if (!preview) {
@@ -159,7 +160,8 @@ class TicketController {
           requesterId: true,
           assigneeId: true,
           departmentId: true,
-          costCenterId: true
+          costCenterId: true,
+          requester: { select: { departmentId: true, costCenterId: true } }
         }
       });
       if (!ticketFull) {

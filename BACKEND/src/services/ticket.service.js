@@ -50,15 +50,23 @@ class TicketService {
     const or = [{ requesterId: userId }];
     if (scope.departmentIds.length) {
       or.push({ departmentId: { in: scope.departmentIds } });
+      // Chamados antigos sem snapshot: visibilidade pela área atual do solicitante
+      or.push({ requester: { departmentId: { in: scope.departmentIds } } });
     }
     if (scope.costCenterIds.length) {
       or.push({ costCenterId: { in: scope.costCenterIds } });
+      or.push({ requester: { costCenterId: { in: scope.costCenterIds } } });
     }
     return { OR: or };
   }
 
   /**
-   * @param {{ requesterId: string, departmentId: string|null, costCenterId: string|null }} ticket
+   * @param {{
+   *   requesterId: string,
+   *   departmentId?: string|null,
+   *   costCenterId?: string|null,
+   *   requester?: { departmentId?: string|null, costCenterId?: string|null }
+   * }} ticket
    * @param {{ departmentIds: string[], costCenterIds: string[], hasScope: boolean }} scope
    */
   static ticketMatchesManagerScope(ticket, userId, scope) {
@@ -66,6 +74,10 @@ class TicketService {
     if (ticket.requesterId === userId) return true;
     if (ticket.departmentId && scope.departmentIds.includes(ticket.departmentId)) return true;
     if (ticket.costCenterId && scope.costCenterIds.includes(ticket.costCenterId)) return true;
+    const rd = ticket.requester?.departmentId;
+    const rc = ticket.requester?.costCenterId;
+    if (rd && scope.departmentIds.includes(rd)) return true;
+    if (rc && scope.costCenterIds.includes(rc)) return true;
     return false;
   }
 

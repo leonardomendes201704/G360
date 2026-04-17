@@ -27,6 +27,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **Incidentes:** Revertida alteração que derivava os KPIs da lista a partir de `filteredIncidents`; a página volta a usar **`GET /incidents/kpis`** (`getIncidentKPIs`), como antes.
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
+### Fixed
+- **Helpdesk / lista vazia no portal:** `GET /tickets` exigia apenas `READ` ou `VIEW_QUEUE`; utilizadores com permissão só **`HELPDESK` CREATE** recebiam **403** e o frontend devolvia lista vazia. Rotas **`GET /tickets`**, **`GET /tickets/:id`** e **`GET /tickets/metrics/overview`** passam a aceitar também **CREATE**. **Gestores:** chamados antigos sem snapshot continuam visíveis quando o **solicitante** pertence ao departamento/CC gerido (`buildManagerAccessWhere` + `ticketMatchesManagerScope`).
+  - `BACKEND/src/routes/ticket.routes.js`
+  - `BACKEND/src/services/ticket.service.js`
+  - `BACKEND/src/controllers/ticket.controller.js`
+
 ### Changed
 - **Helpdesk / área (departamento e centro de custo):** Snapshots `departmentId` / `costCenterId` no ticket — **Portal** com colunas e filtros, **modal Novo chamado** com selects opcionais, **detalhe do chamado** com leitura para solicitantes e edição para agentes (triagem), **Service Desk** com colunas na fila; seed de showcase grava CC/dept do utilizador requester.
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`

@@ -10,8 +10,8 @@ router.use(authMiddleware);
 // Abertura de chamado (portal)
 router.post('/', authorize('HELPDESK', 'CREATE'), audit('HELPDESK'), TicketController.create);
 
-// Lista: fila global (VIEW_QUEUE) ou apenas próprios (READ)
-router.get('/', authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE']), TicketController.index);
+// Lista: fila global (VIEW_QUEUE), leitura (READ), ou portal com CREATE (lista própria / âmbito gestor no controller)
+router.get('/', authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE', 'CREATE']), TicketController.index);
 
 // Métricas (MTTR, fila, SLA) — fila global ou âmbito de gestor (READ + diretor/CC)
 router.get(
@@ -23,8 +23,8 @@ router.get(
 // Export CSV (fila)
 router.get('/export', authorize('HELPDESK', 'VIEW_QUEUE'), TicketController.exportCsv);
 
-// Detalhe: participante ou fila global
-router.get('/:id', authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE']), TicketController.show);
+// Detalhe: participante, fila global, ou que tenha CREATE no portal
+router.get('/:id', authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE', 'CREATE']), TicketController.show);
 
 // Triagem: prioridade, responsável, categoria
 router.patch('/:id', authorize('HELPDESK', 'UPDATE_STATUS'), audit('HELPDESK'), TicketController.update);
