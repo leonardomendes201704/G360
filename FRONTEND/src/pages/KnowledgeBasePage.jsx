@@ -682,7 +682,7 @@ export default function KnowledgeBasePage() {
                 />
             </Box>
 
-            {/* Filtros — barra compacta + drawer (categoria); busca e vista na mesma linha */}
+            {/* Filtros — barra compacta numa linha (sem wrap); busca encolhe entre Filtros e Limpar */}
             <Box
                 sx={{
                     mb: 3,
@@ -691,18 +691,30 @@ export default function KnowledgeBasePage() {
                     bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
                     border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     alignItems: 'center',
                     gap: 2,
-                    justifyContent: 'space-between',
+                    width: '100%',
+                    minWidth: 0,
+                    overflow: 'hidden',
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        flexWrap: 'nowrap',
+                        flex: 1,
+                        minWidth: 0,
+                    }}
+                >
                     <Button
                         size="medium"
                         startIcon={<FilterAlt />}
                         onClick={openFilterDrawer}
                         sx={{
+                            flexShrink: 0,
                             color: isDark ? '#f1f5f9' : '#0f172a',
                             textTransform: 'none',
                             fontWeight: 600,
@@ -714,6 +726,7 @@ export default function KnowledgeBasePage() {
                     {activeDrawerFilterCount > 0 ? (
                         <Box
                             sx={{
+                                flexShrink: 0,
                                 px: 1,
                                 py: 0.25,
                                 borderRadius: '10px',
@@ -732,15 +745,23 @@ export default function KnowledgeBasePage() {
                         size="small"
                         value={filters.search}
                         onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                        sx={{ ...inputSx, minWidth: 220, flex: '1 1 240px', maxWidth: 480 }}
+                        sx={{
+                            ...inputSx,
+                            flex: '1 1 0',
+                            minWidth: 0,
+                            maxWidth: '100%',
+                            '& .MuiOutlinedInput-root': { height: '40px' },
+                        }}
                     />
                     <Button
                         size="small"
                         startIcon={<Refresh />}
                         onClick={clearAllFilters}
                         sx={{
+                            flexShrink: 0,
                             color: isDark ? '#94a3b8' : '#64748b',
                             textTransform: 'none',
+                            whiteSpace: 'nowrap',
                             '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
                         }}
                     >
@@ -749,12 +770,12 @@ export default function KnowledgeBasePage() {
                 </Box>
                 <Box
                     sx={{
+                        flexShrink: 0,
                         display: 'flex',
                         bgcolor: surfaceBg,
                         border: cardBorder,
                         borderRadius: '8px',
                         padding: '4px',
-                        ml: { xs: 0, sm: 'auto' },
                     }}
                 >
                     <ViewToggleBtn

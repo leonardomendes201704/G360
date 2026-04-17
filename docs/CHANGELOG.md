@@ -32,6 +32,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022 / QA:** Rodada 8 — modais **36–40** (`modal-evidence-batch-08.spec.ts`, `modal-evidence-batch-08-api-mocks.ts`): nova proposta, reagendar follow-up, novo risco / visualizar risco, novo perfil em Organização. Mocks: `GET` follow-ups (item para reagendar), `POST` reschedule, `GET`/`POST` risks do projeto. Tile **40** passa a usar snapshot do batch-08 (alinhado aos 36–39). Snapshots em `FRONTEND/e2e/modal-evidence-batch-08.spec.ts-snapshots/`.
 - **US-022 / QA:** Rodada 9 — modais **41–45** (`modal-evidence-batch-09.spec.ts`, `modal-evidence-batch-09-api-mocks.ts`): SMTP em Integrações, submeter despesa (Financeiro), novo fornecedor / visualizar fornecedor, nova tarefa geral em `/tasks`. Mocks: despesas `PREVISTO`, fornecedores, integrações SMTP, `GET /tasks` + `POST /tasks`. Assert do **42** no título do modal (`#g360-modal-title-*`) para evitar colisão com o botão «Enviar para Aprovação». Snapshots em `FRONTEND/e2e/modal-evidence-batch-09.spec.ts-snapshots/`.
 
+### Fixed
+- **KB / UX:** Barra de filtros da Base de Conhecimento — **uma linha** sem quebra: `flexWrap: nowrap`, grupo esquerdo com `flex: 1` / `minWidth: 0`, campo **Buscar** com `flex: 1 1 0` para encolher, botões e toggle com `flexShrink: 0`.
+  - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
+
 ### Changed
 - **KB / Fornecedores / UX:** `KnowledgeBasePage` — filtros inline (`Collapse`, pills) substituídos por **`FilterDrawer`** (categoria a partir das categorias do dashboard) + barra com **Filtros**, busca textual e **Limpar tudo**; toggle lista/grelha mantido. `SuppliersPage` — **`FilterDrawer`** (status, categoria, avaliação), barra compacta + **Limpar tudo**; busca no cabeçalho da tabela; `usePersistedFilters` mantido.
   - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
