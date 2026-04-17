@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-16]
+
+### Changed
+- **UI / KPIs:** Alinhamento das grelhas de indicadores ao padrao **Visao geral / dashboard** (`StatsCard` + `KpiGrid`) nas telas Ativos, Base de Conhecimento, Projetos, Tarefas (7 KPIs), Financeiro (dashboard), Contratos, Fornecedores (KPIs principais; distribuicao por avaliacao inalterada) e Auditoria e Atividades. `KpiGrid` passa a permitir ate **7** colunas em `lg` quando `maxColumns` >= 7.
+  - `FRONTEND/src/components/common/KpiGrid.jsx`
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`
+  - `FRONTEND/src/pages/tasks/TasksPage.jsx`
+  - `FRONTEND/src/pages/finance/FinanceDashboard.jsx`
+  - `FRONTEND/src/pages/contracts/ContractsPage.jsx`
+  - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`
+  - `FRONTEND/src/pages/admin/ActivityLogPage.jsx`
+
+---
+
 ## [2026-04-17]
 
 ### Added

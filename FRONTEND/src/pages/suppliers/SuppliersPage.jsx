@@ -3,6 +3,8 @@ import { useSnackbar } from 'notistack';
 import { Box, Typography, Button, IconButton, Tooltip, TextField, MenuItem, Checkbox } from '@mui/material';
 import { FilterAlt, Refresh, Delete as DeleteIcon } from '@mui/icons-material';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import FilterDrawer from '../../components/common/FilterDrawer';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
@@ -402,37 +404,24 @@ const SuppliersPage = () => {
         </TextField>
       </FilterDrawer>
 
-      {/* Stats Cards */}
-      <Box className="suppliers-stats-grid">
+      <KpiGrid maxColumns={3}>
         {statCards.map((card) => {
           const pct = suppliers.length > 0 ? Math.round((card.value / suppliers.length) * 100) : 0;
           return (
-            <Box key={card.key} sx={{
-              ...cardStyle, p: 2.5, display: 'flex', flexDirection: 'column', gap: 1.5,
-              transition: 'all 0.3s ease', cursor: 'pointer',
-              '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)' }
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography sx={{ fontSize: '28px', fontWeight: 700, color: textPrimary, lineHeight: 1.1 }}>{card.value}</Typography>
-                  <Typography sx={{ fontSize: '12px', color: textSecondary, mt: 0.5 }}>{card.label}</Typography>
-                </Box>
-                <Box sx={{
-                  width: 40, height: 40, borderRadius: '10px', background: card.bg,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: card.color
-                }}>
-                  <span className="material-icons-round" style={{ fontSize: '20px' }}>{card.icon}</span>
-                </Box>
-              </Box>
-              <Box sx={{ width: '100%', height: 4, borderRadius: '2px', background: 'rgba(255,255,255,0.06)' }}>
-                <Box sx={{ width: `${pct}%`, height: '100%', borderRadius: '2px', background: card.color, transition: 'width 0.6s ease' }} />
-              </Box>
-            </Box>
+            <StatsCard
+              key={card.key}
+              title={card.label}
+              value={card.value}
+              iconName={card.icon}
+              hexColor={card.color}
+              subtitle={suppliers.length > 0 ? `${pct}% do total` : undefined}
+            />
           );
         })}
+      </KpiGrid>
 
-        {/* Rating Distribution Card */}
-        <Box sx={{
+      {/* Rating Distribution Card */}
+      <Box sx={{
           ...cardStyle, p: 3,
           transition: 'all 0.3s ease', cursor: 'pointer',
           '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)' }
@@ -479,7 +468,6 @@ const SuppliersPage = () => {
             ))}
           </Box>
         </Box>
-      </Box>
 
       {/* Table Section */}
       <Box sx={{ ...cardStyle, overflow: 'hidden' }}>

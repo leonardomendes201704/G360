@@ -5,6 +5,8 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import DashboardCustomizer from '../../components/dashboard/DashboardCustomizer';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 import {
     getBudgetOverview, getMonthlyEvolution, getInsights, getCostCenterPerformance
@@ -296,33 +298,21 @@ const FinanceDashboard = () => {
                         </Box>
                     )}
 
-                    {/* Original 5 KPI cards */}
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(5, 1fr)' }, gap: 2 }}>
-                        {kpis.map((kpi, index) => {
+                    <KpiGrid maxColumns={5}>
+                        {kpis.map((kpi) => {
                             const colors = colorMap[kpi.color];
                             return (
-                                <Paper elevation={0} key={index} sx={{
-                                    ...cardStyle, position: 'relative', overflow: 'hidden',
-                                    '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: colors.accent }
-                                }}>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: labelColor, textTransform: 'uppercase' }}>{kpi.title}</span>
-                                        <Box sx={{ width: 40, height: 40, borderRadius: '12px', background: colors.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <span className="material-icons-round" style={{ color: colors.color, fontSize: '22px' }}>{kpi.icon}</span>
-                                        </Box>
-                                    </Box>
-                                    <Typography sx={{ fontSize: '32px', fontWeight: 700, color: textPrimaryColor, mb: 1 }}>{kpi.value}</Typography>
-                                    <span style={{
-                                        padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
-                                        background: overview.available >= 0 || kpi.color !== 'indigo' ? colors.bg : 'rgba(244, 63, 94, 0.15)',
-                                        color: overview.available >= 0 || kpi.color !== 'indigo' ? colors.color : '#f43f5e'
-                                    }}>
-                                        {kpi.badge}
-                                    </span>
-                                </Paper>
+                                <StatsCard
+                                    key={kpi.title}
+                                    title={kpi.title}
+                                    value={kpi.value}
+                                    iconName={kpi.icon}
+                                    hexColor={colors.accent}
+                                    subtitle={kpi.badge}
+                                />
                             );
                         })}
-                    </Box>
+                    </KpiGrid>
                 </Box>
             )}
 

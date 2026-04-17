@@ -21,6 +21,8 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useUndoToast } from '../../hooks/useUndoToast';
 
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import './AssetsPage.css';
 
 const AssetsPage = () => {
@@ -449,33 +451,18 @@ const AssetsPage = () => {
       {/* Dashboard View */}
       {viewMode === 'dashboard' && (
         <>
-          {/* KPI Cards — Circle icon variant */}
-          <Box className="assets-kpi-grid">
+          <KpiGrid maxColumns={5}>
             {statCards.map((card) => (
-              <Box key={card.key} sx={{
-                ...cardStyle, p: 2.5, display: 'flex', alignItems: 'center', gap: 2,
-                transition: 'all 0.3s ease', cursor: 'pointer',
-                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)' }
-              }}>
-                <Box sx={{
-                  width: 48, height: 48, borderRadius: '50%', background: card.bg,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: card.color,
-                  border: `2px solid ${card.color}20`, flexShrink: 0
-                }}>
-                  <span className="material-icons-round" style={{ fontSize: '22px' }}>{card.icon}</span>
-                </Box>
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography sx={{ fontSize: card.key === 'value' ? '22px' : '26px', fontWeight: 700, color: textPrimary, lineHeight: 1.1 }}>{card.value}</Typography>
-                  <Typography sx={{ fontSize: '12px', color: textMuted, mt: 0.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{card.label}</Typography>
-                  <Typography sx={{ fontSize: '11px', color: card.negative ? '#f43f5e' : '#10b981', display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.25 }}>
-                    {card.negative && <span className="material-icons-round" style={{ fontSize: '13px' }}>trending_down</span>}
-                    {!card.negative && card.key === 'total' && <span className="material-icons-round" style={{ fontSize: '13px' }}>trending_up</span>}
-                    {card.trend}
-                  </Typography>
-                </Box>
-              </Box>
+              <StatsCard
+                key={card.key}
+                title={card.label}
+                value={card.value}
+                iconName={card.icon}
+                hexColor={card.color}
+                subtitle={card.trend}
+              />
             ))}
-          </Box>
+          </KpiGrid>
 
           {/* Charts Row */}
           <Box className="assets-charts-grid" sx={{ mb: 3 }}>

@@ -14,6 +14,8 @@ import debounce from 'lodash/debounce';
 import ProjectModal from '../../components/modals/ProjectModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 import { getProjects, createProject, updateProject, deleteProject, submitForApproval } from '../../services/project.service';
 import { getReferenceUsers } from '../../services/reference.service';
@@ -636,48 +638,12 @@ const ProjectsListPage = () => {
                     </div>
                 </div>
 
-                {/* Stats Grid */}
-                <div className="pl-stats-grid">
-                    <div className="pl-stat-card total">
-                        <div className="pl-stat-icon total">
-                            <span className="material-icons-round">folder_copy</span>
-                        </div>
-                        <div className="pl-stat-content">
-                            <div className="pl-stat-value">{kpis.total}</div>
-                            <div className="pl-stat-label">Total de Projetos</div>
-                        </div>
-                    </div>
-
-                    <div className="pl-stat-card planning">
-                        <div className="pl-stat-icon planning">
-                            <span className="material-icons-round">edit_note</span>
-                        </div>
-                        <div className="pl-stat-content">
-                            <div className="pl-stat-value">{kpis.planning}</div>
-                            <div className="pl-stat-label">Em Planejamento</div>
-                        </div>
-                    </div>
-
-                    <div className="pl-stat-card execution">
-                        <div className="pl-stat-icon execution">
-                            <span className="material-icons-round">play_circle</span>
-                        </div>
-                        <div className="pl-stat-content">
-                            <div className="pl-stat-value">{kpis.active}</div>
-                            <div className="pl-stat-label">Em Execução</div>
-                        </div>
-                    </div>
-
-                    <div className="pl-stat-card completed">
-                        <div className="pl-stat-icon completed">
-                            <span className="material-icons-round">check_circle</span>
-                        </div>
-                        <div className="pl-stat-content">
-                            <div className="pl-stat-value">{kpis.completed}</div>
-                            <div className="pl-stat-label">Concluídos</div>
-                        </div>
-                    </div>
-                </div>
+                <KpiGrid maxColumns={4}>
+                    <StatsCard title="Total de Projetos" value={kpis.total} iconName="folder_copy" hexColor="#2563eb" />
+                    <StatsCard title="Em Planejamento" value={kpis.planning} iconName="edit_note" hexColor="#f59e0b" />
+                    <StatsCard title="Em Execução" value={kpis.active} iconName="play_circle" hexColor="#10b981" />
+                    <StatsCard title="Concluídos" value={kpis.completed} iconName="check_circle" hexColor="#06b6d4" />
+                </KpiGrid>
 
                 {/* Filtros — barra compacta + drawer (padrão incidentes) */}
                 <Box

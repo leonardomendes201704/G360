@@ -5,6 +5,8 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import StandardModal from '../../components/common/StandardModal';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 const ActivityLogPage = () => {
     const [viewMode, setViewMode] = useState('dashboard');
@@ -336,29 +338,23 @@ const ActivityLogPage = () => {
             {/* Dashboard View */}
             {viewMode === 'dashboard' && (
                 <>
-                    {/* KPIs */}
-                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2.5, mb: 3 }}>
+                    <KpiGrid maxColumns={4}>
                         {[
                             { label: 'Total de Atividades', value: analytics.total.toLocaleString('pt-BR'), icon: 'timeline', color: '#2563eb', trend: analytics.totalTrend, trendUp: analytics.totalTrendUp },
                             { label: 'Atividades Hoje', value: analytics.today, icon: 'today', color: '#10b981', trend: 'Ultimas 24 horas', trendUp: null },
                             { label: 'Usuarios Ativos', value: analytics.uniqueUsers, icon: 'people', color: '#06b6d4', trend: 'Nesta semana', trendUp: null },
                             { label: 'Acoes Criticas', value: analytics.critical, icon: 'warning', color: '#f43f5e', trend: 'Requer atencao', trendUp: false }
                         ].map((kpi, i) => (
-                            <Box key={i} sx={{ ...cardStyle, p: 3, display: 'flex', alignItems: 'center', gap: 2.5, cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-4px)', boxShadow: isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 12px 24px rgba(15, 23, 42, 0.12)' } }}>
-                                <Box sx={{ width: 56, height: 56, borderRadius: '12px', background: `${kpi.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <span className="material-icons-round" style={{ fontSize: '28px', color: kpi.color }}>{kpi.icon}</span>
-                                </Box>
-                                <Box sx={{ flex: 1 }}>
-                                    <Typography sx={{ color: textMuted, fontSize: '13px', mb: 0.5 }}>{kpi.label}</Typography>
-                                    <Typography sx={{ color: textPrimary, fontSize: '28px', fontWeight: 700, lineHeight: 1 }}>{kpi.value}</Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                                        {kpi.trendUp !== null && <span className="material-icons-round" style={{ fontSize: '14px', color: kpi.trendUp ? '#10b981' : '#f43f5e' }}>{kpi.trendUp ? 'trending_up' : 'error'}</span>}
-                                        <Typography sx={{ fontSize: '12px', color: kpi.trendUp === false ? '#f43f5e' : kpi.trendUp ? '#10b981' : '#64748b' }}>{kpi.trend}</Typography>
-                                    </Box>
-                                </Box>
-                            </Box>
+                            <StatsCard
+                                key={i}
+                                title={kpi.label}
+                                value={kpi.value}
+                                iconName={kpi.icon}
+                                hexColor={kpi.color}
+                                subtitle={kpi.trend}
+                            />
                         ))}
-                    </Box>
+                    </KpiGrid>
 
                     {/* Charts Row 1 */}
                     <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 3, mb: 3 }}>

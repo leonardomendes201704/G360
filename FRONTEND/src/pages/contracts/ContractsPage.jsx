@@ -17,6 +17,8 @@ import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import { getContracts, createContract, updateContract, deleteContract } from '../../services/contract.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { AuthContext } from '../../contexts/AuthContext';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 
 const CONTRACT_FILTER_DEFAULTS = {
   status: '',
@@ -431,54 +433,17 @@ const ContractsPage = () => {
         </TextField>
       </FilterDrawer>
 
-      {/* Stats Cards — Left Border Accent variant */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 2.5, mb: 3 }}>
+      <KpiGrid maxColumns={4}>
         {statCards.map((card) => (
-          <Box
+          <StatsCard
             key={card.key}
-            sx={{
-              p: 2.5,
-              borderRadius: '12px',
-              background: cardBg,
-              backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
-              border: `1px solid ${borderColor}`,
-              borderLeft: `4px solid ${card.color}`,
-              boxShadow: cardShadow,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              transition: 'all 0.2s ease',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                borderColor: 'rgba(37, 99, 235, 0.3)',
-                borderLeftColor: card.color,
-              }
-            }}
-          >
-            <Box sx={{
-              width: 44,
-              height: 44,
-              borderRadius: '10px',
-              background: card.bg,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: card.color
-            }}>
-              <span className="material-icons-round" style={{ fontSize: '22px' }}>{card.icon}</span>
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontSize: '24px', fontWeight: 700, color: textPrimary, lineHeight: 1.2 }}>
-                {card.value}
-              </Typography>
-              <Typography sx={{ fontSize: '12px', color: textSecondary }}>
-                {card.label}
-              </Typography>
-            </Box>
-          </Box>
+            title={card.label}
+            value={card.value}
+            iconName={card.icon}
+            hexColor={card.color}
+          />
         ))}
-      </Box>
+      </KpiGrid>
 
       {/* Table Section */}
       <Box

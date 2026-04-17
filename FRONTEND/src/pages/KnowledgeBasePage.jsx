@@ -18,8 +18,6 @@ import {
     Add as AddIcon,
     Description as ArticleIcon,
     Visibility as VisibilityIcon,
-    Folder as FolderIcon,
-    TrendingUp as TrendingUpIcon,
     ViewModule as GridViewIcon,
     ViewList as ListViewIcon,
     MoreVert as MoreVertIcon,
@@ -28,6 +26,8 @@ import {
     Delete as DeleteIcon
 } from '@mui/icons-material';
 import ConfirmDialog from '../components/common/ConfirmDialog';
+import StatsCard from '../components/common/StatsCard';
+import KpiGrid from '../components/common/KpiGrid';
 
 import KnowledgeBaseService from '../services/knowledge-base.service';
 import KnowledgeBaseModal from '../components/modals/KnowledgeBaseModal.jsx';
@@ -37,58 +37,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 
 const KB_FILTER_DEFAULTS = { search: '', categoryId: '' };
-
-// Stat Card Component - Premium Design
-const StatCard = ({ title, value, icon, colorScheme, theme }) => {
-    const colors = {
-        indigo: { bg: 'rgba(37, 99, 235, 0.2)', icon: '#818cf8', border: '#2563eb' },
-        purple: { bg: 'rgba(168, 85, 247, 0.2)', icon: '#c084fc', border: '#a855f7' },
-        emerald: { bg: 'rgba(16, 185, 129, 0.2)', icon: '#34d399', border: '#10b981' },
-        amber: { bg: 'rgba(245, 158, 11, 0.2)', icon: '#fbbf24', border: '#f59e0b' }
-    };
-    const color = colors[colorScheme] || colors.indigo;
-
-    return (
-        <Box
-            sx={{
-                bgcolor: theme.cardBg,
-                border: theme.cardBorder,
-                borderRadius: '12px',
-                padding: '24px',
-                transition: 'all 0.3s',
-                cursor: 'pointer',
-                '&:hover': {
-                    borderColor: color.border,
-                    transform: 'translateY(-2px)'
-                }
-            }}
-        >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Box
-                    sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        bgcolor: color.bg,
-                        color: color.icon,
-                        transition: 'all 0.3s'
-                    }}
-                >
-                    {icon}
-                </Box>
-                <Typography sx={{ fontSize: '28px', fontWeight: 700, color: theme.textPrimary }}>
-                    {value}
-                </Typography>
-            </Box>
-            <Typography sx={{ fontSize: '14px', color: theme.textSecondary }}>
-                {title}
-            </Typography>
-        </Box>
-    );
-};
 
 // Article Card Component - Premium Design  
 const ArticleCard = ({ article, onView, onMenuClick, theme }) => (
@@ -643,44 +591,32 @@ export default function KnowledgeBasePage() {
                 )}
             </Box>
 
-            {/* STATS GRID */}
-            <Box
-                sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '24px',
-                    mb: 3
-                }}
-            >
-                <StatCard
+            <KpiGrid maxColumns={4}>
+                <StatsCard
                     title="Total de Artigos"
                     value={totalArticles}
-                    icon={<ArticleIcon sx={{ fontSize: 20 }} />}
-                    colorScheme="indigo"
-                    theme={themeTokens}
+                    iconName="article"
+                    hexColor="#2563eb"
                 />
-                <StatCard
+                <StatsCard
                     title="Visualizacoes"
                     value={stats?.totalViews || 0}
-                    icon={<VisibilityIcon sx={{ fontSize: 20 }} />}
-                    colorScheme="purple"
-                    theme={themeTokens}
+                    iconName="visibility"
+                    hexColor="#a855f7"
                 />
-                <StatCard
+                <StatsCard
                     title="Top Categoria"
                     value={topCategory}
-                    icon={<FolderIcon sx={{ fontSize: 20 }} />}
-                    colorScheme="emerald"
-                    theme={themeTokens}
+                    iconName="folder"
+                    hexColor="#10b981"
                 />
-                <StatCard
+                <StatsCard
                     title="Crescimento (Mês)"
                     value={`${stats?.growth > 0 ? '+' : ''}${stats?.growth || 0}%`}
-                    icon={<TrendingUpIcon sx={{ fontSize: 20 }} />}
-                    colorScheme={stats?.growth >= 0 ? "amber" : "indigo"}
-                    theme={themeTokens}
+                    iconName="trending_up"
+                    hexColor={stats?.growth >= 0 ? '#f59e0b' : '#2563eb'}
                 />
-            </Box>
+            </KpiGrid>
 
             {/* Filtros — barra compacta numa linha (sem wrap); busca encolhe entre Filtros e Limpar */}
             <Box

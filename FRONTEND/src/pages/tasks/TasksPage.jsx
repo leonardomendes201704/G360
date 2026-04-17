@@ -19,6 +19,8 @@ import TaskPlanningGrid from '../../components/tasks/TaskPlanningGrid';
 import TaskModal from '../../components/modals/TaskModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import { Delete as DeleteIcon, Done as DoneIcon } from '@mui/icons-material';
 
 import './TasksPage.css';
@@ -600,73 +602,17 @@ const TasksPage = () => {
                 </Box>
             </Paper>
 
-            {/* KPI Grid - igual as tarefas de projeto */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2, mb: 4 }}>
-                {kpiConfig.map((item, idx) => (
-                    <Paper key={item.key} className="animate-card-enter" style={{ '--i': idx }} sx={{
-                        bgcolor: cardBg,
-                        border: `1px solid ${borderColor}`,
-                        borderRadius: '16px',
-                        padding: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '3px',
-                            borderRadius: '16px 16px 0 0',
-                            background: item.color,
-                            transition: 'height 0.3s ease',
-                        },
-                        '&:hover': {
-                            borderColor: `${item.color}50`,
-                            transform: 'translateY(-4px)',
-                            boxShadow: `0 12px 24px ${item.color}20`,
-                            '&::before': {
-                                height: '4px',
-                            },
-                            '& .kpi-icon-box': {
-                                transform: 'scale(1.1)',
-                                boxShadow: `0 4px 12px ${item.color}30`,
-                            },
-                        },
-                    }}>
-                        <Box
-                            className="kpi-icon-box"
-                            sx={{
-                                width: '52px',
-                                height: '52px',
-                                borderRadius: '14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0,
-                                background: `${item.color}15`,
-                                color: item.color,
-                                transition: 'all 0.3s ease',
-                            }}
-                        >
-                            <span className="material-icons-round" style={{ fontSize: '26px' }}>{item.icon}</span>
-                        </Box>
-                        <Box>
-                            <Typography sx={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: textSecondary, mb: 0.5 }}>
-                                {item.label}
-                            </Typography>
-                            <Typography sx={{ fontSize: '22px', fontWeight: 700, color: textPrimary }}>
-                                {item.value}
-                            </Typography>
-                        </Box>
-                    </Paper>
+            <KpiGrid maxColumns={7} mb={4}>
+                {kpiConfig.map((item) => (
+                    <StatsCard
+                        key={item.key}
+                        title={item.label}
+                        value={item.value}
+                        iconName={item.icon}
+                        hexColor={item.color}
+                    />
                 ))}
-            </Box>
+            </KpiGrid>
 
             {/* View Tabs */}
             <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
