@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import { Box, Typography, Button, IconButton, Tooltip, Menu, MenuItem, TextField, Collapse, Checkbox } from '@mui/material';
+import FilterAlt from '@mui/icons-material/FilterAlt';
+import Refresh from '@mui/icons-material/Refresh';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { PieChart } from '@mui/x-charts/PieChart';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import { Delete as DeleteIcon } from '@mui/icons-material';
@@ -25,6 +28,8 @@ import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import './AssetsPage.css';
 
+const ASSET_LIST_DRAWER_DEFAULTS = { status: '', category: '', search: '' };
+
 const AssetsPage = () => {
   const { hasPermission } = useContext(AuthContext);
   const canWrite = hasPermission('ASSETS', 'CREATE');
@@ -39,6 +44,8 @@ const AssetsPage = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({ status: '', category: '' });
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [draftListFilters, setDraftListFilters] = useState(ASSET_LIST_DRAWER_DEFAULTS);
   const [showFilters, setShowFilters] = useState(true);
   const { mode } = useContext(ThemeContext);
   const isDark = mode === 'dark';
@@ -70,7 +77,26 @@ const AssetsPage = () => {
   const clearFilters = () => {
     setSearchTerm('');
     setFilters({ status: '', category: '' });
+    setDraftListFilters(ASSET_LIST_DRAWER_DEFAULTS);
   };
+
+  const openAssetListFilterDrawer = () => {
+    setDraftListFilters({ status: filters.status, category: filters.category, search: searchTerm });
+    setFilterDrawerOpen(true);
+  };
+
+  const handleApplyAssetListFilters = () => {
+    setFilters({ status: draftListFilters.status, category: draftListFilters.category });
+    setSearchTerm(draftListFilters.search);
+  };
+
+  const handleClearAssetListDrawer = () => {
+    setDraftListFilters({ ...ASSET_LIST_DRAWER_DEFAULTS });
+    setFilters({ status: '', category: '' });
+    setSearchTerm('');
+  };
+
+  const activeAssetListFilterCount = [filters.status, filters.category, searchTerm].filter(Boolean).length;
 
   // Modals
   const [modalOpen, setModalOpen] = useState(false);
@@ -732,83 +758,98 @@ const AssetsPage = () => {
       {/* List View */}
       {viewMode === 'list' && (
         <>
-          {/* Filters - Padrao A Premium */}
-          <Box sx={{ ...cardStyle, mb: 3, overflow: 'hidden' }}>
-            <Box sx={{
+          <Box
+            sx={{
+              mb: 3,
+              borderRadius: '16px',
+              bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
+              border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
               p: 2,
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderBottom: showFilters ? softBorder : 'none'
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: textPrimary }}>
-                <span className="material-icons-round" style={{ fontSize: '20px' }}>filter_list</span>
-                <Typography fontWeight={600}>Filtros</Typography>
-                {(() => {
-                  const activeCount = [filters.status, filters.category, searchTerm].filter(Boolean).length;
-                  return activeCount > 0 ? (
-                    <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
-                  ) : null;
-                })()}
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
-                  size="small"
-                  onClick={clearFilters}
-                  sx={{
-                    color: textSecondary,
-                    textTransform: 'none',
-                    '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.06)' }
-                  }}
-                  startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>refresh</span>}
-                >
-                  Limpar
-                </Button>
-                <IconButton size="small" onClick={() => setShowFilters(!showFilters)} sx={{ color: textSecondary }}>
-                  <span className="material-icons-round" style={{ fontSize: '18px' }}>
-                    {showFilters ? 'expand_less' : 'expand_more'}
-                  </span>
-                </IconButton>
-              </Box>
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Button
+                size="medium"
+                startIcon={<FilterAlt />}
+                onClick={openAssetListFilterDrawer}
+                sx={{
+                  color: textPrimary,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+                }}
+              >
+                Filtros
+              </Button>
+              {activeAssetListFilterCount > 0 ? (
+                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                  {activeAssetListFilterCount}
+                </Box>
+              ) : null}
             </Box>
-            <Collapse in={showFilters}>
-              <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }, gap: 2 }}>
-                <TextField
-                  label="Buscar"
-                  placeholder="Buscar por codigo ou nome..."
-                  size="small"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  sx={inputSx}
-                />
-                <TextField
-                  select
-                  label="Status"
-                  size="small"
-                  value={filters.status}
-                  onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                  sx={inputSx}
-                >
-                  <MenuItem value="">Todos os status</MenuItem>
-                  <MenuItem value="PROPRIO">Ativo</MenuItem>
-                  <MenuItem value="LOCADO">Alugado</MenuItem>
-                  <MenuItem value="MANUTENCAO">Em Manutenção</MenuItem>
-                  <MenuItem value="DESATIVADO">Inativo</MenuItem>
-                </TextField>
-                <TextField
-                  select
-                  label="Categoria"
-                  size="small"
-                  value={filters.category}
-                  onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                  sx={inputSx}
-                >
-                  <MenuItem value="">Todas as categorias</MenuItem>
-                  {categories.map(c => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
-                </TextField>
-              </Box>
-            </Collapse>
+            <Button
+              size="small"
+              startIcon={<Refresh />}
+              onClick={clearFilters}
+              sx={{
+                color: textSecondary,
+                textTransform: 'none',
+                '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+              }}
+            >
+              Limpar tudo
+            </Button>
           </Box>
+
+          <FilterDrawer
+            open={filterDrawerOpen}
+            onClose={() => setFilterDrawerOpen(false)}
+            onApply={handleApplyAssetListFilters}
+            onClear={handleClearAssetListDrawer}
+            title="Filtros de ativos"
+          >
+            <TextField
+              fullWidth
+              label="Buscar"
+              placeholder="Buscar por codigo ou nome..."
+              size="small"
+              value={draftListFilters.search}
+              onChange={(e) => setDraftListFilters((prev) => ({ ...prev, search: e.target.value }))}
+              sx={inputSx}
+            />
+            <TextField
+              select
+              fullWidth
+              label="Status"
+              size="small"
+              value={draftListFilters.status}
+              onChange={(e) => setDraftListFilters((prev) => ({ ...prev, status: e.target.value }))}
+              sx={inputSx}
+            >
+              <MenuItem value="">Todos os status</MenuItem>
+              <MenuItem value="PROPRIO">Ativo</MenuItem>
+              <MenuItem value="LOCADO">Alugado</MenuItem>
+              <MenuItem value="MANUTENCAO">Em Manutenção</MenuItem>
+              <MenuItem value="DESATIVADO">Inativo</MenuItem>
+            </TextField>
+            <TextField
+              select
+              fullWidth
+              label="Categoria"
+              size="small"
+              value={draftListFilters.category}
+              onChange={(e) => setDraftListFilters((prev) => ({ ...prev, category: e.target.value }))}
+              sx={inputSx}
+            >
+              <MenuItem value="">Todas as categorias</MenuItem>
+              {categories.map((c) => (
+                <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
+              ))}
+            </TextField>
+          </FilterDrawer>
 
           {/* Table */}
           <Box sx={{ ...cardStyle, overflow: 'hidden' }}>

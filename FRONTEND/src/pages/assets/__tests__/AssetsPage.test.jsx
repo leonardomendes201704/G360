@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AssetsPage from '../AssetsPage';
 import { ThemeContext } from '../../../contexts/ThemeContext';
+import { AuthContext } from '../../../contexts/AuthContext';
 import { SnackbarProvider } from 'notistack';
 import * as assetService from '../../../services/asset.service';
 import * as licenseService from '../../../services/software-license.service';
@@ -37,11 +38,15 @@ vi.mock('../../../components/modals/AssetModal', () => ({
 // Auth & Permission mocks
 vi.mock('../../../hooks/useAuth', () => ({ default: () => ({ user: { id: '1', name: 'Test', roles: [{ name: 'Super Admin' }] }, token: 't', hasRole: () => true }) }));
 
+const mockAuth = { hasPermission: () => true };
+
 const renderWithProviders = (ui) => {
     return render(
         <SnackbarProvider>
             <ThemeContext.Provider value={{ mode: 'light' }}>
-                {ui}
+                <AuthContext.Provider value={mockAuth}>
+                    {ui}
+                </AuthContext.Provider>
             </ThemeContext.Provider>
         </SnackbarProvider>
     );
@@ -106,12 +111,15 @@ describe('AssetsPage', () => {
         expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
         expect(screen.getByText('Printer')).toBeInTheDocument();
 
-        // Test Filter
-        const searchInput = screen.getByPlaceholderText('Buscar por codigo ou nome...');
+        fireEvent.click(screen.getByRole('button', { name: /^Filtros$/i }));
+        const searchInput = await screen.findByPlaceholderText('Buscar por codigo ou nome...');
         fireEvent.change(searchInput, { target: { value: 'Laptop' } });
+        fireEvent.click(screen.getByRole('button', { name: /Aplicar/i }));
 
-        expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
-        expect(screen.queryByText('Printer')).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
+            expect(screen.queryByText('Printer')).not.toBeInTheDocument();
+        });
     });
 
     it('should calculate license KPIs (Expired/Expiring)', async () => {

@@ -23,6 +23,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-17]
 
+### Changed
+- **Ativos / UX:** Vista **Hardware** (lista) — filtros (busca, status, categoria) no componente **`FilterDrawer`** + barra compacta (**Filtros**, badge, **Limpar tudo**), alinhado a Incidentes/GMUD. Teste unitário ajustado (`AuthContext` no provider).
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `FRONTEND/src/pages/assets/__tests__/AssetsPage.test.jsx`
+
 ### Added
 - **Dev / tenant modelo:** script `BACKEND/src/scripts/seed-model-tenant-devcraft.js` + npm `npm run seed:devcraft` — provisiona o tenant **`devcraft`** (schema `tenant_devcraft`) com `prisma db push`, registo no catálogo, seed base (`TenantService.seedTenant`), integrações placeholder (Azure/LDAP desligadas), catálogo ITIL, 10 fornecedores e fluxo **3 áreas** (departamentos, CC, projetos, tarefas gerais/de projeto, incidentes, riscos, ativos, GMUD, despesas). Admin padrão: `admin@devcraft.local` / `DevCraft@2026` (override: `DEVCRAFT_ADMIN_EMAIL`, `DEVCRAFT_ADMIN_PASSWORD`). Idempotente: reexecutar sincroniza schema e reforça seeds ITIL/fornecedores/3 áreas.
   - `BACKEND/src/scripts/seed-model-tenant-devcraft.js`
