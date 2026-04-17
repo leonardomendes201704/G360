@@ -691,17 +691,16 @@ const AssetsPage = () => {
             </Box>
           </Box>
 
-          {/* Uma coluna: evita KPIs espremidos ao meio da linha (antes 50% + 50%) */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3, width: '100%' }}>
+          <Box className="assets-charts-grid" sx={{ mb: 3 }}>
             {/* Qualidade de Cadastro */}
-            <Box sx={{ ...cardStyle, p: 3 }}>
+            <Box sx={{ ...cardStyle, p: 3, minWidth: 0 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
                   <span className="material-icons-round" style={{ fontSize: '20px', color: '#f59e0b' }}>verified</span>
                   Qualidade de Cadastro
                 </Typography>
               </Box>
-              <KpiGrid maxColumns={3} mb={0} clampChildHeight={false} gap={2}>
+              <KpiGrid maxColumns={2} mb={0} clampChildHeight={false} gap={2}>
                 <StatsCard titleLineClamp={2} title="Sem centro de custo" value={kpis.missingCostCenter} iconName="account_balance" hexColor="#f59e0b" subtitle="Ativos sem CC" />
                 <StatsCard titleLineClamp={2} title="Sem fornecedor" value={kpis.missingSupplier} iconName="storefront" hexColor="#ea580c" />
                 <StatsCard titleLineClamp={2} title="Sem contrato" value={kpis.missingContract} iconName="description" hexColor="#dc2626" />
@@ -711,7 +710,7 @@ const AssetsPage = () => {
             </Box>
 
             {/* Top Valores */}
-            <Box sx={{ ...cardStyle, p: 3 }}>
+            <Box sx={{ ...cardStyle, p: 3, minWidth: 0 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
                   <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>emoji_events</span>
