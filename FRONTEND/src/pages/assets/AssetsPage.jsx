@@ -384,6 +384,10 @@ const AssetsPage = () => {
 
   const CHART_COLORS = ['#2563eb', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#3b82f6'];
 
+  /** Donuts «Distribuição por Categoria» e «Ativos por Situação» — mesmas dimensões */
+  const assetDonutPieSize = { width: 200, height: 200 };
+  const assetDonutPieRadii = { innerRadius: 60, outerRadius: 100, paddingAngle: 2, cornerRadius: 4 };
+
   return (
     <Box className="assets-page">
       {/* Header */}
@@ -509,9 +513,9 @@ const AssetsPage = () => {
                     <PieChart
                       series={[{
                         data: kpis.categoryChartData.map((c, i) => ({ id: c.id, value: c.value, label: c.label, color: CHART_COLORS[i % CHART_COLORS.length] })),
-                        innerRadius: 60, outerRadius: 100, paddingAngle: 2, cornerRadius: 4
+                        ...assetDonutPieRadii
                       }]}
-                      width={200} height={200} slotProps={{ legend: { hidden: true } }}
+                      width={assetDonutPieSize.width} height={assetDonutPieSize.height} slotProps={{ legend: { hidden: true } }}
                     />
                     <Box>
                       {kpis.categoryDist.slice(0, 10).map((c, i) => (
@@ -540,20 +544,20 @@ const AssetsPage = () => {
                   Ativos por Situação
                 </Typography>
               </Box>
-              <Box sx={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Box sx={{ height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {kpis.statusDist.length > 0 ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <PieChart
                       series={[{
                         data: kpis.statusDist.map((c, i) => ({ id: c.id, value: c.value, label: c.label, color: CHART_COLORS[i % CHART_COLORS.length] })),
-                        innerRadius: 50, outerRadius: 90, paddingAngle: 2, cornerRadius: 4
+                        ...assetDonutPieRadii
                       }]}
-                      width={180} height={180} slotProps={{ legend: { hidden: true } }}
+                      width={assetDonutPieSize.width} height={assetDonutPieSize.height} slotProps={{ legend: { hidden: true } }}
                     />
                     <Box>
                       {kpis.statusDist.map((c, i) => (
-                        <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.2 }}>
-                          <Box sx={{ width: 10, height: 10, borderRadius: '3px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                        <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+                          <Box sx={{ width: 12, height: 12, borderRadius: '3px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
                           <Typography sx={{ color: textSecondary, fontSize: '14px' }}>{c.label}</Typography>
                           <Typography sx={{ color: textPrimary, fontWeight: 600, ml: 'auto' }}>{c.value}</Typography>
                         </Box>
@@ -562,7 +566,7 @@ const AssetsPage = () => {
                   </Box>
                 ) : (
                   <Box sx={{ textAlign: 'center', color: textMuted }}>
-                    <span className="material-icons-round" style={{ fontSize: '40px' }}>donut_small</span>
+                    <span className="material-icons-round" style={{ fontSize: '48px' }}>donut_small</span>
                     <Typography sx={{ mt: 1 }}>Sem dados disponiveis</Typography>
                   </Box>
                 )}

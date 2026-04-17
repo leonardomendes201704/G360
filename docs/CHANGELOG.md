@@ -24,6 +24,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Changed
+- **Ativos / UI:** Dashboard — donuts **Distribuição por Categoria** e **Ativos por Situação** com o mesmo tamanho (`200×200`, `innerRadius`/`outerRadius` iguais), área de gráfico com altura **280** e legenda com quadrados **12px**; constantes `assetDonutPieSize` / `assetDonutPieRadii` partilhadas.
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **Ativos / UX:** Vista **Hardware** (lista) — filtros (busca, status, categoria) no componente **`FilterDrawer`** + barra compacta (**Filtros**, badge, **Limpar tudo**), alinhado a Incidentes/GMUD. Teste unitário ajustado (`AuthContext` no provider).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
   - `FRONTEND/src/pages/assets/__tests__/AssetsPage.test.jsx`
