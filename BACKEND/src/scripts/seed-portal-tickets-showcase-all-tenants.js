@@ -9,6 +9,7 @@
  * Opcional:
  *   SEED_PORTAL_REQUESTER_EMAIL — utilizador que aparece como solicitante (default admin@g360.com.br ou primeiro ativo)
  *   SEED_PORTAL_MAX_SERVICES=N — processa só os N primeiros serviços ativos (catálogos grandes)
+ *   --reset  ou  SEED_PORTAL_CLEANUP=1 — apaga chamados `[Seed Portal]` antes de criar de novo (dept/CC alinhados ao tenant)
  */
 
 require('dotenv').config();
@@ -21,11 +22,18 @@ async function main() {
     const maxRaw = process.env.SEED_PORTAL_MAX_SERVICES;
     const parsedMax = maxRaw != null && maxRaw !== '' ? parseInt(maxRaw, 10) : NaN;
     const maxServices = !Number.isNaN(parsedMax) && parsedMax > 0 ? parsedMax : null;
+    const cleanupFirst =
+        process.argv.includes('--reset') ||
+        process.env.SEED_PORTAL_CLEANUP === '1' ||
+        process.env.SEED_PORTAL_CLEANUP === 'true';
 
     console.log('🌱 Seed Portal de Suporte (chamados por serviço × estados)\n');
     console.log(`   Solicitante alvo: ${email}`);
     if (maxServices != null) {
         console.log(`   Limite de serviços: ${maxServices}`);
+    }
+    if (cleanupFirst) {
+        console.log('   Modo: limpar chamados [Seed Portal] e recriar (dept/CC resolvidos no tenant)');
     }
     console.log('');
 
@@ -45,6 +53,7 @@ async function main() {
                 verbose: true,
                 userEmail: email,
                 maxServices,
+                cleanupFirst,
             });
             console.log('\n✅ Concluído.', summary);
         } finally {
@@ -67,6 +76,7 @@ async function main() {
                 verbose: false,
                 userEmail: email,
                 maxServices,
+                cleanupFirst,
             });
             console.log('✅');
             ok += 1;

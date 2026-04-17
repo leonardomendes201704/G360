@@ -23,6 +23,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-17]
 
+### Changed
+- **Dev / seed (portal):** Chamados `[Seed Portal]` passam a gravar **departamento e centro de custo** resolvidos no tenant (perfil do solicitante ou primeiro dept por nome + CC ativo, preferindo CC do mesmo dept). Utilizador solicitante é atualizado quando ambos são encontrados. **`npm run seed:portal-tickets:reset`** (`--reset`) remove chamados de demo existentes e recria com snapshots corretos.
+  - `BACKEND/src/scripts/seed-portal-tickets-showcase.js`
+  - `BACKEND/src/scripts/seed-portal-tickets-showcase-all-tenants.js`
+  - `BACKEND/package.json`
+
 ### Fixed
 - **Backend:** Erro de sintaxe em `helpdesk-metrics.service.js` (parêntese extra em `merge(...)`) que impedia o arranque do servidor.
 
