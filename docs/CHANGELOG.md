@@ -8,6 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Added
+- **Dev / tenant modelo:** script `BACKEND/src/scripts/seed-model-tenant-devcraft.js` + npm `npm run seed:devcraft` — provisiona o tenant **`devcraft`** (schema `tenant_devcraft`) com `prisma db push`, registo no catálogo, seed base (`TenantService.seedTenant`), integrações placeholder (Azure/LDAP desligadas), catálogo ITIL, 10 fornecedores e fluxo **3 áreas** (departamentos, CC, projetos, tarefas gerais/de projeto, incidentes, riscos, ativos, GMUD, despesas). Admin padrão: `admin@devcraft.local` / `DevCraft@2026` (override: `DEVCRAFT_ADMIN_EMAIL`, `DEVCRAFT_ADMIN_PASSWORD`). Idempotente: reexecutar sincroniza schema e reforça seeds ITIL/fornecedores/3 áreas.
+  - `BACKEND/src/scripts/seed-model-tenant-devcraft.js`
+  - `BACKEND/package.json` (script `seed:devcraft`)
 - **Dev / Docker:** `docker-compose.yml` na raiz — serviço **`g360-postgres`** (PostgreSQL 16 Alpine), porta no host **`127.0.0.1:5433`**, volume **`g360_pgdata`**, credenciais alinhadas ao `DATABASE_URL` local (`g360_dev` / base `g360`). Comandos: `docker compose up -d` (na raiz); parar: `docker compose down`. No Windows, se `docker` não estiver no PATH, usar o executável do Docker Desktop (ex.: `C:\Program Files\Docker\Docker\resources\bin\docker.exe`).
   - `docker-compose.yml`
 
