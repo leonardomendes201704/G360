@@ -2,13 +2,15 @@ import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import {
     Add, Search, CalendarToday, FormatListBulleted, FilterAlt,
-    Refresh, Download, AccessTime, CheckCircle, Loop, DoneAll, Cancel
+    Refresh, Download
 } from '@mui/icons-material';
 import {
     Box, Paper, Typography, Button, TextField, MenuItem,
     InputAdornment, IconButton, Tooltip, useTheme
 } from '@mui/material';
 import FilterDrawer from '../../components/common/FilterDrawer';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -391,59 +393,24 @@ const ChangeRequestsPage = () => {
         setFilters((prev) => ({ ...prev, ...GMUD_DRAWER_FILTER_DEFAULTS }));
     };
 
-    // Stat Cards Configuration
     const statCards = [
-        {
-            key: 'pending',
-            label: 'Pendentes Aprovação',
-            value: kpiCounts.pending,
-            icon: <AccessTime />,
-            gradient: ['#f59e0b', '#fbbf24'],
-            bgColor: 'rgba(245, 158, 11, 0.15)',
-            color: '#fbbf24',
-            trend: kpiCounts.pendingTrend
-        },
-        {
-            key: 'approved',
-            label: 'Aprovadas',
-            value: kpiCounts.approved,
-            icon: <CheckCircle />,
-            gradient: ['#10b981', '#34d399'],
-            bgColor: 'rgba(16, 185, 129, 0.15)',
-            color: '#34d399',
-            trend: kpiCounts.approvedTrend
-        },
-        {
-            key: 'inProgress',
-            label: 'Em Execução',
-            value: kpiCounts.inProgress,
-            icon: <Loop />,
-            gradient: ['#3b82f6', '#60a5fa'],
-            bgColor: 'rgba(59, 130, 246, 0.15)',
-            color: '#60a5fa',
-            trend: kpiCounts.inProgressTrend
-        },
-        {
-            key: 'completed',
-            label: 'Concluídas',
-            value: kpiCounts.completed,
-            icon: <DoneAll />,
-            gradient: ['#3b82f6', '#a78bfa'],
-            bgColor: 'rgba(59, 130, 246, 0.15)',
-            color: '#a78bfa',
-            trend: kpiCounts.completedTrend
-        },
-        {
-            key: 'rejected',
-            label: 'Rejeitadas',
-            value: kpiCounts.rejected,
-            icon: <Cancel />,
-            gradient: ['#ef4444', '#f87171'],
-            bgColor: 'rgba(239, 68, 68, 0.15)',
-            color: '#f87171',
-            trend: kpiCounts.rejectedTrend
-        }
+        { key: 'pending', label: 'Pendentes Aprovação', value: kpiCounts.pending, iconName: 'schedule', hexColor: '#f59e0b', trend: kpiCounts.pendingTrend },
+        { key: 'approved', label: 'Aprovadas', value: kpiCounts.approved, iconName: 'check_circle', hexColor: '#10b981', trend: kpiCounts.approvedTrend },
+        { key: 'inProgress', label: 'Em Execução', value: kpiCounts.inProgress, iconName: 'loop', hexColor: '#3b82f6', trend: kpiCounts.inProgressTrend },
+        { key: 'completed', label: 'Concluídas', value: kpiCounts.completed, iconName: 'done_all', hexColor: '#8b5cf6', trend: kpiCounts.completedTrend },
+        { key: 'rejected', label: 'Rejeitadas', value: kpiCounts.rejected, iconName: 'cancel', hexColor: '#ef4444', trend: kpiCounts.rejectedTrend }
     ];
+
+    const handleKpiClick = (cardKey) => {
+        setFilters((prev) => ({
+            ...prev,
+            status: cardKey === 'pending' ? 'GROUP_PENDING' :
+                cardKey === 'approved' ? 'GROUP_APPROVED' :
+                    cardKey === 'inProgress' ? 'EXECUTED' :
+                        cardKey === 'completed' ? 'GROUP_COMPLETED' :
+                            cardKey === 'rejected' ? 'GROUP_REJECTED' : ''
+        }));
+    };
 
     // Theme-aware input styles
     const inputSx = {
@@ -751,105 +718,19 @@ const ChangeRequestsPage = () => {
             {/* LIST/CALENDAR VIEW - Stat Cards */}
             {viewMode !== 'DASHBOARD' && (
                 <>
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(5, 1fr)',
-                        gap: 2,
-                        mb: 3
-                    }}>
-                        {statCards.map((card, idx) => (
-                            <Box
+                    <KpiGrid maxColumns={5}>
+                        {statCards.map((card) => (
+                            <StatsCard
                                 key={card.key}
-                                sx={{
-                                    p: 2.5,
-                                    borderRadius: '16px',
-                                    background: cardBg,
-                                    backdropFilter: isDark ? 'blur(10px)' : 'none',
-                                    border: `1px solid ${borderColor}`,
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                    cursor: 'pointer',
-                                    animation: `kpiSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${idx * 0.08}s both`,
-                                    '@keyframes kpiSlideIn': {
-                                        '0%': { opacity: 0, transform: 'translateY(20px) scale(0.98)' },
-                                        '100%': { opacity: 1, transform: 'translateY(0) scale(1)' },
-                                    },
-                                    '&:hover': {
-                                        transform: 'translateY(-4px)',
-                                        borderColor: 'rgba(37, 99, 235, 0.3)',
-                                        boxShadow: isDark ? '0 12px 28px rgba(0, 0, 0, 0.4)' : '0 12px 28px rgba(0, 0, 0, 0.1)'
-                                    },
-                                    '&::before': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        height: 3,
-                                        borderRadius: '16px 16px 0 0',
-                                        background: card.color
-                                    }
-                                }}
-                                onClick={() => setFilters(prev => ({
-                                    ...prev,
-                                    status: card.key === 'pending' ? 'GROUP_PENDING' :
-                                        card.key === 'approved' ? 'GROUP_APPROVED' :
-                                            card.key === 'inProgress' ? 'EXECUTED' :
-                                                card.key === 'completed' ? 'GROUP_COMPLETED' :
-                                                    card.key === 'rejected' ? 'GROUP_REJECTED' : ''
-                                }))}
-                            >
-                                <Box sx={{
-                                    width: 40,
-                                    height: 40,
-                                    borderRadius: 2.5,
-                                    bgcolor: card.bgColor,
-                                    color: card.color,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    mb: 1.5
-                                }}>
-                                    {card.icon}
-                                </Box>
-                                <Typography
-                                    sx={{
-                                        fontSize: 11,
-                                        fontWeight: 500,
-                                        color: textMuted,
-                                        textTransform: 'uppercase',
-                                        letterSpacing: 0.5,
-                                        mb: 0.5
-                                    }}
-                                >
-                                    {card.label}
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontSize: 32,
-                                        fontWeight: 700,
-                                        color: textPrimary,
-                                        lineHeight: 1,
-                                        mb: 0.5
-                                    }}
-                                >
-                                    {card.value}
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontSize: 12,
-                                        color: (card.trend || '0%').startsWith('+') ? '#34d399' : '#f87171',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 0.5
-                                    }}
-                                >
-                                    {(card.trend || '0%').startsWith('+') ? '^' : 'v'} {card.trend || '0%'} vs. mes anterior
-                                </Typography>
-                            </Box>
+                                title={card.label}
+                                value={card.value}
+                                iconName={card.iconName}
+                                hexColor={card.hexColor}
+                                subtitle={`${(card.trend || '0%').startsWith('+') ? '↑' : '↓'} ${card.trend || '0%'} vs. mês anterior`}
+                                onClick={() => handleKpiClick(card.key)}
+                            />
                         ))}
-                    </Box>
+                    </KpiGrid>
 
                     {/* Advanced Metrics from Backend */}
                     {backendMetrics && backendMetrics.summary && (

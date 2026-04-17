@@ -72,6 +72,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/tasks/__tests__/TasksPage.test.jsx`
 - **Incidentes / UI:** `IncidentsPage` — KPIs com **`StatsCard`** + **`KpiGrid`** (5 cartões); clique mantém o comportamento anterior (filtro por status ou SLA estourado).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
+- **GMUD / UI:** `ChangeRequestsPage` — KPIs da vista Lista/Calendário com **`StatsCard`** + **`KpiGrid`** (5 cartões); clique aplica filtro de grupo de status; tendência vs. mês anterior em `subtitle`.
+  - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
 
 ## [2026-04-16]
 
