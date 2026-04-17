@@ -7,6 +7,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Added
+- **US-023 / EP-009:** Componente **`DataListShell`** (cabeçalho de lista com título, contagem e toolbar) e primeira adoção na página **Fornecedores** (`SuppliersPage`).
+  - `FRONTEND/src/components/common/DataListShell.jsx`
+  - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`
+
+### Docs
+- **US-023 / EP-009:** Inventário de ecrãs com listas/grelhas (tipo Portal de Chamados) e padrão **`DataListShell`** + **`StandardGrid`** documentados em `docs/patterns/data-grids-inventory.md` e `docs/patterns/data-grid-shell.md`.
+
 ### Changed
 - **UI / KPIs:** Alinhamento das grelhas de indicadores ao padrao **Visao geral / dashboard** (`StatsCard` + `KpiGrid`) nas telas Ativos, Base de Conhecimento, Projetos, Tarefas (7 KPIs), Financeiro (dashboard), Contratos, Fornecedores (KPIs principais; distribuicao por avaliacao inalterada) e Auditoria e Atividades. `KpiGrid` passa a permitir ate **7** colunas em `lg` quando `maxColumns` >= 7.
   - `FRONTEND/src/components/common/KpiGrid.jsx`

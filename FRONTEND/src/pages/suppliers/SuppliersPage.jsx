@@ -11,6 +11,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import SupplierModal from '../../components/modals/SupplierModal';
 import SupplierViewModal from '../../components/modals/SupplierViewModal';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '../../services/supplier.service';
 import { clearReferenceCache } from '../../services/reference.service';
 import { formatDocument, maskPhone } from '../../utils/masks';
@@ -470,21 +471,13 @@ const SuppliersPage = () => {
         </Box>
 
       {/* Table Section */}
-      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <Box sx={{
-          p: 3,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid ' + tableBorder,
-          flexWrap: 'wrap',
-          gap: 2,
-        }}
-        >
-          <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <span className="material-icons-round" style={{ fontSize: '20px', color: '#06b6d4' }}>list</span>
-            Lista de Fornecedores
-          </Typography>
+      <DataListShell
+        title="Lista de Fornecedores"
+        titleIcon="list"
+        accentColor="#06b6d4"
+        count={filteredSuppliers.length}
+        sx={{ ...cardStyle, overflow: 'hidden' }}
+        toolbar={(
           <Box
             sx={{
               display: 'flex',
@@ -518,8 +511,8 @@ const SuppliersPage = () => {
               }}
             />
           </Box>
-        </Box>
-
+        )}
+      >
         <BulkActionsBar
           selectedCount={selectedIds.length}
           totalCount={filteredSuppliers.length}
@@ -660,7 +653,7 @@ const SuppliersPage = () => {
             onAction={handleOpenNew}
           />
         )}
-      </Box>
+      </DataListShell>
 
       {/* Modals */}
       <SupplierModal
