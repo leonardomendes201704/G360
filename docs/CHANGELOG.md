@@ -23,6 +23,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-17]
 
+### Fixed
+- **Backend:** Erro de sintaxe em `helpdesk-metrics.service.js` (parêntese extra em `merge(...)`) que impedia o arranque do servidor.
+
 ### Reverted
 - **Incidentes:** Revertida alteração que derivava os KPIs da lista a partir de `filteredIncidents`; a página volta a usar **`GET /incidents/kpis`** (`getIncidentKPIs`), como antes.
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`

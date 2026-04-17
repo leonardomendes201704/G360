@@ -44,7 +44,7 @@ class HelpdeskMetricsService {
         }
       }),
       prisma.ticket.findMany({
-        where: merge({ status: { in: ['OPEN', 'IN_PROGRESS', 'WAITING_USER'] } } }),
+        where: merge({ status: { in: ['OPEN', 'IN_PROGRESS', 'WAITING_USER'] } }),
         select: { createdAt: true, status: true }
       }),
       prisma.ticket.count({
