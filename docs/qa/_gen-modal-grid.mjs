@@ -62,6 +62,7 @@ const batch03 = '../../FRONTEND/e2e/modal-evidence-batch-03.spec.ts-snapshots/';
 const batch04 = '../../FRONTEND/e2e/modal-evidence-batch-04.spec.ts-snapshots/';
 const batch05 = '../../FRONTEND/e2e/modal-evidence-batch-05.spec.ts-snapshots/';
 const batch06 = '../../FRONTEND/e2e/modal-evidence-batch-06.spec.ts-snapshots/';
+const batch07 = '../../FRONTEND/e2e/modal-evidence-batch-07.spec.ts-snapshots/';
 const snaps = {
   1: `${batch01}modal-evidence-01-account-shell-chromium-win32.png`,
   2: `${batch01}modal-evidence-02-addendum-form-shell-chromium-win32.png`,
@@ -93,6 +94,11 @@ const snaps = {
   28: `${batch06}modal-evidence-28-knowledge-base-modal-shell-chromium-win32.png`,
   29: `${batch06}modal-evidence-29-ldap-config-modal-shell-chromium-win32.png`,
   30: `${batch06}modal-evidence-30-member-modal-shell-chromium-win32.png`,
+  31: `${batch07}modal-evidence-31-minute-modal-shell-chromium-win32.png`,
+  32: `${batch07}modal-evidence-32-notifications-modal-shell-chromium-win32.png`,
+  33: `${batch07}modal-evidence-33-payment-condition-modal-shell-chromium-win32.png`,
+  34: `${batch07}modal-evidence-34-project-modal-shell-chromium-win32.png`,
+  35: `${batch07}modal-evidence-35-project-task-modal-shell-chromium-win32.png`,
   40: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png',
   47: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png',
   49: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-user-shell-chromium-win32.png',
