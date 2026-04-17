@@ -22,7 +22,12 @@ import {
   Card,
   CardActionArea,
   IconButton,
-  LinearProgress
+  LinearProgress,
+  Badge,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ticketService from '../../services/ticket.service';
@@ -36,14 +41,22 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import StandardModal from '../../components/common/StandardModal';
+import FilterDrawer from '../../components/common/FilterDrawer';
+import StatsCard from '../../components/common/StatsCard';
+import KpiGrid from '../../components/common/KpiGrid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
+  TicketStatus,
   getTicketStatusLabel,
   stripTicketTitleStatusSuffix,
-  TICKET_STATUS_CHIP_COLOR
+  TICKET_STATUS_CHIP_COLOR,
+  TICKET_STATUS_LABEL_PT
 } from '../../constants/ticketStatus';
+
+const DEFAULT_PORTAL_FILTERS = { status: 'ALL', serviceId: '', categoryId: '' };
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -76,6 +89,11 @@ const PortalPage = () => {
   const [formSchemaFields, setFormSchemaFields] = useState([]);
   const [supportGroups, setSupportGroups] = useState([]);
   const [supportGroupId, setSupportGroupId] = useState('');
+
+  const [listSearch, setListSearch] = useState('');
+  const [appliedFilters, setAppliedFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
+  const [draftFilters, setDraftFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -251,6 +269,105 @@ const PortalPage = () => {
     handleOpenTicket(svc);
   };
 
+  const portalKpis = useMemo(() => {
+    const list = tickets;
+    return {
+      total: list.length,
+      open: list.filter((t) => t.status === TicketStatus.OPEN).length,
+      inProgress: list.filter((t) => t.status === TicketStatus.IN_PROGRESS).length,
+      waiting: list.filter((t) => t.status === TicketStatus.WAITING_USER).length,
+      resolved: list.filter((t) => t.status === TicketStatus.RESOLVED).length,
+      closed: list.filter((t) => t.status === TicketStatus.CLOSED).length
+    };
+  }, [tickets]);
+
+  const ticketServiceOptions = useMemo(() => {
+    const map = new Map();
+    tickets.forEach((t) => {
+      if (t.service?.id) {
+        map.set(t.service.id, t.service.name || String(t.service.id));
+      }
+    });
+    return [...map.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1], 'pt-BR'))
+      .map(([id, name]) => ({ id, name }));
+  }, [tickets]);
+
+  const ticketCategoryOptions = useMemo(() => {
+    const map = new Map();
+    tickets.forEach((t) => {
+      const cid = t.service?.categoryId;
+      if (!cid) return;
+      const name =
+        t.service?.category?.name ||
+        categories.find((c) => c.id === cid)?.name ||
+        cid;
+      map.set(cid, name);
+    });
+    return [...map.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1], 'pt-BR'))
+      .map(([id, name]) => ({ id, name }));
+  }, [tickets, categories]);
+
+  const filteredTickets = useMemo(() => {
+    let list = tickets;
+    const { status, serviceId, categoryId } = appliedFilters;
+    if (status !== 'ALL') {
+      list = list.filter((t) => t.status === status);
+    }
+    if (serviceId) {
+      list = list.filter((t) => t.service?.id === serviceId);
+    }
+    if (categoryId) {
+      list = list.filter((t) => t.service?.categoryId === categoryId);
+    }
+    const q = listSearch.trim().toLowerCase();
+    if (q) {
+      list = list.filter((t) => {
+        const code = (t.code || '').toLowerCase();
+        const title = stripTicketTitleStatusSuffix(t.title || '').toLowerCase();
+        const svc = (t.service?.name || '').toLowerCase();
+        return code.includes(q) || title.includes(q) || svc.includes(q);
+      });
+    }
+    return list;
+  }, [tickets, appliedFilters, listSearch]);
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (appliedFilters.status !== 'ALL') n += 1;
+    if (appliedFilters.serviceId) n += 1;
+    if (appliedFilters.categoryId) n += 1;
+    return n;
+  }, [appliedFilters]);
+
+  const hasListRefinement =
+    activeFilterCount > 0 || Boolean(listSearch.trim());
+
+  const openFilterDrawer = () => {
+    setDraftFilters({ ...appliedFilters });
+    setFilterDrawerOpen(true);
+  };
+
+  const applyFiltersFromDrawer = () => {
+    setAppliedFilters({ ...draftFilters });
+  };
+
+  const clearDrawerFilters = () => {
+    setDraftFilters({ ...DEFAULT_PORTAL_FILTERS });
+  };
+
+  const clearAllListRefinements = () => {
+    setListSearch('');
+    setAppliedFilters({ ...DEFAULT_PORTAL_FILTERS });
+    setDraftFilters({ ...DEFAULT_PORTAL_FILTERS });
+  };
+
+  const applyKpiStatusFilter = (status) => {
+    setAppliedFilters({ ...DEFAULT_PORTAL_FILTERS, status });
+    setListSearch('');
+  };
+
   if (loading) {
     return (
       <Box p={4} display="flex" justifyContent="center">
@@ -325,20 +442,148 @@ const PortalPage = () => {
         </Typography>
       </Box>
 
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        alignItems={{ xs: 'stretch', sm: 'center' }}
-        justifyContent="space-between"
-        gap={2}
-        sx={{ mb: 2 }}
+      <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
+        Indicadores
+      </Typography>
+      <KpiGrid maxColumns={6} mb={3} clampChildHeight={false} gap={2}>
+        <StatsCard
+          title="Total"
+          value={portalKpis.total}
+          iconName="confirmation_number"
+          hexColor="#2563eb"
+          titleLineClamp={2}
+          active={
+            appliedFilters.status === 'ALL' &&
+            !appliedFilters.serviceId &&
+            !appliedFilters.categoryId &&
+            !listSearch.trim()
+          }
+          onClick={() => applyKpiStatusFilter('ALL')}
+        />
+        <StatsCard
+          title={TICKET_STATUS_LABEL_PT[TicketStatus.OPEN]}
+          value={portalKpis.open}
+          iconName="fiber_new"
+          hexColor="#0284c7"
+          titleLineClamp={2}
+          active={appliedFilters.status === TicketStatus.OPEN}
+          onClick={() => applyKpiStatusFilter(TicketStatus.OPEN)}
+        />
+        <StatsCard
+          title={TICKET_STATUS_LABEL_PT[TicketStatus.IN_PROGRESS]}
+          value={portalKpis.inProgress}
+          iconName="pending_actions"
+          hexColor="#f59e0b"
+          titleLineClamp={2}
+          active={appliedFilters.status === TicketStatus.IN_PROGRESS}
+          onClick={() => applyKpiStatusFilter(TicketStatus.IN_PROGRESS)}
+        />
+        <StatsCard
+          title={TICKET_STATUS_LABEL_PT[TicketStatus.WAITING_USER]}
+          value={portalKpis.waiting}
+          iconName="hourglass_empty"
+          hexColor="#9333ea"
+          titleLineClamp={2}
+          active={appliedFilters.status === TicketStatus.WAITING_USER}
+          onClick={() => applyKpiStatusFilter(TicketStatus.WAITING_USER)}
+        />
+        <StatsCard
+          title={TICKET_STATUS_LABEL_PT[TicketStatus.RESOLVED]}
+          value={portalKpis.resolved}
+          iconName="task_alt"
+          hexColor="#10b981"
+          titleLineClamp={2}
+          active={appliedFilters.status === TicketStatus.RESOLVED}
+          onClick={() => applyKpiStatusFilter(TicketStatus.RESOLVED)}
+        />
+        <StatsCard
+          title={TICKET_STATUS_LABEL_PT[TicketStatus.CLOSED]}
+          value={portalKpis.closed}
+          iconName="lock"
+          hexColor="#64748b"
+          titleLineClamp={2}
+          active={appliedFilters.status === TicketStatus.CLOSED}
+          onClick={() => applyKpiStatusFilter(TicketStatus.CLOSED)}
+        />
+      </KpiGrid>
+
+      <Paper
+        elevation={0}
+        sx={{
+          mb: 2,
+          p: 2,
+          borderRadius: 2,
+          border: 1,
+          borderColor: 'divider',
+          bgcolor: mode === 'dark' ? 'rgba(30,41,59,0.35)' : 'grey.50'
+        }}
       >
+        <Stack spacing={2}>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="Buscar por código, título ou serviço..."
+            value={listSearch}
+            onChange={(e) => setListSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" fontSize="small" />
+                </InputAdornment>
+              )
+            }}
+            inputProps={{ 'aria-label': 'Buscar chamados' }}
+          />
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={1.5}
+          >
+            <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
+              <Badge color="primary" badgeContent={activeFilterCount} invisible={activeFilterCount === 0}>
+                <Button
+                  variant="outlined"
+                  size="medium"
+                  startIcon={<FilterAltIcon />}
+                  onClick={openFilterDrawer}
+                  sx={{ textTransform: 'none', fontWeight: 600 }}
+                >
+                  Filtros
+                </Button>
+              </Badge>
+              {hasListRefinement ? (
+                <Button size="small" variant="text" onClick={clearAllListRefinements} sx={{ textTransform: 'none' }}>
+                  Limpar tudo
+                </Button>
+              ) : null}
+            </Stack>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<AddIcon />}
+              onClick={openWizard}
+              sx={{ flexShrink: 0, textTransform: 'none', fontWeight: 700 }}
+            >
+              Novo ticket
+            </Button>
+          </Stack>
+        </Stack>
+      </Paper>
+
+      <Stack direction="row" alignItems="baseline" justifyContent="space-between" gap={2} sx={{ mb: 2 }} flexWrap="wrap">
         <Typography variant="h5" fontWeight="700" sx={{ letterSpacing: '-0.5px' }}>
-          Meus Chamados ({tickets.length})
+          Meus Chamados
+          <Typography component="span" variant="body2" color="text.secondary" fontWeight={600} sx={{ ml: 1 }}>
+            ({filteredTickets.length}
+            {hasListRefinement && tickets.length !== filteredTickets.length
+              ? ` de ${tickets.length}`
+              : ''}
+            )
+          </Typography>
         </Typography>
-        <Button variant="contained" size="large" startIcon={<AddIcon />} onClick={openWizard} sx={{ flexShrink: 0 }}>
-          Novo ticket
-        </Button>
       </Stack>
+
       <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
         <Table>
           <TableHead sx={{ bgcolor: 'grey.50' }}>
@@ -357,11 +602,17 @@ const PortalPage = () => {
             {tickets.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} align="center">
-                  Você não possui chamados em aberto.
+                  Você ainda não possui chamados. Use &quot;Novo ticket&quot; para abrir uma solicitação.
+                </TableCell>
+              </TableRow>
+            ) : filteredTickets.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  Nenhum chamado corresponde à busca ou aos filtros selecionados.
                 </TableCell>
               </TableRow>
             ) : (
-              tickets.map((t) => (
+              filteredTickets.map((t) => (
                 <TableRow key={t.id} hover>
                   <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>{t.code}</TableCell>
                   <TableCell>{stripTicketTitleStatusSuffix(t.title)}</TableCell>
@@ -391,6 +642,63 @@ const PortalPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <FilterDrawer
+        open={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        onApply={applyFiltersFromDrawer}
+        onClear={clearDrawerFilters}
+        title="Filtros dos chamados"
+      >
+        <FormControl fullWidth size="small">
+          <InputLabel id="portal-filter-status">Status</InputLabel>
+          <Select
+            labelId="portal-filter-status"
+            label="Status"
+            value={draftFilters.status}
+            onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+          >
+            <MenuItem value="ALL">Todos</MenuItem>
+            <MenuItem value={TicketStatus.OPEN}>{TICKET_STATUS_LABEL_PT[TicketStatus.OPEN]}</MenuItem>
+            <MenuItem value={TicketStatus.IN_PROGRESS}>{TICKET_STATUS_LABEL_PT[TicketStatus.IN_PROGRESS]}</MenuItem>
+            <MenuItem value={TicketStatus.WAITING_USER}>{TICKET_STATUS_LABEL_PT[TicketStatus.WAITING_USER]}</MenuItem>
+            <MenuItem value={TicketStatus.RESOLVED}>{TICKET_STATUS_LABEL_PT[TicketStatus.RESOLVED]}</MenuItem>
+            <MenuItem value={TicketStatus.CLOSED}>{TICKET_STATUS_LABEL_PT[TicketStatus.CLOSED]}</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth size="small">
+          <InputLabel id="portal-filter-service">Serviço</InputLabel>
+          <Select
+            labelId="portal-filter-service"
+            label="Serviço"
+            value={draftFilters.serviceId || ''}
+            onChange={(e) => setDraftFilters((prev) => ({ ...prev, serviceId: e.target.value }))}
+          >
+            <MenuItem value="">Todos os serviços</MenuItem>
+            {ticketServiceOptions.map((opt) => (
+              <MenuItem key={opt.id} value={opt.id}>
+                {opt.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth size="small">
+          <InputLabel id="portal-filter-cat">Categoria</InputLabel>
+          <Select
+            labelId="portal-filter-cat"
+            label="Categoria"
+            value={draftFilters.categoryId || ''}
+            onChange={(e) => setDraftFilters((prev) => ({ ...prev, categoryId: e.target.value }))}
+          >
+            <MenuItem value="">Todas as categorias</MenuItem>
+            {ticketCategoryOptions.map((opt) => (
+              <MenuItem key={opt.id} value={opt.id}>
+                {opt.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </FilterDrawer>
 
       <Dialog
         open={wizardOpen}

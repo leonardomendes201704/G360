@@ -28,6 +28,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
 ### Changed
+- **Portal de Suporte (`/portal`):** **KPIs** (Total + 5 estados) com `StatsCard`/`KpiGrid`, clique no cartão aplica filtro de status; **barra de busca** (código, título, serviço); **filtros** em `FilterDrawer` (status, serviço, categoria) com badge e **Limpar tudo**; contador **Meus Chamados (X [de Y])** conforme busca/filtros.
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+  - `FRONTEND/src/pages/helpdesk/__tests__/PortalPage.test.jsx`
 - **Portal de Suporte (`/portal`):** Lista — coluna **Código** em **uma linha** (`whiteSpace: nowrap`); **título** na UI **sem** sufixo de estado legado (` — OPEN` …); chips de **status** em **PT-BR** (`TicketStatus`, `getTicketStatusLabel` em `constants/ticketStatus.js`); ação **Ver** como **ícone de olho** (`Visibility`). Detalhe do chamado (`TicketDetails`) — chip e título alinhados.
   - `FRONTEND/src/constants/ticketStatus.js`
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`

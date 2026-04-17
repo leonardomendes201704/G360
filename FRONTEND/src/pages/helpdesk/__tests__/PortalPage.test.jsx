@@ -88,8 +88,10 @@ describe('PortalPage Component', () => {
 
         expect(screen.getByText('INC-100')).toBeInTheDocument();
         expect(screen.getByText('Printer broken')).toBeInTheDocument();
-        expect(screen.getByText('Aberto')).toBeInTheDocument();
+        expect(screen.getAllByText('Aberto').length).toBeGreaterThanOrEqual(1);
         expect(screen.getByRole('link', { name: /Ver chamado/i })).toBeInTheDocument();
+        expect(screen.getByLabelText('Buscar chamados')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Filtros/i })).toBeInTheDocument();
     });
 
     it('filters services in the wizard using the search field', async () => {
