@@ -693,67 +693,68 @@ const AssetsPage = () => {
 
           <Box className="assets-charts-grid">
             {/* Qualidade de Cadastro */}
-            <Box sx={{ ...cardStyle, p: 3, minHeight: 300 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
+            <Box sx={{ ...cardStyle, p: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
                   <span className="material-icons-round" style={{ fontSize: '20px', color: '#f59e0b' }}>verified</span>
                   Qualidade de Cadastro
                 </Typography>
               </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                {[
-                  { label: 'Sem centro de custo', value: kpis.missingCostCenter },
-                  { label: 'Sem fornecedor', value: kpis.missingSupplier },
-                  { label: 'Sem contrato', value: kpis.missingContract },
-                  { label: 'Sem categoria', value: kpis.missingCategory },
-                  { label: 'Valor medio por ativo', value: formatCurrency(kpis.avgAssetValue) }
-                ].map((item) => (
-                  <Box key={item.label} sx={{ p: 2, borderRadius: '10px', bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.04)' }}>
-                    <Typography sx={{ color: textMuted, fontSize: '12px' }}>{item.label}</Typography>
-                    <Typography sx={{ color: textPrimary, fontWeight: 700, fontSize: '18px' }}>{item.value}</Typography>
-                  </Box>
-                ))}
-              </Box>
+              <KpiGrid maxColumns={5} mb={0}>
+                <StatsCard title="Sem centro de custo" value={kpis.missingCostCenter} iconName="account_balance" hexColor="#f59e0b" subtitle="Ativos sem CC" />
+                <StatsCard title="Sem fornecedor" value={kpis.missingSupplier} iconName="storefront" hexColor="#ea580c" />
+                <StatsCard title="Sem contrato" value={kpis.missingContract} iconName="description" hexColor="#dc2626" />
+                <StatsCard title="Sem categoria" value={kpis.missingCategory} iconName="label_off" hexColor="#64748b" />
+                <StatsCard title="Valor medio por ativo" value={formatCurrency(kpis.avgAssetValue)} iconName="payments" hexColor="#06b6d4" />
+              </KpiGrid>
             </Box>
 
             {/* Top Valores */}
-            <Box sx={{ ...cardStyle, p: 3, minHeight: 300 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
+            <Box sx={{ ...cardStyle, p: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
                   <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>emoji_events</span>
                   Top Valores
                 </Typography>
               </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                <Box>
-                  <Typography sx={{ color: textMuted, fontSize: '12px', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Ativos
-                  </Typography>
-                  {kpis.topAssets.map((asset) => (
-                    <Box key={asset.id} sx={{ mb: 1.2 }}>
-                      <Typography sx={{ color: textSecondary, fontSize: '13px' }}>{asset.name}</Typography>
-                      <Typography sx={{ color: textPrimary, fontWeight: 600, fontSize: '13px' }}>{formatCurrency(asset.value)}</Typography>
-                    </Box>
+              <Typography sx={{ color: textMuted, fontSize: '12px', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Ativos
+              </Typography>
+              {kpis.topAssets.length > 0 ? (
+                <KpiGrid maxColumns={5} mb={3}>
+                  {kpis.topAssets.map((asset, i) => (
+                    <StatsCard
+                      key={asset.id}
+                      title={asset.name}
+                      value={formatCurrency(asset.value)}
+                      iconName="computer"
+                      hexColor={CHART_COLORS[i % CHART_COLORS.length]}
+                      subtitle={`Pos. ${i + 1} · maior valor`}
+                    />
                   ))}
-                  {kpis.topAssets.length === 0 && (
-                    <Typography sx={{ color: textMuted, fontSize: '13px' }}>Sem dados</Typography>
-                  )}
-                </Box>
-                <Box>
-                  <Typography sx={{ color: textMuted, fontSize: '12px', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Licenças
-                  </Typography>
-                  {kpis.topLicenses.map((lic) => (
-                    <Box key={lic.id} sx={{ mb: 1.2 }}>
-                      <Typography sx={{ color: textSecondary, fontSize: '13px' }}>{lic.name}</Typography>
-                      <Typography sx={{ color: textPrimary, fontWeight: 600, fontSize: '13px' }}>{formatCurrency(lic.total)}</Typography>
-                    </Box>
+                </KpiGrid>
+              ) : (
+                <Typography sx={{ color: textMuted, fontSize: '13px', mb: 3 }}>Sem dados</Typography>
+              )}
+              <Typography sx={{ color: textMuted, fontSize: '12px', mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Licenças
+              </Typography>
+              {kpis.topLicenses.length > 0 ? (
+                <KpiGrid maxColumns={5} mb={0}>
+                  {kpis.topLicenses.map((lic, i) => (
+                    <StatsCard
+                      key={lic.id}
+                      title={lic.name}
+                      value={formatCurrency(lic.total)}
+                      iconName="key"
+                      hexColor={CHART_COLORS[i % CHART_COLORS.length]}
+                      subtitle={lic.vendor ? `${lic.vendor} · Pos. ${i + 1}` : `Pos. ${i + 1}`}
+                    />
                   ))}
-                  {kpis.topLicenses.length === 0 && (
-                    <Typography sx={{ color: textMuted, fontSize: '13px' }}>Sem dados</Typography>
-                  )}
-                </Box>
-              </Box>
+                </KpiGrid>
+              ) : (
+                <Typography sx={{ color: textMuted, fontSize: '13px' }}>Sem dados</Typography>
+              )}
             </Box>
           </Box>
         </>

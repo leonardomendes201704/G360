@@ -26,6 +26,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ### Changed
 - **Ativos / UI:** Dashboard — donuts **Distribuição por Categoria** e **Ativos por Situação** com o mesmo tamanho (`200×200`, `innerRadius`/`outerRadius` iguais), área de gráfico com altura **280** e legenda com quadrados **12px**; constantes `assetDonutPieSize` / `assetDonutPieRadii` partilhadas.
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+- **Ativos / UI:** Dashboard — secções **Qualidade de Cadastro** e **Top Valores** com **`StatsCard`** + **`KpiGrid`** (5 indicadores de qualidade; até 5 ativos e 5 licenças no top, com subtítulo posição/fornecedor).
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **Ativos / UX:** Vista **Hardware** (lista) — filtros (busca, status, categoria) no componente **`FilterDrawer`** + barra compacta (**Filtros**, badge, **Limpar tudo**), alinhado a Incidentes/GMUD. Teste unitário ajustado (`AuthContext` no provider).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
   - `FRONTEND/src/pages/assets/__tests__/AssetsPage.test.jsx`
