@@ -24,11 +24,11 @@ book = book.replace(pattern, newGrid);
 /** Atualiza contadores na legenda (Playwright vs pendente) — ajustar ao mapa em _gen-modal-grid.mjs. */
 book = book.replace(
     /<span class="tag e2e">Playwright<\/span> <strong>\d+<\/strong>/,
-    '<span class="tag e2e">Playwright</span> <strong>25</strong>'
+    '<span class="tag e2e">Playwright</span> <strong>30</strong>'
 );
 book = book.replace(
     /<span class="tag manual">Pendente<\/span> <strong>\d+<\/strong>/,
-    '<span class="tag manual">Pendente</span> <strong>24</strong>'
+    '<span class="tag manual">Pendente</span> <strong>19</strong>'
 );
 
 fs.writeFileSync(bookPath, book, 'utf8');

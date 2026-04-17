@@ -61,6 +61,7 @@ const batch02 = '../../FRONTEND/e2e/modal-evidence-batch-02.spec.ts-snapshots/';
 const batch03 = '../../FRONTEND/e2e/modal-evidence-batch-03.spec.ts-snapshots/';
 const batch04 = '../../FRONTEND/e2e/modal-evidence-batch-04.spec.ts-snapshots/';
 const batch05 = '../../FRONTEND/e2e/modal-evidence-batch-05.spec.ts-snapshots/';
+const batch06 = '../../FRONTEND/e2e/modal-evidence-batch-06.spec.ts-snapshots/';
 const snaps = {
   1: `${batch01}modal-evidence-01-account-shell-chromium-win32.png`,
   2: `${batch01}modal-evidence-02-addendum-form-shell-chromium-win32.png`,
@@ -87,6 +88,11 @@ const snaps = {
   23: `${batch05}modal-evidence-23-follow-up-modal-shell-chromium-win32.png`,
   24: `${batch05}modal-evidence-24-global-risk-modal-shell-chromium-win32.png`,
   25: `${batch05}modal-evidence-25-incident-create-modal-shell-chromium-win32.png`,
+  26: `${batch06}modal-evidence-26-incident-modal-shell-chromium-win32.png`,
+  27: `${batch06}modal-evidence-27-incident-view-modal-shell-chromium-win32.png`,
+  28: `${batch06}modal-evidence-28-knowledge-base-modal-shell-chromium-win32.png`,
+  29: `${batch06}modal-evidence-29-ldap-config-modal-shell-chromium-win32.png`,
+  30: `${batch06}modal-evidence-30-member-modal-shell-chromium-win32.png`,
   40: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png',
   47: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png',
   49: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-user-shell-chromium-win32.png',

@@ -9,7 +9,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ### Docs
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).
-- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–25** para PNG Playwright: rodadas **batch-01** a **batch-05** (01–05 … 21–25); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **25** / pendente **24**).
+- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–30** para PNG Playwright: rodadas **batch-01** a **batch-06** (01–05 … 26–30); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **30** / pendente **19**).
 
 ### Test
 - **US-022 / QA:** Rodada 1 de evidências Playwright dos modais **01–05** (`modal-evidence-batch-01.spec.ts`) com mocks de API (`modal-evidence-batch-01-api-mocks.ts`) — screenshots do **diálogo** apenas (mais estáveis). Snapshots em `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/`.
@@ -17,8 +17,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022 / QA:** Rodada 3 — modais **11–15** (`modal-evidence-batch-03.spec.ts`, `modal-evidence-batch-03-api-mocks.ts`): orçamento (import / item / novo orçamento) e GMUD (nova / visualização). Snapshots em `FRONTEND/e2e/modal-evidence-batch-03.spec.ts-snapshots/`.
 - **US-022 / QA:** Rodada 4 — modais **16–20** (`modal-evidence-batch-04.spec.ts`, `modal-evidence-batch-04-api-mocks.ts`): assistente novo contrato, edição de contrato, centro de custo e diretoria em Config, aprovação de despesa. `ExpensesPage.jsx` passa a abrir **`ExpenseApprovalModal`** no fluxo «Aprovar e anexar NF». Snapshots em `FRONTEND/e2e/modal-evidence-batch-04.spec.ts-snapshots/`.
 - **US-022 / QA:** Rodada 5 — modais **21–25** (`modal-evidence-batch-05.spec.ts`, `modal-evidence-batch-05-api-mocks.ts`): lançar despesa, ano fiscal (Config), follow-up em projeto, novo risco global, novo incidente no dashboard do gestor. Snapshots em `FRONTEND/e2e/modal-evidence-batch-05.spec.ts-snapshots/`.
+- **US-022 / QA:** Rodada 6 — modais **26–30** (`modal-evidence-batch-06.spec.ts`, `modal-evidence-batch-06-api-mocks.ts`): edição e visualização de incidente, novo artigo na base de conhecimento, LDAP em Integrações, edição de membro em Equipes. Snapshots em `FRONTEND/e2e/modal-evidence-batch-06.spec.ts-snapshots/`.
 
 ### Changed
+- **US-022 / QA:** `ProjectTeams` (`MembersTable`) — ação **Editar** membro com `data-testid="project-member-edit"` para E2E; `TableActionButton` repassa props extra ao `Box`.
+  - `FRONTEND/src/components/projects/tabs/ProjectTeams.jsx`
 - **US-022:** `AssetsPage` — botão **Categorias** (`data-testid="btn-gerir-categorias"`) abre **`AssetCategoryModal`** (criar/editar categorias com `createAssetCategory` / `updateAssetCategory`).
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`
 - **US-022:** `ProjectDetailsPage` passa a usar **`AddMemberModal`** no fluxo «Adicionar membro»; **`MemberModal`** mantém-se para editar/visualizar.

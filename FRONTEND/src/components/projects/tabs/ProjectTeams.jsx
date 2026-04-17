@@ -892,6 +892,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
                                 themeColors={themeColors}
                             />
                             <TableActionButton
+                                data-testid="project-member-edit"
                                 icon={<Edit sx={{ fontSize: 18 }} />}
                                 onClick={() => onEdit && onEdit(member)}
                                 themeColors={themeColors}
@@ -934,9 +935,10 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
     );
 };
 
-const TableActionButton = ({ icon, onClick, themeColors }) => (
+const TableActionButton = ({ icon, onClick, themeColors, ...rest }) => (
     <Box
         onClick={onClick}
+        {...rest}
         sx={{
             width: 32,
             height: 32,
