@@ -246,7 +246,7 @@ O agente DEVE manter um arquivo `docs/CHANGELOG.md` atualizado a cada commit. O 
 
 ### Diario de trabalho
 
-O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega material no repositorio (codigo, testes, resolucao documentada de backlog/US/BUG, etc.) no **diario central**, fora do Git: **`D:\Leonardo\Diario\diary.md`**. Formato alinhado ao VisionAssets (blocos **Quando** / **Projeto** / **Titulo**, `(timezone: local)` = horario local da maquina). Convencoes: `D:\Leonardo\Diario\README.md`. Ponte no repo: `docs/trabalho-diario/README.md`.
+O agente DEVE registrar cada **bloco de trabalho concluido** que envolva entrega material no repositorio (codigo, testes, resolucao documentada de backlog/US/BUG, etc.) no **diario central**, fora do Git: **`D:\Leonardo\Diario\diary.md`**. Formato alinhado ao VisionAssets (blocos **Quando** / **Projeto** / **Titulo**, `(timezone: local)` = horario local da maquina). **Antes de preencher Quando:,** obter data/hora local executando no terminal (ex.: PowerShell `Get-Date -Format "yyyy-MM-ddTHH:mm"`) e usar esse valor — nunca inventar ou aproximar o horario (ver `.cursor/rules/work-diary.mdc`). Convencoes: `D:\Leonardo\Diario\README.md`. Ponte no repo: `docs/trabalho-diario/README.md`.
 
 **Regras:**
 

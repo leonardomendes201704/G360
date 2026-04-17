@@ -12,6 +12,14 @@ Quando **concluir uma tarefa** com entregável no repositório G360, **insira** 
 
 **Idioma:** português **do Brasil (pt-BR)** — vocabulário e grafia brasileiros (ex.: atualizar, registro, usuário, tela, arquivo, ações; evitar actualizar, registo, ecrã, acções, ficheiro).
 
+## Horário em **Quando:** (obrigatório)
+
+- **Nunca** inventar, arredondar ou assumir o horário (evita desfasamento como usar UTC ou um valor “aproximado”).
+- **Sempre** obter a **data e hora locais da máquina no momento** de escrever a entrada, executando no terminal do ambiente, por exemplo:
+  - **Windows (PowerShell):** `Get-Date -Format "yyyy-MM-ddTHH:mm"`
+  - **bash:** `date +%Y-%m-%dT%H:%M`
+- Copiar o resultado **literalmente** para a linha **Quando:** no formato `YYYY-MM-DDTHH:mm (timezone: local)`.
+
 ## Formato
 
 ```markdown
