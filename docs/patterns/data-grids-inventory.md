@@ -18,10 +18,10 @@ Componentes base existentes:
 | Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: `IncidentList` (`<table>`); Kanban alternativo. |
 | GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | `ChangeRequestList` (MUI `Table`); paginação custom. |
 | Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |
-| Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`. |
+| Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`; cabeçalho **`DataListShell`** (export + busca). |
 | Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | `ArticleTable` (MUI `TableContainer`). |
 | Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning — não só tabela. |
-| Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | `<table>` (ativos + licenças). |
+| Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | `<table>` (lista de ativos + licenças); **`DataListShell`** em ambas as secções; `filteredLicenses` em `useMemo`. |
 
 ---
 

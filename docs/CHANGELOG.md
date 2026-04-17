@@ -5,6 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-18]
+
+### Changed
+- **EP-009:** Casca **`DataListShell`** na lista de **Contratos** (export + busca; contagem filtrada) e em **Ativos** — tabela principal e **Licenças de Software**; `filteredLicenses` centralizado em `useMemo`.
+  - `FRONTEND/src/pages/contracts/ContractsPage.jsx`
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `docs/patterns/data-grids-inventory.md`
+
+---
+
 ## [2026-04-16]
 
 ### Added

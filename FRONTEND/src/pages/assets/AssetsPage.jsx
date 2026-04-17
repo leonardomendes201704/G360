@@ -19,6 +19,7 @@ import AssetCategoryModal from '../../components/modals/AssetCategoryModal';
 import AssetViewModal from '../../components/modals/AssetViewModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -270,6 +271,14 @@ const AssetsPage = () => {
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [assets, searchTerm, filters]);
+
+  const filteredLicenses = useMemo(() => {
+    return licenses.filter(l =>
+      searchTerm === '' ||
+      l.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.vendor?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [licenses, searchTerm]);
 
   // Handlers
   const handleSaveAsset = async (data) => {
@@ -859,17 +868,13 @@ const AssetsPage = () => {
           </FilterDrawer>
 
           {/* Table */}
-          <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: cardBorder }}>
-              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>list</span>
-                Lista de Ativos
-                <span style={{ fontSize: '14px', color: textMuted, fontWeight: 400, marginLeft: '8px' }}>
-                  ({filteredAssets.length} itens)
-                </span>
-              </Typography>
-            </Box>
-
+          <DataListShell
+            title="Lista de Ativos"
+            titleIcon="list"
+            accentColor="#2563eb"
+            count={filteredAssets.length}
+            sx={{ ...cardStyle, overflow: 'hidden' }}
+          >
             <BulkActionsBar
               selectedCount={selectedAssetIds.length}
               totalCount={filteredAssets.length}
@@ -997,7 +1002,7 @@ const AssetsPage = () => {
                 onAction={handleOpenNew}
               />
             )}
-          </Box>
+          </DataListShell>
         </>
       )}
 
@@ -1053,15 +1058,13 @@ const AssetsPage = () => {
           </Box>
 
           {/* Licenses Table */}
-          <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: cardBorder }}>
-              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <span className="material-icons-round" style={{ fontSize: '20px', color: '#3b82f6' }}>key</span>
-                Licencas de Software
-                <span style={{ fontSize: '14px', color: textMuted, fontWeight: 400, marginLeft: '8px' }}>({licenses.filter(l => searchTerm === '' || l.name?.toLowerCase().includes(searchTerm.toLowerCase()) || l.vendor?.toLowerCase().includes(searchTerm.toLowerCase())).length} itens)</span>
-              </Typography>
-            </Box>
-
+          <DataListShell
+            title="Licencas de Software"
+            titleIcon="key"
+            accentColor="#3b82f6"
+            count={filteredLicenses.length}
+            sx={{ ...cardStyle, overflow: 'hidden' }}
+          >
             <Box sx={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
@@ -1078,7 +1081,7 @@ const AssetsPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {licenses.filter(l => searchTerm === '' || l.name?.toLowerCase().includes(searchTerm.toLowerCase()) || l.vendor?.toLowerCase().includes(searchTerm.toLowerCase())).map(license => {
+                  {filteredLicenses.map(license => {
                     const isExpiring = license.expirationDate && (new Date(license.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) <= 30;
                     const isExpired = license.expirationDate && new Date(license.expirationDate) < new Date();
                     return (
@@ -1174,7 +1177,7 @@ const AssetsPage = () => {
                 onAction={handleOpenNew}
               />
             )}
-          </Box>
+          </DataListShell>
         </>
       )}
 

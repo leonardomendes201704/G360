@@ -12,6 +12,7 @@ import ContractModal from '../../components/modals/ContractModal';
 import AddendumFormModal from '../../components/modals/AddendumFormModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import { getContracts, createContract, updateContract, deleteContract } from '../../services/contract.service';
@@ -446,7 +447,11 @@ const ContractsPage = () => {
       </KpiGrid>
 
       {/* Table Section */}
-      <Box
+      <DataListShell
+        title="Lista de Contratos"
+        titleIcon="list"
+        accentColor="#2563eb"
+        count={filteredContracts.length}
         sx={{
           borderRadius: '16px',
           background: cardBg,
@@ -455,14 +460,8 @@ const ContractsPage = () => {
           boxShadow: cardShadow,
           overflow: 'hidden'
         }}
-      >
-        {/* Table Header */}
-        <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${borderColor}` }}>
-          <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>list</span>
-            Lista de Contratos
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        toolbar={(
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <ExportButton data={filteredContracts} columns={EXPORT_COLUMNS.contracts} filename="contratos" compact />
             <Box
               sx={{
@@ -493,9 +492,8 @@ const ContractsPage = () => {
               />
             </Box>
           </Box>
-        </Box>
-
-        {/* Table */}
+        )}
+      >
         <Box sx={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -675,7 +673,7 @@ const ContractsPage = () => {
             onAction={handleOpenNew}
           />
         )}
-      </Box>
+      </DataListShell>
 
       {/* Modals */}
       <ContractModal
