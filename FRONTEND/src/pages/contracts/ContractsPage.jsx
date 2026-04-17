@@ -1,7 +1,10 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, MenuItem, InputAdornment, IconButton, Tooltip, Collapse, Paper, useTheme } from '@mui/material';
+import { Box, Typography, Button, TextField, MenuItem, IconButton, Tooltip, useTheme } from '@mui/material';
+import FilterAlt from '@mui/icons-material/FilterAlt';
+import Refresh from '@mui/icons-material/Refresh';
+import FilterDrawer from '../../components/common/FilterDrawer';
 import { format, isAfter, isBefore, addDays } from 'date-fns';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
@@ -15,16 +18,19 @@ import { getContracts, createContract, updateContract, deleteContract } from '..
 import { getErrorMessage } from '../../utils/errorUtils';
 import { AuthContext } from '../../contexts/AuthContext';
 
+const CONTRACT_FILTER_DEFAULTS = {
+  status: '',
+  type: '',
+  period: '',
+};
+
 const ContractsPage = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    status: '',
-    type: '',
-    period: ''
-  });
-  const [showFilters, setShowFilters] = useState(true);
+  const [filters, setFilters] = useState({ ...CONTRACT_FILTER_DEFAULTS });
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [draftFilters, setDraftFilters] = useState({ ...CONTRACT_FILTER_DEFAULTS });
 
   // Modal States
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,6 +46,7 @@ const ContractsPage = () => {
   const { mode } = useContext(ThemeContext);
   const theme = useTheme();
   const { hasPermission } = useContext(AuthContext);
+  const isDark = mode === 'dark';
   const canWrite = hasPermission('CONTRACTS', 'CREATE');
   const canEdit = hasPermission('CONTRACTS', 'EDIT_CONTRACT');
   const canAddendum = hasPermission('CONTRACTS', 'ADDENDUM');
@@ -48,7 +55,6 @@ const ContractsPage = () => {
   // Theme-aware styles
   const textPrimary = mode === 'dark' ? '#f1f5f9' : theme.palette.text.primary;
   const textSecondary = mode === 'dark' ? '#64748b' : theme.palette.text.secondary;
-  const textMuted = mode === 'dark' ? '#94a3b8' : theme.palette.text.disabled;
   const cardBg = mode === 'dark' ? 'rgba(22, 29, 38, 0.5)' : '#FFFFFF';
   const borderColor = mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)';
   const cardShadow = mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)';
@@ -104,6 +110,49 @@ const ContractsPage = () => {
     });
   }, [contracts, searchTerm, filters]);
 
+  const activeDrawerFilterCount = useMemo(
+    () =>
+      (filters.status ? 1 : 0) +
+      (filters.type ? 1 : 0) +
+      (filters.period ? 1 : 0),
+    [filters.status, filters.type, filters.period]
+  );
+
+  const drawerInputSx = useMemo(
+    () => ({
+      '& .MuiOutlinedInput-root': {
+        bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+        borderRadius: 2,
+        '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
+        '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
+        '&.Mui-focused fieldset': { borderColor: '#2563eb' },
+      },
+      '& .MuiInputLabel-root': { color: isDark ? '#94a3b8' : '#64748b' },
+      '& .MuiSelect-icon': { color: isDark ? '#94a3b8' : '#64748b' },
+    }),
+    [isDark]
+  );
+
+  const openFilterDrawer = () => {
+    setDraftFilters({ ...filters });
+    setFilterDrawerOpen(true);
+  };
+
+  const handleApplyDrawerFilters = () => {
+    setFilters({ ...draftFilters });
+  };
+
+  const handleClearDrawerOnly = () => {
+    setDraftFilters({ ...CONTRACT_FILTER_DEFAULTS });
+    setFilters({ ...CONTRACT_FILTER_DEFAULTS });
+  };
+
+  const clearAllFilters = () => {
+    setFilters({ ...CONTRACT_FILTER_DEFAULTS });
+    setDraftFilters({ ...CONTRACT_FILTER_DEFAULTS });
+    setSearchTerm('');
+  };
+
   // KPIs
   const kpis = useMemo(() => ({
     total: contracts.length,
@@ -150,11 +199,6 @@ const ContractsPage = () => {
   const handleOpenEdit = (c) => { setSelectedContract(c); setModalOpen(true); };
   const handleOpenDetails = (c) => { navigate(`/contracts/${c.id}`); };
 
-  const clearFilters = () => {
-    setFilters({ status: '', type: '', period: '' });
-    setSearchTerm('');
-  };
-
   // Status Badge Styles
   const getStatusStyle = (status) => {
     switch (status) {
@@ -200,21 +244,6 @@ const ContractsPage = () => {
       color: '#f59e0b'
     }
   ];
-
-  // Theme-aware input style
-  const inputSx = {
-    '& .MuiOutlinedInput-root': {
-      bgcolor: surfaceBg,
-      borderRadius: '12px',
-      color: textPrimary,
-      '& fieldset': { borderColor: borderColor },
-      '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.3)' },
-      '&.Mui-focused fieldset': { borderColor: '#2563eb' }
-    },
-    '& .MuiInputLabel-root': { color: textMuted },
-    '& .MuiSelect-icon': { color: textMuted },
-    '& input::placeholder': { color: textSecondary }
-  };
 
   return (
     <Box>
@@ -292,100 +321,115 @@ const ContractsPage = () => {
         </Box>
       </Box>
 
-      {/* Filters Section */}
+      {/* Filtros — barra compacta + drawer (padrão incidentes / projetos) */}
       <Box
         sx={{
           mb: 3,
           borderRadius: '16px',
-          background: cardBg,
-          backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
-          border: `1px solid ${borderColor}`,
-          boxShadow: cardShadow,
-          overflow: 'hidden'
+          bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
+          border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
+          p: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: showFilters ? `1px solid ${borderColor}` : 'none' }}>
-          <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>filter_list</span>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Button
+            size="medium"
+            startIcon={<FilterAlt />}
+            onClick={openFilterDrawer}
+            sx={{
+              color: isDark ? '#f1f5f9' : '#0f172a',
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' },
+            }}
+          >
             Filtros
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              size="small"
-              onClick={clearFilters}
+          </Button>
+          {activeDrawerFilterCount > 0 ? (
+            <Box
               sx={{
-                color: textMuted,
-                textTransform: 'none',
-                '&:hover': { bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)' }
+                px: 1,
+                py: 0.25,
+                borderRadius: '10px',
+                fontSize: '10px',
+                fontWeight: 700,
+                bgcolor: 'rgba(37, 99, 235, 0.15)',
+                color: '#2563eb',
               }}
-              startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>refresh</span>}
             >
-              Limpar
-            </Button>
-            <IconButton size="small" onClick={() => setShowFilters(!showFilters)} sx={{ color: textMuted }}>
-              {showFilters ? '▲' : '▼'}
-            </IconButton>
-          </Box>
+              {activeDrawerFilterCount}
+            </Box>
+          ) : null}
         </Box>
-        <Collapse in={showFilters}>
-          <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 2 }}>
-            <TextField
-              label="Buscar"
-              placeholder="Buscar fornecedor..."
-              size="small"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                ...inputSx,
-                '& .MuiInputBase-root': {
-                  height: '40px'
-                }
-              }}
-            />
-            <TextField
-              select
-              label="Status"
-              size="small"
-              value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todos os status</MenuItem>
-              <MenuItem value="active">Ativo</MenuItem>
-              <MenuItem value="pending">Pendente</MenuItem>
-              <MenuItem value="expired">Expirado</MenuItem>
-            </TextField>
-            <TextField
-              select
-              label="Tipo"
-              size="small"
-              value={filters.type}
-              onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todos os tipos</MenuItem>
-              <MenuItem value="SERVICO">Serviço</MenuItem>
-              <MenuItem value="PRODUTO">Produto</MenuItem>
-              <MenuItem value="LOCACAO">Locação</MenuItem>
-              <MenuItem value="MANUTENCAO">Manutenção</MenuItem>
-              <MenuItem value="OUTROS">Outros</MenuItem>
-            </TextField>
-            <TextField
-              select
-              label="Período"
-              size="small"
-              value={filters.period}
-              onChange={(e) => setFilters(prev => ({ ...prev, period: e.target.value }))}
-              sx={inputSx}
-            >
-              <MenuItem value="">Todo o período</MenuItem>
-              <MenuItem value="current">Vigentes</MenuItem>
-              <MenuItem value="expiring">Vencendo em 30 dias</MenuItem>
-              <MenuItem value="expired">Expirados</MenuItem>
-            </TextField>
-          </Box>
-        </Collapse>
+        <Button
+          size="small"
+          startIcon={<Refresh />}
+          onClick={clearAllFilters}
+          sx={{
+            color: isDark ? '#94a3b8' : '#64748b',
+            textTransform: 'none',
+            '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
+          }}
+        >
+          Limpar tudo
+        </Button>
       </Box>
+
+      <FilterDrawer
+        open={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        onApply={handleApplyDrawerFilters}
+        onClear={handleClearDrawerOnly}
+        title="Filtros de contratos"
+      >
+        <TextField
+          select
+          fullWidth
+          label="Status"
+          size="small"
+          value={draftFilters.status}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todos os status</MenuItem>
+          <MenuItem value="active">Ativo</MenuItem>
+          <MenuItem value="pending">Pendente</MenuItem>
+          <MenuItem value="expired">Expirado</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Tipo"
+          size="small"
+          value={draftFilters.type}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, type: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todos os tipos</MenuItem>
+          <MenuItem value="SERVICO">Serviço</MenuItem>
+          <MenuItem value="PRODUTO">Produto</MenuItem>
+          <MenuItem value="LOCACAO">Locação</MenuItem>
+          <MenuItem value="MANUTENCAO">Manutenção</MenuItem>
+          <MenuItem value="OUTROS">Outros</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Período"
+          size="small"
+          value={draftFilters.period}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, period: e.target.value }))}
+          sx={drawerInputSx}
+        >
+          <MenuItem value="">Todo o período</MenuItem>
+          <MenuItem value="current">Vigentes</MenuItem>
+          <MenuItem value="expiring">Vencendo em 30 dias</MenuItem>
+          <MenuItem value="expired">Expirados</MenuItem>
+        </TextField>
+      </FilterDrawer>
 
       {/* Stats Cards — Left Border Accent variant */}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 2.5, mb: 3 }}>
