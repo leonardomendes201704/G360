@@ -18,6 +18,8 @@ class TicketController {
         relatedIncident: yup.string().nullable().transform(emptyToNull),
         customAnswers: yup.object().default({}),
         supportGroupId: yup.string().uuid().nullable().transform(emptyToNull),
+        departmentId: yup.string().uuid().nullable().transform(emptyToNull).optional(),
+        costCenterId: yup.string().uuid().nullable().transform(emptyToNull).optional()
       });
 
       const payload = await schema.validate(req.body, { stripUnknown: true });
@@ -45,8 +47,16 @@ class TicketController {
 
   static async metrics(req, res) {
     try {
+      const userId = req.user.userId;
+      const prisma = req.prisma;
+      const canQueue = await userHasPermission(prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
+      const scope = await TicketService.getManagerTicketScope(prisma, userId);
+      if (!canQueue && !scope.hasScope) {
+        return res.status(403).json({ error: 'Sem permissão para métricas.' });
+      }
       const days = req.query.days ? Number(req.query.days) : 30;
-      const data = await HelpdeskMetricsService.getSummary(req.prisma, { days });
+      const whereTicket = canQueue ? {} : TicketService.buildManagerAccessWhere(userId, scope);
+      const data = await HelpdeskMetricsService.getSummary(prisma, { days, whereTicket });
       return res.status(200).json(data);
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -55,10 +65,14 @@ class TicketController {
 
   static async index(req, res) {
     const userId = req.user.userId;
-    const canQueue = await userHasPermission(req.prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
-    const roleMode = canQueue ? 'AGENT' : 'REQUESTER';
+    const prisma = req.prisma;
+    const canQueue = await userHasPermission(prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
+    const scope = await TicketService.getManagerTicketScope(prisma, userId);
+    let roleMode = 'REQUESTER';
+    if (canQueue) roleMode = 'AGENT';
+    else if (scope.hasScope) roleMode = 'MANAGER';
 
-    const tickets = await TicketService.getAll(req.prisma, req.query, userId, roleMode);
+    const tickets = await TicketService.getAll(prisma, req.query, userId, roleMode, scope);
     return res.status(200).json(tickets);
   }
 
@@ -69,16 +83,24 @@ class TicketController {
       const { id } = req.params;
 
       const canQueue = await userHasPermission(prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
+      const managerScope = await TicketService.getManagerTicketScope(prisma, userId);
       const preview = await prisma.ticket.findUnique({
         where: { id },
-        select: { id: true, requesterId: true, assigneeId: true },
+        select: {
+          id: true,
+          requesterId: true,
+          assigneeId: true,
+          departmentId: true,
+          costCenterId: true
+        }
       });
       if (!preview) {
         return res.status(404).json({ error: 'Ticket não encontrado' });
       }
 
       const isParticipant = preview.requesterId === userId || preview.assigneeId === userId;
-      if (!canQueue && !isParticipant) {
+      const inManagerScope = TicketService.ticketMatchesManagerScope(preview, userId, managerScope);
+      if (!canQueue && !isParticipant && !inManagerScope) {
         return res.status(403).json({ error: 'Acesso negado a este chamado.' });
       }
 
@@ -128,24 +150,33 @@ class TicketController {
         return res.status(403).json({ error: 'Sem permissão para responder chamados.' });
       }
 
-      const ticket = await prisma.ticket.findUnique({
+      const canQueue = await userHasPermission(prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
+      const managerScope = await TicketService.getManagerTicketScope(prisma, userId);
+      const ticketFull = await prisma.ticket.findUnique({
         where: { id: ticketId },
-        select: { id: true, requesterId: true, assigneeId: true },
+        select: {
+          id: true,
+          requesterId: true,
+          assigneeId: true,
+          departmentId: true,
+          costCenterId: true
+        }
       });
-      if (!ticket) {
+      if (!ticketFull) {
         return res.status(404).json({ error: 'Chamado não encontrado' });
       }
 
-      const canQueue = await userHasPermission(prisma, userId, 'HELPDESK', 'VIEW_QUEUE');
-      const isParticipant = ticket.requesterId === userId || ticket.assigneeId === userId;
-      if (!isParticipant && !canQueue) {
-        return res.status(403).json({ error: 'Apenas participantes ou agentes podem enviar mensagens.' });
+      const isParticipant =
+        ticketFull.requesterId === userId || ticketFull.assigneeId === userId;
+      const inManagerScope = TicketService.ticketMatchesManagerScope(ticketFull, userId, managerScope);
+      if (!isParticipant && !canQueue && !inManagerScope) {
+        return res.status(403).json({ error: 'Apenas participantes, agentes ou gestores da área podem enviar mensagens.' });
       }
 
       if (payload.isInternal) {
         const canInternal =
           (await userHasPermission(prisma, userId, 'HELPDESK', 'WRITE_INTERNAL_NOTES')) &&
-          (canQueue || ticket.assigneeId === userId);
+          (canQueue || ticketFull.assigneeId === userId);
         if (!canInternal) {
           return res.status(403).json({ error: 'Sem permissão para notas internas neste chamado.' });
         }
@@ -191,13 +222,16 @@ class TicketController {
         assigneeId: yup.string().uuid().nullable().transform(emptyToNull).optional(),
         priority: yup.string().oneOf(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).optional(),
         categoryId: yup.string().uuid().optional(),
-        supportGroupId: yup.string().uuid().nullable().transform(emptyToNull).optional()
+        supportGroupId: yup.string().uuid().nullable().transform(emptyToNull).optional(),
+        departmentId: yup.string().uuid().nullable().transform(emptyToNull).optional(),
+        costCenterId: yup.string().uuid().nullable().transform(emptyToNull).optional()
       });
 
       const payload = await schema.validate(req.body, { stripUnknown: true });
       if (Object.keys(payload).length === 0) {
         return res.status(400).json({
-          error: 'Informe ao menos um campo: assigneeId, priority, categoryId ou supportGroupId.'
+          error:
+            'Informe ao menos um campo: assigneeId, priority, categoryId, supportGroupId, departmentId ou costCenterId.'
         });
       }
 

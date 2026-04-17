@@ -28,6 +28,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
 
 ### Changed
+- **Helpdesk / área (departamento e centro de custo):** Snapshots `departmentId` / `costCenterId` no ticket — **Portal** com colunas e filtros, **modal Novo chamado** com selects opcionais, **detalhe do chamado** com leitura para solicitantes e edição para agentes (triagem), **Service Desk** com colunas na fila; seed de showcase grava CC/dept do utilizador requester.
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+  - `FRONTEND/src/pages/helpdesk/TicketDetails.jsx`
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
+  - `FRONTEND/src/pages/helpdesk/__tests__/PortalPage.test.jsx`
+  - `BACKEND/src/scripts/seed-portal-tickets-showcase.js`
 - **Portal de Suporte (`/portal`):** **KPIs** (Total + 5 estados) com `StatsCard`/`KpiGrid`, clique no cartão aplica filtro de status; **barra de busca** (código, título, serviço); **filtros** em `FilterDrawer` (status, serviço, categoria) com badge e **Limpar tudo**; contador **Meus Chamados (X [de Y])** conforme busca/filtros; **cores dos KPIs** alinhadas ao tema dos `Chip` de status (`getTicketStatusThemeColor`); tabela com **ordenação por colunas** (`TableSortLabel`) e **paginação** (`TablePagination`).
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
   - `FRONTEND/src/constants/ticketStatus.js`

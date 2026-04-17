@@ -168,6 +168,7 @@ model Department {
   projects    Project[]
   users       User[]
   risks       CorporateRisk[]
+  tickets     Ticket[] @relation("TicketDepartment")
 }
 
 model CostCenter {
@@ -189,6 +190,7 @@ model CostCenter {
   Project        Project[]
   users          User[]              @relation("UserCostCenter")
   corporateRisks CorporateRisk[]
+  tickets        Ticket[]            @relation("TicketCostCenter")
 }
 
 model AuditLog {
@@ -1231,12 +1233,21 @@ model Ticket {
   csatComment String?   @db.Text
   csatAt      DateTime?
 
+  /// Snapshot na abertura (visibilidade gestores / relatórios)
+  departmentId String?
+  department   Department? @relation("TicketDepartment", fields: [departmentId], references: [id])
+  costCenterId String?
+  costCenter   CostCenter? @relation("TicketCostCenter", fields: [costCenterId], references: [id])
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   closedAt  DateTime?
 
   messages    TicketMessage[]
   attachments TicketAttachment[]
+
+  @@index([departmentId])
+  @@index([costCenterId])
 }
 
 /// Sequência anual de códigos HD-AAAA-NNNN (evita colisão sob concorrência)

@@ -22,11 +22,72 @@ class TicketService {
       requester: { select: { id: true, name: true, email: true, avatar: true } },
       assignee: { select: { id: true, name: true, email: true, avatar: true } },
       category: { select: { id: true, name: true } },
-      service: { select: { id: true, name: true } },
+      service: { select: { id: true, name: true, categoryId: true } },
       supportGroup: { select: { id: true, name: true } },
+      department: { select: { id: true, name: true, code: true } },
+      costCenter: { select: { id: true, name: true, code: true } },
       slaPolicy: true,
       attachments: true
     };
+  }
+
+  /** Diretor de departamento e/ou gestor de centro de custo. */
+  static async getManagerTicketScope(prismaClient, userId) {
+    const [depts, ccs] = await Promise.all([
+      prismaClient.department.findMany({ where: { directorId: userId }, select: { id: true } }),
+      prismaClient.costCenter.findMany({ where: { managerId: userId }, select: { id: true } })
+    ]);
+    const departmentIds = depts.map((d) => d.id);
+    const costCenterIds = ccs.map((c) => c.id);
+    return {
+      departmentIds,
+      costCenterIds,
+      hasScope: departmentIds.length > 0 || costCenterIds.length > 0
+    };
+  }
+
+  static buildManagerAccessWhere(userId, scope) {
+    const or = [{ requesterId: userId }];
+    if (scope.departmentIds.length) {
+      or.push({ departmentId: { in: scope.departmentIds } });
+    }
+    if (scope.costCenterIds.length) {
+      or.push({ costCenterId: { in: scope.costCenterIds } });
+    }
+    return { OR: or };
+  }
+
+  /**
+   * @param {{ requesterId: string, departmentId: string|null, costCenterId: string|null }} ticket
+   * @param {{ departmentIds: string[], costCenterIds: string[], hasScope: boolean }} scope
+   */
+  static ticketMatchesManagerScope(ticket, userId, scope) {
+    if (!scope?.hasScope || !ticket) return false;
+    if (ticket.requesterId === userId) return true;
+    if (ticket.departmentId && scope.departmentIds.includes(ticket.departmentId)) return true;
+    if (ticket.costCenterId && scope.costCenterIds.includes(ticket.costCenterId)) return true;
+    return false;
+  }
+
+  static async resolveSnapshotIds(prismaClient, requesterId, bodyDepartmentId, bodyCostCenterId) {
+    const requester = await prismaClient.user.findUnique({
+      where: { id: requesterId },
+      select: { departmentId: true, costCenterId: true }
+    });
+    const departmentId =
+      bodyDepartmentId !== undefined ? bodyDepartmentId || null : requester?.departmentId ?? null;
+    const costCenterId =
+      bodyCostCenterId !== undefined ? bodyCostCenterId || null : requester?.costCenterId ?? null;
+
+    if (departmentId) {
+      const d = await prismaClient.department.findUnique({ where: { id: departmentId } });
+      if (!d) throw new Error('Departamento inválido.');
+    }
+    if (costCenterId) {
+      const c = await prismaClient.costCenter.findUnique({ where: { id: costCenterId } });
+      if (!c) throw new Error('Centro de custo inválido.');
+    }
+    return { departmentId, costCenterId };
   }
 
   /**
@@ -126,7 +187,7 @@ class TicketService {
    * Exportação CSV (fila / relatório). Limite 8000 linhas.
    */
   static async buildExportCsv(prisma, filters = {}) {
-    const where = {};
+    const where = { ...(filters.whereTicket || {}) };
     if (filters.status) where.status = filters.status;
     if (filters.priority) where.priority = filters.priority;
     if (filters.days) {
@@ -145,7 +206,9 @@ class TicketService {
         requester: { select: { name: true, email: true } },
         assignee: { select: { name: true, email: true } },
         supportGroup: { select: { name: true } },
-        category: { select: { name: true } }
+        category: { select: { name: true } },
+        department: { select: { name: true, code: true } },
+        costCenter: { select: { name: true, code: true } }
       }
     });
 
@@ -155,6 +218,8 @@ class TicketService {
       'status',
       'prioridade',
       'categoria',
+      'departamento',
+      'centro_custo',
       'solicitante',
       'email_solicitante',
       'grupo',
@@ -172,6 +237,8 @@ class TicketService {
           this.escapeCsvCell(t.status),
           this.escapeCsvCell(t.priority),
           this.escapeCsvCell(t.category?.name),
+          this.escapeCsvCell(t.department ? `${t.department.code} ${t.department.name}` : ''),
+          this.escapeCsvCell(t.costCenter ? `${t.costCenter.code} ${t.costCenter.name}` : ''),
           this.escapeCsvCell(t.requester?.name),
           this.escapeCsvCell(t.requester?.email),
           this.escapeCsvCell(t.supportGroup?.name),
@@ -196,8 +263,17 @@ class TicketService {
       relatedAssetId,
       relatedIncident,
       customAnswers,
-      supportGroupId
+      supportGroupId,
+      departmentId: bodyDepartmentId,
+      costCenterId: bodyCostCenterId
     } = data;
+
+    const { departmentId, costCenterId } = await this.resolveSnapshotIds(
+      prismaClient,
+      requesterId,
+      bodyDepartmentId,
+      bodyCostCenterId
+    );
 
     const prio = priority || 'MEDIUM';
     const code = await this.getNextTicketCode(prismaClient);
@@ -232,6 +308,8 @@ class TicketService {
         relatedAssetId,
         relatedIncident,
         customAnswers: customAnswers || {},
+        departmentId,
+        costCenterId,
         slaMonitorId: slaMin.slaPolicyId,
         slaResponseDue: slaDates.slaResponseDue,
         slaResolveDue: slaDates.slaResolveDue
@@ -295,15 +373,24 @@ class TicketService {
     return newTicket;
   }
 
-  static async getAll(prismaClient, query, userId, role = 'REQUESTER') {
-    let where = {};
-    if (role === 'REQUESTER') {
-      where.requesterId = userId;
-    }
+  static async getAll(prismaClient, query, userId, role = 'REQUESTER', managerScope = null) {
+    const andParts = [];
 
-    if (query.status) where.status = query.status;
-    if (query.priority) where.priority = query.priority;
-    if (query.assigneeId) where.assigneeId = query.assigneeId;
+    if (role === 'REQUESTER') {
+      andParts.push({ requesterId: userId });
+    } else if (role === 'MANAGER' && managerScope?.hasScope) {
+      andParts.push(this.buildManagerAccessWhere(userId, managerScope));
+    }
+    // AGENT: sem filtro de âmbito
+
+    if (query.status) andParts.push({ status: query.status });
+    if (query.priority) andParts.push({ priority: query.priority });
+    if (query.assigneeId) andParts.push({ assigneeId: query.assigneeId });
+    if (query.departmentId) andParts.push({ departmentId: query.departmentId });
+    if (query.costCenterId) andParts.push({ costCenterId: query.costCenterId });
+
+    const where =
+      andParts.length === 0 ? {} : andParts.length === 1 ? andParts[0] : { AND: andParts };
 
     return await prismaClient.ticket.findMany({
       where,
@@ -453,6 +540,22 @@ class TicketService {
     }
     if (data.priority !== undefined) {
       updates.priority = data.priority;
+    }
+    if (data.departmentId !== undefined) {
+      const v = data.departmentId || null;
+      if (v) {
+        const d = await prismaClient.department.findUnique({ where: { id: v } });
+        if (!d) throw new Error('Departamento inválido.');
+      }
+      updates.departmentId = v;
+    }
+    if (data.costCenterId !== undefined) {
+      const v = data.costCenterId || null;
+      if (v) {
+        const c = await prismaClient.costCenter.findUnique({ where: { id: v } });
+        if (!c) throw new Error('Centro de custo inválido.');
+      }
+      updates.costCenterId = v;
     }
 
     const prio = data.priority !== undefined ? data.priority : ticketOld.priority;

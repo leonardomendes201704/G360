@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, forwardRef } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef, useContext } from 'react';
 import {
   Box,
   Typography,
@@ -37,6 +37,9 @@ import serviceCatalogService from '../../services/service-catalog.service';
 import { getAssets } from '../../services/asset.service';
 import KnowledgeBaseService from '../../services/knowledge-base.service';
 import { getActiveSupportGroups } from '../../services/support-group.service';
+import { getDepartments } from '../../services/department.service';
+import { getCostCenters } from '../../services/cost-center.service';
+import { AuthContext } from '../../contexts/AuthContext';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -60,17 +63,26 @@ import {
   getTicketStatusThemeColor
 } from '../../constants/ticketStatus';
 
-const DEFAULT_PORTAL_FILTERS = { status: 'ALL', serviceId: '', categoryId: '' };
+const DEFAULT_PORTAL_FILTERS = {
+  status: 'ALL',
+  serviceId: '',
+  categoryId: '',
+  departmentId: '',
+  costCenterId: ''
+};
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const PortalPage = () => {
+  const { user } = useContext(AuthContext);
   const [tickets, setTickets] = useState([]);
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [departmentsList, setDepartmentsList] = useState([]);
+  const [costCentersList, setCostCentersList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -93,6 +105,8 @@ const PortalPage = () => {
   const [formSchemaFields, setFormSchemaFields] = useState([]);
   const [supportGroups, setSupportGroups] = useState([]);
   const [supportGroupId, setSupportGroupId] = useState('');
+  const [portalDepartmentId, setPortalDepartmentId] = useState('');
+  const [portalCostCenterId, setPortalCostCenterId] = useState('');
 
   const [listSearch, setListSearch] = useState('');
   const [appliedFilters, setAppliedFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
@@ -126,7 +140,7 @@ const PortalPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [ticketsRes, servicesRes, categoriesRes, assetsRes, groupsRes] = await Promise.all([
+      const [ticketsRes, servicesRes, categoriesRes, assetsRes, groupsRes, deptRes, ccRes] = await Promise.all([
         ticketService.getAll().catch((e) => {
           console.error('Tickets fail', e);
           return [];
@@ -143,13 +157,17 @@ const PortalPage = () => {
           console.error('Assets fail', e);
           return [];
         }),
-        getActiveSupportGroups().catch(() => [])
+        getActiveSupportGroups().catch(() => []),
+        getDepartments().catch(() => []),
+        getCostCenters().catch(() => [])
       ]);
       setTickets(ticketsRes);
       setServices(servicesRes);
       setCategories(categoriesRes);
       setAssets(assetsRes);
       setSupportGroups(Array.isArray(groupsRes) ? groupsRes : []);
+      setDepartmentsList(Array.isArray(deptRes) ? deptRes : []);
+      setCostCentersList(Array.isArray(ccRes) ? ccRes : []);
     } catch (err) {
       console.error('Error fetching portal data', err);
     } finally {
@@ -163,6 +181,8 @@ const PortalPage = () => {
     setDescription('');
     setRelatedAssetId('');
     setSupportGroupId('');
+    setPortalDepartmentId(user?.departmentId || '');
+    setPortalCostCenterId(user?.costCenterId || '');
     setCustomAnswers({});
 
     let parsedFields = [];
@@ -195,7 +215,9 @@ const PortalPage = () => {
         serviceId: selectedService.id,
         relatedAssetId: relatedAssetId || null,
         customAnswers,
-        supportGroupId: supportGroupId || undefined
+        supportGroupId: supportGroupId || undefined,
+        departmentId: portalDepartmentId || null,
+        costCenterId: portalCostCenterId || null
       });
       setModalOpen(false);
       fetchData();
@@ -320,7 +342,7 @@ const PortalPage = () => {
 
   const filteredTickets = useMemo(() => {
     let list = tickets;
-    const { status, serviceId, categoryId } = appliedFilters;
+    const { status, serviceId, categoryId, departmentId: filterDeptId, costCenterId: filterCcId } = appliedFilters;
     if (status !== 'ALL') {
       list = list.filter((t) => t.status === status);
     }
@@ -329,6 +351,12 @@ const PortalPage = () => {
     }
     if (categoryId) {
       list = list.filter((t) => t.service?.categoryId === categoryId);
+    }
+    if (filterDeptId) {
+      list = list.filter((t) => t.department?.id === filterDeptId);
+    }
+    if (filterCcId) {
+      list = list.filter((t) => t.costCenter?.id === filterCcId);
     }
     const q = listSearch.trim().toLowerCase();
     if (q) {
@@ -347,6 +375,8 @@ const PortalPage = () => {
     if (appliedFilters.status !== 'ALL') n += 1;
     if (appliedFilters.serviceId) n += 1;
     if (appliedFilters.categoryId) n += 1;
+    if (appliedFilters.departmentId) n += 1;
+    if (appliedFilters.costCenterId) n += 1;
     return n;
   }, [appliedFilters]);
 
@@ -423,6 +453,16 @@ const PortalPage = () => {
           }
           break;
         }
+        case 'department':
+          cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', {
+            sensitivity: 'base'
+          });
+          break;
+        case 'costCenter':
+          cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', {
+            sensitivity: 'base'
+          });
+          break;
         default:
           cmp = 0;
       }
@@ -690,6 +730,24 @@ const PortalPage = () => {
                   Serviço
                 </TableSortLabel>
               </TableCell>
+              <TableCell sortDirection={orderBy === 'department' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'department'}
+                  direction={orderBy === 'department' ? order : 'asc'}
+                  onClick={() => handleRequestSort('department')}
+                >
+                  Departamento
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === 'costCenter' ? order : false}>
+                <TableSortLabel
+                  active={orderBy === 'costCenter'}
+                  direction={orderBy === 'costCenter' ? order : 'asc'}
+                  onClick={() => handleRequestSort('costCenter')}
+                >
+                  Centro de custo
+                </TableSortLabel>
+              </TableCell>
               <TableCell sortDirection={orderBy === 'createdAt' ? order : false}>
                 <TableSortLabel
                   active={orderBy === 'createdAt'}
@@ -716,13 +774,13 @@ const PortalPage = () => {
           <TableBody>
             {tickets.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={8} align="center">
                   Você ainda não possui chamados. Use &quot;Novo ticket&quot; para abrir uma solicitação.
                 </TableCell>
               </TableRow>
             ) : filteredTickets.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={8} align="center">
                   Nenhum chamado corresponde à busca ou aos filtros selecionados.
                 </TableCell>
               </TableRow>
@@ -732,6 +790,8 @@ const PortalPage = () => {
                   <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>{t.code}</TableCell>
                   <TableCell>{stripTicketTitleStatusSuffix(t.title)}</TableCell>
                   <TableCell>{t.service?.name || '-'}</TableCell>
+                  <TableCell>{t.department?.name || '—'}</TableCell>
+                  <TableCell>{t.costCenter?.name || '—'}</TableCell>
                   <TableCell>{new Date(t.createdAt).toLocaleDateString('pt-BR')}</TableCell>
                   <TableCell>
                     <Chip
@@ -825,6 +885,38 @@ const PortalPage = () => {
             {ticketCategoryOptions.map((opt) => (
               <MenuItem key={opt.id} value={opt.id}>
                 {opt.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth size="small">
+          <InputLabel id="portal-filter-dept">Departamento</InputLabel>
+          <Select
+            labelId="portal-filter-dept"
+            label="Departamento"
+            value={draftFilters.departmentId || ''}
+            onChange={(e) => setDraftFilters((prev) => ({ ...prev, departmentId: e.target.value }))}
+          >
+            <MenuItem value="">Todos</MenuItem>
+            {departmentsList.map((d) => (
+              <MenuItem key={d.id} value={d.id}>
+                {d.code} — {d.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth size="small">
+          <InputLabel id="portal-filter-cc">Centro de custo</InputLabel>
+          <Select
+            labelId="portal-filter-cc"
+            label="Centro de custo"
+            value={draftFilters.costCenterId || ''}
+            onChange={(e) => setDraftFilters((prev) => ({ ...prev, costCenterId: e.target.value }))}
+          >
+            <MenuItem value="">Todos</MenuItem>
+            {costCentersList.map((c) => (
+              <MenuItem key={c.id} value={c.id}>
+                {c.code} — {c.name}
               </MenuItem>
             ))}
           </Select>
@@ -1202,6 +1294,46 @@ const PortalPage = () => {
               ))}
             </TextField>
           )}
+
+          <TextField
+            select
+            fullWidth
+            margin="dense"
+            variant="outlined"
+            label="Departamento (opcional)"
+            value={portalDepartmentId}
+            onChange={(e) => setPortalDepartmentId(e.target.value)}
+            disabled={creating}
+            sx={{ mt: 1 }}
+            SelectProps={{ native: true }}
+          >
+            <option value="">— Não informado —</option>
+            {departmentsList.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.code} — {d.name}
+              </option>
+            ))}
+          </TextField>
+
+          <TextField
+            select
+            fullWidth
+            margin="dense"
+            variant="outlined"
+            label="Centro de custo (opcional)"
+            value={portalCostCenterId}
+            onChange={(e) => setPortalCostCenterId(e.target.value)}
+            disabled={creating}
+            sx={{ mt: 1 }}
+            SelectProps={{ native: true }}
+          >
+            <option value="">— Não informado —</option>
+            {costCentersList.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.code} — {c.name}
+              </option>
+            ))}
+          </TextField>
 
           <TextField
             select

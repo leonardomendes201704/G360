@@ -232,6 +232,8 @@ const ServiceDeskDashboard = () => {
               <TableRow>
                 <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Cód.</TableCell>
                 <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Solicitação</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Dept.</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>C. custo</TableCell>
                 <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Prioridade</TableCell>
                 <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Prazo SLA</TableCell>
                 <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Status</TableCell>
@@ -241,7 +243,7 @@ const ServiceDeskDashboard = () => {
             <TableBody>
               {tickets.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6, color: 'text.secondary' }}>Fila Limpa! Nenhum chamado em aberto. 🎉</TableCell>
+                  <TableCell colSpan={8} align="center" sx={{ py: 6, color: 'text.secondary' }}>Fila Limpa! Nenhum chamado em aberto. 🎉</TableCell>
                 </TableRow>
               ) : (
                 tickets.map(t => {
@@ -255,6 +257,16 @@ const ServiceDeskDashboard = () => {
                           <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem' }}>{t.requester?.name?.charAt(0) || 'U'}</Avatar>
                           <Typography variant="caption" color="text.secondary">{t.requester?.name}</Typography>
                         </Box>
+                      </TableCell>
+                      <TableCell sx={{ maxWidth: 140 }}>
+                        <Typography variant="caption" noWrap title={t.department?.name || ''}>
+                          {t.department?.name || '—'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ maxWidth: 140 }}>
+                        <Typography variant="caption" noWrap title={t.costCenter?.name || ''}>
+                          {t.costCenter?.name || '—'}
+                        </Typography>
                       </TableCell>
                       <TableCell>
                         <Chip label={t.priority} color={PRIORITY_COLORS[t.priority]} size="small" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 700 }} />

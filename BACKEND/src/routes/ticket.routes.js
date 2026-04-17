@@ -13,8 +13,12 @@ router.post('/', authorize('HELPDESK', 'CREATE'), audit('HELPDESK'), TicketContr
 // Lista: fila global (VIEW_QUEUE) ou apenas próprios (READ)
 router.get('/', authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE']), TicketController.index);
 
-// Métricas (MTTR, fila, SLA) — antes de /:id
-router.get('/metrics/overview', authorize('HELPDESK', 'VIEW_QUEUE'), TicketController.metrics);
+// Métricas (MTTR, fila, SLA) — fila global ou âmbito de gestor (READ + diretor/CC)
+router.get(
+  '/metrics/overview',
+  authorizeAny('HELPDESK', ['READ', 'VIEW_QUEUE']),
+  TicketController.metrics
+);
 
 // Export CSV (fila)
 router.get('/export', authorize('HELPDESK', 'VIEW_QUEUE'), TicketController.exportCsv);

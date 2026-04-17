@@ -9,12 +9,16 @@ import serviceCatalogService from '../../../services/service-catalog.service';
 import { getAssets } from '../../../services/asset.service';
 import KnowledgeBaseService from '../../../services/knowledge-base.service';
 import { getActiveSupportGroups } from '../../../services/support-group.service';
+import { getDepartments } from '../../../services/department.service';
+import { getCostCenters } from '../../../services/cost-center.service';
 
 vi.mock('../../../services/ticket.service', () => ({ default: { getAll: vi.fn(), create: vi.fn() } }));
 vi.mock('../../../services/service-catalog.service', () => ({ default: { getAll: vi.fn(), getCategories: vi.fn() } }));
 vi.mock('../../../services/asset.service', () => ({ getAssets: vi.fn() }));
 vi.mock('../../../services/knowledge-base.service', () => ({ default: { findAll: vi.fn() } }));
 vi.mock('../../../services/support-group.service', () => ({ getActiveSupportGroups: vi.fn() }));
+vi.mock('../../../services/department.service', () => ({ getDepartments: vi.fn() }));
+vi.mock('../../../services/cost-center.service', () => ({ getCostCenters: vi.fn() }));
 
 const renderWithThemeAndRouter = (ui) => {
     return render(
@@ -74,6 +78,8 @@ describe('PortalPage Component', () => {
         getAssets.mockResolvedValue([{ id: 'a1', code: 'AST-01', name: 'MacBook' }]);
         KnowledgeBaseService.findAll.mockResolvedValue([]);
         getActiveSupportGroups.mockResolvedValue([]);
+        getDepartments.mockResolvedValue([]);
+        getCostCenters.mockResolvedValue([]);
     });
 
     it('renders hero, Novo ticket and ticket table after loading', async () => {

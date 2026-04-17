@@ -14,6 +14,8 @@ import ticketService from '../../services/ticket.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import { getActiveSupportGroups } from '../../services/support-group.service';
 import { AuthContext } from '../../contexts/AuthContext';
+import { getDepartments } from '../../services/department.service';
+import { getCostCenters } from '../../services/cost-center.service';
 import {
   getTicketStatusLabel,
   stripTicketTitleStatusSuffix,
@@ -39,6 +41,8 @@ const TicketDetails = () => {
   const [csatComment, setCsatComment] = useState('');
   const [csatSending, setCsatSending] = useState(false);
   const [supportGroups, setSupportGroups] = useState([]);
+  const [departmentsList, setDepartmentsList] = useState([]);
+  const [costCentersList, setCostCentersList] = useState([]);
 
   const hasAgentPrivilege =
     hasPermission('HELPDESK', 'VIEW_QUEUE') ||
@@ -57,6 +61,12 @@ const TicketDetails = () => {
     getActiveSupportGroups()
       .then((list) => setSupportGroups(Array.isArray(list) ? list : []))
       .catch(() => setSupportGroups([]));
+    getDepartments()
+      .then((list) => setDepartmentsList(Array.isArray(list) ? list : []))
+      .catch(() => setDepartmentsList([]));
+    getCostCenters()
+      .then((list) => setCostCentersList(Array.isArray(list) ? list : []))
+      .catch(() => setCostCentersList([]));
   }, [hasAgentPrivilege]);
 
   const fetchTicket = async () => {
@@ -105,6 +115,30 @@ const TicketDetails = () => {
     try {
       setTriaging(true);
       await ticketService.patch(id, { priority });
+      await fetchTicket();
+    } catch (e) {
+      alert(e.response?.data?.error || e.message);
+    } finally {
+      setTriaging(false);
+    }
+  };
+
+  const handleDepartmentChange = async (departmentId) => {
+    try {
+      setTriaging(true);
+      await ticketService.patch(id, { departmentId: departmentId || null });
+      await fetchTicket();
+    } catch (e) {
+      alert(e.response?.data?.error || e.message);
+    } finally {
+      setTriaging(false);
+    }
+  };
+
+  const handleCostCenterChange = async (costCenterId) => {
+    try {
+      setTriaging(true);
+      await ticketService.patch(id, { costCenterId: costCenterId || null });
       await fetchTicket();
     } catch (e) {
       alert(e.response?.data?.error || e.message);
@@ -366,6 +400,56 @@ const TicketDetails = () => {
               <Box mb={2}>
                 <Typography variant="caption" color="text.secondary" display="block">Serviço</Typography>
                 <Typography variant="body2" fontWeight="500">{ticket.service?.name || '-'}</Typography>
+              </Box>
+              <Box mb={2}>
+                <Typography variant="caption" color="text.secondary" display="block">Departamento</Typography>
+                {hasAgentPrivilege && ticket.status !== 'CLOSED' && departmentsList.length > 0 ? (
+                  <FormControl fullWidth size="small" sx={{ mt: 0.5 }} disabled={triaging}>
+                    <InputLabel id="ticket-dept-label">Departamento</InputLabel>
+                    <Select
+                      labelId="ticket-dept-label"
+                      label="Departamento"
+                      value={ticket.departmentId || ''}
+                      onChange={(e) => handleDepartmentChange(e.target.value)}
+                    >
+                      <MenuItem value="">—</MenuItem>
+                      {departmentsList.map((d) => (
+                        <MenuItem key={d.id} value={d.id}>
+                          {d.code} — {d.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <Typography variant="body2" fontWeight="500">
+                    {ticket.department ? `${ticket.department.code} — ${ticket.department.name}` : '—'}
+                  </Typography>
+                )}
+              </Box>
+              <Box mb={2}>
+                <Typography variant="caption" color="text.secondary" display="block">Centro de custo</Typography>
+                {hasAgentPrivilege && ticket.status !== 'CLOSED' && costCentersList.length > 0 ? (
+                  <FormControl fullWidth size="small" sx={{ mt: 0.5 }} disabled={triaging}>
+                    <InputLabel id="ticket-cc-label">Centro de custo</InputLabel>
+                    <Select
+                      labelId="ticket-cc-label"
+                      label="Centro de custo"
+                      value={ticket.costCenterId || ''}
+                      onChange={(e) => handleCostCenterChange(e.target.value)}
+                    >
+                      <MenuItem value="">—</MenuItem>
+                      {costCentersList.map((c) => (
+                        <MenuItem key={c.id} value={c.id}>
+                          {c.code} — {c.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <Typography variant="body2" fontWeight="500">
+                    {ticket.costCenter ? `${ticket.costCenter.code} — ${ticket.costCenter.name}` : '—'}
+                  </Typography>
+                )}
               </Box>
               <Box mb={2}>
                 <Typography variant="caption" color="text.secondary" display="block">SLA</Typography>

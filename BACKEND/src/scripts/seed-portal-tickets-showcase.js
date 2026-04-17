@@ -106,6 +106,8 @@ async function seedPortalTicketsShowcase(prisma, options = {}) {
                 categoryId: svc.categoryId,
                 serviceId: svc.id,
                 requesterId: user.id,
+                departmentId: user.departmentId ?? null,
+                costCenterId: user.costCenterId ?? null,
                 customAnswers: {},
                 slaMonitorId: slaMin.slaPolicyId,
                 slaResponseDue: slaDates.slaResponseDue,
