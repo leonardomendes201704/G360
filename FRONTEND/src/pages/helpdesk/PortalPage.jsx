@@ -50,6 +50,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import StandardModal from '../../components/common/StandardModal';
 import FilterDrawer from '../../components/common/FilterDrawer';
+import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -686,19 +687,20 @@ const PortalPage = () => {
         </Stack>
       </Paper>
 
-      <Stack direction="row" alignItems="baseline" justifyContent="space-between" gap={2} sx={{ mb: 2 }} flexWrap="wrap">
-        <Typography variant="h5" fontWeight="700" sx={{ letterSpacing: '-0.5px' }}>
-          Meus Chamados
-          <Typography component="span" variant="body2" color="text.secondary" fontWeight={600} sx={{ ml: 1 }}>
-            ({filteredTickets.length}
-            {hasListRefinement && tickets.length !== filteredTickets.length
-              ? ` de ${tickets.length}`
-              : ''}
-            )
-          </Typography>
-        </Typography>
-      </Stack>
-
+      <DataListShell
+        title="Meus Chamados"
+        titleIcon="confirmation_number"
+        accentColor="#2563eb"
+        count={filteredTickets.length}
+        sx={{ mb: 2 }}
+        toolbar={
+          hasListRefinement && tickets.length !== filteredTickets.length ? (
+            <Typography variant="body2" color="text.secondary" fontWeight={600}>
+              de {tickets.length} na conta
+            </Typography>
+          ) : null
+        }
+      >
       <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
         <Table size="medium">
           <TableHead sx={{ bgcolor: 'grey.50' }}>
@@ -833,6 +835,7 @@ const PortalPage = () => {
           />
         ) : null}
       </TableContainer>
+      </DataListShell>
 
       <FilterDrawer
         open={filterDrawerOpen}

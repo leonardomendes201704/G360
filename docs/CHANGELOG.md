@@ -8,6 +8,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Changed
+- **US-024 / EP-009:** Portal de Chamados — secção **«Meus Chamados»** com **`DataListShell`** (contagem filtrada; toolbar «de N na conta» quando há refinamento). Epic EP-009 encerrado após migração completa do Grupo A.
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+  - `docs/backlog/EP-009-padronizacao-listas-grids-frontend/EPIC.md`
+  - `docs/backlog/EP-009-padronizacao-listas-grids-frontend/US-024-portal-meus-chamados-datalist-shell.md`
+  - `docs/backlog/_INDEX.md`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **EP-009:** **`DataListShell`** — **Tarefas** (modo lista: `TaskList` + `BulkActionsBar`), **GMUD** (export, busca, toggle Lista/Calendário).
   - `FRONTEND/src/pages/tasks/TasksPage.jsx`
   - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`

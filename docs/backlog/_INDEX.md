@@ -15,7 +15,7 @@
 | EP-006 | Melhorias de UX - Dashboard do Tenant (refinamentos) | Fase 6 | Media      | Closed | 1         | EP-004     |
 | EP-007 | Padronizacao de filtros em modulos (off-canvas)       | -      | Media      | Closed | 1         | EP-002     |
 | EP-008 | Padronizacao e componentizacao de modais (Frontend)     | -      | Alta       | Closed | 1         | EP-002, EP-003 |
-| EP-009 | Padronizacao de listas e grelhas (Frontend)              | -      | Media      | Active | 1         | EP-002     |
+| EP-009 | Padronizacao de listas e grelhas (Frontend)              | -      | Media      | Closed | 2         | EP-002     |
 
 ## Historias por Epico
 
@@ -86,16 +86,17 @@
 | ID     | Titulo                                                   | Pontos | Prioridade | Status |
 |--------|----------------------------------------------------------|--------|------------|--------|
 | US-023 | Inventario de grelhas + casca DataListShell e primeira migracao | 5      | Media      | Closed |
+| US-024 | Portal Meus Chamados — casca DataListShell               | 2      | Media      | Closed |
 
 ## Resumo
 
 | Metrica                    | Valor |
 |----------------------------|-------|
 | Total de Epicos            | 9     |
-| Total de Historias         | 23    |
-| Total de Story Points      | 112   |
+| Total de Historias         | 24    |
+| Total de Story Points      | 114   |
 | Total de Bugs              | 5     |
-| Historias Concluidas       | 23    |
+| Historias Concluidas       | 24    |
 | Historias Abertas (novas)  | 0     |
 | Bugs Resolvidos            | 5     |
 
@@ -104,7 +105,7 @@
 | Tipo    | Proximo ID |
 |---------|------------|
 | Epic    | EP-010     |
-| Story   | US-024     |
+| Story   | US-025     |
 | Bug     | BUG-006    |
 
 ## Ordem de Execucao Recomendada
@@ -115,4 +116,4 @@ EP-008 (Padronizacao modais) — depende de EP-002, EP-003; pode correr em paral
 ```
 
 ---
-*Ultima atualizacao: 2026-04-17*
+*Ultima atualizacao: 2026-04-18*
