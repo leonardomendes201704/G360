@@ -63,6 +63,7 @@ const batch04 = '../../FRONTEND/e2e/modal-evidence-batch-04.spec.ts-snapshots/';
 const batch05 = '../../FRONTEND/e2e/modal-evidence-batch-05.spec.ts-snapshots/';
 const batch06 = '../../FRONTEND/e2e/modal-evidence-batch-06.spec.ts-snapshots/';
 const batch07 = '../../FRONTEND/e2e/modal-evidence-batch-07.spec.ts-snapshots/';
+const batch08 = '../../FRONTEND/e2e/modal-evidence-batch-08.spec.ts-snapshots/';
 const snaps = {
   1: `${batch01}modal-evidence-01-account-shell-chromium-win32.png`,
   2: `${batch01}modal-evidence-02-addendum-form-shell-chromium-win32.png`,
@@ -99,7 +100,11 @@ const snaps = {
   33: `${batch07}modal-evidence-33-payment-condition-modal-shell-chromium-win32.png`,
   34: `${batch07}modal-evidence-34-project-modal-shell-chromium-win32.png`,
   35: `${batch07}modal-evidence-35-project-task-modal-shell-chromium-win32.png`,
-  40: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-role-shell-chromium-win32.png',
+  36: `${batch08}modal-evidence-36-proposal-modal-shell-chromium-win32.png`,
+  37: `${batch08}modal-evidence-37-reschedule-modal-shell-chromium-win32.png`,
+  38: `${batch08}modal-evidence-38-risk-modal-shell-chromium-win32.png`,
+  39: `${batch08}modal-evidence-39-risk-view-modal-shell-chromium-win32.png`,
+  40: `${batch08}modal-evidence-40-role-modal-shell-chromium-win32.png`,
   47: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-tenant-shell-chromium-win32.png',
   49: '../../FRONTEND/e2e/organization-standard-modals.spec.ts-snapshots/org-modal-user-shell-chromium-win32.png',
 };

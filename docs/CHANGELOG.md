@@ -10,7 +10,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ### Docs
 - Cursor: regra **agent-long-commands** — comandos longos (Playwright, install, build) em **background** com acompanhamento do output, para reduzir bloqueio do chat e prompts «Run in background» (`.cursor/rules/agent-long-commands.mdc`).
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).
-- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–35** para PNG Playwright: rodadas **batch-01** a **batch-07** (01–05 … 31–35); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **35** / pendente **14**).
+- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–40** (exceto **47** e **49**, ainda `organization-standard-modals`) para PNG Playwright: rodadas **batch-01** a **batch-08** (01–05 … 36–40); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **42** / pendente **7**).
 
 ### Test
 - **US-022 / QA:** Rodada 1 de evidências Playwright dos modais **01–05** (`modal-evidence-batch-01.spec.ts`) com mocks de API (`modal-evidence-batch-01-api-mocks.ts`) — screenshots do **diálogo** apenas (mais estáveis). Snapshots em `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/`.
@@ -20,6 +20,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **US-022 / QA:** Rodada 5 — modais **21–25** (`modal-evidence-batch-05.spec.ts`, `modal-evidence-batch-05-api-mocks.ts`): lançar despesa, ano fiscal (Config), follow-up em projeto, novo risco global, novo incidente no dashboard do gestor. Snapshots em `FRONTEND/e2e/modal-evidence-batch-05.spec.ts-snapshots/`.
 - **US-022 / QA:** Rodada 6 — modais **26–30** (`modal-evidence-batch-06.spec.ts`, `modal-evidence-batch-06-api-mocks.ts`): edição e visualização de incidente, novo artigo na base de conhecimento, LDAP em Integrações, edição de membro em Equipes. Snapshots em `FRONTEND/e2e/modal-evidence-batch-06.spec.ts-snapshots/`.
 - **US-022 / QA:** Rodada 7 — modais **31–35** (`modal-evidence-batch-07.spec.ts`, `modal-evidence-batch-07-api-mocks.ts`): ata de reunião, notificações (Ver todas), condição comercial na proposta vencedora, novo projeto, nova tarefa de projeto. Mocks: `GET` minutes/proposals/project-tasks, `POST /auth/stream-token`, notificações e stream sem colidir. Snapshots em `FRONTEND/e2e/modal-evidence-batch-07.spec.ts-snapshots/`.
+- **US-022 / QA:** Rodada 8 — modais **36–40** (`modal-evidence-batch-08.spec.ts`, `modal-evidence-batch-08-api-mocks.ts`): nova proposta, reagendar follow-up, novo risco / visualizar risco, novo perfil em Organização. Mocks: `GET` follow-ups (item para reagendar), `POST` reschedule, `GET`/`POST` risks do projeto. Tile **40** passa a usar snapshot do batch-08 (alinhado aos 36–39). Snapshots em `FRONTEND/e2e/modal-evidence-batch-08.spec.ts-snapshots/`.
 
 ### Changed
 - **US-022 / QA:** `ProjectTeams` (`MembersTable`) — ação **Editar** membro com `data-testid="project-member-edit"` para E2E; `TableActionButton` repassa props extra ao `Box`.
