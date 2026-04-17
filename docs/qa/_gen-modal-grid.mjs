@@ -116,21 +116,44 @@ const snaps = {
 };
 
 let html = '';
+html += '<table class="inv modal-evidence-table">\n';
+html += '  <thead>\n';
+html +=
+  '    <tr><th class="col-num">Nº</th><th class="col-file">Ficheiro</th><th class="col-scope">Âmbito</th><th class="col-how">Como testar</th><th class="col-ev">Evidência</th></tr>\n';
+html += '  </thead>\n';
+html += '  <tbody>\n';
+
+let lightboxIndex = 0;
 for (const [n, f, d, t] of rows) {
   const src = snaps[n];
   const id = String(n).padStart(2, '0');
-  html += `  <article class="modal-tile" id="modal-${id}">\n`;
-  html += `    <div class="tile-head"><span class="tile-num">${id}</span> <code class="path">${f}</code></div>\n`;
-  html += `    <div class="tile-visual${src ? ' has-img' : ''}">\n`;
+  const alt = `Evidência ${f}`;
+  const label = `${id} — ${f}`;
+
+  html += `    <tr id="modal-${id}">\n`;
+  html += `      <td class="col-num"><span class="tile-num">${id}</span></td>\n`;
+  html += `      <td class="col-file"><code class="path">${f}</code></td>\n`;
+  html += `      <td class="col-scope">${d}</td>\n`;
+  html += `      <td class="col-how">${t}</td>\n`;
+  html += `      <td class="col-ev evidence-cell">\n`;
   if (src) {
-    html += `      <span class="badge-snap">Playwright</span>\n`;
-    html += `      <img src="${src}" alt="Evidência ${f}" />\n`;
+    const idx = lightboxIndex;
+    lightboxIndex += 1;
+    html += `        <button type="button" class="ev-lb-trigger" data-lb-index="${idx}" data-src="${src}" data-alt="${alt.replace(/"/g, '&quot;')}" data-label="${label.replace(/"/g, '&quot;')}" title="Clique para ver em tamanho real (slideshow)">\n`;
+    html += `          <span class="badge-snap">Playwright</span>\n`;
+    html += `          <img class="ev-thumb" src="${src}" alt="${alt.replace(/"/g, '&quot;')}" loading="lazy" />\n`;
+    html += `        </button>\n`;
   } else {
-    html += `      <span class="badge-pend">Pendente</span>\n`;
-    html += `      <div class="tile-pending-inner"><span class="pending-ico" aria-hidden="true">▣</span>Espaço reservado para <strong>captura de ecrã</strong><br />(colar imagem no HTML ou anexar no PDF)</div>\n`;
+    html += `        <div class="ev-pending">\n`;
+    html += `          <span class="badge-pend">Pendente</span>\n`;
+    html += `          <span class="ev-pend-hint">Captura manual ou colar &lt;img&gt; no HTML</span>\n`;
+    html += `        </div>\n`;
   }
-  html += `    </div>\n`;
-  html += `    <div class="tile-foot"><strong>\u00E2mbito:</strong> ${d}<br /><strong>Como testar:</strong> ${t}</div>\n`;
-  html += `  </article>\n`;
+  html += `      </td>\n`;
+  html += `    </tr>\n`;
 }
+
+html += '  </tbody>\n';
+html += '</table>\n';
+
 fs.writeFileSync(path.join(__dirname, '_modal-grid-fragment.html'), html, 'utf8');

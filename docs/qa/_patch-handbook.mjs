@@ -9,11 +9,12 @@ const fragPath = path.join(__dirname, '_modal-grid-fragment.html');
 let book = fs.readFileSync(bookPath, 'utf8');
 const frag = fs.readFileSync(fragPath, 'utf8');
 
-/** Substitui apenas o bloco `<div class="modal-grid">…</div>` antes da nota de snapshots. */
-const pattern = /<div class="modal-grid">[\s\S]*?\r?\n  <\/div>\r?\n\r?\n  <p class="note">/;
-if (!pattern.test(book)) throw new Error('modal-grid block not found');
+/** Substitui o bloco da tabela de evidências (`modal-evidence-table-wrap` ou legado `modal-grid`) antes da nota de snapshots. */
+const pattern =
+  /<div class="modal-(?:grid|evidence-table-wrap)">[\s\S]*?\r?\n  <\/div>\r?\n\r?\n  <p class="note">/;
+if (!pattern.test(book)) throw new Error('modal evidence block (table/grid) not found');
 
-const newGrid = `<div class="modal-grid">
+const newGrid = `<div class="modal-evidence-table-wrap">
 ${frag.trimEnd()}
   </div>
 

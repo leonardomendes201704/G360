@@ -8,9 +8,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-17]
 
 ### Docs
+- **US-022 / QA:** Dossiê `docs/qa/modals-evidence-handbook.html` — secção das 49 evidências passou de **grelha** para **tabela** (colunas Nº, ficheiro, âmbito, como testar, evidência); miniaturas na última coluna com **lightbox** ao clique (tamanho real, setas e ← →, Escape). Gerador `docs/qa/_gen-modal-grid.mjs` e patch `docs/qa/_patch-handbook.mjs` atualizados (`modal-evidence-table-wrap`).
 - Cursor: regra **agent-long-commands** — comandos longos (Playwright, install, build) em **background** com acompanhamento do output, para reduzir bloqueio do chat e prompts «Run in background» (`.cursor/rules/agent-long-commands.mdc`).
 - Diário de trabalho: regra explícita para **Quando:** — obter data/hora **local da máquina** via terminal (`Get-Date` / `date`) antes de escrever a entrada; proibido estimar horário (`.cursor/rules/work-diary.mdc`, `CLAUDE.md`).
-- **US-022 / QA:** Grelha do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–45** e **47**, **49** para PNG Playwright: rodadas **batch-01** a **batch-09** (tiles **41–45** em `modal-evidence-batch-09`); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **47** / pendente **2** — faltam **46** e **48**).
+- **US-022 / QA:** Tabela do dossiê (`docs/qa/_gen-modal-grid.mjs`) mapeia modais **1–45** e **47**, **49** para PNG Playwright: rodadas **batch-01** a **batch-09** (tiles **41–45** em `modal-evidence-batch-09`); `node docs/qa/_gen-modal-grid.mjs` + `node docs/qa/_patch-handbook.mjs` regeneram o fragmento e o handbook (legenda Playwright **47** / pendente **2** — faltam **46** e **48**).
 
 ### Test
 - **US-022 / QA:** Rodada 1 de evidências Playwright dos modais **01–05** (`modal-evidence-batch-01.spec.ts`) com mocks de API (`modal-evidence-batch-01-api-mocks.ts`) — screenshots do **diálogo** apenas (mais estáveis). Snapshots em `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/`.
