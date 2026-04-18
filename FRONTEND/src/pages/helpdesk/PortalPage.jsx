@@ -1175,13 +1175,13 @@ const PortalPage = () => {
                   label={field.label + (field.required ? ' *' : '')}
                   value={customAnswers[field.id] || ''}
                   onChange={(e) => setCustomAnswers({ ...customAnswers, [field.id]: e.target.value })}
-                  SelectProps={{ native: true }}
+                  SelectProps={{ displayEmpty: true }}
                 >
-                  <option value="">-- Selecione --</option>
+                  <MenuItem value="">-- Selecione --</MenuItem>
                   {opts.map((opt) => (
-                    <option key={opt} value={opt}>
+                    <MenuItem key={opt} value={opt}>
                       {opt}
-                    </option>
+                    </MenuItem>
                   ))}
                 </TextField>
               );
@@ -1214,13 +1214,13 @@ const PortalPage = () => {
               onChange={(e) => setSupportGroupId(e.target.value)}
               disabled={creating}
               sx={{ mt: 1 }}
-              SelectProps={{ native: true }}
+              SelectProps={{ displayEmpty: true }}
             >
-              <option value="">-- Automático / sem preferência --</option>
+              <MenuItem value="">-- Automático / sem preferência --</MenuItem>
               {supportGroups.map((g) => (
-                <option key={g.id} value={g.id}>
+                <MenuItem key={g.id} value={g.id}>
                   {g.name}
-                </option>
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -1235,13 +1235,13 @@ const PortalPage = () => {
             onChange={(e) => setPortalDepartmentId(e.target.value)}
             disabled={creating}
             sx={{ mt: 1 }}
-            SelectProps={{ native: true }}
+            SelectProps={{ displayEmpty: true }}
           >
-            <option value="">— Não informado —</option>
+            <MenuItem value="">— Não informado —</MenuItem>
             {departmentsList.map((d) => (
-              <option key={d.id} value={d.id}>
+              <MenuItem key={d.id} value={d.id}>
                 {d.code} — {d.name}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
 
@@ -1255,13 +1255,13 @@ const PortalPage = () => {
             onChange={(e) => setPortalCostCenterId(e.target.value)}
             disabled={creating}
             sx={{ mt: 1 }}
-            SelectProps={{ native: true }}
+            SelectProps={{ displayEmpty: true }}
           >
-            <option value="">— Não informado —</option>
+            <MenuItem value="">— Não informado —</MenuItem>
             {costCentersList.map((c) => (
-              <option key={c.id} value={c.id}>
+              <MenuItem key={c.id} value={c.id}>
                 {c.code} — {c.name}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
 
@@ -1274,13 +1274,13 @@ const PortalPage = () => {
             value={relatedAssetId}
             onChange={(e) => setRelatedAssetId(e.target.value)}
             disabled={creating}
-            SelectProps={{ native: true }}
+            SelectProps={{ displayEmpty: true }}
           >
-            <option value="">-- Nenhum --</option>
+            <MenuItem value="">-- Nenhum --</MenuItem>
             {assets.map((asset) => (
-              <option key={asset.id} value={asset.id}>
+              <MenuItem key={asset.id} value={asset.id}>
                 {asset.code} - {asset.name}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
       </StandardModal>

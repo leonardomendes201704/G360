@@ -8,6 +8,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Fixed
+- **Portal de Chamados / StandardModal — MUI `Select` (TextField `select`):** O mesmo bloco CSS do Dialog aplicava `display: flex` a `.MuiSelect-select`, o que podia esconder o texto do valor no Chrome; a regra foi separada: **flex** só em `.MuiOutlinedInput-input` que **não** é `.MuiSelect-select`, com **cor** explícita (`color` / `-webkit-text-fill-color`) no `.MuiDialog-root .MuiSelect-select` em tema claro e escuro.
+  - `FRONTEND/src/styles/lightPremiumTheme.css`
+  - `FRONTEND/src/styles/darkPremiumTheme.css`
+- **E2E:** Spec Playwright com mocks de API (`installPortalModalSelectApiMocks`) + PNG em `FRONTEND/e2e/evidence/portal-modal-department-visible.png`.
+  - `FRONTEND/e2e/helpers/portal-modal-select-api-mocks.ts`
+  - `FRONTEND/e2e/portal-modal-department-select.spec.ts`
 - **Portal de Chamados / StandardModal — selects nativos:** Valor escolhido invisível (ex.: «Risco estimado», Departamento) — `display: flex` em `.MuiOutlinedInput-input` quebrava `<select>` nativo no Chrome/Edge; excluído `MuiNativeSelect-select` dessa regra em CSS. Reforço: **`darkPremiumTheme.js` / `lightPremiumTheme.js`** (`MuiOutlinedInput` → `input` → `&.MuiNativeSelect-select`) com `display: inline-block`, `color` e `WebkitTextFillColor` via `palette.text.primary`; CSS Dialog com `inline-block` e `-webkit-text-fill-color`.
 
 ### Added
