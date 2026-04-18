@@ -8,6 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Added
+- **Frontend QA — regressão de páginas (`App.jsx`):** `pagesSmoke.regression.test.jsx` com **23** smokes (login, callback, dashboard router, GMUD, incidentes, KB, contratos, detalhes, finance projeto, portfolio, relatório horas, portal ticket, Service Desk, aprovações, tenants, settings globais, redirects catálogo/SD, painel catálogo). Mock central de `api` + `useAuth` parcial; helper `pageSmokeUtils.jsx`.
+  - `FRONTEND/src/pages/__tests__/pagesSmoke.regression.test.jsx`
+  - `FRONTEND/src/test/pageSmokeUtils.jsx`
 - **Frontend QA:** Testes Vitest para **`FinancePage`** (tabs Dashboard, Orçamentos, Plano de Contas, DRE) com mocks de serviços e subpáginas; cobre regressão de JSX na área financeira.
   - `FRONTEND/src/pages/finance/__tests__/FinancePage.test.jsx`
 - **CI:** Workflow `ci-frontend.yml` passa a executar **`npx vitest run`** e **`npm run build`** antes do job Playwright (erros de parse/compilação falham no pipeline).
