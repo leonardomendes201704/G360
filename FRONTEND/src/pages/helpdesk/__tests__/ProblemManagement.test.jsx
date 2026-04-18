@@ -95,11 +95,8 @@ describe('ProblemManagement Component', () => {
             expect(screen.getByText('PRB-2025-0001')).toBeInTheDocument();
         });
 
-        // Click Edit/Manage
-        // The edit button has an EditIcon and is the only button per row right now
-        const editButtons = screen.getAllByRole('button');
-        // The last button in the row is the edit button (first is 'Declarar Problema')
-        fireEvent.click(editButtons[1]);
+        const manageBtn = await screen.findByRole('button', { name: /gerenciar problema/i });
+        fireEvent.click(manageBtn);
 
         await waitFor(() => {
             expect(screen.getByText(/Mission Control.*PRB-2025-0001/i)).toBeInTheDocument();
@@ -132,8 +129,7 @@ describe('ProblemManagement Component', () => {
         renderWithTheme(<ProblemManagement />);
 
         await waitFor(() => expect(screen.getByText('PRB-2025-0001')).toBeInTheDocument());
-        const editButtons = screen.getAllByRole('button');
-        fireEvent.click(editButtons[1]);
+        fireEvent.click(screen.getByRole('button', { name: /gerenciar problema/i }));
 
         await waitFor(() => expect(screen.getByText(/Mission Control.*PRB-2025-0001/i)).toBeInTheDocument());
 

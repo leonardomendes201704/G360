@@ -7,6 +7,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Refactored
+- **Service Desk — Problemas (ITIL):** `ProblemManagement.jsx` migrado para **`DataListTable`** com `problemListColumns.jsx` e `problemListSort.js` (ordenação, paginação, linha clicável para gerenciar); estado de loading no carregamento inicial.
+  - `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx`
+  - `FRONTEND/src/pages/helpdesk/problemListColumns.jsx`
+  - `FRONTEND/src/pages/helpdesk/problemListSort.js`
+  - `FRONTEND/src/pages/helpdesk/__tests__/ProblemManagement.test.jsx`
+  - `docs/patterns/data-grids-inventory.md`
+
 ### Docs
 - **`CLAUDE.md`:** Diretriz **Regras de Gestao** item 7 — apos `git push` bem-sucedido, reconstruir/subir servicos Docker afetados (`docker compose up -d --build` ou servico unico); excecao para alteracoes que nao entram na imagem (ex.: so `docs/`).
 

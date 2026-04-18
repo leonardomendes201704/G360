@@ -31,7 +31,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 
 | Área | Ficheiro | Notas |
 |------|----------|--------|
-| Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | **`DataListShell`** (US-025). |
+| Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | **`DataListTable`** (`problemListColumns`, `sortProblemsRows`); US-025. |
 | Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo lista: **`DataListShell`** + `BulkActionsBar` (US-025). |
 | Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Separadores Orçamentos / Plano de contas: **`DataListShell`** (US-026). |
 | Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | «Detalhamento Mensal»: **`DataListShell`** (US-026). |

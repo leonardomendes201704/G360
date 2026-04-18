@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Box, Typography, Paper, Table, TableBody, TableCell, 
-  TableContainer, TableHead, TableRow, IconButton, Button,
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Box, Typography, Paper, Button,
   TextField, MenuItem, Chip, useTheme, CircularProgress, Grid
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import problemService from '../../services/problem.service';
 import StandardModal from '../../components/common/StandardModal';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getProblemColumns } from './problemListColumns';
+import { sortProblemsRows } from './problemListSort';
 
 const STATUS_COLORS = {
   'INVESTIGATING': 'secondary',
@@ -22,6 +22,7 @@ const STATUS_COLORS = {
 
 const ProblemManagement = () => {
   const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
   const theme = useTheme();
@@ -42,10 +43,15 @@ const ProblemManagement = () => {
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const data = await problemService.getAll();
       setProblems(data);
-    } catch(err) { console.error('Error fetching problems', err); }
+    } catch (err) {
+      console.error('Error fetching problems', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreate = async () => {
@@ -57,14 +63,16 @@ const ProblemManagement = () => {
     } catch(err) { alert('Erro ao criar problema'); }
   };
 
-  const openManage = (prob) => {
+  const openManage = useCallback((prob) => {
     setSelectedProb(prob);
     setPStatus(prob.status);
     setPRootCause(prob.rootCause || '');
     setPWorkaround(prob.workaround || '');
     setLinkTicketId('');
     setManageModalOpen(true);
-  };
+  }, []);
+
+  const problemColumns = useMemo(() => getProblemColumns({ onManage: openManage }), [openManage]);
 
   const handleUpdateStatus = async () => {
     try {
@@ -95,56 +103,31 @@ const ProblemManagement = () => {
 
   return (
     <Box>
-      <DataListShell
-        title="Gestão de Problemas (ITIL)"
-        titleIcon="bug_report"
-        accentColor="#7c3aed"
-        count={problems.length}
-        sx={{ mb: 3 }}
-        toolbar={
-          <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>
-            Declarar Problema
-          </Button>
-        }
-      >
-      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '8px', boxShadow: 'none' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Código</TableCell>
-              <TableCell>Título & Causa</TableCell>
-              <TableCell align="center">Incidentes Atrelados</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell align="right">Gerenciar</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {problems.length === 0 ? (
-               <TableRow><TableCell colSpan={5} align="center">Nenhum problema crônico registrado.</TableCell></TableRow>
-            ) : problems.map(p => (
-              <TableRow key={p.id} hover>
-                <TableCell><b>{p.code}</b></TableCell>
-                <TableCell>
-                  <Typography variant="body2" fontWeight="bold">{p.title}</Typography>
-                  <Typography variant="caption" color="text.secondary" display="block">
-                    {p.rootCause ? `Causa: ${p.rootCause.substring(0, 50)}...` : 'Causa em Investigação'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Chip label={p.incidents?.length || 0} size="small" />
-                </TableCell>
-                <TableCell>
-                  <Chip label={p.status} size="small" color={STATUS_COLORS[p.status]} variant="outlined" />
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton size="small" color="primary" onClick={() => openManage(p)}><EditIcon /></IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      </DataListShell>
+      <DataListTable
+        shell={{
+          title: 'Gestão de Problemas (ITIL)',
+          titleIcon: 'bug_report',
+          accentColor: '#7c3aed',
+          count: problems.length,
+          sx: { mb: 3 },
+          toolbar: (
+            <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>
+              Declarar Problema
+            </Button>
+          ),
+        }}
+        columns={problemColumns}
+        rows={problems}
+        sortRows={sortProblemsRows}
+        defaultOrderBy="code"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (id === 'incidentCount' ? 'desc' : 'asc')}
+        loading={loading}
+        emptyMessage="Nenhum problema crônico registrado."
+        rowsPerPageDefault={10}
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        onRowClick={openManage}
+      />
 
       <StandardModal
         open={modalOpen}
