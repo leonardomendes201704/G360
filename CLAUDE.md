@@ -174,7 +174,12 @@ docs/backlog/
    - Garantir `docs/CHANGELOG.md` atualizado na mesma entrega quando houver mudanca de produto ou documentacao relevante (ja exigido abaixo).
    - Executar **`git commit`** com mensagem no formato do projeto (incluir ID US/BUG/Epic quando aplicavel).
    - Executar **`git push`** para o remoto do branch atual.
-   Excecoes: o usuario pedir explicitamente para nao commitar/push; ou impossibilidade tecnica (sem credenciais, sem rede) — nesse caso registar no chat o que ficou pendente.
+   - **Docker (stack local):** Apos **`git push`** bem-sucedido, se a entrega alterar artefactos que entram nas imagens (`FRONTEND/`, `BACKEND/`, Dockerfiles, `docker-compose.yml`), executar na **raiz do repo** a reconstrucao/subida dos servicos afetados, por exemplo:
+     - So frontend: `docker compose up -d --build frontend`
+     - So backend: `docker compose up -d --build backend`
+     - Ambos ou duvida: `docker compose up -d --build`
+     Alteracoes **apenas** em `docs/`, testes sem impacto de build, ou ficheiros que nao entram na imagem podem omitir o passo Docker.
+   Excecoes: o usuario pedir explicitamente para nao commitar/push ou nao atualizar Docker; ou impossibilidade tecnica (sem credenciais, sem rede, Docker indisponivel) — nesse caso registar no chat o que ficou pendente.
 
    Exemplo de secao de resolucao:
    ```markdown
@@ -207,10 +212,10 @@ Os arquivos MD foram projetados para facilitar copy-paste no Azure DevOps:
    c. Atualizar _INDEX.md
    d. Iniciar implementacao atualizando status
    e. Ao finalizar, marcar como Resolved (e documentar Resolucao quando aplicavel)
-   f. Commit + push (ver regra 7 em Regras de Gestao)
+   f. Commit + push + atualizacao Docker quando aplicavel (ver regra 7 em Regras de Gestao)
 4. SE NAO justifica:
    a. Executar diretamente
-   b. CHANGELOG se aplicavel, depois commit + push ao concluir a entrega
+   b. CHANGELOG se aplicavel, depois commit + push (+ Docker quando aplicavel) ao concluir a entrega
 ```
 
 ### Changelog
@@ -304,4 +309,4 @@ Tipos: feat, fix, docs, refactor, test, chore, style, perf
 Escopo: modulo ou work item (ex: feat(helpdesk): ..., fix(US-012): ...)
 ```
 
-Apos **cada task ou entrega concluida** com mudancas no repo: **commit** + **push** (diretriz obrigatoria; ver **Regras de Gestao** item 7).
+Apos **cada task ou entrega concluida** com mudancas no repo: **commit** + **push** + **Docker** quando aplicavel (diretriz obrigatoria; ver **Regras de Gestao** item 7).

@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Docs
+- **`CLAUDE.md`:** Diretriz **Regras de Gestao** item 7 — apos `git push` bem-sucedido, reconstruir/subir servicos Docker afetados (`docker compose up -d --build` ou servico unico); excecao para alteracoes que nao entram na imagem (ex.: so `docs/`).
+
 ### Refactored
 - **Incidentes:** Lista em modo tabela migrada para **`DataListTable`** (ordenação `sortIncidentsRows`, colunas em `incidentListColumns.jsx`, `BulkActionsBar` via `renderBeforeTable`, paginação MUI); removido `IncidentList.jsx`. Estados de carregamento, vazio e Kanban mantêm **`DataListShell`** com a mesma toolbar.
   - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
