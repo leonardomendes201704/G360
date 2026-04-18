@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
-import { useTheme } from '@mui/material/styles';
 import {
     Add, Search, FilterAlt, Refresh, FormatListBulleted, ViewKanban
 } from '@mui/icons-material';
@@ -13,8 +12,8 @@ import { getIncidents, getIncidentKPIs, getIncidentCategories, createIncident, u
 import { getReferenceUsers } from '../../services/reference.service';
 import IncidentModal from '../../components/modals/IncidentModal';
 import IncidentViewModal from '../../components/modals/IncidentViewModal';
-import IncidentList from '../../components/incidents/IncidentList';
 import IncidentKanban from '../../components/incidents/IncidentKanban';
+import DataListTable from '../../components/common/DataListTable';
 import EmptyState from '../../components/common/EmptyState';
 import TableSkeleton from '../../components/common/TableSkeleton';
 import ExportButton from '../../components/common/ExportButton';
@@ -29,7 +28,8 @@ import FilterDrawer from '../../components/common/FilterDrawer';
 import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
-import { Delete as DeleteIcon, Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
+import { getIncidentColumns } from './incidentListColumns';
+import { sortIncidentsRows } from './incidentListSort';
 
 const DRAWER_FILTER_DEFAULTS = {
     status: '',
@@ -41,7 +41,6 @@ const DRAWER_FILTER_DEFAULTS = {
 
 const IncidentsPage = () => {
     const { mode } = useContext(ThemeContext);
-    const theme = useTheme();
     const isDark = mode === 'dark';
     const { hasPermission } = useContext(AuthContext);
     const canWrite = hasPermission('INCIDENT', 'WRITE');
@@ -62,8 +61,6 @@ const IncidentsPage = () => {
     const [loading, setLoading] = useState(true);
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
     const [draftFilters, setDraftFilters] = useState(DRAWER_FILTER_DEFAULTS);
-    const [page, setPage] = useState(1);
-    const [rowsPerPage] = useState(20);
     const [viewMode, setViewMode] = useState('LIST');
     const [modalOpen, setModalOpen] = useState(false);
     const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -103,12 +100,11 @@ const IncidentsPage = () => {
         });
     }, [incidents, filters]);
 
-    const paginatedIncidents = useMemo(() => {
-        const startIndex = (page - 1) * rowsPerPage;
-        return filteredIncidents.slice(startIndex, startIndex + rowsPerPage);
-    }, [filteredIncidents, page, rowsPerPage]);
-
-    const totalPages = Math.ceil(filteredIncidents.length / rowsPerPage);
+    const resetPaginationKey = useMemo(
+        () =>
+            `${filters.search}|${filters.status}|${filters.priority}|${filters.categoryId}|${filters.assigneeId}|${filters.slaBreached}|${viewMode}`,
+        [filters.search, filters.status, filters.priority, filters.categoryId, filters.assigneeId, filters.slaBreached, viewMode]
+    );
 
     const fetchData = async () => {
         setLoading(true);
@@ -147,8 +143,6 @@ const IncidentsPage = () => {
             });
         }
     }, []);
-
-    useEffect(() => { setPage(1); }, [filters]);
 
     const handleOpenCreate = () => {
         setSelectedIncident(null);
@@ -285,6 +279,41 @@ const IncidentsPage = () => {
         '& .MuiInputLabel-root': { color: textMuted },
         '& .MuiSelect-icon': { color: textMuted }
     };
+
+    const listSectionShellSx = {
+        borderRadius: '8px',
+        background: cardBg,
+        backdropFilter: isDark ? 'blur(10px)' : 'none',
+        border: cardBorder,
+        boxShadow: cardShadow,
+        overflow: 'hidden',
+    };
+
+    const listSectionToolbar = (
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <ExportButton data={filteredIncidents} columns={EXPORT_COLUMNS.incidents} filename="incidentes" compact />
+            <TextField
+                placeholder="Buscar incidente..."
+                size="small"
+                value={filters.search}
+                onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
+                InputProps={{ startAdornment: (<InputAdornment position="start"><Search sx={{ color: textMuted }} /></InputAdornment>) }}
+                sx={{ width: 250, ...inputSx }}
+            />
+            <Paper elevation={0} sx={{ display: 'flex', p: 0.5, borderRadius: '8px', background: 'transparent', backgroundImage: 'none', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <Tooltip title="Lista">
+                    <IconButton size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', color: viewMode === 'LIST' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
+                        <FormatListBulleted fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Kanban">
+                    <IconButton size="small" onClick={() => setViewMode('KANBAN')} sx={{ borderRadius: '8px', color: viewMode === 'KANBAN' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'KANBAN' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
+                        <ViewKanban fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </Paper>
+        </Box>
+    );
 
     return (
         <Box>
@@ -453,47 +482,41 @@ const IncidentsPage = () => {
             </KpiGrid>
 
             {/* Table Section */}
-            <DataListShell
-                title="Lista de Incidentes"
-                titleIcon="format_list_bulleted"
-                accentColor="#f59e0b"
-                count={filteredIncidents.length}
-                sx={{ borderRadius: '8px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}
-                toolbar={(
-                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                        <ExportButton data={filteredIncidents} columns={EXPORT_COLUMNS.incidents} filename="incidentes" compact />
-                        <TextField
-                            placeholder="Buscar incidente..."
-                            size="small"
-                            value={filters.search}
-                            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                            InputProps={{ startAdornment: (<InputAdornment position="start"><Search sx={{ color: textMuted }} /></InputAdornment>) }}
-                            sx={{ width: 250, ...inputSx }}
-                        />
-                        <Paper elevation={0} sx={{ display: 'flex', p: 0.5, borderRadius: '8px', background: 'transparent', backgroundImage: 'none', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                            <Tooltip title="Lista">
-                                <IconButton size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', color: viewMode === 'LIST' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
-                                    <FormatListBulleted fontSize="small" />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Kanban">
-                                <IconButton size="small" onClick={() => setViewMode('KANBAN')} sx={{ borderRadius: '8px', color: viewMode === 'KANBAN' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'KANBAN' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
-                                    <ViewKanban fontSize="small" />
-                                </IconButton>
-                            </Tooltip>
-                        </Paper>
-                    </Box>
-                )}
-            >
-                {loading ? (
+            {loading ? (
+                <DataListShell
+                    title="Lista de Incidentes"
+                    titleIcon="format_list_bulleted"
+                    accentColor="#f59e0b"
+                    count={filteredIncidents.length}
+                    sx={listSectionShellSx}
+                    toolbar={listSectionToolbar}
+                >
                     <Box sx={{ p: 2 }}><TableSkeleton rows={5} columns={8} /></Box>
-                ) : filteredIncidents.length === 0 ? (
+                </DataListShell>
+            ) : filteredIncidents.length === 0 ? (
+                <DataListShell
+                    title="Lista de Incidentes"
+                    titleIcon="format_list_bulleted"
+                    accentColor="#f59e0b"
+                    count={0}
+                    sx={listSectionShellSx}
+                    toolbar={listSectionToolbar}
+                >
                     <EmptyState
                         title="Nenhum incidente encontrado"
                         description="Não encontramos incidentes com os filtros atuais."
                         action={<Button variant="outlined" size="small" onClick={handleOpenCreate} sx={{ borderColor: 'rgba(245, 158, 11, 0.5)', color: '#f59e0b', '&:hover': { borderColor: '#f59e0b', bgcolor: 'rgba(245, 158, 11, 0.1)' } }}>Registrar Incidente</Button>}
                     />
-                ) : viewMode === 'KANBAN' ? (
+                </DataListShell>
+            ) : viewMode === 'KANBAN' ? (
+                <DataListShell
+                    title="Lista de Incidentes"
+                    titleIcon="format_list_bulleted"
+                    accentColor="#f59e0b"
+                    count={filteredIncidents.length}
+                    sx={listSectionShellSx}
+                    toolbar={listSectionToolbar}
+                >
                     <Box sx={{ p: 2 }}>
                         <IncidentKanban
                             incidents={filteredIncidents}
@@ -501,45 +524,62 @@ const IncidentsPage = () => {
                             onEdit={handleOpenEdit}
                         />
                     </Box>
-                ) : (
-                    <>
+                </DataListShell>
+            ) : (
+                <DataListTable
+                    shell={{
+                        title: 'Lista de Incidentes',
+                        titleIcon: 'format_list_bulleted',
+                        accentColor: '#f59e0b',
+                        count: filteredIncidents.length,
+                        toolbar: listSectionToolbar,
+                        sx: listSectionShellSx,
+                    }}
+                    columns={getIncidentColumns({
+                        textPrimary,
+                        textSecondary,
+                        textMuted,
+                        canWrite,
+                        selectedIds,
+                        setSelectedIds,
+                        onView: handleOpenView,
+                        onEdit: handleOpenEdit,
+                        onStatusChange: handleStatusChange,
+                    })}
+                    rows={filteredIncidents}
+                    sortRows={sortIncidentsRows}
+                    defaultOrderBy="createdAt"
+                    defaultOrder="desc"
+                    getDefaultOrderForColumn={(id) => (id === 'createdAt' || id === 'slaSort' ? 'desc' : 'asc')}
+                    rowsPerPageDefault={20}
+                    rowsPerPageOptions={[10, 20, 25, 50]}
+                    resetPaginationKey={resetPaginationKey}
+                    emptyMessage="Nenhum incidente encontrado."
+                    onRowClick={handleOpenView}
+                    isRowSelected={(row) => selectedIds.includes(row.id)}
+                    renderBeforeTable={({ paginatedRows }) => (
                         <BulkActionsBar
                             selectedCount={selectedIds.length}
-                            totalCount={paginatedIncidents.length}
-                            onSelectAll={() => setSelectedIds(selectedIds.length === paginatedIncidents.length ? [] : paginatedIncidents.map(i => i.id))}
-                            onClear={() => setSelectedIds([])}
+                            totalCount={paginatedRows.length}
+                            onSelectAll={() => {
+                                const pageIds = paginatedRows.map((i) => i.id);
+                                const allOnPage = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+                                if (allOnPage) {
+                                    setSelectedIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+                                } else {
+                                    setSelectedIds(pageIds);
+                                }
+                            }}
+                            onClearAll={() => setSelectedIds([])}
+                            allSelected={paginatedRows.length > 0 && paginatedRows.every((r) => selectedIds.includes(r.id))}
                             actions={[
-                                { label: 'Fechar', icon: <CloseIcon sx={{ fontSize: 16 }} />, onClick: handleBulkClose, color: '#64748b' },
-                                { label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDelete, color: '#ef4444' },
+                                { label: 'Fechar', icon: 'close', onClick: handleBulkClose, color: '#64748b' },
+                                { label: 'Excluir', icon: 'delete', onClick: handleBulkDelete, color: '#ef4444' },
                             ]}
                         />
-                        <IncidentList
-                            incidents={paginatedIncidents}
-                            onView={handleOpenView}
-                            onEdit={handleOpenEdit}
-                            onRefresh={fetchData}
-                            onStatusChange={handleStatusChange}
-                            selectedIds={selectedIds}
-                            onSelectionChange={setSelectedIds}
-                            canWrite={canWrite}
-                        />
-                    </>
-                )}
-
-                {/* Pagination */}
-                {filteredIncidents.length > 0 && viewMode === 'LIST' && (
-                    <Box sx={{ p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                        <Typography sx={{ fontSize: 14, color: '#9ca3af' }}>
-                            Exibindo {((page - 1) * rowsPerPage) + 1}-{Math.min(page * rowsPerPage, filteredIncidents.length)} de {filteredIncidents.length} registros
-                        </Typography>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <IconButton size="small" disabled={page === 1} onClick={() => setPage(p => p - 1)} sx={{ width: 36, height: 36, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>‹</IconButton>
-                            <Box sx={{ display: 'flex', alignItems: 'center', px: 2, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', fontSize: 14 }}>{page} / {totalPages || 1}</Box>
-                            <IconButton size="small" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} sx={{ width: 36, height: 36, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>›</IconButton>
-                        </Box>
-                    </Box>
-                )}
-            </DataListShell>
+                    )}
+                />
+            )}
 
             <IncidentModal
                 open={modalOpen}

@@ -35,6 +35,10 @@ import DataListShell from './DataListShell';
  * @param {boolean} [tableLayoutFixed=true]
  * @param {'small'|'medium'} [size='small']
  * @param {string|number} [resetPaginationKey] — quando muda, volta à página 0 (ex.: filtro da página pai)
+ * @param {function({ paginatedRows: Array, page: number, rowsPerPage: number }): ReactNode} [renderBeforeTable] — ex.: BulkActionsBar alinhado à página atual
+ * @param {function(row): void} [onRowClick] — clique na linha (ex.: abrir detalhe)
+ * @param {function(row): boolean} [isRowSelected]
+ * @param {function(row): object} [getRowSx]
  */
 const DataListTable = ({
   shell,
@@ -53,6 +57,10 @@ const DataListTable = ({
   tableLayoutFixed = true,
   size = 'small',
   resetPaginationKey,
+  renderBeforeTable,
+  onRowClick,
+  isRowSelected,
+  getRowSx,
 }) => {
   const { mode } = useContext(ThemeContext);
   const isDark = mode === 'dark';
@@ -138,6 +146,10 @@ const DataListTable = ({
       sx={shell.sx}
       className={shell.className}
     >
+      {!loading &&
+        rows.length > 0 &&
+        typeof renderBeforeTable === 'function' &&
+        renderBeforeTable({ paginatedRows, page, rowsPerPage })}
       <TableContainer
         component={Paper}
         elevation={0}
@@ -175,7 +187,9 @@ const DataListTable = ({
                         sortDirection={orderBy === col.id ? order : false}
                         sx={cellSx}
                       >
-                        {sortable ? (
+                        {typeof col.renderHeader === 'function' ? (
+                          col.renderHeader({ paginatedRows })
+                        ) : sortable ? (
                           <TableSortLabel
                             active={orderBy === col.id}
                             direction={orderBy === col.id ? order : 'asc'}
@@ -200,7 +214,17 @@ const DataListTable = ({
                   </TableRow>
                 ) : (
                   paginatedRows.map((row) => (
-                    <TableRow key={getRowKey(row)} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableRow
+                      key={getRowKey(row)}
+                      hover
+                      selected={typeof isRowSelected === 'function' ? isRowSelected(row) : false}
+                      onClick={onRowClick ? () => onRowClick(row) : undefined}
+                      sx={{
+                        cursor: onRowClick ? 'pointer' : undefined,
+                        '&:last-child td, &:last-child th': { border: 0 },
+                        ...(typeof getRowSx === 'function' ? getRowSx(row) : {}),
+                      }}
+                    >
                       {columns.map((col) => {
                         const cs =
                           typeof col.cellSx === 'function' ? col.cellSx(row) : col.cellSx ?? {};

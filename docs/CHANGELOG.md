@@ -7,6 +7,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Refactored
+- **Incidentes:** Lista em modo tabela migrada para **`DataListTable`** (ordenação `sortIncidentsRows`, colunas em `incidentListColumns.jsx`, `BulkActionsBar` via `renderBeforeTable`, paginação MUI); removido `IncidentList.jsx`. Estados de carregamento, vazio e Kanban mantêm **`DataListShell`** com a mesma toolbar.
+  - `FRONTEND/src/pages/incidents/IncidentsPage.jsx`
+  - `FRONTEND/src/pages/incidents/incidentListColumns.jsx`
+  - `FRONTEND/src/pages/incidents/incidentListSort.js`
+  - `docs/patterns/data-grids-inventory.md`
+
 ### Changed
 - **UI — raio de cantos unificado a 8px:** `shape.borderRadius` nos temas premium e `theme.js`; tokens `--radius-sm/md/lg/xl` e scrollbar em `index.css`; Tailwind `borderRadius` estendido para 8px em todas as utilidades; script `FRONTEND/scripts/normalize-border-radius.mjs` aplicado ao `src` (CSS + `borderRadius` em JSX). Avatares/indicadores que usavam `50%` passíveis de alinhamento ao mesmo token (ex.: notificação). **~166 ficheiros** tocados no frontend.
 
