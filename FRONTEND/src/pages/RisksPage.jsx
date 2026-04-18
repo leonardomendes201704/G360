@@ -16,6 +16,7 @@ import { getReferenceUsers } from '../services/reference.service';
 import { createGeneralTask } from '../services/task.service';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import EmptyState from '../components/common/EmptyState';
+import DataListShell from '../components/common/DataListShell';
 import usePersistedFilters from '../hooks/usePersistedFilters';
 import { useUndoToast } from '../hooks/useUndoToast';
 import InlineStatusSelect from '../components/common/InlineStatusSelect';
@@ -259,7 +260,12 @@ const RisksPage = () => {
             )}
 
             {viewMode === 'LIST' && (
-                <>
+                <DataListShell
+                    title="Registro de riscos"
+                    titleIcon="shield"
+                    accentColor="#2563eb"
+                    count={risks.length}
+                >
                     <BulkActionsBar
                         selectedCount={selectedIds.length}
                         totalCount={risks.length}
@@ -267,7 +273,17 @@ const RisksPage = () => {
                         onClear={() => setSelectedIds([])}
                         actions={[{ label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDeleteRisks, color: '#ef4444' }]}
                     />
-                    <TableContainer component={Paper} sx={{ borderRadius: '16px', border: `1px solid ${borderColor}`, background: cardBg }}>
+                    <TableContainer
+                        component={Paper}
+                        elevation={0}
+                        sx={{
+                            borderRadius: 0,
+                            border: 'none',
+                            borderTop: `1px solid ${borderColor}`,
+                            background: cardBg,
+                            boxShadow: 'none',
+                        }}
+                    >
                         <Table>
                             <TableHead>
                                 <TableRow sx={{ bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }}>
@@ -377,7 +393,7 @@ const RisksPage = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </>
+                </DataListShell>
             )}
 
             <GlobalRiskModal

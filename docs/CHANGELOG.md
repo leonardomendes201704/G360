@@ -8,6 +8,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Changed
+- **US-025 / EP-010:** **Grupo B** — **`DataListShell`** em **Gestão de Problemas (ITIL)** (`ProblemManagement.jsx`) e **Registro de riscos** no modo lista (`RisksPage.jsx`). Testes `ProblemManagement` alinhados ao título real do modal (`Mission Control · código`).
+  - `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx`
+  - `FRONTEND/src/pages/RisksPage.jsx`
+  - `FRONTEND/src/pages/helpdesk/__tests__/ProblemManagement.test.jsx`
+  - `docs/backlog/EP-010-listas-grupo-b-datalist-shell/EPIC.md`
+  - `docs/backlog/EP-010-listas-grupo-b-datalist-shell/US-025-problemas-e-riscos-datalist-shell.md`
+  - `docs/backlog/_INDEX.md`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **US-024 / EP-009:** Portal de Chamados — secção **«Meus Chamados»** com **`DataListShell`** (contagem filtrada; toolbar «de N na conta» quando há refinamento). Epic EP-009 encerrado após migração completa do Grupo A.
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
   - `docs/backlog/EP-009-padronizacao-listas-grids-frontend/EPIC.md`

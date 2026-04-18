@@ -27,16 +27,16 @@ Componentes base existentes:
 
 ## Grupo B — Tabela MUI (`TableContainer` / `TablePagination`) sem `FilterDrawer` no mesmo critério de grep
 
-| Ficheiro |
-|----------|
-| `FRONTEND/src/pages/finance/FinancePage.jsx` |
-| `FRONTEND/src/pages/finance/DREPage.jsx` |
-| `FRONTEND/src/pages/tasks/TimeReportPage.jsx` |
-| `FRONTEND/src/pages/RisksPage.jsx` |
-| `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` |
-| `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` |
-| `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` |
-| `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` |
+| Área | Ficheiro | Notas |
+|------|----------|--------|
+| Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | Casca **`DataListShell`** na lista (US-025). |
+| Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo **Lista**: **`DataListShell`** + `BulkActionsBar` + tabela (US-025). |
+| Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Pendente EP-010. |
+| Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | Pendente EP-010. |
+| Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Pendente EP-010. |
+| Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Pendente EP-010. |
+| Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Pendente EP-010. |
+| Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Pendente EP-010. |
 
 ---
 
@@ -75,6 +75,6 @@ Inclui (entre outros): `ProjectTasksList.jsx`, `ProjectRisks.jsx`, `ProjectCosts
 
 1. Reutilizar **`DataListShell`** + **`StandardGrid`** onde os dados forem linhas planas com colunas homogéneas.
 2. Alinhar barra de filtros (`FilterDrawer`), KPIs (`KpiGrid`), vazio (`EmptyState`) e loading (`TableSkeleton`) ao padrão do Portal.
-3. Migrar telas do Grupo A gradualmente; Grupos C/D avaliar caso a caso (tabelas pivot vs lista).
+3. Migrar **Grupo B** (`EP-010`) e Grupos C/D avaliar caso a caso (tabelas pivot vs lista).
 
 Ver também: [data-grid-shell.md](data-grid-shell.md).

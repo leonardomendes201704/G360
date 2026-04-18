@@ -102,7 +102,7 @@ describe('ProblemManagement Component', () => {
         fireEvent.click(editButtons[1]);
 
         await waitFor(() => {
-            expect(screen.getByText(/Mission Control: Problema PRB-2025-0001/i)).toBeInTheDocument();
+            expect(screen.getByText(/Mission Control.*PRB-2025-0001/i)).toBeInTheDocument();
         });
 
         // Update RCA
@@ -135,7 +135,7 @@ describe('ProblemManagement Component', () => {
         const editButtons = screen.getAllByRole('button');
         fireEvent.click(editButtons[1]);
 
-        await waitFor(() => expect(screen.getByText(/Mission Control: Problema/i)).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText(/Mission Control.*PRB-2025-0001/i)).toBeInTheDocument());
 
         const uuidInput = screen.getByPlaceholderText(/Ex: ID UUID\.\.\./i);
         fireEvent.change(uuidInput, { target: { value: 'test-uuid-123' } });

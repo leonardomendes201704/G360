@@ -10,6 +10,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import problemService from '../../services/problem.service';
 import StandardModal from '../../components/common/StandardModal';
+import DataListShell from '../../components/common/DataListShell';
 
 const STATUS_COLORS = {
   'INVESTIGATING': 'secondary',
@@ -94,12 +95,19 @@ const ProblemManagement = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5" fontWeight="bold">Gestão de Problemas (ITIL)</Typography>
-        <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>Declarar Problema</Button>
-      </Box>
-
-      <TableContainer component={Paper}>
+      <DataListShell
+        title="Gestão de Problemas (ITIL)"
+        titleIcon="bug_report"
+        accentColor="#7c3aed"
+        count={problems.length}
+        sx={{ mb: 3 }}
+        toolbar={
+          <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>
+            Declarar Problema
+          </Button>
+        }
+      >
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -136,6 +144,7 @@ const ProblemManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      </DataListShell>
 
       <StandardModal
         open={modalOpen}
