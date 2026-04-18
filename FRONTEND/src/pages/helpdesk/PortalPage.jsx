@@ -1175,6 +1175,7 @@ const PortalPage = () => {
                   label={field.label + (field.required ? ' *' : '')}
                   value={customAnswers[field.id] || ''}
                   onChange={(e) => setCustomAnswers({ ...customAnswers, [field.id]: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
                   SelectProps={{ displayEmpty: true }}
                 >
                   <MenuItem value="">-- Selecione --</MenuItem>
@@ -1214,6 +1215,7 @@ const PortalPage = () => {
               onChange={(e) => setSupportGroupId(e.target.value)}
               disabled={creating}
               sx={{ mt: 1 }}
+              InputLabelProps={{ shrink: true }}
               SelectProps={{ displayEmpty: true }}
             >
               <MenuItem value="">-- Automático / sem preferência --</MenuItem>
@@ -1235,6 +1237,7 @@ const PortalPage = () => {
             onChange={(e) => setPortalDepartmentId(e.target.value)}
             disabled={creating}
             sx={{ mt: 1 }}
+            InputLabelProps={{ shrink: true }}
             SelectProps={{ displayEmpty: true }}
           >
             <MenuItem value="">— Não informado —</MenuItem>
@@ -1255,6 +1258,7 @@ const PortalPage = () => {
             onChange={(e) => setPortalCostCenterId(e.target.value)}
             disabled={creating}
             sx={{ mt: 1 }}
+            InputLabelProps={{ shrink: true }}
             SelectProps={{ displayEmpty: true }}
           >
             <MenuItem value="">— Não informado —</MenuItem>
@@ -1274,6 +1278,7 @@ const PortalPage = () => {
             value={relatedAssetId}
             onChange={(e) => setRelatedAssetId(e.target.value)}
             disabled={creating}
+            InputLabelProps={{ shrink: true }}
             SelectProps={{ displayEmpty: true }}
           >
             <MenuItem value="">-- Nenhum --</MenuItem>
