@@ -12,6 +12,7 @@ import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import serviceCatalogService from '../../services/service-catalog.service';
 import slaPolicyService from '../../services/sla-policy.service';
 import StandardModal from '../../components/common/StandardModal';
+import DataListShell from '../../components/common/DataListShell';
 
 export const CatalogAdminPanel = ({ embedded = false }) => {
   const [categories, setCategories] = useState([]);
@@ -241,12 +242,16 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
 
       {/* Services Table */}
       {activeTab === 0 && (
-        <Paper elevation={1} sx={{ p: 3, borderRadius: 1 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h6" fontWeight="bold">Serviços Habilitados</Typography>
+        <DataListShell
+          title="Serviços Habilitados"
+          titleIcon="design_services"
+          accentColor="#2563eb"
+          count={services.length}
+          toolbar={
             <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openSvcModal()}>Novo Serviço</Button>
-          </Box>
-          <TableContainer>
+          }
+        >
+          <TableContainer sx={{ borderRadius: 0 }}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -281,17 +286,21 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
+        </DataListShell>
       )}
 
       {/* Categories Table */}
       {activeTab === 1 && (
-        <Paper elevation={1} sx={{ p: 3, borderRadius: 1 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h6" fontWeight="bold">Categorias do Catálogo</Typography>
+        <DataListShell
+          title="Categorias do Catálogo"
+          titleIcon="folder"
+          accentColor="#2563eb"
+          count={categories.length}
+          toolbar={
             <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openCatModal()}>Nova Categoria</Button>
-          </Box>
-          <TableContainer>
+          }
+        >
+          <TableContainer sx={{ borderRadius: 0 }}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -312,17 +321,21 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
+        </DataListShell>
       )}
 
       {/* SLAs Table */}
       {activeTab === 2 && (
-        <Paper elevation={1} sx={{ p: 3, borderRadius: 1 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-            <Typography variant="h6" fontWeight="bold">Políticas de Acordo (SLA)</Typography>
+        <DataListShell
+          title="Políticas de Acordo (SLA)"
+          titleIcon="schedule"
+          accentColor="#7c3aed"
+          count={slas.length}
+          toolbar={
             <Button size="small" variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => openSlaModal()}>Nova Política SLA</Button>
-          </Box>
-          <TableContainer>
+          }
+        >
+          <TableContainer sx={{ borderRadius: 0 }}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -350,7 +363,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
+        </DataListShell>
       )}
 
       {/* Cat Modal */}

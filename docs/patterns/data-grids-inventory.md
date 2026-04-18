@@ -27,16 +27,18 @@ Componentes base existentes:
 
 ## Grupo B — Tabela MUI (`TableContainer` / `TablePagination`) sem `FilterDrawer` no mesmo critério de grep
 
+Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
+
 | Área | Ficheiro | Notas |
 |------|----------|--------|
-| Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | Casca **`DataListShell`** na lista (US-025). |
-| Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo **Lista**: **`DataListShell`** + `BulkActionsBar` + tabela (US-025). |
-| Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Pendente EP-010. |
-| Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | Pendente EP-010. |
-| Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Pendente EP-010. |
-| Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Pendente EP-010. |
-| Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Pendente EP-010. |
-| Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Pendente EP-010. |
+| Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | **`DataListShell`** (US-025). |
+| Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo lista: **`DataListShell`** + `BulkActionsBar` (US-025). |
+| Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Separadores Orçamentos / Plano de contas: **`DataListShell`** (US-026). |
+| Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | «Detalhamento Mensal»: **`DataListShell`** (US-026). |
+| Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Resumo por colaborador + detalhamento: **`DataListShell`** (US-026). |
+| Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Tabela de chamados: **`DataListShell`** (US-026). |
+| Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Tres separadores (serviços, categorias, SLA): **`DataListShell`** (US-026). |
+| Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Separadores Anexos / Aditivos: **`DataListShell`** (US-026). |
 
 ---
 

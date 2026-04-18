@@ -13,6 +13,7 @@ import ticketService from '../../services/ticket.service';
 import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import DataListShell from '../../components/common/DataListShell';
 
 const STATUS_COLORS = {
   'OPEN': 'info',
@@ -223,7 +224,13 @@ const ServiceDeskDashboard = () => {
         </Box>
       )}
 
-      <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
+      <DataListShell
+        title="Chamados"
+        titleIcon="confirmation_number"
+        accentColor="#2563eb"
+        count={totalTickets}
+      >
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
         {loading ? (
           <Box p={4} display="flex" justifyContent="center"><CircularProgress /></Box>
         ) : (
@@ -319,6 +326,7 @@ const ServiceDeskDashboard = () => {
           </Table>
         )}
       </TableContainer>
+      </DataListShell>
 
       <StandardModal
         open={modalOpen}

@@ -10,6 +10,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import { getMonthlyEvolution, getDREDetails } from '../../services/finance-dashboard.service';
 import fiscalYearService from '../../services/fiscal-year.service';
 import { getReferenceAccounts, getReferenceSuppliers } from '../../services/reference.service';
+import DataListShell from '../../components/common/DataListShell';
 
 // --- HELPER ---
 const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
@@ -363,19 +364,13 @@ const DREPage = () => {
             </Box>
 
             {/* Table */}
-            <Box sx={{
-                borderRadius: '16px', background: cardBg,
-                backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
-                border: `1px solid ${borderColor}`, boxShadow: cardShadow,
-                overflow: 'hidden'
-            }}>
-                <Box sx={{ p: 3, borderBottom: `1px solid ${borderColor}` }}>
-                    <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <span className="material-icons-round" style={{ fontSize: '20px', color: '#2563eb' }}>table_chart</span>
-                        Detalhamento Mensal
-                    </Typography>
-                </Box>
-                <TableContainer>
+            <DataListShell
+                title="Detalhamento Mensal"
+                titleIcon="table_chart"
+                accentColor="#2563eb"
+                count={rows.length}
+            >
+                <TableContainer sx={{ borderRadius: 0 }}>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: surfaceBg }}>
@@ -425,7 +420,7 @@ const DREPage = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </Box>
+            </DataListShell>
         </Box>
     );
 };

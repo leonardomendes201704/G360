@@ -8,6 +8,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Changed
+- **US-026 / EP-010:** **Grupo B (fecho)** — **`DataListShell`** em **Central de Serviços** (`ServiceDeskDashboard.jsx`), **DRE** (`DREPage.jsx`), **Relatório de Horas** (`TimeReportPage.jsx`), **Finance** separadores Orçamentos e Plano de contas (`FinancePage.jsx`), **Catálogo ITBM** (`CatalogAdmin.jsx`), **Detalhe do contrato** anexos/aditivos (`ContractDetailsPage.jsx`). **EP-010** encerrado.
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
+  - `FRONTEND/src/pages/finance/DREPage.jsx`
+  - `FRONTEND/src/pages/tasks/TimeReportPage.jsx`
+  - `FRONTEND/src/pages/finance/FinancePage.jsx`
+  - `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx`
+  - `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx`
+  - `docs/backlog/EP-010-listas-grupo-b-datalist-shell/EPIC.md`
+  - `docs/backlog/EP-010-listas-grupo-b-datalist-shell/US-026-grupo-b-restante-datalist-shell.md`
+  - `docs/backlog/_INDEX.md`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **US-025 / EP-010:** **Grupo B** — **`DataListShell`** em **Gestão de Problemas (ITIL)** (`ProblemManagement.jsx`) e **Registro de riscos** no modo lista (`RisksPage.jsx`). Testes `ProblemManagement` alinhados ao título real do modal (`Mission Control · código`).
   - `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx`
   - `FRONTEND/src/pages/RisksPage.jsx`

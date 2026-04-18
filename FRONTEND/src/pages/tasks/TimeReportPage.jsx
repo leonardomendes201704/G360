@@ -6,6 +6,7 @@ import {
     CircularProgress, useTheme, Chip
 } from '@mui/material';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import DataListShell from '../../components/common/DataListShell';
 // removed usePermission
 import { getTimeReport, exportTimeReport } from '../../services/task-time.service';
 import { getReferenceUsers } from '../../services/reference.service';
@@ -252,16 +253,14 @@ const TimeReportPage = () => {
                 <>
                     {/* Resumo por Colaborador */}
                     {report.byUser?.length > 1 && (
-                        <Paper sx={{
-                            mb: 3, borderRadius: '16px', bgcolor: cardBg,
-                            border: `1px solid ${borderColor}`, overflow: 'hidden'
-                        }}>
-                            <Box sx={{ p: 2, borderBottom: `1px solid ${borderColor}` }}>
-                                <Typography sx={{ fontSize: '14px', fontWeight: 600, color: textPrimary }}>
-                                    Resumo por Colaborador
-                                </Typography>
-                            </Box>
-                            <TableContainer>
+                        <DataListShell
+                            title="Resumo por Colaborador"
+                            titleIcon="groups"
+                            accentColor="#2563eb"
+                            count={report.byUser.length}
+                            sx={{ mb: 3 }}
+                        >
+                            <TableContainer sx={{ borderRadius: 0 }}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow sx={{ '& th': { color: textMuted, fontSize: '11px', fontWeight: 700, borderColor } }}>
@@ -286,20 +285,17 @@ const TimeReportPage = () => {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                        </Paper>
+                        </DataListShell>
                     )}
 
                     {/* Detalhamento */}
-                    <Paper sx={{
-                        borderRadius: '16px', bgcolor: cardBg,
-                        border: `1px solid ${borderColor}`, overflow: 'hidden'
-                    }}>
-                        <Box sx={{ p: 2, borderBottom: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography sx={{ fontSize: '14px', fontWeight: 600, color: textPrimary }}>
-                                Detalhamento ({report.logs.length} registros)
-                            </Typography>
-                        </Box>
-                        <TableContainer sx={{ maxHeight: 500 }}>
+                    <DataListShell
+                        title="Detalhamento"
+                        titleIcon="schedule"
+                        accentColor="#2563eb"
+                        count={report.logs.length}
+                    >
+                        <TableContainer sx={{ maxHeight: 500, borderRadius: 0 }}>
                             <Table size="small" stickyHeader>
                                 <TableHead>
                                     <TableRow sx={{
@@ -357,7 +353,7 @@ const TimeReportPage = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </Paper>
+                    </DataListShell>
                 </>
             )}
         </Box>

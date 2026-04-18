@@ -16,7 +16,7 @@
 | EP-007 | Padronizacao de filtros em modulos (off-canvas)       | -      | Media      | Closed | 1         | EP-002     |
 | EP-008 | Padronizacao e componentizacao de modais (Frontend)     | -      | Alta       | Closed | 1         | EP-002, EP-003 |
 | EP-009 | Padronizacao de listas e grelhas (Frontend)              | -      | Media      | Closed | 2         | EP-002     |
-| EP-010 | Listas Grupo B — casca DataListShell (Frontend)          | -      | Media      | Active | 1         | EP-002, EP-009 |
+| EP-010 | Listas Grupo B — casca DataListShell (Frontend)          | -      | Media      | Closed | 2         | EP-002, EP-009 |
 
 ## Historias por Epico
 
@@ -94,16 +94,17 @@
 | ID     | Titulo                                                   | Pontos | Prioridade | Status |
 |--------|----------------------------------------------------------|--------|------------|--------|
 | US-025 | DataListShell — Problemas (ITIL) + Riscos (lista)        | 5      | Media      | Closed |
+| US-026 | DataListShell — restante Grupo B (financeiro, SD, tempo) | 5      | Media      | Closed |
 
 ## Resumo
 
 | Metrica                    | Valor |
 |----------------------------|-------|
 | Total de Epicos            | 10    |
-| Total de Historias         | 25    |
-| Total de Story Points      | 119   |
+| Total de Historias         | 26    |
+| Total de Story Points      | 124   |
 | Total de Bugs              | 5     |
-| Historias Concluidas       | 25    |
+| Historias Concluidas       | 26    |
 | Historias Abertas (novas)  | 0     |
 | Bugs Resolvidos            | 5     |
 
@@ -112,7 +113,7 @@
 | Tipo    | Proximo ID |
 |---------|------------|
 | Epic    | EP-011     |
-| Story   | US-026     |
+| Story   | US-027     |
 | Bug     | BUG-006    |
 
 ## Ordem de Execucao Recomendada

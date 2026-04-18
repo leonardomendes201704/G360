@@ -17,6 +17,7 @@ import {
     getAddendums
 } from '../../services/contract-details.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import DataListShell from '../../components/common/DataListShell';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { getFileURL } from '../../utils/urlUtils';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -120,18 +121,23 @@ const ContractDetailsPage = () => {
             </Box>
 
             {tabValue === 0 && (
-                <Paper variant="outlined">
-                    <div style={{ padding: 16, borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography fontWeight="bold">Arquivos do Contrato</Typography>
-                        {hasPermission('CONTRACTS', 'ATTACH') && (
+                <DataListShell
+                    title="Arquivos do Contrato"
+                    titleIcon="attach_file"
+                    accentColor="#2563eb"
+                    count={attachments.length}
+                    toolbar={
+                        hasPermission('CONTRACTS', 'ATTACH') ? (
                             <>
                                 <input type="file" id="att-upload" hidden onChange={handleUpload} />
                                 <label htmlFor="att-upload">
                                     <Button component="span" startIcon={<AttachFile />} size="small">Anexar</Button>
                                 </label>
                             </>
-                        )}
-                    </div>
+                        ) : null
+                    }
+                >
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
                     <Table>
                         <TableHead><TableRow><TableCell>Nome</TableCell><TableCell>Data</TableCell><TableCell align="right">Ações</TableCell></TableRow></TableHead>
                         <TableBody>
@@ -149,22 +155,29 @@ const ContractDetailsPage = () => {
                             ))}
                         </TableBody>
                     </Table>
-                </Paper>
+                    </TableContainer>
+                </DataListShell>
             )}
 
             {tabValue === 1 && (
-                <Paper variant="outlined" sx={{ p: 3 }}>
-                    <Typography variant="h6" gutterBottom>Histórico de Aditivos</Typography>
+                <DataListShell
+                    title="Histórico de Aditivos"
+                    titleIcon="history"
+                    accentColor="#2563eb"
+                    count={addendums.length}
+                >
+                    <Box sx={{ px: 3, pb: 3 }}>
                     {addendums.length === 0 ? (
                         <Typography color="textSecondary">Nenhum aditivo registrado.</Typography>
                     ) : (
-                        <ul>
+                        <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
                             {addendums.map(add => (
-                                <li key={add.id}>{add.description} - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(add.valueChange)}</li>
+                                <Box component="li" key={add.id} sx={{ mb: 1 }}>{add.description} - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(add.valueChange)}</Box>
                             ))}
-                        </ul>
+                        </Box>
                     )}
-                </Paper>
+                    </Box>
+                </DataListShell>
             )}
 
             <ConfirmDialog

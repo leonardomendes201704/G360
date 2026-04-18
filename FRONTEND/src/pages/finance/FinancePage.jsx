@@ -13,6 +13,7 @@ import AccountModal from '../../components/modals/AccountModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import StandardModal from '../../components/common/StandardModal';
 import EmptyState from '../../components/common/EmptyState';
+import DataListShell from '../../components/common/DataListShell';
 import { AuthContext } from '../../contexts/AuthContext';
 
 import budgetService, { duplicateBudget } from '../../services/budget.service';
@@ -303,8 +304,14 @@ const FinancePage = () => {
               )}
             </Box>
 
-            <Paper sx={{ ...commonPaperStyle, overflow: 'hidden' }}>
-              <TableContainer>
+            <DataListShell
+              title="Orçamentos"
+              titleIcon="account_balance_wallet"
+              accentColor="#2563eb"
+              count={budgets.length}
+              sx={{ ...commonPaperStyle, overflow: 'hidden' }}
+            >
+              <TableContainer sx={{ borderRadius: 0 }}>
                 <Table>
                   <TableHead>
                     <TableRow sx={{ bgcolor: 'action.hover' }}>
@@ -358,7 +365,7 @@ const FinancePage = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Paper>
+            </DataListShell>
             <BudgetModal open={budgetModalOpen} onClose={() => setBudgetModalOpen(false)} onSave={handleSaveBudget} budget={selectedBudget} />
           </Box>
         )
@@ -427,7 +434,7 @@ const FinancePage = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Paper>
+            </DataListShell>
             <AccountModal open={accountModalOpen} onClose={() => setAccountModalOpen(false)} onSave={handleSaveAccount} account={selectedAccount} />
           </Box>
         )
