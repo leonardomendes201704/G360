@@ -5,6 +5,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-16]
+
+### Fixed
+- **`DataListTable` + lista de projetos:** removido scroll horizontal — `TableContainer` com `overflowX: hidden`, células com `wordBreak`/`overflowWrap`, cabeçalhos com `minWidth: 0`. Projetos: `table-layout: fixed` (default), colunas com **larguras em %** em `projectListColumns.jsx`, CSS (badges, progresso, cronograma, ações) para quebra e `min-width: 0` em flex; media query móvel deixa de forçar `display: block` + `overflow-x: auto` na tabela.
+  - `FRONTEND/src/components/common/DataListTable.jsx`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`, `FRONTEND/src/pages/projects/projectListColumns.jsx`, `FRONTEND/src/pages/projects/ProjectsListPage.css`
+
 ## [2026-04-20]
 
 ### Refactored

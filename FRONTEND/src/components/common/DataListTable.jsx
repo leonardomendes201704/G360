@@ -36,6 +36,7 @@ import DataListShell from './DataListShell';
  * @param {boolean} [tableLayoutFixed=true]
  * @param {'small'|'medium'} [size='small']
  * @param {string|number} [resetPaginationKey] — quando muda, volta à página 0 (ex.: filtro da página pai)
+ * @param {object} [shell.tableContainerSx] — merge no `TableContainer` (ex.: `overflowX: 'auto'` se for preciso scroll num caso concreto; o default evita scroll horizontal)
  * @param {function({ paginatedRows: Array, page: number, rowsPerPage: number }): ReactNode} [renderBeforeTable] — ex.: BulkActionsBar alinhado à página atual
  * @param {function(row): void} [onRowClick] — clique na linha (ex.: abrir detalhe)
  * @param {function(row): boolean} [isRowSelected]
@@ -189,7 +190,15 @@ const DataListTable = ({
       <TableContainer
         component={Paper}
         elevation={0}
-        sx={{ borderRadius: '8px', boxShadow: 'none', width: '100%', overflowX: 'auto', ...shell.tableContainerSx }}
+        sx={{
+          borderRadius: '8px',
+          boxShadow: 'none',
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          overflowX: 'hidden',
+          ...shell.tableContainerSx,
+        }}
       >
         {loading ? (
           loadingContent ?? (
@@ -214,6 +223,9 @@ const DataListTable = ({
                     const sortable = col.sortable !== false && col.id;
                     const cellSx = {
                       ...thBase,
+                      minWidth: 0,
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere',
                       ...(col.width ? { width: col.width } : {}),
                       ...(col.minWidth != null ? { minWidth: col.minWidth } : {}),
                       ...(col.align ? { textAlign: col.align } : {}),
@@ -282,7 +294,8 @@ const DataListTable = ({
                             sx={{
                               verticalAlign: col.verticalAlign ?? 'top',
                               minWidth: 0,
-                              overflow: 'hidden',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'anywhere',
                               ...cs,
                             }}
                           >

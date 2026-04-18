@@ -22,7 +22,7 @@ export function getProjectListColumns({
     {
       id: 'name',
       label: 'Projeto',
-      minWidth: 200,
+      width: '20%',
       accessor: (p) => p.name || '',
       cellSx: () => ({ verticalAlign: 'middle' }),
       render: (project) => (
@@ -36,7 +36,7 @@ export function getProjectListColumns({
       id: 'status',
       label: 'Status',
       accessor: (p) => p.status || '',
-      minWidth: 150,
+      width: '9%',
       render: (project) => {
         const isApproved = project.approvalStatus === 'APPROVED';
         const isReturnedForAdjustment = project.approvalStatus === 'DRAFT' && project.requiresAdjustment;
@@ -68,7 +68,7 @@ export function getProjectListColumns({
     {
       id: 'priority',
       label: 'Prioridade',
-      minWidth: 120,
+      width: '8%',
       accessor: (p) => p.priority || '',
       render: (project) => {
         const cfg = getPriorityConfig(project.priority);
@@ -83,7 +83,7 @@ export function getProjectListColumns({
     {
       id: 'manager',
       label: 'Gerente',
-      minWidth: 150,
+      width: '12%',
       accessor: (p) => p.manager?.name || '',
       render: (project) => {
         if (!project.manager) {
@@ -102,7 +102,7 @@ export function getProjectListColumns({
     {
       id: 'techLead',
       label: 'Tech Lead',
-      minWidth: 150,
+      width: '12%',
       accessor: (p) => p.techLead?.name || '',
       render: (project) => {
         if (!project.techLead) {
@@ -122,7 +122,7 @@ export function getProjectListColumns({
       id: 'progress',
       label: 'Progresso',
       align: 'right',
-      minWidth: 120,
+      width: '11%',
       accessor: (p) => Number(p.progress) || 0,
       render: (project) => {
         const v = project.progress || 0;
@@ -159,7 +159,7 @@ export function getProjectListColumns({
       id: 'actions',
       label: 'Ações',
       sortable: false,
-      minWidth: 150,
+      width: '13%',
       align: 'right',
       render: (project) => {
         const isReturnedForAdjustment = project.approvalStatus === 'DRAFT' && project.requiresAdjustment;

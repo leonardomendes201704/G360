@@ -820,7 +820,6 @@ const ProjectsListPage = () => {
                             )
                             : undefined
                     }
-                    tableLayoutFixed={false}
                 />
             </div >
 

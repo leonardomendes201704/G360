@@ -403,6 +403,8 @@ body.light-premium-theme .pl-page-header-card {
     font-size: 15px;
     font-weight: 600;
     color: var(--pl-text-primary);
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .pl-project-code {
@@ -420,6 +422,7 @@ body.light-premium-theme .pl-page-header-card {
 .pl-status-badge {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 6px 14px;
     border-radius: 8px;
@@ -427,6 +430,8 @@ body.light-premium-theme .pl-page-header-card {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .pl-status-badge .material-icons-round {
@@ -461,6 +466,7 @@ body.light-premium-theme .pl-page-header-card {
 .pl-priority-badge {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 4px 10px;
     border-radius: 8px;
@@ -468,6 +474,8 @@ body.light-premium-theme .pl-page-header-card {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .pl-priority-low {
@@ -499,6 +507,7 @@ body.light-premium-theme .pl-page-header-card {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
 
 .pl-manager-avatar {
@@ -538,22 +547,28 @@ body.light-premium-theme .pl-page-header-card {
     font-size: 14px;
     font-weight: 500;
     color: var(--pl-text-primary);
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 /* Progress Cell */
 .pl-progress-cell {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .pl-progress-bar-container {
-    flex: 1;
+    flex: 1 1 48px;
+    min-width: 0;
     height: 8px;
     background: var(--pl-bg-tertiary);
     border-radius: 8px;
     overflow: hidden;
-    min-width: 100px;
 }
 
 .pl-progress-bar {
@@ -591,6 +606,7 @@ body.light-premium-theme .pl-page-header-card {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
 }
 
 .pl-timeline-dates {
@@ -598,6 +614,7 @@ body.light-premium-theme .pl-page-header-card {
     color: var(--pl-text-primary);
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -623,6 +640,8 @@ body.light-premium-theme .pl-page-header-card {
 .pl-actions-cell {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 8px;
 }
 
@@ -828,8 +847,8 @@ body.light-premium-theme .pl-page-header-card {
     }
 
     .pl-projects-table {
-        display: block;
-        overflow-x: auto;
+        table-layout: fixed;
+        width: 100%;
     }
 }
 
