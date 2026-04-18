@@ -17,6 +17,7 @@
 | EP-008 | Padronizacao e componentizacao de modais (Frontend)     | -      | Alta       | Closed | 1         | EP-002, EP-003 |
 | EP-009 | Padronizacao de listas e grelhas (Frontend)              | -      | Media      | Closed | 2         | EP-002     |
 | EP-010 | Listas Grupo B — casca DataListShell (Frontend)          | -      | Media      | Closed | 2         | EP-002, EP-009 |
+| EP-011 | DataListTable parametrizavel + migracao de listas        | -      | Media      | Active | 2         | EP-002, EP-009, EP-010 |
 
 ## Historias por Epico
 
@@ -96,15 +97,22 @@
 | US-025 | DataListShell — Problemas (ITIL) + Riscos (lista)        | 5      | Media      | Closed |
 | US-026 | DataListShell — restante Grupo B (financeiro, SD, tempo) | 5      | Media      | Closed |
 
+### EP-011 - DataListTable parametrizavel + migracao de listas
+
+| ID     | Titulo                                                   | Pontos | Prioridade | Status |
+|--------|----------------------------------------------------------|--------|------------|--------|
+| US-027 | DataListTable + piloto Service Desk                      | 5      | Media      | Closed |
+| US-028 | Migracao Portal «Meus Chamados» para DataListTable       | 5      | Media      | Closed |
+
 ## Resumo
 
 | Metrica                    | Valor |
 |----------------------------|-------|
-| Total de Epicos            | 10    |
-| Total de Historias         | 26    |
-| Total de Story Points      | 124   |
+| Total de Epicos            | 11    |
+| Total de Historias         | 28    |
+| Total de Story Points      | 134   |
 | Total de Bugs              | 5     |
-| Historias Concluidas       | 26    |
+| Historias Concluidas       | 28    |
 | Historias Abertas (novas)  | 0     |
 | Bugs Resolvidos            | 5     |
 
@@ -112,8 +120,8 @@
 
 | Tipo    | Proximo ID |
 |---------|------------|
-| Epic    | EP-011     |
-| Story   | US-027     |
+| Epic    | EP-012     |
+| Story   | US-029     |
 | Bug     | BUG-006    |
 
 ## Ordem de Execucao Recomendada
@@ -124,4 +132,4 @@ EP-008 (Padronizacao modais) — depende de EP-002, EP-003; pode correr em paral
 ```
 
 ---
-*Ultima atualizacao: 2026-04-18*
+*Ultima atualizacao: 2026-04-19*

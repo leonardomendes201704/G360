@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import { 
-  TextField, Tooltip,
-  Box, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, TableContainer, Paper,
-  CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Chip, Avatar, useTheme, keyframes,
-  TableSortLabel, TablePagination
+import {
+  TextField,
+  Tooltip,
+  Box,
+  Typography,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  Avatar,
+  keyframes,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -14,24 +22,24 @@ import ticketService from '../../services/ticket.service';
 import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
 import { getTicketStatusSortIndex } from '../../constants/ticketStatus';
 
 const PRIORITY_RANK = { LOW: 1, MEDIUM: 2, HIGH: 3, URGENT: 4 };
 
 const STATUS_COLORS = {
-  'OPEN': 'info',
-  'IN_PROGRESS': 'warning',
-  'WAITING_USER': 'secondary',
-  'RESOLVED': 'success',
-  'CLOSED': 'default'
+  OPEN: 'info',
+  IN_PROGRESS: 'warning',
+  WAITING_USER: 'secondary',
+  RESOLVED: 'success',
+  CLOSED: 'default',
 };
 
 const PRIORITY_COLORS = {
-  'LOW': 'success',
-  'MEDIUM': 'info',
-  'HIGH': 'warning',
-  'URGENT': 'error'
+  LOW: 'success',
+  MEDIUM: 'info',
+  HIGH: 'warning',
+  URGENT: 'error',
 };
 
 const pulseAnim = keyframes`
@@ -40,13 +48,65 @@ const pulseAnim = keyframes`
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 `;
 
+/** Ordenação específica da fila Service Desk (mesma lógica que antes da extração para DataListTable). */
+export function sortServiceDeskTickets(list, orderBy, order) {
+  const mult = order === 'asc' ? 1 : -1;
+  const sorted = [...list];
+  sorted.sort((a, b) => {
+    let cmp = 0;
+    switch (orderBy) {
+      case 'code':
+        cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
+        break;
+      case 'title':
+        cmp = String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR', { sensitivity: 'base' });
+        break;
+      case 'department':
+        cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', { sensitivity: 'base' });
+        break;
+      case 'costCenter':
+        cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', { sensitivity: 'base' });
+        break;
+      case 'priority': {
+        const ra = PRIORITY_RANK[a.priority] ?? 0;
+        const rb = PRIORITY_RANK[b.priority] ?? 0;
+        cmp = ra - rb;
+        break;
+      }
+      case 'slaResolveDue': {
+        const ta = a.slaResolveDue ? new Date(a.slaResolveDue).getTime() : null;
+        const tb = b.slaResolveDue ? new Date(b.slaResolveDue).getTime() : null;
+        if (ta == null && tb == null) cmp = 0;
+        else if (ta == null) cmp = 1;
+        else if (tb == null) cmp = -1;
+        else cmp = ta - tb;
+        break;
+      }
+      case 'status': {
+        const ia = getTicketStatusSortIndex(a.status);
+        const ib = getTicketStatusSortIndex(b.status);
+        cmp = ia - ib;
+        if (cmp === 0) {
+          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
+        }
+        break;
+      }
+      case 'createdAt':
+        cmp = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+        break;
+      default:
+        cmp = 0;
+    }
+    return mult * cmp;
+  });
+  return sorted;
+}
+
 const ServiceDeskDashboard = () => {
   const { user } = useContext(AuthContext);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('ALL');
-  const theme = useTheme();
-  const mode = theme.palette.mode;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -54,24 +114,7 @@ const ServiceDeskDashboard = () => {
   const [resolving, setResolving] = useState(false);
   const [metrics, setMetrics] = useState(null);
 
-  const [orderBy, setOrderBy] = useState('createdAt');
-  const [order, setOrder] = useState('desc');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  useEffect(() => {
-    setPage(0);
-    fetchTickets();
-  }, [filterStatus]);
-
-  useEffect(() => {
-    ticketService
-      .getMetricsOverview({ days: 30 })
-      .then(setMetrics)
-      .catch(() => setMetrics(null));
-  }, []);
-
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
       const query = filterStatus !== 'ALL' ? { status: filterStatus } : {};
@@ -82,27 +125,38 @@ const ServiceDeskDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]);
 
-  const handleTakeTicket = async (id) => {
+  useEffect(() => {
+    fetchTickets();
+  }, [fetchTickets]);
+
+  useEffect(() => {
+    ticketService
+      .getMetricsOverview({ days: 30 })
+      .then(setMetrics)
+      .catch(() => setMetrics(null));
+  }, []);
+
+  const handleTakeTicket = useCallback(async (id) => {
     try {
       const uid = user?.userId || user?.id;
       await ticketService.updateStatus(id, {
         status: 'IN_PROGRESS',
-        ...(uid ? { assigneeId: uid } : {})
+        ...(uid ? { assigneeId: uid } : {}),
       });
       fetchTickets();
     } catch (err) {
       console.error(err);
       alert('Erro ao assumir chamado.');
     }
-  };
+  }, [user, fetchTickets]);
 
-  const openResolveModal = (ticket) => {
+  const openResolveModal = useCallback((ticket) => {
     setSelectedTicket(ticket);
     setResolutionComment('');
     setModalOpen(true);
-  };
+  }, []);
 
   const handleExportCsv = async () => {
     try {
@@ -119,9 +173,9 @@ const ServiceDeskDashboard = () => {
     try {
       setResolving(true);
       if (resolutionComment.trim()) {
-        await ticketService.addMessage(selectedTicket.id, { 
-          content: resolutionComment, 
-          isInternal: false 
+        await ticketService.addMessage(selectedTicket.id, {
+          content: resolutionComment,
+          isInternal: false,
         });
       }
       await ticketService.updateStatus(selectedTicket.id, { status: 'RESOLVED' });
@@ -135,116 +189,243 @@ const ServiceDeskDashboard = () => {
     }
   };
 
-  // KPIs Calculation
   const totalTickets = tickets.length;
-  const closedTickets = tickets.filter(t => t.status === 'RESOLVED' || t.status === 'CLOSED');
+  const closedTickets = tickets.filter((t) => t.status === 'RESOLVED' || t.status === 'CLOSED');
   const resolvedTickets = closedTickets.length;
-  const totalOpen = tickets.filter(t => t.status === 'OPEN').length;
-  const slaBreachedActive = tickets.filter(t => t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED').length;
-  
+  const totalOpen = tickets.filter((t) => t.status === 'OPEN').length;
+  const slaBreachedActive = tickets.filter((t) => t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED').length;
+
   let slaCompliance = 100;
   let slaFailure = 0;
   if (closedTickets.length > 0) {
-    const closedBreached = closedTickets.filter(t => t.slaBreached).length;
+    const closedBreached = closedTickets.filter((t) => t.slaBreached).length;
     slaCompliance = Math.round(((closedTickets.length - closedBreached) / closedTickets.length) * 100);
     slaFailure = 100 - slaCompliance;
   }
 
-  const handleRequestSort = (property) => {
-    if (orderBy === property) {
-      setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setOrderBy(property);
-      setOrder(['createdAt', 'slaResolveDue'].includes(property) ? 'desc' : 'asc');
-    }
-  };
-
-  const sortedTickets = useMemo(() => {
-    const list = [...tickets];
-    const mult = order === 'asc' ? 1 : -1;
-    list.sort((a, b) => {
-      let cmp = 0;
-      switch (orderBy) {
-        case 'code':
-          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
-          break;
-        case 'title':
-          cmp = String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR', { sensitivity: 'base' });
-          break;
-        case 'department':
-          cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', { sensitivity: 'base' });
-          break;
-        case 'costCenter':
-          cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', { sensitivity: 'base' });
-          break;
-        case 'priority': {
-          const ra = PRIORITY_RANK[a.priority] ?? 0;
-          const rb = PRIORITY_RANK[b.priority] ?? 0;
-          cmp = ra - rb;
-          break;
-        }
-        case 'slaResolveDue': {
-          const ta = a.slaResolveDue ? new Date(a.slaResolveDue).getTime() : null;
-          const tb = b.slaResolveDue ? new Date(b.slaResolveDue).getTime() : null;
-          if (ta == null && tb == null) cmp = 0;
-          else if (ta == null) cmp = 1;
-          else if (tb == null) cmp = -1;
-          else cmp = ta - tb;
-          break;
-        }
-        case 'status': {
-          const ia = getTicketStatusSortIndex(a.status);
-          const ib = getTicketStatusSortIndex(b.status);
-          cmp = ia - ib;
-          if (cmp === 0) {
-            cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
-          }
-          break;
-        }
-        case 'createdAt':
-          cmp = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
-          break;
-        default:
-          cmp = 0;
-      }
-      return mult * cmp;
-    });
-    return list;
-  }, [tickets, orderBy, order]);
-
-  const paginatedTickets = useMemo(
-    () => sortedTickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [sortedTickets, page, rowsPerPage]
+  const columns = useMemo(
+    () => [
+      {
+        id: 'code',
+        label: 'Cód.',
+        width: '7%',
+        minWidth: 80,
+        render: (t) => (
+          <Typography sx={{ fontWeight: '700', fontSize: '0.85rem' }}>{t.code}</Typography>
+        ),
+      },
+      {
+        id: 'title',
+        label: 'Solicitação',
+        width: '21%',
+        minWidth: 140,
+        render: (t) => (
+          <>
+            <Typography
+              variant="body2"
+              fontWeight="600"
+              sx={{
+                mb: 0.5,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                wordBreak: 'break-word',
+              }}
+              title={t.title}
+            >
+              {t.title}
+            </Typography>
+            <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
+              <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', flexShrink: 0 }}>
+                {t.requester?.name?.charAt(0) || 'U'}
+              </Avatar>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}
+                title={t.requester?.name}
+              >
+                {t.requester?.name}
+              </Typography>
+            </Box>
+          </>
+        ),
+      },
+      {
+        id: 'createdAt',
+        label: 'Abertura',
+        width: '8%',
+        minWidth: 88,
+        render: (t) => (
+          <Typography sx={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+            {t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-BR') : '—'}
+          </Typography>
+        ),
+      },
+      {
+        id: 'department',
+        label: 'Dept.',
+        width: '11%',
+        minWidth: 92,
+        render: (t) => (
+          <Typography
+            variant="caption"
+            component="span"
+            display="block"
+            title={t.department?.name || ''}
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
+            {t.department?.name || '—'}
+          </Typography>
+        ),
+      },
+      {
+        id: 'costCenter',
+        label: 'C. custo',
+        width: '11%',
+        minWidth: 92,
+        render: (t) => (
+          <Typography
+            variant="caption"
+            component="span"
+            display="block"
+            title={t.costCenter?.name || ''}
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
+            {t.costCenter?.name || '—'}
+          </Typography>
+        ),
+      },
+      {
+        id: 'priority',
+        label: 'Prioridade',
+        width: '9%',
+        minWidth: 88,
+        render: (t) => (
+          <Chip
+            label={t.priority}
+            color={PRIORITY_COLORS[t.priority] ?? 'default'}
+            size="small"
+            sx={{
+              borderRadius: 1.5,
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              maxWidth: '100%',
+              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' },
+            }}
+          />
+        ),
+      },
+      {
+        id: 'slaResolveDue',
+        label: 'Prazo SLA',
+        width: '10%',
+        minWidth: 96,
+        render: (t) => {
+          const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
+          return (
+            <Box display="flex" alignItems="center" sx={{ minWidth: 0 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 500,
+                  color: isBreached ? '#ef4444' : 'inherit',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t.slaResolveDue ? new Date(t.slaResolveDue).toLocaleDateString() : 'Sem SLA'}
+              </Typography>
+              {isBreached && (
+                <Tooltip title="Atenção: Prazo de SLA Expirado!">
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      bgcolor: '#ef4444',
+                      animation: `${pulseAnim} 2s infinite`,
+                      display: 'inline-block',
+                      ml: 1,
+                      flexShrink: 0,
+                    }}
+                  />
+                </Tooltip>
+              )}
+            </Box>
+          );
+        },
+      },
+      {
+        id: 'status',
+        label: 'Status',
+        width: '10%',
+        minWidth: 96,
+        render: (t) => (
+          <Chip
+            label={t.status}
+            color={STATUS_COLORS[t.status] ?? 'default'}
+            size="small"
+            variant="outlined"
+            sx={{
+              borderRadius: 1.5,
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              borderWidth: 2,
+              maxWidth: '100%',
+              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' },
+            }}
+          />
+        ),
+      },
+      {
+        id: '_actions',
+        label: 'Operar',
+        sortable: false,
+        width: '8%',
+        minWidth: 80,
+        render: (t) => (
+          <>
+            <IconButton component="a" href={`/portal/tickets/${t.id}`} target="_blank" title="Visualizar Detalhes">
+              <VisibilityIcon color="primary" />
+            </IconButton>
+            {t.status === 'OPEN' && (
+              <IconButton onClick={() => handleTakeTicket(t.id)} title="Iniciar Atendimento">
+                <PlayArrowIcon color="warning" />
+              </IconButton>
+            )}
+            {t.status === 'IN_PROGRESS' && (
+              <IconButton onClick={() => openResolveModal(t)} title="Resolver Chamado">
+                <CheckCircleIcon color="success" />
+              </IconButton>
+            )}
+          </>
+        ),
+      },
+    ],
+    [handleTakeTicket, openResolveModal]
   );
-
-  useEffect(() => {
-    const maxPage = Math.max(0, Math.ceil(sortedTickets.length / rowsPerPage) - 1);
-    if (page > maxPage) {
-      setPage(maxPage);
-    }
-  }, [sortedTickets.length, rowsPerPage, page]);
-
-  const thSx = { color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' };
 
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Box display="flex" alignItems="center">
-          <Typography variant="h5" fontWeight="bold" mr={2}>Central de Serviços (Service Desk)</Typography>
+          <Typography variant="h5" fontWeight="bold" mr={2}>
+            Central de Serviços (Service Desk)
+          </Typography>
           <Tooltip title="Exportar chamados (CSV)">
             <IconButton onClick={handleExportCsv} size="small" sx={{ bgcolor: 'rgba(0,0,0,0.04)' }}>
               <DownloadIcon color="action" />
             </IconButton>
           </Tooltip>
         </Box>
-        
+
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel>Status</InputLabel>
-          <Select
-            value={filterStatus}
-            label="Status"
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
+          <Select value={filterStatus} label="Status" onChange={(e) => setFilterStatus(e.target.value)}>
             <MenuItem value="ALL">Todos os Chamados</MenuItem>
             <MenuItem value="OPEN">Novos / Abertos</MenuItem>
             <MenuItem value="IN_PROGRESS">Em Atendimento</MenuItem>
@@ -255,7 +436,6 @@ const ServiceDeskDashboard = () => {
         </FormControl>
       </Box>
 
-      {/* KPI DASHBOARD — 5 por linha em md+ quando há métricas de período (10 cartões); senão 6 cartões */}
       {filterStatus === 'ALL' && !loading && (
         <Box sx={{ mb: 4 }}>
           {metrics && (
@@ -310,147 +490,23 @@ const ServiceDeskDashboard = () => {
         </Box>
       )}
 
-      <DataListShell
-        title="Chamados"
-        titleIcon="confirmation_number"
-        accentColor="#2563eb"
-        count={totalTickets}
-      >
-      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none', width: '100%', overflowX: 'auto' }}>
-        {loading ? (
-          <Box p={4} display="flex" justifyContent="center"><CircularProgress /></Box>
-        ) : (
-          <>
-          <Table size="small" sx={{ tableLayout: 'fixed', width: '100%' }}>
-            <TableHead sx={{ bgcolor: mode==='dark'?'#1e293b':'#f8fafc' }}>
-              <TableRow>
-                <TableCell sortDirection={orderBy === 'code' ? order : false} sx={{ ...thSx, width: '7%', minWidth: 80 }}>
-                  <TableSortLabel active={orderBy === 'code'} direction={orderBy === 'code' ? order : 'asc'} onClick={() => handleRequestSort('code')}>Cód.</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'title' ? order : false} sx={{ ...thSx, width: '21%', minWidth: 140 }}>
-                  <TableSortLabel active={orderBy === 'title'} direction={orderBy === 'title' ? order : 'asc'} onClick={() => handleRequestSort('title')}>Solicitação</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'createdAt' ? order : false} sx={{ ...thSx, width: '8%', minWidth: 88 }}>
-                  <TableSortLabel active={orderBy === 'createdAt'} direction={orderBy === 'createdAt' ? order : 'asc'} onClick={() => handleRequestSort('createdAt')}>Abertura</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'department' ? order : false} sx={{ ...thSx, width: '11%', minWidth: 92 }}>
-                  <TableSortLabel active={orderBy === 'department'} direction={orderBy === 'department' ? order : 'asc'} onClick={() => handleRequestSort('department')}>Dept.</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'costCenter' ? order : false} sx={{ ...thSx, width: '11%', minWidth: 92 }}>
-                  <TableSortLabel active={orderBy === 'costCenter'} direction={orderBy === 'costCenter' ? order : 'asc'} onClick={() => handleRequestSort('costCenter')}>C. custo</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'priority' ? order : false} sx={{ ...thSx, width: '9%', minWidth: 88 }}>
-                  <TableSortLabel active={orderBy === 'priority'} direction={orderBy === 'priority' ? order : 'asc'} onClick={() => handleRequestSort('priority')}>Prioridade</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'slaResolveDue' ? order : false} sx={{ ...thSx, width: '10%', minWidth: 96 }}>
-                  <TableSortLabel active={orderBy === 'slaResolveDue'} direction={orderBy === 'slaResolveDue' ? order : 'asc'} onClick={() => handleRequestSort('slaResolveDue')}>Prazo SLA</TableSortLabel>
-                </TableCell>
-                <TableCell sortDirection={orderBy === 'status' ? order : false} sx={{ ...thSx, width: '10%', minWidth: 96 }}>
-                  <TableSortLabel active={orderBy === 'status'} direction={orderBy === 'status' ? order : 'asc'} onClick={() => handleRequestSort('status')}>Status</TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ ...thSx, width: '8%', minWidth: 80 }}>Operar</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tickets.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} align="center" sx={{ py: 6, color: 'text.secondary' }}>Fila Limpa! Nenhum chamado em aberto. 🎉</TableCell>
-                </TableRow>
-              ) : (
-                paginatedTickets.map(t => {
-                  const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
-                  return (
-                    <TableRow key={t.id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell sx={{ fontWeight: '700', fontSize: '0.85rem', verticalAlign: 'top', minWidth: 0, overflow: 'hidden' }}>{t.code}</TableCell>
-                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
-                        <Typography variant="body2" fontWeight="600" sx={{ mb: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', wordBreak: 'break-word' }} title={t.title}>{t.title}</Typography>
-                        <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
-                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', flexShrink: 0 }}>{t.requester?.name?.charAt(0) || 'U'}</Avatar>
-                          <Typography variant="caption" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }} title={t.requester?.name}>{t.requester?.name}</Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', fontSize: '0.8rem', minWidth: 0, overflow: 'hidden' }}>
-                        {t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-BR') : '—'}
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
-                        <Typography variant="caption" component="span" display="block" title={t.department?.name || ''} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {t.department?.name || '—'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
-                        <Typography variant="caption" component="span" display="block" title={t.costCenter?.name || ''} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {t.costCenter?.name || '—'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
-                        <Chip label={t.priority} color={PRIORITY_COLORS[t.priority]} size="small" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 700, maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
-                      </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', minWidth: 0, overflow: 'hidden' }}>
-                        <Box display="flex" alignItems="center" sx={{ minWidth: 0 }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500, color: isBreached ? '#ef4444' : 'inherit', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {t.slaResolveDue ? new Date(t.slaResolveDue).toLocaleDateString() : 'Sem SLA'}
-                          </Typography>
-                          {isBreached && (
-                            <Tooltip title="Atenção: Prazo de SLA Expirado!">
-                              <Box sx={{
-                                width: 8, height: 8, borderRadius: '50%', bgcolor: '#ef4444',
-                                animation: `${pulseAnim} 2s infinite`, display: 'inline-block', ml: 1
-                              }} />
-                            </Tooltip>
-                          )}
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
-                        <Chip label={t.status} color={STATUS_COLORS[t.status]} size="small" variant="outlined" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 600, borderWidth: 2, maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
-                      </TableCell>
-                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap' }}>
-                        <IconButton 
-                          component="a" 
-                          href={`/portal/tickets/${t.id}`} 
-                          target="_blank" 
-                          title="Visualizar Detalhes"
-                        >
-                          <VisibilityIcon color="primary" />
-                        </IconButton>
-                        
-                        {t.status === 'OPEN' && (
-                          <IconButton onClick={() => handleTakeTicket(t.id)} title="Iniciar Atendimento">
-                            <PlayArrowIcon color="warning" />
-                          </IconButton>
-                        )}
-
-                        {t.status === 'IN_PROGRESS' && (
-                          <IconButton onClick={() => openResolveModal(t)} title="Resolver Chamado">
-                            <CheckCircleIcon color="success" />
-                          </IconButton>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-          {tickets.length > 0 ? (
-            <TablePagination
-              component="div"
-              count={sortedTickets.length}
-              page={page}
-              onPageChange={(_, newPage) => setPage(newPage)}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={(e) => {
-                setRowsPerPage(parseInt(e.target.value, 10));
-                setPage(0);
-              }}
-              rowsPerPageOptions={[5, 10, 25, 50]}
-              labelRowsPerPage="Linhas por página"
-              labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
-            />
-          ) : null}
-          </>
-        )}
-      </TableContainer>
-      </DataListShell>
+      <DataListTable
+        shell={{
+          title: 'Chamados',
+          titleIcon: 'confirmation_number',
+          accentColor: '#2563eb',
+          count: totalTickets,
+        }}
+        columns={columns}
+        rows={tickets}
+        loading={loading}
+        emptyMessage="Fila Limpa! Nenhum chamado em aberto. 🎉"
+        defaultOrderBy="createdAt"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (['createdAt', 'slaResolveDue'].includes(id) ? 'desc' : 'asc')}
+        sortRows={sortServiceDeskTickets}
+        resetPaginationKey={filterStatus}
+      />
 
       <StandardModal
         open={modalOpen}

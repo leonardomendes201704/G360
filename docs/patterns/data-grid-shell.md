@@ -8,12 +8,14 @@ Listagens semelhantes ao **Portal de Chamados** (título, contagem, busca/filtro
 |------|-------------|
 | **`DataListShell`** | Cartão com **cabeçalho** fixo (ícone + título + contagem opcional + `toolbar` à direita) e **filhos** = corpo (tabela HTML, MUI `Table`, `BulkActionsBar`, `EmptyState`, etc.). |
 | **`StandardGrid`** | Dados em forma de **linhas planas** + definição declarativa de **`columns`** / opcional **`actions`** — busca, ordenação e paginação **dentro** do componente. |
+| **`DataListTable`** | **`DataListShell`** + **tabela MUI** + **`TableSortLabel`** + **`TablePagination`** com colunas **`render(row)`** e sort opcional custom (`sortRows`). Ver [data-list-table.md](data-list-table.md). |
 | **`FilterDrawer`** | Filtros avançados off-canvas (já padronizado no EP-007). |
 | **`KpiGrid` + `StatsCard`** | Indicadores acima da lista, alinhados ao dashboard. |
 
 Referência visual/UX: [`PortalPage.jsx`](../../FRONTEND/src/pages/helpdesk/PortalPage.jsx) (`Meus Chamados`).
 
-Inventário por ecrã: [data-grids-inventory.md](data-grids-inventory.md).
+Inventário por ecrã: [data-grids-inventory.md](data-grids-inventory.md).  
+Listas densas com sort + página no cliente: [data-list-table.md](data-list-table.md).
 
 ## `DataListShell` — API resumida
 

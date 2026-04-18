@@ -7,6 +7,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-18]
 
+### Refactored
+- **US-028 / EP-011:** Portal «Meus Chamados» migrado para **`DataListTable`**: ordenação via `sortPortalTickets`, paginação e mensagens de vazio preservadas; KPIs, busca, `FilterDrawer` e wizard inalterados.
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
+
 ### Fixed
 - **Service Desk:** Grelha de chamados (`ServiceDeskDashboard`) — texto de Dept., centro de custo, prioridade e SLA deixava de respeitar colunas após `DataListShell`; aplicado `table-layout: fixed`, larguras por coluna e truncamento (`ellipsis`) para evitar sobreposição.
   - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`

@@ -2,14 +2,6 @@ import React, { useState, useEffect, useMemo, forwardRef, useContext } from 'rea
 import {
   Box,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  TableSortLabel,
   Paper,
   Chip,
   Button,
@@ -50,7 +42,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import StandardModal from '../../components/common/StandardModal';
 import FilterDrawer from '../../components/common/FilterDrawer';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -71,6 +63,58 @@ const DEFAULT_PORTAL_FILTERS = {
   departmentId: '',
   costCenterId: ''
 };
+
+/** Ordenação da lista «Meus Chamados» (mesma lógica que antes da extração para DataListTable). */
+export function sortPortalTickets(list, orderBy, order) {
+  const mult = order === 'asc' ? 1 : -1;
+  const sorted = [...list];
+  sorted.sort((a, b) => {
+    let cmp = 0;
+    switch (orderBy) {
+      case 'code':
+        cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
+        break;
+      case 'title':
+        cmp = stripTicketTitleStatusSuffix(a.title || '').localeCompare(
+          stripTicketTitleStatusSuffix(b.title || ''),
+          'pt-BR',
+          { sensitivity: 'base' }
+        );
+        break;
+      case 'service':
+        cmp = String(a.service?.name || '').localeCompare(String(b.service?.name || ''), 'pt-BR', {
+          sensitivity: 'base'
+        });
+        break;
+      case 'createdAt':
+        cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        break;
+      case 'status': {
+        const ia = getTicketStatusSortIndex(a.status);
+        const ib = getTicketStatusSortIndex(b.status);
+        cmp = ia - ib;
+        if (cmp === 0) {
+          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
+        }
+        break;
+      }
+      case 'department':
+        cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', {
+          sensitivity: 'base'
+        });
+        break;
+      case 'costCenter':
+        cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', {
+          sensitivity: 'base'
+        });
+        break;
+      default:
+        cmp = 0;
+    }
+    return mult * cmp;
+  });
+  return sorted;
+}
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -113,11 +157,6 @@ const PortalPage = () => {
   const [appliedFilters, setAppliedFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
   const [draftFilters, setDraftFilters] = useState(() => ({ ...DEFAULT_PORTAL_FILTERS }));
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-
-  const [orderBy, setOrderBy] = useState('createdAt');
-  const [order, setOrder] = useState('desc');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     fetchData();
@@ -408,81 +447,91 @@ const PortalPage = () => {
     setListSearch('');
   };
 
-  useEffect(() => {
-    setPage(0);
-  }, [listSearch, appliedFilters]);
-
-  const handleRequestSort = (property) => {
-    if (orderBy === property) {
-      setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setOrderBy(property);
-      setOrder(property === 'createdAt' ? 'desc' : 'asc');
-    }
-  };
-
-  const sortedTickets = useMemo(() => {
-    const list = [...filteredTickets];
-    const mult = order === 'asc' ? 1 : -1;
-    list.sort((a, b) => {
-      let cmp = 0;
-      switch (orderBy) {
-        case 'code':
-          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
-          break;
-        case 'title':
-          cmp = stripTicketTitleStatusSuffix(a.title || '').localeCompare(
-            stripTicketTitleStatusSuffix(b.title || ''),
-            'pt-BR',
-            { sensitivity: 'base' }
-          );
-          break;
-        case 'service':
-          cmp = String(a.service?.name || '').localeCompare(String(b.service?.name || ''), 'pt-BR', {
-            sensitivity: 'base'
-          });
-          break;
-        case 'createdAt':
-          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          break;
-        case 'status': {
-          const ia = getTicketStatusSortIndex(a.status);
-          const ib = getTicketStatusSortIndex(b.status);
-          cmp = ia - ib;
-          if (cmp === 0) {
-            cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
-          }
-          break;
-        }
-        case 'department':
-          cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', {
-            sensitivity: 'base'
-          });
-          break;
-        case 'costCenter':
-          cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', {
-            sensitivity: 'base'
-          });
-          break;
-        default:
-          cmp = 0;
-      }
-      return mult * cmp;
-    });
-    return list;
-  }, [filteredTickets, orderBy, order]);
-
-  const paginatedTickets = useMemo(
-    () => sortedTickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [sortedTickets, page, rowsPerPage]
+  const portalListResetKey = useMemo(
+    () => `${listSearch}\n${JSON.stringify(appliedFilters)}`,
+    [listSearch, appliedFilters]
   );
 
-  useEffect(() => {
-    const maxPage = Math.max(0, Math.ceil(sortedTickets.length / rowsPerPage) - 1);
-    if (page > maxPage) {
-      setPage(maxPage);
-    }
-  }, [sortedTickets.length, rowsPerPage, page]);
+  const portalTicketColumns = useMemo(
+    () => [
+      {
+        id: 'code',
+        label: 'Código',
+        width: '9%',
+        minWidth: 88,
+        cellSx: () => ({ whiteSpace: 'nowrap', fontWeight: 700 }),
+        render: (t) => t.code
+      },
+      {
+        id: 'title',
+        label: 'Título',
+        render: (t) => stripTicketTitleStatusSuffix(t.title),
+        cellSx: () => ({
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        })
+      },
+      {
+        id: 'service',
+        label: 'Serviço',
+        render: (t) => t.service?.name || '-'
+      },
+      {
+        id: 'department',
+        label: 'Departamento',
+        render: (t) => t.department?.name || '—'
+      },
+      {
+        id: 'costCenter',
+        label: 'Centro de custo',
+        render: (t) => t.costCenter?.name || '—'
+      },
+      {
+        id: 'createdAt',
+        label: 'Data',
+        render: (t) => new Date(t.createdAt).toLocaleDateString('pt-BR')
+      },
+      {
+        id: 'status',
+        label: 'Status',
+        render: (t) => (
+          <Chip
+            label={getTicketStatusLabel(t.status)}
+            color={TICKET_STATUS_CHIP_COLOR[t.status] ?? 'default'}
+            size="small"
+          />
+        )
+      },
+      {
+        id: 'action',
+        label: 'Ação',
+        sortable: false,
+        align: 'center',
+        width: 56,
+        minWidth: 56,
+        headerSx: { textAlign: 'center' },
+        cellSx: () => ({ width: 56, textAlign: 'center' }),
+        render: (t) => (
+          <IconButton
+            component={RouterLink}
+            to={`/portal/tickets/${t.id}`}
+            size="small"
+            color="primary"
+            aria-label="Ver chamado"
+          >
+            <VisibilityIcon fontSize="small" />
+          </IconButton>
+        )
+      }
+    ],
+    []
+  );
+
+  const portalEmptyMessage =
+    tickets.length === 0
+      ? 'Você ainda não possui chamados. Use "Novo ticket" para abrir uma solicitação.'
+      : 'Nenhum chamado corresponde à busca ou aos filtros selecionados.';
 
   if (loading) {
     return (
@@ -687,155 +736,33 @@ const PortalPage = () => {
         </Stack>
       </Paper>
 
-      <DataListShell
-        title="Meus Chamados"
-        titleIcon="confirmation_number"
-        accentColor="#2563eb"
-        count={filteredTickets.length}
-        sx={{ mb: 2 }}
-        toolbar={
-          hasListRefinement && tickets.length !== filteredTickets.length ? (
-            <Typography variant="body2" color="text.secondary" fontWeight={600}>
-              de {tickets.length} na conta
-            </Typography>
-          ) : null
-        }
-      >
-      <TableContainer component={Paper} elevation={1} sx={{ borderRadius: 1 }}>
-        <Table size="medium">
-          <TableHead sx={{ bgcolor: 'grey.50' }}>
-            <TableRow>
-              <TableCell sortDirection={orderBy === 'code' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'code'}
-                  direction={orderBy === 'code' ? order : 'asc'}
-                  onClick={() => handleRequestSort('code')}
-                >
-                  Código
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'title' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'title'}
-                  direction={orderBy === 'title' ? order : 'asc'}
-                  onClick={() => handleRequestSort('title')}
-                >
-                  Título
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'service' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'service'}
-                  direction={orderBy === 'service' ? order : 'asc'}
-                  onClick={() => handleRequestSort('service')}
-                >
-                  Serviço
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'department' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'department'}
-                  direction={orderBy === 'department' ? order : 'asc'}
-                  onClick={() => handleRequestSort('department')}
-                >
-                  Departamento
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'costCenter' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'costCenter'}
-                  direction={orderBy === 'costCenter' ? order : 'asc'}
-                  onClick={() => handleRequestSort('costCenter')}
-                >
-                  Centro de custo
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'createdAt' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'createdAt'}
-                  direction={orderBy === 'createdAt' ? order : 'asc'}
-                  onClick={() => handleRequestSort('createdAt')}
-                >
-                  Data
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === 'status' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'status'}
-                  direction={orderBy === 'status' ? order : 'asc'}
-                  onClick={() => handleRequestSort('status')}
-                >
-                  Status
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="center" sx={{ width: 56 }}>
-                Ação
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tickets.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                  Você ainda não possui chamados. Use &quot;Novo ticket&quot; para abrir uma solicitação.
-                </TableCell>
-              </TableRow>
-            ) : filteredTickets.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                  Nenhum chamado corresponde à busca ou aos filtros selecionados.
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedTickets.map((t) => (
-                <TableRow key={t.id} hover>
-                  <TableCell sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>{t.code}</TableCell>
-                  <TableCell>{stripTicketTitleStatusSuffix(t.title)}</TableCell>
-                  <TableCell>{t.service?.name || '-'}</TableCell>
-                  <TableCell>{t.department?.name || '—'}</TableCell>
-                  <TableCell>{t.costCenter?.name || '—'}</TableCell>
-                  <TableCell>{new Date(t.createdAt).toLocaleDateString('pt-BR')}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={getTicketStatusLabel(t.status)}
-                      color={TICKET_STATUS_CHIP_COLOR[t.status] ?? 'default'}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell align="center" sx={{ width: 56 }}>
-                    <IconButton
-                      component={RouterLink}
-                      to={`/portal/tickets/${t.id}`}
-                      size="small"
-                      color="primary"
-                      aria-label="Ver chamado"
-                    >
-                      <VisibilityIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-        {tickets.length > 0 && filteredTickets.length > 0 ? (
-          <TablePagination
-            component="div"
-            count={sortedTickets.length}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={(e) => {
-              setRowsPerPage(parseInt(e.target.value, 10));
-              setPage(0);
-            }}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            labelRowsPerPage="Linhas por página"
-            labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
-          />
-        ) : null}
-      </TableContainer>
-      </DataListShell>
+      <DataListTable
+        shell={{
+          title: 'Meus Chamados',
+          titleIcon: 'confirmation_number',
+          accentColor: '#2563eb',
+          count: filteredTickets.length,
+          sx: { mb: 2 },
+          toolbar:
+            hasListRefinement && tickets.length !== filteredTickets.length ? (
+              <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                de {tickets.length} na conta
+              </Typography>
+            ) : null,
+          tableContainerSx: { borderRadius: 1, boxShadow: theme.shadows[1] }
+        }}
+        columns={portalTicketColumns}
+        rows={filteredTickets}
+        sortRows={sortPortalTickets}
+        defaultOrderBy="createdAt"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(colId) => (colId === 'createdAt' ? 'desc' : 'asc')}
+        resetPaginationKey={portalListResetKey}
+        emptyMessage={portalEmptyMessage}
+        rowsPerPageDefault={10}
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        size="medium"
+      />
 
       <FilterDrawer
         open={filterDrawerOpen}
