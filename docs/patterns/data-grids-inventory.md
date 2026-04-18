@@ -21,7 +21,7 @@ Componentes base existentes:
 | Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`; cabeçalho **`DataListShell`** (export + busca). |
 | Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | Modo lista: **`DataListShell`** + `ArticleTable` (`embedded`); grelha inalterada. |
 | Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning; modo **lista** com **`DataListShell`** (`TaskList` + bulk). |
-| Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | `<table>` (lista de ativos + licenças); **`DataListShell`** em ambas as secções; `filteredLicenses` em `useMemo`. |
+| Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | Vista **Hardware** e **Licenças:** **`DataListTable`** (`assetListColumns` / `licenseListColumns`, `sortAssetRows` / `sortLicenseRows`); hardware com **`BulkActionsBar`** em `renderBeforeTable`; clique na linha abre vista (`AssetViewModal` distingue ativo/licença). |
 
 ---
 

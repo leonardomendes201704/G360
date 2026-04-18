@@ -8,6 +8,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Refactored
+- **Ativos (`/assets`):** Vistas do toggle **Hardware** e **Licenças** passam a **`DataListTable`** (ordenação, paginação MUI, linha clicável para `AssetViewModal`); em hardware, **`BulkActionsBar`** alinhada à página atual. Colunas e sorts em ficheiros dedicados na pasta da página.
+  - `FRONTEND/src/pages/assets/AssetsPage.jsx`
+  - `FRONTEND/src/pages/assets/assetListColumns.jsx`, `FRONTEND/src/pages/assets/assetListSort.js`
+  - `FRONTEND/src/pages/assets/licenseListColumns.jsx`, `FRONTEND/src/pages/assets/licenseListSort.js`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **GMUD (`/changes`):** `ChangeRequestDashboard.jsx` passa a usar **`DataListTable`** (mesmas colunas/ordenação que a vista Lista); clique na linha abre **`ChangeViewModal`** (`onView`/`handleOpenView`), alinhado à lista.
 - **GMUD (`/changes`):** `ChangeRequestsPage.jsx` — modo lista migrado de `ChangeRequestList` para **`DataListTable`** com `changeRequestListColumns.jsx` e `sortChangeRequestRows`; paginação MUI; calendário e estados loading/vazio mantêm **`DataListShell`**. Removido `ChangeRequestList.jsx`.
   - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
-import { Box, Typography, Button, IconButton, Tooltip, Menu, MenuItem, TextField, Collapse, Checkbox } from '@mui/material';
+import { Box, Typography, Button, IconButton, Tooltip, Menu, MenuItem, TextField, Collapse } from '@mui/material';
 import FilterAlt from '@mui/icons-material/FilterAlt';
 import Refresh from '@mui/icons-material/Refresh';
 import FilterDrawer from '../../components/common/FilterDrawer';
 import { PieChart } from '@mui/x-charts/PieChart';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
-import { Delete as DeleteIcon } from '@mui/icons-material';
 
 import { getAssets, createAsset, updateAsset, deleteAsset } from '../../services/asset.service';
 import { getLicenses, createLicense, updateLicense, deleteLicense } from '../../services/software-license.service';
@@ -18,8 +17,11 @@ import AssetModal from '../../components/modals/AssetModal';
 import AssetCategoryModal from '../../components/modals/AssetCategoryModal';
 import AssetViewModal from '../../components/modals/AssetViewModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
-import EmptyState from '../../components/common/EmptyState';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getAssetColumns } from './assetListColumns';
+import { sortAssetRows } from './assetListSort';
+import { getLicenseColumns } from './licenseListColumns';
+import { sortLicenseRows } from './licenseListSort';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -56,8 +58,6 @@ const AssetsPage = () => {
   const surfaceBg = isDark ? '#1c2632' : '#f1f5f9';
   const cardBorder = isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(15, 23, 42, 0.08)';
   const softBorder = isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(15, 23, 42, 0.08)';
-  const tableHeaderBg = isDark ? '#1c2632' : '#f8fafc';
-  const tableRowHover = isDark ? '#1c2632' : '#f1f5f9';
   const iconMuted = isDark ? '#94a3b8' : '#64748b';
   const cardBg = isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#ffffff';
 
@@ -98,6 +98,15 @@ const AssetsPage = () => {
   };
 
   const activeAssetListFilterCount = [filters.status, filters.category, searchTerm].filter(Boolean).length;
+
+  const assetListResetKey = useMemo(
+    () => `${viewMode}|${searchTerm}|${filters.status}|${filters.category}`,
+    [viewMode, searchTerm, filters.status, filters.category]
+  );
+  const licenseListResetKey = useMemo(
+    () => `${viewMode}|${searchTerm}`,
+    [viewMode, searchTerm]
+  );
 
   // Modals
   const [modalOpen, setModalOpen] = useState(false);
@@ -867,142 +876,64 @@ const AssetsPage = () => {
             </TextField>
           </FilterDrawer>
 
-          {/* Table */}
-          <DataListShell
-            title="Lista de Ativos"
-            titleIcon="list"
-            accentColor="#2563eb"
-            count={filteredAssets.length}
-            sx={{ ...cardStyle, overflow: 'hidden' }}
-          >
-            <BulkActionsBar
-              selectedCount={selectedAssetIds.length}
-              totalCount={filteredAssets.length}
-              onSelectAll={() => setSelectedAssetIds(selectedAssetIds.length === filteredAssets.length ? [] : filteredAssets.map(a => a.id))}
-              onClear={() => setSelectedAssetIds([])}
-              actions={[{ label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDeleteAssets, color: '#ef4444' }]}
-            />
-            <Box sx={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: tableHeaderBg }}>
-                    <th style={{ padding: '12px 8px', width: 40, borderBottom: cardBorder }}>
-                      <Checkbox
-                        size="small"
-                        checked={filteredAssets.length > 0 && filteredAssets.every(a => selectedAssetIds.includes(a.id))}
-                        indeterminate={filteredAssets.some(a => selectedAssetIds.includes(a.id)) && !filteredAssets.every(a => selectedAssetIds.includes(a.id))}
-                        onChange={() => setSelectedAssetIds(filteredAssets.every(a => selectedAssetIds.includes(a.id)) ? [] : filteredAssets.map(a => a.id))}
-                        sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' }, '&.MuiCheckbox-indeterminate': { color: '#667eea' } }}
-                      />
-                    </th>
-                    {['Ativo', 'Categoria', 'Status', 'Localização', 'Valor', 'Ações'].map((header, i) => (
-                      <th key={header} style={{
-                        padding: '16px 24px',
-                        textAlign: i === 5 ? 'center' : 'left',
-                        fontSize: '12px', fontWeight: 600, color: textMuted,
-                        textTransform: 'uppercase', letterSpacing: '0.5px',
-                        borderBottom: cardBorder
-                      }}>{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredAssets.map(asset => {
-                    const statusStyle = getStatusStyle(asset.status);
-                    const isSelected = selectedAssetIds.includes(asset.id);
-                    return (
-                      <tr key={asset.id} style={{
-                        transition: 'all 0.2s ease', cursor: 'pointer',
-                        background: isSelected ? 'rgba(102,126,234,0.08)' : 'transparent'
-                      }}
-                        onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = tableRowHover; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = isSelected ? 'rgba(102,126,234,0.08)' : 'transparent'; }}>
-                        <td style={{ padding: '8px 8px', borderBottom: cardBorder }} onClick={(e) => e.stopPropagation()}>
-                          <Checkbox
-                            size="small"
-                            checked={isSelected}
-                            onChange={() => setSelectedAssetIds(prev => isSelected ? prev.filter(id => id !== asset.id) : [...prev, asset.id])}
-                            sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' } }}
-                          />
-                        </td>
-                        <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{
-                              width: '40px', height: '40px', borderRadius: '8px',
-                              background: 'rgba(37, 99, 235, 0.15)',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb'
-                            }}>
-                              <span className="material-icons-round" style={{ fontSize: '20px' }}>computer</span>
-                            </div>
-                            <div>
-                              <div style={{ color: textPrimary, fontWeight: 600, marginBottom: '2px' }}>{asset.name}</div>
-                              <div style={{ color: textMuted, fontSize: '12px' }}>{asset.code}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textSecondary, fontSize: '14px', borderBottom: cardBorder }}>
-                          {asset.category?.name || '-'}
-                        </td>
-                        <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
-                          <span style={{
-                            padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                            background: statusStyle.bg, color: statusStyle.color,
-                            display: 'inline-flex', alignItems: 'center', gap: '6px'
-                          }}>
-                            {getStatusLabel(asset.status)}
-                          </span>
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textSecondary, fontSize: '14px', borderBottom: cardBorder }}>
-                          {asset.location || '-'}
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textPrimary, fontWeight: 600, fontSize: '14px', borderBottom: cardBorder }}>
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(asset.acquisitionValue || 0)}
-                        </td>
-                        <td style={{ padding: '16px 24px', textAlign: 'center', borderBottom: cardBorder }}>
-                          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                            <Tooltip title="Visualizar">
-                              <IconButton size="small" onClick={() => handleOpenView(asset)} sx={{
-                                width: 32, height: 32, borderRadius: '8px',
-                                background: surfaceBg, border: softBorder, color: textSecondary,
-                                '&:hover': { background: 'rgba(37, 99, 235, 0.15)', borderColor: '#2563eb', color: '#2563eb' }
-                              }}><span className="material-icons-round" style={{ fontSize: '18px' }}>visibility</span></IconButton>
-                            </Tooltip>
-                            {canEdit && (
-                              <Tooltip title="Editar">
-                                <IconButton size="small" onClick={() => handleOpenEdit(asset)} sx={{
-                                  width: 32, height: 32, borderRadius: '8px',
-                                  background: surfaceBg, border: softBorder, color: textSecondary,
-                                  '&:hover': { background: 'rgba(37, 99, 235, 0.15)', borderColor: '#2563eb', color: '#2563eb' }
-                                }}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
-                              </Tooltip>
-                            )}
-                            <Tooltip title="Mais opcoes">
-                              <IconButton size="small" onClick={(e) => handleMenuOpen(e, asset)} sx={{
-                                width: 32, height: 32, borderRadius: '8px',
-                                background: surfaceBg, border: softBorder, color: textSecondary,
-                                '&:hover': { background: 'rgba(37, 99, 235, 0.15)', borderColor: '#2563eb', color: '#2563eb' }
-                              }}><span className="material-icons-round" style={{ fontSize: '18px' }}>more_vert</span></IconButton>
-                            </Tooltip>
-                          </Box>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </Box>
-
-            {filteredAssets.length === 0 && !loading && (
-              <EmptyState
-                icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>inventory_2</span>}
-                title="Nenhum ativo encontrado"
-                description="Ajuste os filtros ou adicione um novo ativo para gerenciar seu inventário de hardware."
-                actionLabel="Novo Ativo"
-                actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                onAction={handleOpenNew}
+          <DataListTable
+            shell={{
+              title: 'Lista de Ativos',
+              titleIcon: 'list',
+              accentColor: '#2563eb',
+              count: filteredAssets.length,
+              sx: { ...cardStyle, overflow: 'hidden' },
+            }}
+            columns={getAssetColumns({
+              textPrimary,
+              textSecondary,
+              textMuted,
+              surfaceBg,
+              softBorder,
+              getStatusLabel,
+              getStatusStyle,
+              canEdit,
+              selectedIds: selectedAssetIds,
+              setSelectedIds: setSelectedAssetIds,
+              onView: handleOpenView,
+              onEdit: handleOpenEdit,
+              onOpenMenu: handleMenuOpen,
+            })}
+            rows={filteredAssets}
+            sortRows={sortAssetRows}
+            defaultOrderBy="assetName"
+            defaultOrder="asc"
+            getDefaultOrderForColumn={(id) => (id === 'acquisitionValue' ? 'desc' : 'asc')}
+            loading={loading}
+            emptyMessage="Nenhum ativo com os filtros atuais."
+            rowsPerPageDefault={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            resetPaginationKey={assetListResetKey}
+            onRowClick={handleOpenView}
+            isRowSelected={(a) => selectedAssetIds.includes(a.id)}
+            renderBeforeTable={({ paginatedRows }) => (
+              <BulkActionsBar
+                selectedCount={selectedAssetIds.length}
+                totalCount={paginatedRows.length}
+                onSelectAll={() => {
+                  const pageIds = paginatedRows.map((a) => a.id);
+                  const allOn = pageIds.length > 0 && pageIds.every((id) => selectedAssetIds.includes(id));
+                  if (allOn) {
+                    setSelectedAssetIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+                  } else {
+                    setSelectedAssetIds(pageIds);
+                  }
+                }}
+                onClearAll={() => setSelectedAssetIds([])}
+                allSelected={
+                  paginatedRows.length > 0 && paginatedRows.every((a) => selectedAssetIds.includes(a.id))
+                }
+                actions={[
+                  { label: 'Excluir', icon: 'delete', onClick: handleBulkDeleteAssets, color: '#ef4444' },
+                ]}
               />
             )}
-          </DataListShell>
+          />
         </>
       )}
 
@@ -1057,127 +988,48 @@ const AssetsPage = () => {
             </Collapse>
           </Box>
 
-          {/* Licenses Table */}
-          <DataListShell
-            title="Licencas de Software"
-            titleIcon="key"
-            accentColor="#3b82f6"
-            count={filteredLicenses.length}
-            sx={{ ...cardStyle, overflow: 'hidden' }}
-          >
-            <Box sx={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: tableHeaderBg }}>
-                    {['Software', 'Fabricante', 'Tipo Licenca', 'Quantidade', 'Expiracao', 'Custo', 'Acoes'].map((header, i) => (
-                      <th key={header} style={{
-                        padding: '16px 24px',
-                        textAlign: i === 6 ? 'center' : 'left',
-                        fontSize: '12px', fontWeight: 600, color: textMuted,
-                        textTransform: 'uppercase', letterSpacing: '0.5px',
-                        borderBottom: cardBorder
-                      }}>{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredLicenses.map(license => {
-                    const isExpiring = license.expirationDate && (new Date(license.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) <= 30;
-                    const isExpired = license.expirationDate && new Date(license.expirationDate) < new Date();
-                    return (
-                      <tr key={license.id} style={{ transition: 'all 0.2s ease', cursor: 'pointer' }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = tableRowHover}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                        <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{
-                              width: '40px', height: '40px', borderRadius: '8px',
-                              background: 'rgba(59, 130, 246, 0.15)',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6',
-                              fontWeight: 600, fontSize: '14px'
-                            }}>{license.name?.substring(0, 2).toUpperCase()}</div>
-                            <div>
-                              <div style={{ color: textPrimary, fontWeight: 600, marginBottom: '2px' }}>{license.name}</div>
-                              <div style={{ color: textMuted, fontSize: '12px' }}>{license.licenseKey ? `Chave: ${license.licenseKey.substring(0, 8)}...` : 'Sem chave'}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textSecondary, fontSize: '14px', borderBottom: cardBorder }}>
-                          {license.vendor}
-                        </td>
-                        <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
-                          <span style={{
-                            padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                            background: license.licenseType === 'PERPETUA' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(37, 99, 235, 0.15)',
-                            color: license.licenseType === 'PERPETUA' ? '#10b981' : '#2563eb'
-                          }}>{license.licenseType || 'Anual'}</span>
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textPrimary, fontWeight: 600, fontSize: '14px', borderBottom: cardBorder }}>
-                          {license.quantity}
-                        </td>
-                        <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
-                          {license.expirationDate ? (
-                            <span style={{
-                              padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                              background: isExpired ? 'rgba(244, 63, 94, 0.15)' : isExpiring ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                              color: isExpired ? '#f43f5e' : isExpiring ? '#f59e0b' : '#10b981'
-                            }}>
-                              {new Date(license.expirationDate).toLocaleDateString('pt-BR')}
-                            </span>
-                          ) : (
-                            <span style={{ color: textMuted, fontSize: '14px' }}>Perpetua</span>
-                          )}
-                        </td>
-                        <td style={{ padding: '16px 24px', color: textPrimary, fontWeight: 600, fontSize: '14px', borderBottom: cardBorder }}>
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(license.cost || 0)}
-                        </td>
-                        <td style={{ padding: '16px 24px', textAlign: 'center', borderBottom: cardBorder }}>
-                          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                            <Tooltip title="Visualizar">
-                              <IconButton size="small" onClick={() => handleOpenView(license)} sx={{
-                                width: 32, height: 32, borderRadius: '8px',
-                                background: surfaceBg, border: softBorder, color: textSecondary,
-                                '&:hover': { background: 'rgba(59, 130, 246, 0.15)', borderColor: '#3b82f6', color: '#3b82f6' }
-                              }}><span className="material-icons-round" style={{ fontSize: '18px' }}>visibility</span></IconButton>
-                            </Tooltip>
-                            {canEdit && (
-                              <Tooltip title="Editar">
-                                <IconButton size="small" onClick={() => handleOpenEdit(license)} sx={{
-                                  width: 32, height: 32, borderRadius: '8px',
-                                  background: surfaceBg, border: softBorder, color: textSecondary,
-                                  '&:hover': { background: 'rgba(59, 130, 246, 0.15)', borderColor: '#3b82f6', color: '#3b82f6' }
-                                }}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
-                              </Tooltip>
-                            )}
-                            {canDeletePerm && (
-                              <Tooltip title="Excluir">
-                                <IconButton size="small" onClick={() => { setDeleteId(license.id); setDeleteType('LICENSE'); setConfirmOpen(true); }} sx={{
-                                  width: 32, height: 32, borderRadius: '8px',
-                                  background: surfaceBg, border: softBorder, color: textSecondary,
-                                  '&:hover': { background: 'rgba(244, 63, 94, 0.15)', borderColor: '#f43f5e', color: '#f43f5e' }
-                                }}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
-                              </Tooltip>
-                            )}
-                          </Box>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </Box>
-
-            {licenses.length === 0 && !loading && (
-              <EmptyState
-                icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>key</span>}
-                title="Nenhuma licença cadastrada"
-                description="Adicione licenças de software para acompanhar validade, custos e uso."
-                actionLabel="Nova Licença"
-                actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                onAction={handleOpenNew}
-              />
-            )}
-          </DataListShell>
+          <DataListTable
+            shell={{
+              title: 'Licenças de software',
+              titleIcon: 'key',
+              accentColor: '#3b82f6',
+              count: filteredLicenses.length,
+              sx: { ...cardStyle, overflow: 'hidden' },
+            }}
+            columns={getLicenseColumns({
+              textPrimary,
+              textSecondary,
+              textMuted,
+              surfaceBg,
+              softBorder,
+              canEdit,
+              canDelete: canDeletePerm,
+              onView: handleOpenView,
+              onEdit: handleOpenEdit,
+              onDelete: (lic) => {
+                setDeleteId(lic.id);
+                setDeleteType('LICENSE');
+                setConfirmOpen(true);
+              },
+            })}
+            rows={filteredLicenses}
+            sortRows={sortLicenseRows}
+            defaultOrderBy="expirationSort"
+            defaultOrder="desc"
+            getDefaultOrderForColumn={(id) =>
+              id === 'expirationSort' || id === 'cost' || id === 'quantity' ? 'desc' : 'asc'
+            }
+            loading={loading}
+            emptyMessage={
+              licenses.length === 0
+                ? 'Nenhuma licença cadastrada.'
+                : 'Nenhuma licença corresponde ao termo de busca atual.'
+            }
+            rowsPerPageDefault={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            resetPaginationKey={licenseListResetKey}
+            onRowClick={handleOpenView}
+          />
         </>
       )}
 
