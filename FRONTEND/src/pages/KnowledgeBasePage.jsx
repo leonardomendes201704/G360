@@ -253,6 +253,8 @@ export default function KnowledgeBasePage() {
         [filters.search, filters.categoryId]
     );
 
+    const hasActiveListFilters = Boolean((filters.search || '').trim()) || Boolean(filters.categoryId);
+
     const openFilterDrawer = () => {
         setDraftFilters({ categoryId: filters.categoryId || '' });
         setFilterDrawerOpen(true);
@@ -699,9 +701,13 @@ export default function KnowledgeBasePage() {
                                 defaultOrderBy="createdAt"
                                 defaultOrder="desc"
                                 getDefaultOrderForColumn={(id) => (id === 'createdAt' || id === 'views' ? 'desc' : 'asc')}
-                                emptyMessage="Nenhum artigo corresponde aos filtros atuais."
+                                emptyMessage={
+                                    hasActiveListFilters
+                                        ? 'Nenhum artigo com os filtros de busca ou categoria atuais.'
+                                        : 'Nenhum artigo na base ainda.'
+                                }
                                 emptyContent={
-                                    canCreate
+                                    canCreate && !hasActiveListFilters
                                         ? (
                                             <EmptyState
                                                 icon={<ArticleIcon sx={{ fontSize: 'inherit' }} />}
