@@ -79,4 +79,6 @@ Inclui (entre outros): `ProjectTasksList.jsx`, `ProjectRisks.jsx`, `ProjectCosts
 2. Alinhar barra de filtros (`FilterDrawer`), KPIs (`KpiGrid`), vazio (`EmptyState`) e loading (`TableSkeleton`) ao padrão do Portal.
 3. Migrar **Grupo B** (`EP-010`) e Grupos C/D avaliar caso a caso (tabelas pivot vs lista).
 
+**Plano de migração restante (`DataListTable`), ordem sugerida fase a fase:** [data-list-table-migration-plan.md](./data-list-table-migration-plan.md).
+
 Ver também: [data-grid-shell.md](data-grid-shell.md).

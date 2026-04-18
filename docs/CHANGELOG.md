@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-18]
 
+### Docs
+- Plano de migração das listagens ainda em `<table>` / MUI manual para **`DataListTable`**: [data-list-table-migration-plan.md](patterns/data-list-table-migration-plan.md) (fases 1–3 + exceções); referência acrescentada em [data-grids-inventory.md](patterns/data-grids-inventory.md).
+
 ### Refactored
 - **Fornecedores (`/suppliers`) e Riscos (vista lista em `/risks`):** grelha principal com **`DataListTable`**; colunas e `sort` em ficheiros dedicados (`supplierList*`, `risks/riskList*`). **`BulkActionsBar`**: `onClearAll`, `allSelected` e `icon: 'delete'`; `tabela-fornecedores` e `tabela-riscos`. Filtros e (riscos) gráficos inalterados.
   - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`, `FRONTEND/src/pages/suppliers/supplierListColumns.jsx`, `FRONTEND/src/pages/suppliers/supplierListSort.js`, `FRONTEND/src/pages/suppliers/supplierListUtils.js`
