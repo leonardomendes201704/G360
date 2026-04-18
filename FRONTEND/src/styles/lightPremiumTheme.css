@@ -206,11 +206,17 @@ body.light-premium-theme,
     border: 1px solid var(--modal-border-strong) !important;
 }
 
-.light-premium-theme .MuiDialog-root .MuiOutlinedInput-input,
+/* TextField multiline / input: flex alinha conteúdo. Native <select> NÃO pode usar display:flex — some o texto selecionado (Chrome/Edge). */
+.light-premium-theme .MuiDialog-root .MuiOutlinedInput-input:not(.MuiNativeSelect-select),
 .light-premium-theme .MuiDialog-root .MuiSelect-select {
     padding: 12px 14px !important;
     display: flex;
     align-items: center;
+}
+
+.light-premium-theme .MuiDialog-root .MuiNativeSelect-select {
+    padding: 12px 14px !important;
+    color: var(--light-text-primary) !important;
 }
 
 .light-premium-theme .MuiOutlinedInput-notchedOutline {

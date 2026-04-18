@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Fixed
+- **Portal de Chamados / StandardModal:** Textos dos `<select>` nativos (`TextField` + `SelectProps.native`) apareciam em branco após escolher Departamento, Centro de custo ou Ativo — regras CSS aplicavam `display: flex` a `.MuiOutlinedInput-input`, o que inclui `MuiNativeSelect-select` e quebra a pintura do valor em Chrome/Edge. Excluído `MuiNativeSelect-select` dessa regra; padding e cor explícitos para o native select em `lightPremiumTheme.css` e `darkPremiumTheme.css`.
+
 ### Added
 - **Docker:** Stack local com **PostgreSQL**, **backend** (Node/Express) e **frontend** (build Vite + Nginx) na raiz do repo. `docker compose up -d --build`; portas **8080** (UI), **8500** (API), **5433** (Postgres no host). Volume `g360_uploads` para ficheiros em `/uploads`. Backend executa `prisma db push` ao arranque para alinhar o schema ao Postgres vazio; instala dependências com `npm install --legacy-peer-deps` (lock do backend pode estar desalinhado com transitivas). **Backend e frontend** usam contexto de build na **raiz** do repo para copiar `rbac-matrix.json` para `/rbac-matrix.json` (frontend: `RoleModal.jsx`; backend: `audit-log-module.js`). `.dockerignore` na raiz reduz contexto enviado ao daemon.
   - `docker-compose.yml`
