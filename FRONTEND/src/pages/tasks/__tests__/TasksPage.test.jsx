@@ -18,9 +18,6 @@ vi.mock('../../../components/tasks/TaskKanban', () => ({
 vi.mock('../../../components/tasks/DarkTaskKanban', () => ({
     default: ({ tasks }) => <div data-testid="kanban-view-dark">Dark Kanban Items: {tasks.length}</div>
 }));
-vi.mock('../../../components/tasks/TaskList', () => ({
-    default: ({ tasks }) => <div data-testid="list-view">List Items: {tasks.length}</div>
-}));
 vi.mock('../../../components/tasks/DarkTaskList', () => ({
     default: ({ tasks }) => <div data-testid="list-view-dark">Dark List Items: {tasks.length}</div>
 }));
@@ -100,7 +97,7 @@ describe('TasksPage', () => {
         const listBtn = screen.getByText('Lista');
         fireEvent.click(listBtn);
 
-        expect(screen.getByTestId('list-view')).toBeInTheDocument();
+        expect(screen.getByTestId('tabela-tarefas-gerais')).toBeInTheDocument();
         expect(screen.queryByTestId('kanban-view')).not.toBeInTheDocument();
 
         // Back to Kanban

@@ -13,16 +13,16 @@ import { getReferenceUsers } from '../../services/reference.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 
 // Components
-import ListComponent from '../../components/tasks/TaskList';
+import DataListTable from '../../components/common/DataListTable';
 import KanbanComponent from '../../components/tasks/TaskKanban';
 import TaskPlanningGrid from '../../components/tasks/TaskPlanningGrid';
 import TaskModal from '../../components/modals/TaskModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
-import DataListShell from '../../components/common/DataListShell';
+import { getGeneralTaskListColumns } from './taskListColumns';
+import { sortGeneralTaskRows, isTaskOverdueForList } from './taskListSort';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
-import { Delete as DeleteIcon, Done as DoneIcon } from '@mui/icons-material';
 
 import './TasksPage.css';
 import jsPDF from 'jspdf';
@@ -513,6 +513,12 @@ const TasksPage = () => {
         });
     }, [tasks, statusFilter, priorityFilter, assigneeFilter, search]);
 
+    const resetPaginationKey = useMemo(
+        () =>
+            `${search}|${statusFilter.join(',')}|${priorityFilter}|${assigneeFilter}|${viewMode}`,
+        [search, statusFilter, priorityFilter, assigneeFilter, viewMode]
+    );
+
     // KPI config igual as tarefas de projeto
     const kpiConfig = [
         { key: 'total', label: 'Total de Tarefas', value: stats.total, icon: 'assignment', color: '#2563eb' },
@@ -811,40 +817,31 @@ const TasksPage = () => {
 
             {/* Content based on viewMode */}
             {viewMode === 'LIST' ? (
-                <DataListShell
-                    title="Lista de Tarefas"
-                    titleIcon="assignment"
-                    accentColor="#2563eb"
-                    count={filteredTasks.length}
-                    sx={{
-                        borderRadius: '8px',
-                        background: cardBg,
-                        border: `1px solid ${borderColor}`,
-                        boxShadow: cardShadow,
-                        overflow: 'hidden',
+                <DataListTable
+                    shell={{
+                        title: 'Lista de Tarefas',
+                        titleIcon: 'assignment',
+                        accentColor: '#2563eb',
+                        count: filteredTasks.length,
+                        sx: {
+                            borderRadius: '8px',
+                            background: cardBg,
+                            border: `1px solid ${borderColor}`,
+                            boxShadow: cardShadow,
+                            overflow: 'hidden',
+                        },
                     }}
-                >
-                    <BulkActionsBar
-                        selectedCount={selectedIds.length}
-                        totalCount={filteredTasks.length}
-                        onSelectAll={() => setSelectedIds(selectedIds.length === filteredTasks.length ? [] : filteredTasks.map(t => t.id))}
-                        onClear={() => setSelectedIds([])}
-                        actions={[
-                            { label: 'Concluir', icon: <DoneIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDone, color: '#10b981' },
-                            { label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDeleteTasks, color: '#ef4444' },
-                        ]}
-                    />
-                    <ListComponent
-                        tasks={filteredTasks}
-                        onTaskClick={handleTaskClick}
-                        onDeleteTask={handleDeleteClick}
-                        onStatusChange={handleTaskStatusChange}
-                        selectedIds={selectedIds}
-                        onSelectionChange={setSelectedIds}
-                        canWrite={canWrite}
-                        activeTimerTaskId={isRunning ? activeTimer?.taskId : null}
-                        currentUserId={user?.id}
-                        onTimerToggle={async (task) => {
+                    dataTestidTable="tabela-tarefas-gerais"
+                    columns={getGeneralTaskListColumns({
+                        canWrite,
+                        selectedIds,
+                        setSelectedIds,
+                        onTaskClick: handleTaskClick,
+                        onDeleteTask: handleDeleteClick,
+                        onStatusChange: handleTaskStatusChange,
+                        currentUserId: user?.id,
+                        activeTimerTaskId: isRunning ? activeTimer?.taskId : null,
+                        onTimerToggle: async (task) => {
                             try {
                                 if (isRunning && activeTimer?.taskId === task.id) {
                                     await stopTimer();
@@ -856,9 +853,58 @@ const TasksPage = () => {
                             } catch (err) {
                                 enqueueSnackbar(err?.response?.data?.message || 'Erro no timer.', { variant: 'error' });
                             }
-                        }}
-                    />
-                </DataListShell>
+                        },
+                    })}
+                    rows={filteredTasks}
+                    sortRows={sortGeneralTaskRows}
+                    defaultOrderBy="title"
+                    defaultOrder="asc"
+                    getDefaultOrderForColumn={(id) => (id === 'due' ? 'desc' : 'asc')}
+                    resetPaginationKey={resetPaginationKey}
+                    emptyMessage="Nenhuma tarefa encontrada."
+                    onRowClick={handleTaskClick}
+                    isRowSelected={(row) => selectedIds.includes(row.id)}
+                    getRowSx={(task) => ({
+                        bgcolor: selectedIds.includes(task.id)
+                            ? 'rgba(102, 126, 234, 0.06)'
+                            : isTaskOverdueForList(task)
+                              ? '#fef2f2'
+                              : 'transparent',
+                        borderLeft: selectedIds.includes(task.id)
+                            ? '3px solid #667eea'
+                            : isTaskOverdueForList(task)
+                              ? '3px solid #ef4444'
+                              : '3px solid transparent',
+                        '&:hover': {
+                            bgcolor: selectedIds.includes(task.id)
+                                ? 'rgba(102, 126, 234, 0.1)'
+                                : isTaskOverdueForList(task)
+                                  ? '#fee2e2'
+                                  : (isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.04)'),
+                        },
+                    })}
+                    renderBeforeTable={({ paginatedRows }) => (
+                        <BulkActionsBar
+                            selectedCount={selectedIds.length}
+                            totalCount={paginatedRows.length}
+                            onSelectAll={() => {
+                                const pageIds = paginatedRows.map((t) => t.id);
+                                const allOnPage = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+                                if (allOnPage) {
+                                    setSelectedIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+                                } else {
+                                    setSelectedIds((prev) => [...new Set([...prev, ...pageIds])]);
+                                }
+                            }}
+                            onClearAll={() => setSelectedIds([])}
+                            allSelected={paginatedRows.length > 0 && paginatedRows.every((r) => selectedIds.includes(r.id))}
+                            actions={[
+                                { label: 'Concluir', icon: 'task_alt', onClick: handleBulkDone, color: '#10b981' },
+                                { label: 'Excluir', icon: 'delete', onClick: handleBulkDeleteTasks, color: '#ef4444' },
+                            ]}
+                        />
+                    )}
+                />
             ) : viewMode === 'PLANNING' ? (
                 <TaskPlanningGrid
                     tasks={filteredTasks}

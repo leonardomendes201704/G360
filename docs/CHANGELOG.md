@@ -5,6 +5,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-18]
+
+### Refactored
+- **Tarefas (`/tasks`):** vista **Lista** passa a **`DataListTable`** com `taskListColumns.jsx` e `taskListSort.js` (ordenação e paginação no cliente, `data-testid` `tabela-tarefas-gerais`); `BulkActionsBar` na página corrente; `getRowSx` para atraso/seleção. Kanban e planejamento inalterados. Inventário de grelhas atualizado.
+  - `FRONTEND/src/pages/tasks/TasksPage.jsx`, `FRONTEND/src/pages/tasks/taskListColumns.jsx`, `FRONTEND/src/pages/tasks/taskListSort.js`, `FRONTEND/src/pages/tasks/__tests__/TasksPage.test.jsx`, `docs/patterns/data-grids-inventory.md`
+
 ## [2026-04-16]
 
 ### Fixed
