@@ -12,6 +12,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
 
 ### Changed
+- **Service Desk:** Lista de chamados com **ordenação** (`TableSortLabel`, padrão data de abertura descendente) e **paginação** (`TablePagination`, 5–50 linhas), alinhado ao Portal; coluna **Abertura** para corresponder à ordenação por data.
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
+
 - **US-026 / EP-010:** **Grupo B (fecho)** — **`DataListShell`** em **Central de Serviços** (`ServiceDeskDashboard.jsx`), **DRE** (`DREPage.jsx`), **Relatório de Horas** (`TimeReportPage.jsx`), **Finance** separadores Orçamentos e Plano de contas (`FinancePage.jsx`), **Catálogo ITBM** (`CatalogAdmin.jsx`), **Detalhe do contrato** anexos/aditivos (`ContractDetailsPage.jsx`). **EP-010** encerrado.
   - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
   - `FRONTEND/src/pages/finance/DREPage.jsx`

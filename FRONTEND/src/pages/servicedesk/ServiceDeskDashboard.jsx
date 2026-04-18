@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { 
   TextField, Tooltip,
   Box, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, TableContainer, Paper,
-  CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Chip, Avatar, useTheme, keyframes
+  CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Chip, Avatar, useTheme, keyframes,
+  TableSortLabel, TablePagination
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -14,6 +15,9 @@ import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import DataListShell from '../../components/common/DataListShell';
+import { getTicketStatusSortIndex } from '../../constants/ticketStatus';
+
+const PRIORITY_RANK = { LOW: 1, MEDIUM: 2, HIGH: 3, URGENT: 4 };
 
 const STATUS_COLORS = {
   'OPEN': 'info',
@@ -50,7 +54,13 @@ const ServiceDeskDashboard = () => {
   const [resolving, setResolving] = useState(false);
   const [metrics, setMetrics] = useState(null);
 
+  const [orderBy, setOrderBy] = useState('createdAt');
+  const [order, setOrder] = useState('desc');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   useEffect(() => {
+    setPage(0);
     fetchTickets();
   }, [filterStatus]);
 
@@ -139,6 +149,82 @@ const ServiceDeskDashboard = () => {
     slaCompliance = Math.round(((closedTickets.length - closedBreached) / closedTickets.length) * 100);
     slaFailure = 100 - slaCompliance;
   }
+
+  const handleRequestSort = (property) => {
+    if (orderBy === property) {
+      setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setOrderBy(property);
+      setOrder(['createdAt', 'slaResolveDue'].includes(property) ? 'desc' : 'asc');
+    }
+  };
+
+  const sortedTickets = useMemo(() => {
+    const list = [...tickets];
+    const mult = order === 'asc' ? 1 : -1;
+    list.sort((a, b) => {
+      let cmp = 0;
+      switch (orderBy) {
+        case 'code':
+          cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
+          break;
+        case 'title':
+          cmp = String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR', { sensitivity: 'base' });
+          break;
+        case 'department':
+          cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', { sensitivity: 'base' });
+          break;
+        case 'costCenter':
+          cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', { sensitivity: 'base' });
+          break;
+        case 'priority': {
+          const ra = PRIORITY_RANK[a.priority] ?? 0;
+          const rb = PRIORITY_RANK[b.priority] ?? 0;
+          cmp = ra - rb;
+          break;
+        }
+        case 'slaResolveDue': {
+          const ta = a.slaResolveDue ? new Date(a.slaResolveDue).getTime() : null;
+          const tb = b.slaResolveDue ? new Date(b.slaResolveDue).getTime() : null;
+          if (ta == null && tb == null) cmp = 0;
+          else if (ta == null) cmp = 1;
+          else if (tb == null) cmp = -1;
+          else cmp = ta - tb;
+          break;
+        }
+        case 'status': {
+          const ia = getTicketStatusSortIndex(a.status);
+          const ib = getTicketStatusSortIndex(b.status);
+          cmp = ia - ib;
+          if (cmp === 0) {
+            cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true });
+          }
+          break;
+        }
+        case 'createdAt':
+          cmp = new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+          break;
+        default:
+          cmp = 0;
+      }
+      return mult * cmp;
+    });
+    return list;
+  }, [tickets, orderBy, order]);
+
+  const paginatedTickets = useMemo(
+    () => sortedTickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [sortedTickets, page, rowsPerPage]
+  );
+
+  useEffect(() => {
+    const maxPage = Math.max(0, Math.ceil(sortedTickets.length / rowsPerPage) - 1);
+    if (page > maxPage) {
+      setPage(maxPage);
+    }
+  }, [sortedTickets.length, rowsPerPage, page]);
+
+  const thSx = { color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' };
 
   return (
     <Box>
@@ -234,26 +320,44 @@ const ServiceDeskDashboard = () => {
         {loading ? (
           <Box p={4} display="flex" justifyContent="center"><CircularProgress /></Box>
         ) : (
+          <>
           <Table size="small" sx={{ tableLayout: 'fixed', width: '100%' }}>
             <TableHead sx={{ bgcolor: mode==='dark'?'#1e293b':'#f8fafc' }}>
               <TableRow>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '8%', minWidth: 88 }}>Cód.</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '26%', minWidth: 160 }}>Solicitação</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '13%', minWidth: 100 }}>Dept.</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '13%', minWidth: 100 }}>C. custo</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '10%', minWidth: 92 }}>Prioridade</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '11%', minWidth: 104 }}>Prazo SLA</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '11%', minWidth: 100 }}>Status</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '8%', minWidth: 88 }}>Operar</TableCell>
+                <TableCell sortDirection={orderBy === 'code' ? order : false} sx={{ ...thSx, width: '7%', minWidth: 80 }}>
+                  <TableSortLabel active={orderBy === 'code'} direction={orderBy === 'code' ? order : 'asc'} onClick={() => handleRequestSort('code')}>Cód.</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'title' ? order : false} sx={{ ...thSx, width: '21%', minWidth: 140 }}>
+                  <TableSortLabel active={orderBy === 'title'} direction={orderBy === 'title' ? order : 'asc'} onClick={() => handleRequestSort('title')}>Solicitação</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'createdAt' ? order : false} sx={{ ...thSx, width: '8%', minWidth: 88 }}>
+                  <TableSortLabel active={orderBy === 'createdAt'} direction={orderBy === 'createdAt' ? order : 'asc'} onClick={() => handleRequestSort('createdAt')}>Abertura</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'department' ? order : false} sx={{ ...thSx, width: '11%', minWidth: 92 }}>
+                  <TableSortLabel active={orderBy === 'department'} direction={orderBy === 'department' ? order : 'asc'} onClick={() => handleRequestSort('department')}>Dept.</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'costCenter' ? order : false} sx={{ ...thSx, width: '11%', minWidth: 92 }}>
+                  <TableSortLabel active={orderBy === 'costCenter'} direction={orderBy === 'costCenter' ? order : 'asc'} onClick={() => handleRequestSort('costCenter')}>C. custo</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'priority' ? order : false} sx={{ ...thSx, width: '9%', minWidth: 88 }}>
+                  <TableSortLabel active={orderBy === 'priority'} direction={orderBy === 'priority' ? order : 'asc'} onClick={() => handleRequestSort('priority')}>Prioridade</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'slaResolveDue' ? order : false} sx={{ ...thSx, width: '10%', minWidth: 96 }}>
+                  <TableSortLabel active={orderBy === 'slaResolveDue'} direction={orderBy === 'slaResolveDue' ? order : 'asc'} onClick={() => handleRequestSort('slaResolveDue')}>Prazo SLA</TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === 'status' ? order : false} sx={{ ...thSx, width: '10%', minWidth: 96 }}>
+                  <TableSortLabel active={orderBy === 'status'} direction={orderBy === 'status' ? order : 'asc'} onClick={() => handleRequestSort('status')}>Status</TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ ...thSx, width: '8%', minWidth: 80 }}>Operar</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {tickets.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} align="center" sx={{ py: 6, color: 'text.secondary' }}>Fila Limpa! Nenhum chamado em aberto. 🎉</TableCell>
+                  <TableCell colSpan={9} align="center" sx={{ py: 6, color: 'text.secondary' }}>Fila Limpa! Nenhum chamado em aberto. 🎉</TableCell>
                 </TableRow>
               ) : (
-                tickets.map(t => {
+                paginatedTickets.map(t => {
                   const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
                   return (
                     <TableRow key={t.id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -264,6 +368,9 @@ const ServiceDeskDashboard = () => {
                           <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', flexShrink: 0 }}>{t.requester?.name?.charAt(0) || 'U'}</Avatar>
                           <Typography variant="caption" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }} title={t.requester?.name}>{t.requester?.name}</Typography>
                         </Box>
+                      </TableCell>
+                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', fontSize: '0.8rem', minWidth: 0, overflow: 'hidden' }}>
+                        {t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-BR') : '—'}
                       </TableCell>
                       <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
                         <Typography variant="caption" component="span" display="block" title={t.department?.name || ''} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -324,6 +431,23 @@ const ServiceDeskDashboard = () => {
               )}
             </TableBody>
           </Table>
+          {tickets.length > 0 ? (
+            <TablePagination
+              component="div"
+              count={sortedTickets.length}
+              page={page}
+              onPageChange={(_, newPage) => setPage(newPage)}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={(e) => {
+                setRowsPerPage(parseInt(e.target.value, 10));
+                setPage(0);
+              }}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              labelRowsPerPage="Linhas por página"
+              labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
+            />
+          ) : null}
+          </>
         )}
       </TableContainer>
       </DataListShell>
