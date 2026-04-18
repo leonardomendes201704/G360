@@ -17,7 +17,7 @@ Componentes base existentes:
 | Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | **`DataListTable`** em modo **servidor** (`paginationMode: 'server'`, sort/paginação via API); `projectListColumns.jsx`; busca na toolbar do shell. |
 | Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: **`DataListTable`** (`incidentListColumns`, `sortIncidentsRows`); casca partilhada com Kanban via **`DataListShell`**; Kanban alternativo. |
 | GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | Dashboard + vista Lista: **`DataListTable`**; `ChangeRequestDashboard.jsx` reutiliza as mesmas colunas/ordenação. Calendário em **`DataListShell`**. |
-| Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |
+| Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | **`DataListTable`** (`supplierListColumns`, `supplierListSort`, `supplierListUtils`); `FilterDrawer` + `BulkActionsBar` + busca; `tabela-fornecedores`. |
 | Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | **`DataListTable`** (`contractListColumns`, `contractListSort`, `contractListUtils`); `FilterDrawer` + export + busca na toolbar; `tabela-contratos`. |
 | Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | Modo lista: **`DataListTable`** (`knowledgeArticleListColumns`, `sortKnowledgeArticleRows`); grelha de cartões inalterada; vazio rico com **`EmptyState`** (CTA) quando `KB` CREATE. |
 | Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning; modo **lista** com **`DataListTable`** (`taskListColumns.jsx`, `taskListSort.js`); `BulkActionsBar` em `renderBeforeTable`. |
@@ -32,7 +32,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 | Área | Ficheiro | Notas |
 |------|----------|--------|
 | Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | **`DataListTable`** (`problemListColumns`, `sortProblemsRows`); US-025. |
-| Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo lista: **`DataListShell`** + `BulkActionsBar` (US-025). |
+| Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo **lista** (toggle): **`DataListTable`** (`risks/riskListColumns`, `risks/riskListSort`, `risks/riskListUtils`); `BulkActionsBar`; dashboard/heatmap inalterados; `tabela-riscos`. |
 | Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Sep. **Orçamentos** e **Plano de contas:** **`DataListTable`** (`budgetListColumns`/`accountListColumns`, sorts dedicados; `tabela-orcamentos`, `tabela-plano-contas`). |
 | Financeiro | `FRONTEND/src/pages/finance/ExpensesPage.jsx` | Contas a pagar: **`DataListTable`** (`expenseListColumns`, `expenseListSort`; `tabela-despesas`), embutida no separador «Despesas» de `/finance`. |
 | Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | Tabela MUI com **linhas expansíveis** (detalhe mensal aninhado); continua fora do padrão `DataListTable` em massa. «Detalhamento Mensal» com **`DataListShell`** (US-026) onde aplicável. |

@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { useSnackbar } from 'notistack';
-import {
-    Box, Typography, Button, TextField, MenuItem, IconButton, Collapse, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Tooltip, Avatar, Checkbox
-} from '@mui/material';
-import { Add, FilterAlt, Search, Dashboard, List as ListIcon, Shield, Edit, Delete, Assignment, Visibility, Delete as DeleteIcon } from '@mui/icons-material';
+import { Box, Typography, Button, TextField, MenuItem, IconButton, Collapse, Paper, Chip, Tooltip, Avatar } from '@mui/material';
+import { Add, FilterAlt, Search, Dashboard, List as ListIcon, Shield } from '@mui/icons-material';
 import BulkActionsBar from '../components/common/BulkActionsBar';
 import { ThemeContext } from '../contexts/ThemeContext';
 
@@ -16,10 +14,11 @@ import { getReferenceUsers } from '../services/reference.service';
 import { createGeneralTask } from '../services/task.service';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import EmptyState from '../components/common/EmptyState';
-import DataListShell from '../components/common/DataListShell';
+import DataListTable from '../components/common/DataListTable';
+import { getRiskListColumns } from './risks/riskListColumns';
+import { sortRiskRows } from './risks/riskListSort';
 import usePersistedFilters from '../hooks/usePersistedFilters';
 import { useUndoToast } from '../hooks/useUndoToast';
-import InlineStatusSelect from '../components/common/InlineStatusSelect';
 import { AuthContext } from '../contexts/AuthContext';
 
 const RisksPage = () => {
@@ -118,34 +117,10 @@ const RisksPage = () => {
         catch (e) { enqueueSnackbar('Erro ao atualizar status', { variant: 'error' }); fetchData(); }
     };
 
-    const riskStatusConfig = {
-        'IDENTIFICADO': { label: 'Identificado', color: '#64748b', bg: 'rgba(100, 116, 139, 0.15)' },
-        'EM_ANALISE': { label: 'Em Análise', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)' },
-        'TRATAMENTO': { label: 'Tratamento', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)' },
-        'MONITORAMENTO': { label: 'Monitoramento', color: '#2563eb', bg: 'rgba(37, 99, 235, 0.15)' },
-        'ACEITO': { label: 'Aceito', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.15)' },
-        'FECHADO': { label: 'Fechado', color: '#10b981', bg: 'rgba(16, 185, 129, 0.15)' },
-    };
-    const riskStatusOptions = Object.entries(riskStatusConfig).map(([value, cfg]) => ({ value, label: cfg.label, color: cfg.color }));
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'IDENTIFICADO': return 'default';
-            case 'EM_ANALISE': return 'info';
-            case 'TRATAMENTO': return 'warning';
-            case 'MONITORAMENTO': return 'primary';
-            case 'ACEITO': return 'secondary';
-            case 'FECHADO': return 'success';
-            default: return 'default';
-        }
-    };
-
-    const getSeverityLabel = (severity) => {
-        if (severity >= 16) return { label: 'CRÍTICO', color: '#dc2626', bg: 'rgba(220, 38, 38, 0.1)' };
-        if (severity >= 10) return { label: 'ALTO', color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' };
-        if (severity >= 6) return { label: 'MÉDIO', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' };
-        return { label: 'BAIXO', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' };
-    };
+    const listResetKey = useMemo(
+        () => [filters.search, filters.status, filters.category, filters.impact, filters.probability, risks.length].join('|'),
+        [filters.search, filters.status, filters.category, filters.impact, filters.probability, risks.length]
+    );
 
     return (
         <Box>
@@ -260,140 +235,66 @@ const RisksPage = () => {
             )}
 
             {viewMode === 'LIST' && (
-                <DataListShell
-                    title="Registro de riscos"
-                    titleIcon="shield"
-                    accentColor="#2563eb"
-                    count={risks.length}
-                >
-                    <BulkActionsBar
-                        selectedCount={selectedIds.length}
-                        totalCount={risks.length}
-                        onSelectAll={() => setSelectedIds(selectedIds.length === risks.length ? [] : risks.map(r => r.id))}
-                        onClear={() => setSelectedIds([])}
-                        actions={[{ label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDeleteRisks, color: '#ef4444' }]}
-                    />
-                    <TableContainer
-                        component={Paper}
-                        elevation={0}
-                        sx={{
-                            borderRadius: '8px',
-                            border: 'none',
-                            borderTop: `1px solid ${borderColor}`,
-                            background: cardBg,
-                            boxShadow: 'none',
-                        }}
-                    >
-                        <Table>
-                            <TableHead>
-                                <TableRow sx={{ bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }}>
-                                    <TableCell padding="checkbox" sx={{ width: 48 }}>
-                                        <Checkbox
-                                            size="small"
-                                            checked={risks.length > 0 && risks.every(r => selectedIds.includes(r.id))}
-                                            indeterminate={risks.some(r => selectedIds.includes(r.id)) && !risks.every(r => selectedIds.includes(r.id))}
-                                            onChange={() => setSelectedIds(risks.every(r => selectedIds.includes(r.id)) ? [] : risks.map(r => r.id))}
-                                            sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' }, '&.MuiCheckbox-indeterminate': { color: '#667eea' } }}
-                                        />
-                                    </TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>CÓDIGO</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>TÍTULO</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>CATEGORIA</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>SEVERIDADE</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>OWNER</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>STATUS</TableCell>
-                                    <TableCell sx={{ color: textSecondary, fontWeight: 600 }}>PLANOS</TableCell>
-                                    <TableCell align="right" sx={{ color: textSecondary, fontWeight: 600 }}>AÇÕES</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {risks.map(risk => {
-                                    const sev = getSeverityLabel(risk.severity);
-                                    const isSelected = selectedIds.includes(risk.id);
-                                    return (
-                                        <TableRow key={risk.id} hover
-                                            selected={isSelected}
-                                            sx={{ '&.Mui-selected': { bgcolor: 'rgba(102,126,234,0.08)' }, '&.Mui-selected:hover': { bgcolor: 'rgba(102,126,234,0.12)' } }}
-                                        >
-                                            <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
-                                                <Checkbox
-                                                    size="small"
-                                                    checked={isSelected}
-                                                    onChange={() => setSelectedIds(prev => isSelected ? prev.filter(id => id !== risk.id) : [...prev, risk.id])}
-                                                    sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' } }}
-                                                />
-                                            </TableCell>
-                                            <TableCell sx={{ color: textPrimary, fontSize: '13px', fontFamily: 'monospace' }}>{risk.code}</TableCell>
-                                            <TableCell sx={{ color: textPrimary, fontWeight: 600 }}>{risk.title}</TableCell>
-                                            <TableCell><Chip label={risk.category} size="small" variant="outlined" sx={{ borderRadius: '8px', fontSize: '11px', color: textSecondary, borderColor: borderColor }} /></TableCell>
-                                            <TableCell>
-                                                <Chip label={`${risk.severity} - ${sev.label}`} size="small" sx={{ bgcolor: sev.bg, color: sev.color, fontWeight: 700, borderRadius: '8px' }} />
-                                            </TableCell>
-                                            <TableCell>
-                                                {risk.owner ? (
-                                                    <Tooltip title={risk.owner.name}>
-                                                        <Avatar src={risk.owner.avatar} sx={{ width: 24, height: 24, fontSize: '12px' }}>{risk.owner.name.charAt(0)}</Avatar>
-                                                    </Tooltip>
-                                                ) : '-'}
-                                            </TableCell>
-                                            <TableCell onClick={(e) => e.stopPropagation()}>
-                                                <InlineStatusSelect
-                                                    status={risk.status}
-                                                    statusConfig={riskStatusConfig}
-                                                    statusOptions={riskStatusOptions}
-                                                    onStatusChange={(newStatus) => handleRiskStatusChange(risk.id, newStatus)}
-                                                    disabled={!canEdit}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <Chip
-                                                        icon={<Assignment style={{ fontSize: 14 }} />}
-                                                        label={risk.mitigationTasks?.length || 0}
-                                                        size="small"
-                                                        variant="outlined"
-                                                        sx={{ borderRadius: '8px', fontSize: '11px', color: textSecondary, borderColor: borderColor }}
-                                                    />
-                                                    <IconButton
-                                                        size="small"
-                                                        sx={{ padding: '2px' }}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedRiskId(risk.id);
-                                                            setTaskModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <Add fontSize="small" sx={{ fontSize: 16 }} />
-                                                    </IconButton>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                {canEdit && <IconButton size="small" onClick={() => { setRiskToEdit(risk); setIsViewMode(false); setModalOpen(true); }}><Edit fontSize="small" /></IconButton>}
-                                                <IconButton size="small" onClick={() => { setRiskToEdit(risk); setIsViewMode(true); setModalOpen(true); }}><Visibility fontSize="small" /></IconButton>
-                                                {canDeletePerm && <IconButton size="small" onClick={() => handleDelete(risk.id)}><Delete fontSize="small" /></IconButton>}
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                                {risks.length === 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={9} sx={{ p: 0 }}>
-                                            <EmptyState
-                                                icon={<Shield sx={{ fontSize: 'inherit' }} />}
-                                                title="Nenhum risco encontrado"
-                                                description="Ajuste os filtros ou registre um novo risco para iniciar a gestão de riscos corporativos."
-                                                actionLabel="Novo Risco"
-                                                actionIcon={<Add />}
-                                                onAction={() => { setRiskToEdit(null); setModalOpen(true); }}
-                                                compact
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </DataListShell>
+                <DataListTable
+                    dataTestidTable="tabela-riscos"
+                    shell={{
+                        title: 'Registro de riscos',
+                        titleIcon: 'shield',
+                        accentColor: '#2563eb',
+                        count: risks.length,
+                        sx: { borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}`, overflow: 'hidden' },
+                    }}
+                    columns={getRiskListColumns({
+                        allRows: risks,
+                        selectedIds,
+                        setSelectedIds,
+                        borderColor,
+                        textPrimary,
+                        textSecondary,
+                        onStatusChange: handleRiskStatusChange,
+                        onAddPlan: (riskId) => { setSelectedRiskId(riskId); setTaskModalOpen(true); },
+                        onEdit: (risk) => { setRiskToEdit(risk); setIsViewMode(false); setModalOpen(true); },
+                        onView: (risk) => { setRiskToEdit(risk); setIsViewMode(true); setModalOpen(true); },
+                        onDelete: handleDelete,
+                        canEdit,
+                        canDeletePerm,
+                    })}
+                    rows={risks}
+                    sortRows={sortRiskRows}
+                    defaultOrderBy="severity"
+                    defaultOrder="desc"
+                    getDefaultOrderForColumn={(id) => (id === 'severity' || id === 'plans' ? 'desc' : 'asc')}
+                    resetPaginationKey={listResetKey}
+                    loading={loading}
+                    isRowSelected={(r) => selectedIds.includes(r.id)}
+                    getRowSx={(r) => ({
+                        bgcolor: selectedIds.includes(r.id) ? 'rgba(102, 126, 234, 0.08)' : 'transparent',
+                    })}
+                    renderBeforeTable={() => (
+                        <BulkActionsBar
+                            selectedCount={selectedIds.length}
+                            totalCount={risks.length}
+                            allSelected={risks.length > 0 && risks.every((r) => selectedIds.includes(r.id))}
+                            onSelectAll={() => setSelectedIds(
+                                risks.length > 0 && risks.every((r) => selectedIds.includes(r.id)) ? [] : risks.map((r) => r.id)
+                            )}
+                            onClearAll={() => setSelectedIds([])}
+                            actions={[{ label: 'Excluir', icon: 'delete', onClick: handleBulkDeleteRisks, color: '#ef4444' }]}
+                        />
+                    )}
+                    emptyMessage="Nenhum risco encontrado. Ajuste os filtros."
+                    emptyContent={canWrite ? (
+                        <EmptyState
+                            icon={<Shield sx={{ fontSize: 'inherit' }} />}
+                            title="Nenhum risco encontrado"
+                            description="Ajuste os filtros ou registre um novo risco para iniciar a gestão de riscos corporativos."
+                            actionLabel="Novo Risco"
+                            actionIcon={<Add />}
+                            onAction={() => { setRiskToEdit(null); setModalOpen(true); }}
+                            compact
+                        />
+                    ) : undefined}
+                />
             )}
 
             <GlobalRiskModal

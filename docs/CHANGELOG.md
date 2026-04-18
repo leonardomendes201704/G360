@@ -8,6 +8,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Refactored
+- **Fornecedores (`/suppliers`) e Riscos (vista lista em `/risks`):** grelha principal com **`DataListTable`**; colunas e `sort` em ficheiros dedicados (`supplierList*`, `risks/riskList*`). **`BulkActionsBar`**: `onClearAll`, `allSelected` e `icon: 'delete'`; `tabela-fornecedores` e `tabela-riscos`. Filtros e (riscos) gráficos inalterados.
+  - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`, `FRONTEND/src/pages/suppliers/supplierListColumns.jsx`, `FRONTEND/src/pages/suppliers/supplierListSort.js`, `FRONTEND/src/pages/suppliers/supplierListUtils.js`
+  - `FRONTEND/src/pages/RisksPage.jsx`, `FRONTEND/src/pages/risks/riskListColumns.jsx`, `FRONTEND/src/pages/risks/riskListSort.js`, `FRONTEND/src/pages/risks/riskListUtils.js`
+  - `docs/patterns/data-grids-inventory.md`
 - **Contratos (`/contracts`):** lista migrada de `<table>` HTML + **`DataListShell`** para **`DataListTable`**; `contractListColumns.jsx`, `contractListSort.js`, `contractListUtils.js` (status de vigência); `data-testid` `tabela-contratos`; vazio rico com **`EmptyState`** quando `CONTRACTS` CREATE. Filtros em **`FilterDrawer`** e export inalterados na toolbar.
   - `FRONTEND/src/pages/contracts/ContractsPage.jsx`, `FRONTEND/src/pages/contracts/contractListColumns.jsx`, `FRONTEND/src/pages/contracts/contractListSort.js`, `FRONTEND/src/pages/contracts/contractListUtils.js`
   - `docs/patterns/data-grids-inventory.md`

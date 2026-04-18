@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
-import { Box, Typography, Button, IconButton, Tooltip, TextField, MenuItem, Checkbox } from '@mui/material';
-import { FilterAlt, Refresh, Delete as DeleteIcon } from '@mui/icons-material';
+import { Box, Typography, Button, TextField, MenuItem } from '@mui/material';
+import { FilterAlt, Refresh } from '@mui/icons-material';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
@@ -11,10 +11,11 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import SupplierModal from '../../components/modals/SupplierModal';
 import SupplierViewModal from '../../components/modals/SupplierViewModal';
 import EmptyState from '../../components/common/EmptyState';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getSupplierListColumns } from './supplierListColumns';
+import { sortSupplierRows } from './supplierListSort';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '../../services/supplier.service';
 import { clearReferenceCache } from '../../services/reference.service';
-import { formatDocument, maskPhone } from '../../utils/masks';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { AuthContext } from '../../contexts/AuthContext';
 import usePersistedFilters from '../../hooks/usePersistedFilters';
@@ -92,6 +93,11 @@ const SuppliersPage = () => {
       return matchesSearch && matchesStatus && matchesCategory && matchesRating;
     });
   }, [suppliers, searchTerm, filters]);
+
+  const listResetKey = useMemo(
+    () => [searchTerm, filters.status, filters.category, filters.rating, suppliers.length].join('|'),
+    [searchTerm, filters.status, filters.category, filters.rating, suppliers.length]
+  );
 
   const activeDrawerFilterCount = useMemo(
     () =>
@@ -198,46 +204,6 @@ const SuppliersPage = () => {
   const handleOpenView = (sup) => { setSelectedSupplier(sup); setViewModalOpen(true); };
   const handleViewToEdit = (sup) => { setViewModalOpen(false); setSelectedSupplier(sup); setIsViewMode(false); setModalOpen(true); };
 
-  // Get supplier initials for avatar
-  const getInitials = (name) => {
-    if (!name) return '?';
-    const parts = name.split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-  };
-
-  // Render rating stars
-  const renderRating = (rating = 5) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span
-          key={i}
-          className="material-icons-round"
-          style={{
-            fontSize: '16px',
-            color: i <= rating ? '#f59e0b' : '#64748b'
-          }}
-        >
-          {i <= rating ? 'star' : 'star_border'}
-        </span>
-      );
-    }
-    return <div style={{ display: 'flex', gap: '2px' }}>{stars}</div>;
-  };
-
-  // Status Badge Styles
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'ATIVO': return { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981', label: 'Ativo', icon: '' };
-      case 'PENDENTE': return { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', label: 'Pendente', icon: '' };
-      case 'INATIVO': return { bg: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', label: 'Inativo', icon: '' };
-      default: return { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981', label: 'Ativo', icon: '' };
-    }
-  };
-
   // Stat Card Configuration
   const statCards = [
     { key: 'total', label: 'Total de Fornecedores', value: kpis.total, icon: 'store', bg: 'rgba(6, 182, 212, 0.15)', color: '#06b6d4' },
@@ -257,8 +223,6 @@ const SuppliersPage = () => {
   const textSecondary = isDark ? '#64748b' : '#475569';
   const textMuted = isDark ? '#94a3b8' : '#64748b';
   const tableBorder = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.08)';
-  const tableHeaderBg = isDark ? '#1c2632' : '#f8fafc';
-  const tableRowHover = isDark ? '#1c2632' : '#f1f5f9';
 
   return (
     <Box className="suppliers-page">
@@ -470,190 +434,104 @@ const SuppliersPage = () => {
           </Box>
         </Box>
 
-      {/* Table Section */}
-      <DataListShell
-        title="Lista de Fornecedores"
-        titleIcon="list"
-        accentColor="#06b6d4"
-        count={filteredSuppliers.length}
-        sx={{ ...cardStyle, overflow: 'hidden' }}
-        toolbar={(
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              flex: '1 1 240px',
-              justifyContent: 'flex-end',
-              minWidth: 0,
-              maxWidth: 400,
-              ml: { xs: 0, md: 2 },
-              background: isDark ? '#1c2632' : '#f8fafc',
-              border: '1px solid ' + tableBorder,
-              borderRadius: '8px',
-              padding: '10px 16px',
-            }}
-          >
-            <span className="material-icons-round" style={{ fontSize: '20px', color: textMuted }}>search</span>
-            <input
-              type="text"
-              placeholder="Buscar por nome, fantasia ou CNPJ..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                flex: 1,
+      <DataListTable
+        dataTestidTable="tabela-fornecedores"
+        shell={{
+          title: 'Lista de Fornecedores',
+          titleIcon: 'list',
+          accentColor: '#06b6d4',
+          count: filteredSuppliers.length,
+          sx: { ...cardStyle, overflow: 'hidden' },
+          toolbar: (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                flex: '1 1 240px',
+                justifyContent: 'flex-end',
                 minWidth: 0,
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                color: isDark ? '#f1f5f9' : '#0f172a',
-                fontSize: '14px',
+                maxWidth: 400,
+                ml: { xs: 0, md: 2 },
+                background: isDark ? '#1c2632' : '#f8fafc',
+                border: '1px solid ' + tableBorder,
+                borderRadius: '8px',
+                padding: '10px 16px',
               }}
-            />
-          </Box>
-        )}
-      >
-        <BulkActionsBar
-          selectedCount={selectedIds.length}
-          totalCount={filteredSuppliers.length}
-          onSelectAll={() => setSelectedIds(selectedIds.length === filteredSuppliers.length ? [] : filteredSuppliers.map(s => s.id))}
-          onClear={() => setSelectedIds([])}
-          actions={[
-            { label: 'Excluir', icon: <DeleteIcon sx={{ fontSize: 16 }} />, onClick: handleBulkDelete, color: '#ef4444' }
-          ]}
-        />
-        <Box sx={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: tableHeaderBg }}>
-                <th style={{ padding: '12px 8px', width: 40, borderBottom: '1px solid ' + tableBorder }}>
-                  <Checkbox
-                    size="small"
-                    checked={filteredSuppliers.length > 0 && filteredSuppliers.every(s => selectedIds.includes(s.id))}
-                    indeterminate={filteredSuppliers.some(s => selectedIds.includes(s.id)) && !filteredSuppliers.every(s => selectedIds.includes(s.id))}
-                    onChange={() => {
-                      const allSelected = filteredSuppliers.every(s => selectedIds.includes(s.id));
-                      setSelectedIds(allSelected ? [] : filteredSuppliers.map(s => s.id));
-                    }}
-                    sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' }, '&.MuiCheckbox-indeterminate': { color: '#667eea' } }}
-                  />
-                </th>
-                {['Fornecedor', 'Categoria', 'Contato Principal', 'Telefone', 'Avaliação', 'Status', 'Ações'].map((header, i) => (
-                  <th key={header} style={{
-                    padding: '16px 24px',
-                    textAlign: i === 6 ? 'center' : 'left',
-                    fontSize: '12px', fontWeight: 600, color: textMuted,
-                    textTransform: 'uppercase', letterSpacing: '0.5px',
-                    borderBottom: '1px solid ' + tableBorder
-                  }}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSuppliers.map(supplier => {
-                const statusStyle = getStatusStyle(supplier.status);
-                const isSelected = selectedIds.includes(supplier.id);
-                return (
-                  <tr key={supplier.id} style={{
-                    transition: 'all 0.2s ease', cursor: 'pointer',
-                    background: isSelected ? 'rgba(102, 126, 234, 0.08)' : 'transparent',
-                    outline: isSelected ? '1px solid rgba(102, 126, 234, 0.25)' : 'none'
-                  }}
-                    onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = tableRowHover; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = isSelected ? 'rgba(102, 126, 234, 0.08)' : 'transparent'; }}>
-                    <td style={{ padding: '8px 8px', borderBottom: '1px solid ' + tableBorder }} onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        size="small"
-                        checked={isSelected}
-                        onChange={() => setSelectedIds(prev => isSelected ? prev.filter(id => id !== supplier.id) : [...prev, supplier.id])}
-                        sx={{ color: '#64748b', '&.Mui-checked': { color: '#667eea' } }}
-                      />
-                    </td>
-                    <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                          width: '40px', height: '40px', borderRadius: '8px',
-                          background: 'rgba(6, 182, 212, 0.15)',
-                          border: '1px solid rgba(6, 182, 212, 0.2)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontWeight: 600, color: '#06b6d4', fontSize: '14px'
-                        }}>{getInitials(supplier.name)}</div>
-                        <div>
-                          <div style={{ color: textPrimary, fontWeight: 600, marginBottom: '2px' }}>{supplier.name}</div>
-                          <div style={{ color: textSecondary, fontSize: '12px' }}>CNPJ: {formatDocument(supplier.document)}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                        background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6'
-                      }}>{supplier.category || 'Tecnologia'}</span>
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: textSecondary, borderBottom: '1px solid ' + tableBorder }}>
-                      {supplier.contactName || supplier.tradeName || '-'}
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: textSecondary, borderBottom: '1px solid ' + tableBorder }}>
-                      {supplier.phone ? maskPhone(supplier.phone) : '-'}
-                    </td>
-                    <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
-                      {renderRating(supplier.rating || 5)}
-                    </td>
-                    <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                        background: statusStyle.bg, color: statusStyle.color
-                      }}>{statusStyle.icon} {statusStyle.label}</span>
-                    </td>
-                    <td style={{ padding: '20px 24px', textAlign: 'center', borderBottom: '1px solid ' + tableBorder }}>
-                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Tooltip title="Visualizar">
-                          <IconButton size="small" onClick={() => handleOpenView(supplier)} sx={{
-                            width: 32, height: 32, borderRadius: '8px',
-                            border: '1px solid ' + tableBorder, color: textSecondary,
-                            '&:hover': { background: isDark ? '#1c2632' : '#f1f5f9', borderColor: '#06b6d4', color: '#06b6d4' }
-                          }}><span className="material-icons-round" style={{ fontSize: '18px' }}>visibility</span></IconButton>
-                        </Tooltip>
-                        {canEdit && (
-                          <Tooltip title="Editar">
-                            <IconButton size="small" onClick={() => handleOpenEdit(supplier)} sx={{
-                              width: 32, height: 32, borderRadius: '8px',
-                              border: '1px solid ' + tableBorder, color: textSecondary,
-                              '&:hover': { background: isDark ? '#1c2632' : '#f1f5f9', borderColor: '#06b6d4', color: '#06b6d4' }
-                            }}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
-                          </Tooltip>
-                        )}
-                        {canDeletePerm && (
-                          <Tooltip title="Excluir">
-                            <IconButton size="small" onClick={() => handleDeleteClick(supplier)} sx={{
-                              width: 32, height: 32, borderRadius: '8px',
-                              border: '1px solid ' + tableBorder, color: textSecondary,
-                              '&:hover': { background: isDark ? '#1c2632' : '#f1f5f9', borderColor: '#f43f5e', color: '#f43f5e' }
-                            }}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
-                          </Tooltip>
-                        )}
-                      </Box>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Box>
-
-        {filteredSuppliers.length === 0 && !loading && (
-          <EmptyState
-            icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>store</span>}
-            title="Nenhum fornecedor encontrado"
-            description="Ajuste os filtros ou adicione um novo fornecedor para gerenciar seus parceiros comerciais."
-            actionLabel="Novo Fornecedor"
-            actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-            onAction={handleOpenNew}
+            >
+              <span className="material-icons-round" style={{ fontSize: '20px', color: textMuted }}>search</span>
+              <input
+                type="text"
+                placeholder="Buscar por nome, fantasia ou CNPJ..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: isDark ? '#f1f5f9' : '#0f172a',
+                  fontSize: '14px',
+                }}
+              />
+            </Box>
+          ),
+        }}
+        columns={getSupplierListColumns({
+          allRows: filteredSuppliers,
+          selectedIds,
+          setSelectedIds,
+          onView: handleOpenView,
+          onEdit: handleOpenEdit,
+          onDelete: handleDeleteClick,
+          canEdit,
+          canDeletePerm,
+        })}
+        rows={filteredSuppliers}
+        sortRows={sortSupplierRows}
+        defaultOrderBy="name"
+        defaultOrder="asc"
+        getDefaultOrderForColumn={(id) => (id === 'rating' || id === 'status' ? 'desc' : 'asc')}
+        resetPaginationKey={listResetKey}
+        loading={loading}
+        isRowSelected={(r) => selectedIds.includes(r.id)}
+        getRowSx={(r) => ({
+          bgcolor: selectedIds.includes(r.id) ? 'rgba(102, 126, 234, 0.08)' : 'transparent',
+          outline: selectedIds.includes(r.id) ? '1px solid rgba(102, 126, 234, 0.25)' : 'none',
+        })}
+        renderBeforeTable={() => (
+          <BulkActionsBar
+            selectedCount={selectedIds.length}
+            totalCount={filteredSuppliers.length}
+            allSelected={filteredSuppliers.length > 0 && filteredSuppliers.every((s) => selectedIds.includes(s.id))}
+            onSelectAll={() =>
+              setSelectedIds(
+                filteredSuppliers.length > 0 && filteredSuppliers.every((s) => selectedIds.includes(s.id))
+                  ? []
+                  : filteredSuppliers.map((s) => s.id)
+              )
+            }
+            onClearAll={() => setSelectedIds([])}
+            actions={[{ label: 'Excluir', icon: 'delete', onClick: handleBulkDelete, color: '#ef4444' }]}
           />
         )}
-      </DataListShell>
+        emptyMessage="Nenhum fornecedor encontrado. Ajuste os filtros ou a pesquisa."
+        emptyContent={
+          canWrite
+            ? (
+              <EmptyState
+                icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>store</span>}
+                title="Nenhum fornecedor encontrado"
+                description="Ajuste os filtros ou adicione um novo fornecedor para gerenciar seus parceiros comerciais."
+                actionLabel="Novo Fornecedor"
+                actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                onAction={handleOpenNew}
+              />
+            )
+            : undefined
+        }
+      />
 
       {/* Modals */}
       <SupplierModal
