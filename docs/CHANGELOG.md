@@ -8,9 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-16]
 
 ### Fixed
-- **`DataListTable` + lista de projetos:** removido scroll horizontal — `TableContainer` com `overflowX: hidden`, células com `wordBreak`/`overflowWrap`, cabeçalhos com `minWidth: 0`. Projetos: `table-layout: fixed` (default), colunas com **larguras em %** em `projectListColumns.jsx`, CSS (badges, progresso, cronograma, ações) para quebra e `min-width: 0` em flex; media query móvel deixa de forçar `display: block` + `overflow-x: auto` na tabela.
+- **`DataListTable` + lista de projetos / Docker:** removido scroll horizontal — células/cabeçalhos com quebra de texto, colunas de projetos em %; **`TablePagination` fora de `TableContainer`** (a barra de rodapé MUI deixou de alargar o contentor com a tabela) com `toolbar` em `flex-wrap`. **Dev via Docker:** `frontend` é imagem com `npm run build` (sem mount do `src`); comentário em `docker-compose.yml` para `docker compose build frontend --no-cache` após mudanças no `FRONTEND/`.
   - `FRONTEND/src/components/common/DataListTable.jsx`
-  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`, `FRONTEND/src/pages/projects/projectListColumns.jsx`, `FRONTEND/src/pages/projects/ProjectsListPage.css`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`, `FRONTEND/src/pages/projects/projectListColumns.jsx`, `FRONTEND/src/pages/projects/ProjectsListPage.css`, `docker-compose.yml`
 
 ## [2026-04-20]
 

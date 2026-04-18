@@ -36,7 +36,7 @@ import DataListShell from './DataListShell';
  * @param {boolean} [tableLayoutFixed=true]
  * @param {'small'|'medium'} [size='small']
  * @param {string|number} [resetPaginationKey] — quando muda, volta à página 0 (ex.: filtro da página pai)
- * @param {object} [shell.tableContainerSx] — merge no `TableContainer` (ex.: `overflowX: 'auto'` se for preciso scroll num caso concreto; o default evita scroll horizontal)
+ * @param {object} [shell.tableContainerSx] — estilos no invólucro da grelha + `Table` (e paginação logo abaixo, sem scroll combinado; ex.: `overflowX: 'auto'` raro)
  * @param {function({ paginatedRows: Array, page: number, rowsPerPage: number }): ReactNode} [renderBeforeTable] — ex.: BulkActionsBar alinhado à página atual
  * @param {function(row): void} [onRowClick] — clique na linha (ex.: abrir detalhe)
  * @param {function(row): boolean} [isRowSelected]
@@ -187,36 +187,53 @@ const DataListTable = ({
         rows.length > 0 &&
         typeof renderBeforeTable === 'function' &&
         renderBeforeTable({ paginatedRows, page: effectivePage, rowsPerPage: effectiveRowsPerPage })}
-      <TableContainer
-        component={Paper}
-        elevation={0}
+      <Box
         sx={{
           borderRadius: '8px',
-          boxShadow: 'none',
           width: '100%',
           maxWidth: '100%',
           minWidth: 0,
-          overflowX: 'hidden',
+          overflow: 'hidden',
           ...shell.tableContainerSx,
         }}
       >
         {loading ? (
-          loadingContent ?? (
-            <Box p={4} display="flex" justifyContent="center">
-              <CircularProgress />
-            </Box>
-          )
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{ borderRadius: '8px', boxShadow: 'none', width: '100%' }}
+          >
+            {loadingContent ?? (
+              <Box p={4} display="flex" justifyContent="center">
+                <CircularProgress />
+              </Box>
+            )}
+          </TableContainer>
         ) : (
           <>
-            <Table
-              className={shell.tableClassName}
-              data-testid={dataTestidTable}
-              size={size}
+            <TableContainer
+              component={Paper}
+              elevation={0}
               sx={{
-                tableLayout: tableLayoutFixed ? 'fixed' : 'auto',
+                borderRadius: 0,
+                boxShadow: 'none',
                 width: '100%',
+                maxWidth: '100%',
+                minWidth: 0,
+                overflowX: 'hidden',
               }}
             >
+              <Table
+                className={shell.tableClassName}
+                data-testid={dataTestidTable}
+                size={size}
+                sx={{
+                  tableLayout: tableLayoutFixed ? 'fixed' : 'auto',
+                  width: '100%',
+                  maxWidth: '100%',
+                  minWidth: 0,
+                }}
+              >
               <TableHead sx={{ bgcolor: headerBg }}>
                 <TableRow>
                   {columns.map((col) => {
@@ -308,6 +325,7 @@ const DataListTable = ({
                 )}
               </TableBody>
             </Table>
+            </TableContainer>
             {rows.length > 0 ? (
               <TablePagination
                 component="div"
@@ -330,11 +348,27 @@ const DataListTable = ({
                 rowsPerPageOptions={rowsPerPageOptions}
                 labelRowsPerPage="Linhas por página"
                 labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
+                sx={{
+                  width: '100%',
+                  maxWidth: '100%',
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+                  '& .MuiTablePagination-toolbar': {
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-end',
+                    minHeight: 'unset',
+                    paddingLeft: 1,
+                    paddingRight: 0.5,
+                    gap: 0.5,
+                    boxSizing: 'border-box',
+                  },
+                }}
               />
             ) : null}
           </>
         )}
-      </TableContainer>
+      </Box>
     </DataListShell>
   );
 };

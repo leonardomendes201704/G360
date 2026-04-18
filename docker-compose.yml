@@ -6,6 +6,9 @@
 # Stack completo (build na primeira vez):
 #   docker compose up -d --build
 #
+# Após alterar código do FRONTEND, a imagem precisa de rebuild (não há bind mount do src):
+#   docker compose build frontend --no-cache && docker compose up -d frontend
+#
 # URLs: frontend http://localhost:8080  |  API http://localhost:8500  |  Postgres host 127.0.0.1:5433
 # Seed (após primeira subida): docker compose exec backend npm run seed
 
