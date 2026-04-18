@@ -39,7 +39,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 | Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Resumo por colaborador + detalhamento: **`DataListShell`** (US-026). |
 | Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Tabela de chamados: **`DataListShell`** (US-026). |
 | Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Tres separadores (serviços, categorias, SLA): **`DataListShell`** (US-026). |
-| Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Separadores Anexos / Aditivos: **`DataListShell`** (US-026). |
+| Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Sep. **Anexos:** **`DataListTable`** (`contractAttachmentListColumns`, `contractAttachmentListSort`; `tabela-contrato-anexos`). Sep. **Aditivos:** lista em `<ul>` com **`DataListShell`** (US-026). |
 
 ---
 

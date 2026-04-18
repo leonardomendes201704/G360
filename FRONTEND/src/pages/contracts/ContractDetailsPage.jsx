@@ -3,11 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {
     Box, Button, Typography, Paper, Tabs, Tab,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    IconButton, Chip
+    Chip
 } from '@mui/material';
 import {
-    ArrowBack, AttachFile, Delete, Download
+    ArrowBack, AttachFile
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
@@ -17,7 +16,10 @@ import {
     getAddendums
 } from '../../services/contract-details.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import DataListTable from '../../components/common/DataListTable';
 import DataListShell from '../../components/common/DataListShell';
+import { getContractAttachmentListColumns } from './contractAttachmentListColumns';
+import { sortContractAttachmentRows } from './contractAttachmentListSort';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { getFileURL } from '../../utils/urlUtils';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -121,42 +123,35 @@ const ContractDetailsPage = () => {
             </Box>
 
             {tabValue === 0 && (
-                <DataListShell
-                    title="Arquivos do Contrato"
-                    titleIcon="attach_file"
-                    accentColor="#2563eb"
-                    count={attachments.length}
-                    toolbar={
-                        hasPermission('CONTRACTS', 'ATTACH') ? (
+                <DataListTable
+                    shell={{
+                        title: 'Arquivos do Contrato',
+                        titleIcon: 'attach_file',
+                        accentColor: '#2563eb',
+                        count: attachments.length,
+                        toolbar: hasPermission('CONTRACTS', 'ATTACH') ? (
                             <>
                                 <input type="file" id="att-upload" hidden onChange={handleUpload} />
                                 <label htmlFor="att-upload">
                                     <Button component="span" startIcon={<AttachFile />} size="small">Anexar</Button>
                                 </label>
                             </>
-                        ) : null
-                    }
-                >
-                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '8px', boxShadow: 'none' }}>
-                    <Table>
-                        <TableHead><TableRow><TableCell>Nome</TableCell><TableCell>Data</TableCell><TableCell align="right">Ações</TableCell></TableRow></TableHead>
-                        <TableBody>
-                            {attachments.map(att => (
-                                <TableRow key={att.id}>
-                                    <TableCell>{att.fileName}</TableCell>
-                                    <TableCell>{format(new Date(att.createdAt), 'dd/MM/yyyy HH:mm')}</TableCell>
-                                    <TableCell align="right">
-                                        <IconButton href={getFileURL(att.fileUrl)} target="_blank" color="primary"><Download /></IconButton>
-                                        {hasPermission('CONTRACTS', 'ATTACH') && (
-                                            <IconButton onClick={() => handleDeleteAttClick(att.id)} color="error"><Delete /></IconButton>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    </TableContainer>
-                </DataListShell>
+                        ) : null,
+                    }}
+                    columns={getContractAttachmentListColumns({
+                        canAttach: hasPermission('CONTRACTS', 'ATTACH'),
+                        onDeleteClick: handleDeleteAttClick,
+                        getFileURL,
+                    })}
+                    rows={attachments}
+                    sortRows={sortContractAttachmentRows}
+                    defaultOrderBy="createdAt"
+                    defaultOrder="desc"
+                    getDefaultOrderForColumn={(colId) => (colId === 'createdAt' ? 'desc' : 'asc')}
+                    emptyMessage="Nenhum anexo."
+                    resetPaginationKey={attachments.map((a) => a.id).join('-')}
+                    dataTestidTable="tabela-contrato-anexos"
+                />
             )}
 
             {tabValue === 1 && (

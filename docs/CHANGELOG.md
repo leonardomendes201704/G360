@@ -11,6 +11,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - Plano de migração das listagens ainda em `<table>` / MUI manual para **`DataListTable`**: [data-list-table-migration-plan.md](patterns/data-list-table-migration-plan.md) (fases 1–3 + exceções); referência acrescentada em [data-grids-inventory.md](patterns/data-grids-inventory.md).
 
 ### Refactored
+- **Detalhe do contrato (`/contracts/:id`) — separador Anexos:** tabela MUI manual substituída por **`DataListTable`** com `contractAttachmentListColumns.jsx` e `contractAttachmentListSort.js`; ordenação por nome/data; `data-testid` **`tabela-contrato-anexos`**; toolbar de upload e permissões `CONTRACTS`/`ATTACH` inalteradas. Separador **Aditivos** permanece com **`DataListShell`** e lista em `<ul>`.
+  - `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx`, `FRONTEND/src/pages/contracts/contractAttachmentListColumns.jsx`, `FRONTEND/src/pages/contracts/contractAttachmentListSort.js`
+  - `docs/patterns/data-grids-inventory.md`, `docs/patterns/data-list-table-migration-plan.md`
 - **Fornecedores (`/suppliers`) e Riscos (vista lista em `/risks`):** grelha principal com **`DataListTable`**; colunas e `sort` em ficheiros dedicados (`supplierList*`, `risks/riskList*`). **`BulkActionsBar`**: `onClearAll`, `allSelected` e `icon: 'delete'`; `tabela-fornecedores` e `tabela-riscos`. Filtros e (riscos) gráficos inalterados.
   - `FRONTEND/src/pages/suppliers/SuppliersPage.jsx`, `FRONTEND/src/pages/suppliers/supplierListColumns.jsx`, `FRONTEND/src/pages/suppliers/supplierListSort.js`, `FRONTEND/src/pages/suppliers/supplierListUtils.js`
   - `FRONTEND/src/pages/RisksPage.jsx`, `FRONTEND/src/pages/risks/riskListColumns.jsx`, `FRONTEND/src/pages/risks/riskListSort.js`, `FRONTEND/src/pages/risks/riskListUtils.js`

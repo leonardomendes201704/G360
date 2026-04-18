@@ -20,7 +20,7 @@
 
 | # | Rota / ecrã | Ficheiro principal | Notas |
 |---|-------------|--------------------|--------|
-| 1 | Detalhe do contrato → separador **Anexos** | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Tabela pequena (nome, data, ações). Tab **Aditivos** é lista em `<ul>` — pode ficar fora desta migração ou fase 2. |
+| 1 | Detalhe do contrato → separador **Anexos** | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | **Feito (2026-04-16):** `DataListTable` + `contractAttachmentList*`; tab **Aditivos** continua `<ul>` / `DataListShell`. |
 | 2 | Catálogo ITBM (3 separadores) | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Três listas homogéneas (serviços, categorias, SLA). Possível: três conjuntos `columns`/`sort` ou um ficheiro por separador. |
 | 3 | Relatório de horas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Duas tabelas: resumo por colaborador + detalhe de sessões (`stickyHeader` no detalhe — replicar com `shell.tableContainerSx` ou `sx` na tabela se necessário). |
 
