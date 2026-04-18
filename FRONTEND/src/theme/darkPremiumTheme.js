@@ -288,6 +288,14 @@ const darkPremiumTheme = createTheme({
                         borderColor: '#2563eb',
                     },
                 },
+                // TextField select + SelectProps.native — display:flex no input quebra o texto fechado no Chrome/Edge
+                input: ({ theme }) => ({
+                    '&.MuiNativeSelect-select': {
+                        display: 'inline-block',
+                        color: theme.palette.text.primary,
+                        WebkitTextFillColor: theme.palette.text.primary,
+                    },
+                }),
             },
         },
         MuiTextField: {

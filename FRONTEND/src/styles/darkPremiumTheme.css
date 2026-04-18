@@ -239,7 +239,9 @@
 .dark-premium-theme .MuiDialog-root .MuiNativeSelect-select,
 .dark-premium-theme .modal-overlay .MuiNativeSelect-select {
     padding: 12px 14px !important;
+    display: inline-block !important;
     color: var(--dark-text-primary) !important;
+    -webkit-text-fill-color: var(--dark-text-primary) !important;
 }
 
 .dark-premium-theme .modal-overlay label,

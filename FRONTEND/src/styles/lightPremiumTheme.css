@@ -216,7 +216,9 @@ body.light-premium-theme,
 
 .light-premium-theme .MuiDialog-root .MuiNativeSelect-select {
     padding: 12px 14px !important;
+    display: inline-block !important;
     color: var(--light-text-primary) !important;
+    -webkit-text-fill-color: var(--light-text-primary) !important;
 }
 
 .light-premium-theme .MuiOutlinedInput-notchedOutline {

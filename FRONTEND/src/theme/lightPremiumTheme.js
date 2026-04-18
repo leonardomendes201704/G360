@@ -169,6 +169,13 @@ const lightPremiumTheme = createTheme({
                         borderColor: '#2563eb',
                     },
                 },
+                input: ({ theme }) => ({
+                    '&.MuiNativeSelect-select': {
+                        display: 'inline-block',
+                        color: theme.palette.text.primary,
+                        WebkitTextFillColor: theme.palette.text.primary,
+                    },
+                }),
             },
         },
         MuiAutocomplete: {
