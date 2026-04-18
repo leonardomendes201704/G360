@@ -215,7 +215,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
     const sectionStyle = { marginBottom: '24px' };
     const sectionTitleStyle = { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontSize: '14px', fontWeight: 600, color: 'var(--modal-text)', textTransform: 'uppercase', letterSpacing: '0.5px' };
     const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 500, color: 'var(--modal-text-secondary)' };
-    const inputStyle = { width: '100%', padding: '12px 14px', background: 'var(--modal-surface)', border: '1px solid var(--modal-border-strong)', borderRadius: '10px', color: 'var(--modal-text)', fontSize: '14px', outline: 'none' };
+    const inputStyle = { width: '100%', padding: '12px 14px', background: 'var(--modal-surface)', border: '1px solid var(--modal-border-strong)', borderRadius: '8px', color: 'var(--modal-text)', fontSize: '14px', outline: 'none' };
     const gridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' };
     const grid3Style = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' };
 
@@ -254,7 +254,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                             type="button"
                             onClick={() => handleTypeChange('HARDWARE')}
                             style={{
-                                flex: 1, padding: '14px 20px', borderRadius: '12px', cursor: 'pointer',
+                                flex: 1, padding: '14px 20px', borderRadius: '8px', cursor: 'pointer',
                                 border: assetType === 'HARDWARE' ? '2px solid #2563eb' : '1px solid var(--modal-border-strong)',
                                 background: assetType === 'HARDWARE' ? 'rgba(37, 99, 235, 0.15)' : 'var(--modal-surface)',
                                 display: 'flex', alignItems: 'center', gap: '12px', transition: 'all 0.2s'
@@ -270,7 +270,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                             type="button"
                             onClick={() => handleTypeChange('LICENSE')}
                             style={{
-                                flex: 1, padding: '14px 20px', borderRadius: '12px', cursor: 'pointer',
+                                flex: 1, padding: '14px 20px', borderRadius: '8px', cursor: 'pointer',
                                 border: assetType === 'LICENSE' ? '2px solid #3b82f6' : '1px solid var(--modal-border-strong)',
                                 background: assetType === 'LICENSE' ? 'rgba(59, 130, 246, 0.15)' : 'var(--modal-surface)',
                                 display: 'flex', alignItems: 'center', gap: '12px', transition: 'all 0.2s'
@@ -324,7 +324,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                     {assetType === 'HARDWARE' && activeTab === 0 && (
                         <>
                             {watchStatus === 'LOCADO' && (
-                                <div style={{ padding: '12px 16px', background: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '10px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ padding: '12px 16px', background: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', borderRadius: '8px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <span className="material-icons-round" style={{ color: '#06b6d4', fontSize: '20px' }}>info</span>
                                     <span style={{ color: 'var(--modal-text-secondary)', fontSize: '13px' }}>Para ativos locados, é obrigatório vincular o contrato de locação.</span>
                                 </div>
@@ -365,7 +365,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                                                 helperText={errors.categoryId?.message}
                                                 onCreateNew={async (name) => createAssetCategory({ name, type: assetType === 'LICENSE' ? 'SOFTWARE' : 'HARDWARE' })}
                                                 onRefresh={refreshCategories}
-                                                selectSx={{ background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)', borderRadius: '10px', '& fieldset': { border: 'none' } }}
+                                                selectSx={{ background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)', borderRadius: '8px', '& fieldset': { border: 'none' } }}
                                             />
                                         )} />
                                     </div>
@@ -477,12 +477,12 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                             {!isViewMode && (
                                 <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }}>
                                     <button type="button" onClick={() => { setSelectedMaint(null); setMaintModalOpen(true); }}
-                                        style={{ padding: '10px 20px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'var(--modal-text)', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        style={{ padding: '10px 20px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'var(--modal-text)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <span className="material-icons-round" style={{ fontSize: '18px' }}>add</span> Registrar Manutenção
                                     </button>
                                 </div>
                             )}
-                            <div style={{ background: 'var(--modal-surface)', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--modal-border)' }}>
+                            <div style={{ background: 'var(--modal-surface)', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--modal-border)' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(0,0,0,0.3)' }}>
@@ -502,7 +502,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                                             <tr key={m.id} style={{ borderTop: '1px solid var(--modal-border)' }}>
                                                 <td style={{ padding: '12px 16px', color: 'var(--modal-text-secondary)', fontSize: '14px' }}>{format(new Date(m.startDate), 'dd/MM/yyyy')}</td>
                                                 <td style={{ padding: '12px 16px' }}>
-                                                    <span style={{ padding: '4px 10px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', borderRadius: '6px', fontSize: '12px', fontWeight: 600 }}>{m.type}</span>
+                                                    <span style={{ padding: '4px 10px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', borderRadius: '8px', fontSize: '12px', fontWeight: 600 }}>{m.type}</span>
                                                 </td>
                                                 <td style={{ padding: '12px 16px', color: 'var(--modal-text)', fontSize: '14px' }}>{m.description}</td>
                                                 <td style={{ padding: '12px 16px', color: 'var(--modal-text-secondary)', fontSize: '14px' }}>{m.status}</td>

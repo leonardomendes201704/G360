@@ -146,7 +146,7 @@ const RoleModal = ({ open, onClose, onSuccess, editData }) => {
                         Permissões Granulares (Privilégios Funcionais)
                     </Typography>
 
-                    <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 2, overflow: 'hidden', flexShrink: 0 }}>
+                    <Box sx={{ border: 1, borderColor: 'divider', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
                         {availableModuleKeys.map((modKey, idx) => {
                             const modData = rbacMatrix.modules[modKey];
                             return (
@@ -167,7 +167,7 @@ const RoleModal = ({ open, onClose, onSuccess, editData }) => {
                                                 return (
                                                     <Box key={perm.key} sx={{
                                                         display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1.5,
-                                                        borderRadius: 1,
+                                                        borderRadius: '8px',
                                                         border: 1,
                                                         borderColor: isActive ? 'rgba(56, 189, 248, 0.35)' : 'divider',
                                                         bgcolor: isActive ? 'rgba(56, 189, 248, 0.06)' : 'transparent',

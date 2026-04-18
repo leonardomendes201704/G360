@@ -271,7 +271,7 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
                                             px: isCollapsed ? 0 : item.indent ? 2 : 2,
                                             pl: !isCollapsed && item.indent ? 4.5 : undefined,
                                             py: item.indent ? 1 : 1.5,
-                                            borderRadius: '12px',
+                                            borderRadius: '8px',
                                             cursor: 'pointer',
                                             textDecoration: 'none',
                                             transition: 'all 0.2s ease',
@@ -325,7 +325,7 @@ const DarkSidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleM
                     sx={{
                         width: 36,
                         height: 36,
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         background: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0,0,0,0.05)',
                         color: mode === 'dark' ? '#64748b' : '#94a3b8',
                         transition: 'all 0.2s',

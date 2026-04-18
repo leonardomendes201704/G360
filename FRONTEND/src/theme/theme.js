@@ -267,7 +267,7 @@ let theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: { backgroundImage: 'none' },
-        rounded: { borderRadius: 16 }, // --dark-radius-lg para cards
+        rounded: { borderRadius: 8 },
         elevation0: { border: `1px solid ${colors.borderSubtle}` },
         elevation1: {
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -280,7 +280,7 @@ let theme = createTheme({
         root: {
           boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
           border: `1px solid ${colors.borderSubtle}`,
-          borderRadius: 16, // --dark-radius-lg
+          borderRadius: 8,
           padding: 24,      // Padding interno conforme especificação
         },
       },

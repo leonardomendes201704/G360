@@ -417,7 +417,7 @@ const ChangeRequestsPage = () => {
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-            borderRadius: 2,
+            borderRadius: '8px',
             color: textPrimary,
             '& fieldset': { borderColor: borderColor },
             '&:hover fieldset': { borderColor: 'rgba(102, 126, 234, 0.5)' },
@@ -434,7 +434,7 @@ const ChangeRequestsPage = () => {
                 sx={{
                     mb: 3,
                     p: 3,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     background: headerBg,
                     backdropFilter: isDark ? 'blur(10px)' : 'none',
                     border: `1px solid ${headerBorder}`,
@@ -454,12 +454,12 @@ const ChangeRequestsPage = () => {
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {/* View Toggle Buttons */}
-                    <Box sx={{ display: 'flex', gap: 1, bgcolor: toggleGroupBg, borderRadius: 2, p: 0.5 }}>
+                    <Box sx={{ display: 'flex', gap: 1, bgcolor: toggleGroupBg, borderRadius: '8px', p: 0.5 }}>
                         <Tooltip title="Dashboard">
                             <IconButton
                                 onClick={() => setViewMode('DASHBOARD')}
                                 sx={{
-                                    borderRadius: 1.5,
+                                    borderRadius: '8px',
                                     bgcolor: viewMode === 'DASHBOARD' ? toggleActiveBg : 'transparent',
                                     color: viewMode === 'DASHBOARD' ? toggleActiveText : toggleText,
                                     '&:hover': { bgcolor: toggleActiveBg }
@@ -472,7 +472,7 @@ const ChangeRequestsPage = () => {
                             <IconButton
                                 onClick={() => setViewMode('LIST')}
                                 sx={{
-                                    borderRadius: 1.5,
+                                    borderRadius: '8px',
                                     bgcolor: viewMode === 'LIST' ? toggleActiveBg : 'transparent',
                                     color: viewMode === 'LIST' ? toggleActiveText : toggleText,
                                     '&:hover': { bgcolor: toggleActiveBg }
@@ -485,7 +485,7 @@ const ChangeRequestsPage = () => {
                             <IconButton
                                 onClick={() => setViewMode('CALENDAR')}
                                 sx={{
-                                    borderRadius: 1.5,
+                                    borderRadius: '8px',
                                     bgcolor: viewMode === 'CALENDAR' ? toggleActiveBg : 'transparent',
                                     color: viewMode === 'CALENDAR' ? toggleActiveText : toggleText,
                                     '&:hover': { bgcolor: toggleActiveBg }
@@ -503,7 +503,7 @@ const ChangeRequestsPage = () => {
                                 alignItems: 'center',
                                 gap: 1,
                                 padding: '12px 20px',
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 fontSize: '14px',
                                 fontWeight: 600,
                                 textTransform: 'none',
@@ -527,7 +527,7 @@ const ChangeRequestsPage = () => {
             <Box
                 sx={{
                     mb: 3,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     background: filterBg,
                     backdropFilter: isDark ? 'blur(10px)' : 'none',
                     border: `1px solid ${filterBorder}`,
@@ -555,7 +555,7 @@ const ChangeRequestsPage = () => {
                             Filtros
                         </Button>
                         {activeDrawerFilterCount > 0 ? (
-                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
                                 {activeDrawerFilterCount}
                             </Box>
                         ) : null}
@@ -765,7 +765,7 @@ const ChangeRequestsPage = () => {
                         accentColor="#667eea"
                         count={filteredChanges.length}
                         sx={{
-                            borderRadius: '16px',
+                            borderRadius: '8px',
                             background: cardBg,
                             backdropFilter: isDark ? 'blur(10px)' : 'none',
                             border: `1px solid ${borderColor}`,
@@ -796,7 +796,7 @@ const ChangeRequestsPage = () => {
                                     sx={{
                                         display: 'flex',
                                         p: 0.5,
-                                        borderRadius: 2,
+                                        borderRadius: '8px',
                                         background: 'transparent',
                                         backgroundImage: 'none',
                                         border: `1px solid ${filterHeaderBorder}`
@@ -807,7 +807,7 @@ const ChangeRequestsPage = () => {
                                             size="small"
                                             onClick={() => setViewMode('LIST')}
                                             sx={{
-                                                borderRadius: 1.5,
+                                                borderRadius: '8px',
                                                 color: viewMode === 'LIST' ? '#667eea' : textMuted,
                                                 bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
                                                 '&:hover': { bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg }
@@ -821,7 +821,7 @@ const ChangeRequestsPage = () => {
                                             size="small"
                                             onClick={() => setViewMode('CALENDAR')}
                                             sx={{
-                                                borderRadius: 1.5,
+                                                borderRadius: '8px',
                                                 color: viewMode === 'CALENDAR' ? '#667eea' : textMuted,
                                                 bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
                                                 '&:hover': { bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg }
@@ -897,7 +897,7 @@ const ChangeRequestsPage = () => {
                                         sx={{
                                             width: 36,
                                             height: 36,
-                                            borderRadius: 2,
+                                            borderRadius: '8px',
                                             border: `1px solid ${borderColor}`,
                                             bgcolor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
                                             color: textPrimary,
@@ -921,7 +921,7 @@ const ChangeRequestsPage = () => {
                                                 sx={{
                                                     width: 36,
                                                     height: 36,
-                                                    borderRadius: 2,
+                                                    borderRadius: '8px',
                                                     border: `1px solid ${borderColor}`,
                                                     bgcolor: page === pageNum
                                                         ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
@@ -946,7 +946,7 @@ const ChangeRequestsPage = () => {
                                         sx={{
                                             width: 36,
                                             height: 36,
-                                            borderRadius: 2,
+                                            borderRadius: '8px',
                                             border: `1px solid ${borderColor}`,
                                             bgcolor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
                                             color: textPrimary,

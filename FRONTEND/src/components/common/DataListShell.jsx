@@ -35,7 +35,7 @@ const DataListShell = ({
     <Box
       className={className}
       sx={{
-        borderRadius: '16px',
+        borderRadius: '8px',
         overflow: 'hidden',
         bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#ffffff',
         border: `1px solid ${borderColor}`,

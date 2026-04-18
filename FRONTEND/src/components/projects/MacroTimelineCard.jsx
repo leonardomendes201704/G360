@@ -44,7 +44,7 @@ const MacroTimelineCard = ({ project }) => {
             sx={{
                 background: cardBg,
                 border: `1px solid ${borderColor}`,
-                borderRadius: '24px',
+                borderRadius: '8px',
                 p: '28px',
                 mb: 4,
                 boxShadow: cardShadow,
@@ -70,7 +70,7 @@ const MacroTimelineCard = ({ project }) => {
                         py: 1,
                         background: 'rgba(16, 185, 129, 0.15)',
                         border: '1px solid rgba(16, 185, 129, 0.2)',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         color: '#10b981',
                         fontWeight: 600,
                         fontSize: '14px',
@@ -128,7 +128,7 @@ const MacroTimelineCard = ({ project }) => {
                         position: 'relative',
                         height: 12,
                         background: progressBarBg,
-                        borderRadius: '6px',
+                        borderRadius: '8px',
                         overflow: 'visible',
                         mb: 2,
                     }}
@@ -142,7 +142,7 @@ const MacroTimelineCard = ({ project }) => {
                             height: '100%',
                             width: `${progressPercent}%`,
                             background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             transition: 'width 1s ease',
                         }}
                     />
@@ -158,7 +158,7 @@ const MacroTimelineCard = ({ project }) => {
                             height: 20,
                             background: mode === 'dark' ? '#f1f5f9' : '#ffffff',
                             border: '3px solid #2563eb',
-                            borderRadius: '50%',
+                            borderRadius: '8px',
                             boxShadow: '0 0 0 4px rgba(37, 99, 235, 0.2)',
                         }}
                     />

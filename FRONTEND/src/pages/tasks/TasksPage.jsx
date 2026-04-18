@@ -540,7 +540,7 @@ const TasksPage = () => {
             <Paper sx={{
                 mb: 3,
                 p: 3,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 bgcolor: cardBg,
                 border: `1px solid ${borderColor}`,
                 display: 'flex',
@@ -562,7 +562,7 @@ const TasksPage = () => {
                             background: 'transparent',
                             color: isDark ? '#94a3b8' : '#64748b',
                             border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : '#e2e8f0'}`,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             padding: '12px 20px',
                             fontSize: '14px',
                             fontWeight: 600,
@@ -584,7 +584,7 @@ const TasksPage = () => {
                             sx={{
                                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                                 color: 'white',
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 padding: '12px 20px',
                                 fontSize: '14px',
                                 fontWeight: 600,
@@ -632,7 +632,7 @@ const TasksPage = () => {
                             padding: '10px 18px',
                             background: viewMode === tab.id ? 'rgba(37, 99, 235, 0.15)' : tabBg,
                             border: `1px solid ${viewMode === tab.id ? 'rgba(37, 99, 235, 0.3)' : tabBorder}`,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             color: viewMode === tab.id ? '#2563eb' : tabText,
                             fontSize: '13px',
                             fontWeight: 500,
@@ -655,7 +655,7 @@ const TasksPage = () => {
                     background: filterBg,
                     backdropFilter: 'blur(10px)',
                     border: `1px solid ${filterBorder}`,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     mb: 3,
                     overflow: 'hidden',
                 }}
@@ -685,7 +685,7 @@ const TasksPage = () => {
                             Filtros
                         </Button>
                         {activeDrawerFilterCount > 0 ? (
-                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
                                 {activeDrawerFilterCount}
                             </Box>
                         ) : null}
@@ -817,7 +817,7 @@ const TasksPage = () => {
                     accentColor="#2563eb"
                     count={filteredTasks.length}
                     sx={{
-                        borderRadius: '16px',
+                        borderRadius: '8px',
                         background: cardBg,
                         border: `1px solid ${borderColor}`,
                         boxShadow: cardShadow,

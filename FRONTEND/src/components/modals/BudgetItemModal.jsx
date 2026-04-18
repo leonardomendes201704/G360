@@ -9,7 +9,7 @@ const modalStyles = {
     nativeInput: {
         background: 'var(--modal-surface-subtle)',
         border: '1px solid var(--modal-border)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         padding: '12px 14px',
         color: 'var(--modal-text-soft)',
         fontSize: '14px',
@@ -20,7 +20,7 @@ const modalStyles = {
     nativeSelect: {
         background: 'var(--modal-surface-subtle)',
         border: '1px solid var(--modal-border)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         padding: '12px 14px',
         color: 'var(--modal-text-soft)',
         fontSize: '14px',
@@ -181,10 +181,10 @@ const BudgetItemModal = ({ open, onClose, onSave, item = null, isOBZ = false }) 
                         </Box>
 
                         {isOBZ && (
-                            <Box sx={{ p: 2, background: 'rgba(37, 99, 235, 0.08)', borderRadius: '12px', border: '1px solid rgba(37, 99, 235, 0.3)' }}>
+                            <Box sx={{ p: 2, background: 'rgba(37, 99, 235, 0.08)', borderRadius: '8px', border: '1px solid rgba(37, 99, 235, 0.3)' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
                                     <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#2563eb' }}>
-                                        💡 Metodologia OBZ (Base Zero) <span style={{ background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', padding: '2px 8px', borderRadius: '6px', fontSize: '10px', marginLeft: '8px' }}>Campos Obrigatórios</span>
+                                        💡 Metodologia OBZ (Base Zero) <span style={{ background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', padding: '2px 8px', borderRadius: '8px', fontSize: '10px', marginLeft: '8px' }}>Campos Obrigatórios</span>
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, mb: 2 }}>
@@ -241,7 +241,7 @@ const BudgetItemModal = ({ open, onClose, onSave, item = null, isOBZ = false }) 
                             ))}
                         </Box>
 
-                        <Box sx={{ background: 'var(--modal-surface-subtle)', p: 2, borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--modal-border)' }}>
+                        <Box sx={{ background: 'var(--modal-surface-subtle)', p: 2, borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--modal-border)' }}>
                             <Typography sx={{ fontWeight: 600, color: 'var(--modal-text-secondary)', fontSize: '13px' }}>TOTAL ANUAL</Typography>
                             <Typography sx={{ fontSize: '22px', fontWeight: 700, color: '#10b981' }}>
                                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}

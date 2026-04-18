@@ -65,7 +65,7 @@ const DarkTabsNavigation = ({ tabValue, setTabValue, tasks = [], risks = [], pro
                                 transition: 'all 0.2s ease',
                                 color: isActive ? textPrimary : textSecondary,
                                 background: isActive ? activeBg : 'transparent',
-                                borderRadius: '8px 8px 0 0',
+                                borderRadius: '8px',
                                 position: 'relative',
                                 '&::after': {
                                     content: '""',
@@ -75,7 +75,7 @@ const DarkTabsNavigation = ({ tabValue, setTabValue, tasks = [], risks = [], pro
                                     right: 0,
                                     height: '2px',
                                     background: isActive ? '#2563eb' : 'transparent',
-                                    borderRadius: '2px 2px 0 0',
+                                    borderRadius: '8px',
                                 },
                                 '&:hover': {
                                     color: isActive ? textPrimary : (mode === 'dark' ? '#94a3b8' : textPrimary),
@@ -99,7 +99,7 @@ const DarkTabsNavigation = ({ tabValue, setTabValue, tasks = [], risks = [], pro
                                         minWidth: 18,
                                         height: 18,
                                         px: 0.5,
-                                        borderRadius: '9px',
+                                        borderRadius: '8px',
                                         fontSize: '11px',
                                         fontWeight: 600,
                                         display: 'flex',

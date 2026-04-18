@@ -52,7 +52,7 @@ const IncidentKanban = ({ incidents = [], onView, onEdit }) => {
                         maxWidth: 320,
                         flex: '0 0 300px',
                         background: isDark ? '#1e293b' : theme.palette.grey[100],
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : theme.palette.divider}`,
                         display: 'flex',
                         flexDirection: 'column'
@@ -96,7 +96,7 @@ const IncidentKanban = ({ incidents = [], onView, onEdit }) => {
                                     sx={{
                                         p: 2,
                                         mb: 1,
-                                        borderRadius: 2,
+                                        borderRadius: '8px',
                                         background: isDark ? '#0f172a' : theme.palette.background.paper,
                                         border: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : theme.palette.divider}`,
                                         cursor: 'pointer',

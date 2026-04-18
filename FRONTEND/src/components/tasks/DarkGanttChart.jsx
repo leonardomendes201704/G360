@@ -186,7 +186,7 @@ const DarkGanttChart = ({
                 background: containerBg,
                 backdropFilter: isDark ? 'blur(10px)' : 'none',
                 border: containerBorder,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 p: 4,
                 textAlign: 'center',
                 boxShadow: isDark ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.08)',
@@ -214,7 +214,7 @@ const DarkGanttChart = ({
             background: containerBg,
             backdropFilter: isDark ? 'blur(10px)' : 'none',
             border: containerBorder,
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden',
             boxShadow: isDark ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.08)',
         }}>
@@ -284,7 +284,7 @@ const DarkGanttChart = ({
                             <Box sx={{
                                 px: 1,
                                 py: 0.25,
-                                borderRadius: '4px',
+                                borderRadius: '8px',
                                 bgcolor: 'rgba(245, 158, 11, 0.15)',
                                 color: '#f59e0b',
                                 fontSize: '11px',
@@ -350,7 +350,7 @@ const DarkGanttChart = ({
                                     <Box sx={{
                                         width: 8,
                                         height: 8,
-                                        borderRadius: '50%',
+                                        borderRadius: '8px',
                                         bgcolor: statusColor.bar,
                                         boxShadow: `0 0 6px ${statusColor.glow}`,
                                     }} />
@@ -379,7 +379,7 @@ const DarkGanttChart = ({
                             overflowY: 'hidden',
                             '&::-webkit-scrollbar': { height: '8px' },
                             '&::-webkit-scrollbar-track': { background: scrollbarTrack },
-                            '&::-webkit-scrollbar-thumb': { background: scrollbarThumb, borderRadius: '4px' },
+                            '&::-webkit-scrollbar-thumb': { background: scrollbarThumb, borderRadius: '8px' },
                         }}
                     >
                         <svg width={totalWidth} height={totalHeight} style={{ display: 'block' }}>
@@ -607,7 +607,7 @@ const DarkGanttChart = ({
                         <Box sx={{
                             width: 12,
                             height: 12,
-                            borderRadius: '3px',
+                            borderRadius: '8px',
                             bgcolor: colors.bar,
                             boxShadow: `0 0 4px ${colors.glow}`,
                         }} />

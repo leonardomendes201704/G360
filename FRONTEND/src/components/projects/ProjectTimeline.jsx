@@ -43,7 +43,7 @@ const ProjectTimeline = ({ project, tasks = [] }) => {
     return (
         <Box>
             {/* Project Timeline Header */}
-            <Paper elevation={0} variant="outlined" sx={{ p: 3, mb: 3, borderRadius: 4 }}>
+            <Paper elevation={0} variant="outlined" sx={{ p: 3, mb: 3, borderRadius: '8px'}}>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <CalendarMonth sx={{ color: 'primary.main' }} />
                     <Typography variant="h6" fontWeight="700">Cronograma do Projeto</Typography>
@@ -60,7 +60,7 @@ const ProjectTimeline = ({ project, tasks = [] }) => {
                     </Box>
 
                     {/* Progress Bar */}
-                    <Box sx={{ position: 'relative', height: 32, bgcolor: '#f1f5f9', borderRadius: 2, overflow: 'hidden' }}>
+                    <Box sx={{ position: 'relative', height: 32, bgcolor: '#f1f5f9', borderRadius: '8px', overflow: 'hidden' }}>
                         {/* Elapsed Time */}
                         <Box
                             sx={{
@@ -98,7 +98,7 @@ const ProjectTimeline = ({ project, tasks = [] }) => {
                                         color: 'white',
                                         px: 1,
                                         py: 0.5,
-                                        borderRadius: 1,
+                                        borderRadius: '8px',
                                         fontSize: '0.65rem',
                                         fontWeight: 700,
                                         whiteSpace: 'nowrap'
@@ -139,7 +139,7 @@ const ProjectTimeline = ({ project, tasks = [] }) => {
 
             {/* Tasks Timeline */}
             {tasksWithDates.length > 0 && (
-                <Paper elevation={0} variant="outlined" sx={{ p: 3, borderRadius: 4 }}>
+                <Paper elevation={0} variant="outlined" sx={{ p: 3, borderRadius: '8px'}}>
                     <Typography variant="subtitle1" fontWeight="700" mb={2}>
                         Tarefas ({tasksWithDates.length})
                     </Typography>
@@ -189,7 +189,7 @@ const ProjectTimeline = ({ project, tasks = [] }) => {
                                         sx={{
                                             height: '100%',
                                             bgcolor: getStatusColor(task.status),
-                                            borderRadius: 2,
+                                            borderRadius: '8px',
                                             p: 1,
                                             display: 'flex',
                                             alignItems: 'center',

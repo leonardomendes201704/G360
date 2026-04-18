@@ -141,7 +141,7 @@ const DataListTable = ({
       <TableContainer
         component={Paper}
         elevation={0}
-        sx={{ borderRadius: 0, boxShadow: 'none', width: '100%', overflowX: 'auto', ...shell.tableContainerSx }}
+        sx={{ borderRadius: '8px', boxShadow: 'none', width: '100%', overflowX: 'auto', ...shell.tableContainerSx }}
       >
         {loading ? (
           loadingContent ?? (

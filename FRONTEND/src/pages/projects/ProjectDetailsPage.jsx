@@ -251,7 +251,7 @@ const ProjectDetailsPage = () => {
                 }}>
                     <Box sx={{
                         background: '#1e293b', border: '1px solid rgba(245, 158, 11, 0.2)',
-                        p: 3, borderRadius: '12px', textAlign: 'center'
+                        p: 3, borderRadius: '8px', textAlign: 'center'
                     }}>
                         <Typography sx={{ color: '#f59e0b', fontWeight: 600, mb: 1 }}>
                             <Warning sx={{ verticalAlign: 'bottom', mr: 1 }} />

@@ -19,9 +19,9 @@ const RiskScatterPlot = ({ data }) => {
     }));
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: 4, height: '100%' }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: '8px', height: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Box sx={{ width: 32, height: 32, borderRadius: 2, bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎯</Box>
+                <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎯</Box>
                 <Typography variant="h6" fontWeight={700} color="text.primary">Matriz de Risco (Impacto x Desvio)</Typography>
             </Box>
 

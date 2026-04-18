@@ -21,7 +21,7 @@ function formatCurrency(val) {
 
 function AssetViewDataField({ label, value, icon, fullWidth = false, mono = false, surfaceBg, borderColor, textMuted, textPrimary }) {
     return (
-        <Box sx={{ p: 1.5, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}`, gridColumn: fullWidth ? '1 / -1' : 'auto', minHeight: 56 }}>
+        <Box sx={{ p: 1.5, borderRadius: '8px', background: surfaceBg, border: `1px solid ${borderColor}`, gridColumn: fullWidth ? '1 / -1' : 'auto', minHeight: 56 }}>
             <Typography sx={{ fontSize: '10px', fontWeight: 700, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
                 {icon && <span style={{ fontSize: '12px' }}>{icon}</span>}{label}
             </Typography>
@@ -146,7 +146,7 @@ const AssetViewModal = ({ open, onClose, asset, onEdit }) => {
                             <Typography>Nenhuma manutenção registrada.</Typography>
                         </Box>
                     ) : (
-                        <Box sx={{ background: surfaceBg, borderRadius: '10px', overflow: 'hidden', border: `1px solid ${borderColor}` }}>
+                        <Box sx={{ background: surfaceBg, borderRadius: '8px', overflow: 'hidden', border: `1px solid ${borderColor}` }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: isDark ? 'rgba(0,0,0,0.3)' : '#f1f5f9' }}>
@@ -160,7 +160,7 @@ const AssetViewModal = ({ open, onClose, asset, onEdit }) => {
                                         <tr key={m.id} style={{ borderTop: `1px solid ${borderColor}`, background: i % 2 === 0 ? 'transparent' : (isDark ? 'rgba(255,255,255,0.01)' : 'rgba(0,0,0,0.01)') }}>
                                             <td style={{ padding: '10px 14px', color: textSecondary, fontSize: '13px' }}>{formatDate(m.startDate)}</td>
                                             <td style={{ padding: '10px 14px' }}>
-                                                <span style={{ padding: '3px 8px', background: 'rgba(37,99,235,0.15)', color: '#2563eb', borderRadius: '6px', fontSize: '11px', fontWeight: 600 }}>{m.type}</span>
+                                                <span style={{ padding: '3px 8px', background: 'rgba(37,99,235,0.15)', color: '#2563eb', borderRadius: '8px', fontSize: '11px', fontWeight: 600 }}>{m.type}</span>
                                             </td>
                                             <td style={{ padding: '10px 14px', color: textPrimary, fontSize: '13px' }}>{m.description}</td>
                                             <td style={{ padding: '10px 14px', color: textSecondary, fontSize: '13px' }}>{m.status}</td>

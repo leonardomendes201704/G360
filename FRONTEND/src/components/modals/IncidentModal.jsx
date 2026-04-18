@@ -347,7 +347,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
 
                                     {incident && currentIncident?.slaBreached && (
                                         <div className="form-group col-12">
-                                            <Alert severity="error" sx={{ borderRadius: 2 }}>
+                                            <Alert severity="error" sx={{ borderRadius: '8px'}}>
                                                 ⚠️ <strong>SLA Estourado!</strong> Este incidente excedeu o prazo de resolução.
                                             </Alert>
                                         </div>
@@ -361,7 +361,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                                         </label>
                                         <Box sx={{
                                             p: 2,
-                                            borderRadius: 2,
+                                            borderRadius: '8px',
                                             bgcolor: 'rgba(37, 99, 235, 0.08)',
                                             border: '1px solid rgba(37, 99, 235, 0.2)'
                                         }}>
@@ -472,7 +472,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                                         </label>
                                         <Box sx={{
                                             p: 2,
-                                            borderRadius: 2,
+                                            borderRadius: '8px',
                                             bgcolor: 'rgba(16, 185, 129, 0.08)',
                                             border: '1px solid rgba(16, 185, 129, 0.2)'
                                         }}>
@@ -585,7 +585,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                             <div style={{ display: activeTab === 'historico' ? 'block' : 'none' }}>
                                 <div className="form-section">
                                     <Typography sx={{ color: 'var(--modal-text-secondary)', mb: 2, fontSize: 14 }}>Timeline de eventos do incidente</Typography>
-                                    <List sx={{ bgcolor: 'var(--modal-surface-subtle)', borderRadius: 2, border: '1px solid var(--modal-border-strong)' }}>
+                                    <List sx={{ bgcolor: 'var(--modal-surface-subtle)', borderRadius: '8px', border: '1px solid var(--modal-border-strong)' }}>
                                         {(fullIncident?.history || []).map((h, idx) => (
                                             <ListItem key={h.id} sx={{ borderBottom: idx < (fullIncident?.history?.length - 1) ? '1px solid var(--modal-surface-hover)' : 'none' }}>
                                                 <ListItemAvatar>
@@ -629,7 +629,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                                     <Divider sx={{ my: 2, borderColor: 'var(--modal-border-strong)' }} />
                                     <List>
                                         {(fullIncident?.comments || []).map((c) => (
-                                            <ListItem key={c.id} sx={{ bgcolor: c.isInternal ? 'rgba(245, 158, 11, 0.1)' : 'transparent', borderRadius: 2, mb: 1 }}>
+                                            <ListItem key={c.id} sx={{ bgcolor: c.isInternal ? 'rgba(245, 158, 11, 0.1)' : 'transparent', borderRadius: '8px', mb: 1 }}>
                                                 <ListItemAvatar>
                                                     <Avatar sx={{ bgcolor: '#2563eb', width: 32, height: 32 }}>{c.user?.name?.[0]}</Avatar>
                                                 </ListItemAvatar>

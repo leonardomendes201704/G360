@@ -25,9 +25,9 @@ const CostCenterTreemap = ({ data }) => {
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: "compact" }).format(val);
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: '8px', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Box sx={{ width: 32, height: 32, borderRadius: 2, bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔲</Box>
+                <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔲</Box>
                 <Typography variant="h6" fontWeight={700} color="text.primary">Hierarquia de Risco (Fornecedores)</Typography>
             </Box>
 
@@ -48,7 +48,7 @@ const CostCenterTreemap = ({ data }) => {
                                     height: height,
                                     minWidth: '80px',
                                     bgcolor: color,
-                                    borderRadius: 2,
+                                    borderRadius: '8px',
                                     p: 1,
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -74,10 +74,10 @@ const CostCenterTreemap = ({ data }) => {
                 })}
             </Box>
             <Box sx={{ mt: 1, display: 'flex', gap: 2, justifyContent: 'center' }}>
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#22c55e' }} /> Abaixo do Orçado</Typography>
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#3b82f6' }} /> Na Meta (+/- 5%)</Typography>
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#f59e0b' }} /> Investigue (&gt; 5%)</Typography>
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ef4444' }} /> Crítico (&gt; 20%)</Typography>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: '#22c55e' }} /> Abaixo do Orçado</Typography>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: '#3b82f6' }} /> Na Meta (+/- 5%)</Typography>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: '#f59e0b' }} /> Investigue (&gt; 5%)</Typography>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}><Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: '#ef4444' }} /> Crítico (&gt; 20%)</Typography>
             </Box>
         </Paper>
     );

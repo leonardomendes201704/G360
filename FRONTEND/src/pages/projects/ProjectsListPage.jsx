@@ -172,7 +172,7 @@ const ProjectsListPage = () => {
     const drawerInputSx = useMemo(() => ({
         '& .MuiOutlinedInput-root': {
             bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-            borderRadius: 2,
+            borderRadius: '8px',
             '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
             '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
             '&.Mui-focused fieldset': { borderColor: '#2563eb' },
@@ -650,7 +650,7 @@ const ProjectsListPage = () => {
                 <Box
                     sx={{
                         mb: 3,
-                        borderRadius: '16px',
+                        borderRadius: '8px',
                         bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
                         border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
                         p: 2,
@@ -674,7 +674,7 @@ const ProjectsListPage = () => {
                             Filtros
                         </Button>
                         {activeDrawerFilterCount > 0 ? (
-                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
                                 {activeDrawerFilterCount}
                             </Box>
                         ) : null}

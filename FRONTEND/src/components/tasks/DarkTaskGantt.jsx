@@ -137,7 +137,7 @@ const DarkTaskGantt = ({
                         <Box sx={{
                             px: 1,
                             py: 0.25,
-                            borderRadius: '4px',
+                            borderRadius: '8px',
                             bgcolor: `${STATUS_COLORS[original.status]?.bar}20`,
                             color: STATUS_COLORS[original.status]?.bar,
                             fontSize: '11px',
@@ -151,7 +151,7 @@ const DarkTaskGantt = ({
                         <Box sx={{
                             width: 8,
                             height: 8,
-                            borderRadius: '50%',
+                            borderRadius: '8px',
                             bgcolor: priorityColor,
                         }} />
                         <span style={{ fontSize: '11px', color: '#f1f5f9' }}>{original.priority}</span>
@@ -178,7 +178,7 @@ const DarkTaskGantt = ({
                 background: 'rgba(22, 29, 38, 0.5)',
                 backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '16px',
+                borderRadius: '8px',
                 p: 4,
                 textAlign: 'center',
             }}>
@@ -205,7 +205,7 @@ const DarkTaskGantt = ({
             background: 'rgba(22, 29, 38, 0.5)',
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.06)',
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden',
         }}>
             {/* Toolbar */}
@@ -270,7 +270,7 @@ const DarkTaskGantt = ({
                             <Box sx={{
                                 px: 1,
                                 py: 0.25,
-                                borderRadius: '4px',
+                                borderRadius: '8px',
                                 bgcolor: 'rgba(245, 158, 11, 0.15)',
                                 color: '#f59e0b',
                                 fontSize: '11px',
@@ -351,7 +351,7 @@ const DarkTaskGantt = ({
                     },
                     '& ::-webkit-scrollbar-thumb': {
                         background: 'rgba(255, 255, 255, 0.1)',
-                        borderRadius: '4px',
+                        borderRadius: '8px',
                     },
                 }}>
                     <Gantt
@@ -390,7 +390,7 @@ const DarkTaskGantt = ({
                         <Box sx={{
                             width: 12,
                             height: 12,
-                            borderRadius: '3px',
+                            borderRadius: '8px',
                             bgcolor: colors.bar,
                         }} />
                         <Typography sx={{ fontSize: '11px', color: '#94a3b8' }}>

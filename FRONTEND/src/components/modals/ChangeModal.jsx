@@ -567,7 +567,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                 <div style={{
                                     width: 36,
                                     height: 36,
-                                    borderRadius: '50%',
+                                    borderRadius: '8px',
                                     background: activeStep >= 0 ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'var(--modal-border-strong)',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -599,7 +599,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                 <div style={{
                                     width: 36,
                                     height: 36,
-                                    borderRadius: '50%',
+                                    borderRadius: '8px',
                                     background: activeStep >= 1 ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'var(--modal-border-strong)',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -621,7 +621,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                         {/* Preview de Aprovadores Automáticos */}
                         <div style={{
                             padding: 12,
-                            borderRadius: 8,
+                            borderRadius: '8px',
                             background: 'rgba(16, 185, 129, 0.08)',
                             border: '1px solid rgba(16, 185, 129, 0.2)',
                             display: 'flex',
@@ -703,7 +703,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                         <div className="form-group col-12" style={{ marginBottom: 16 }}>
                                             <div style={{
                                                 padding: 16,
-                                                borderRadius: 12,
+                                                borderRadius: '8px',
                                                 background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
                                                 border: '1px solid rgba(37, 99, 235, 0.2)'
                                             }}>
@@ -785,7 +785,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                                 <div className="gmud-section-title">Avaliação de Risco</div>
                                             </div>
                                             {watchType === 'PADRAO' ? (
-                                                <div className="alert-info" style={{ padding: 10, borderRadius: 4, background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', fontSize: 13 }}>
+                                                <div className="alert-info" style={{ padding: 10, borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', fontSize: 13 }}>
                                                     ℹ️ <strong>Mudança Padrão:</strong> Risco Baixo e Aprovação Automática.
                                                 </div>
                                             ) : (
@@ -881,7 +881,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                         </label>
                                         <div style={{
                                             padding: 12,
-                                            borderRadius: 8,
+                                            borderRadius: '8px',
                                             background: 'rgba(245, 158, 11, 0.08)',
                                             border: '1px solid rgba(245, 158, 11, 0.2)'
                                         }}>
@@ -940,7 +940,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                                     severity={watchType === 'EMERGENCIAL' ? 'info' : 'error'}
                                                     sx={{
                                                         mb: 2,
-                                                        borderRadius: 2,
+                                                        borderRadius: '8px',
                                                         bgcolor: watchType === 'EMERGENCIAL' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                         border: `1px solid ${watchType === 'EMERGENCIAL' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
                                                     }}
@@ -965,7 +965,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                             {/* STANDARD GMUD CONFLICTS */}
                                             {scheduleConflicts.filter(c => c.code !== 'FREEZE').length > 0 && (
                                                 <Alert severity="warning" sx={{
-                                                    borderRadius: 2,
+                                                    borderRadius: '8px',
                                                     bgcolor: 'rgba(245, 158, 11, 0.15)',
                                                     border: '1px solid rgba(245, 158, 11, 0.3)',
                                                     '& .MuiAlert-message': { width: '100%' }
@@ -982,8 +982,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                                                 padding: '6px 8px',
                                                                 marginBottom: 4,
                                                                 background: 'rgba(0,0,0,0.1)',
-                                                                borderRadius: 4
-                                                            }}>
+                                                                borderRadius: '8px'}}>
                                                                 <span><strong>{conflict.code}</strong> - {conflict.title}</span>
                                                                 <Chip
                                                                     label={conflict.status}
@@ -1064,7 +1063,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
 
                                     {/* APROVAÇÃO APENAS NO MÓDULO MINHAS APROVAÇÕES */}
                                     {isMyApprovalPending && change?.status === 'PENDING_APPROVAL' && (
-                                        <Alert severity="info" sx={{ mb: 3, borderRadius: 2, bgcolor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                                        <Alert severity="info" sx={{ mb: 3, borderRadius: '8px', bgcolor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                                 <span style={{ fontSize: 20 }}>🔔</span>
                                                 <div>
@@ -1092,7 +1091,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                             <h4 style={{ margin: '0 0 16px 0', color: 'var(--modal-text-secondary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Aprovadores Designados</h4>
 
                                             {currentApprovers.length > 0 ? (
-                                                <List sx={{ bgcolor: 'var(--modal-surface)', borderRadius: 2, border: '1px solid var(--modal-border)', p: 0 }}>
+                                                <List sx={{ bgcolor: 'var(--modal-surface)', borderRadius: '8px', border: '1px solid var(--modal-border)', p: 0 }}>
                                                     {currentApprovers.map((app, index) => (
                                                         <div key={app.id}>
                                                             {index > 0 && <Divider />}
@@ -1112,7 +1111,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                                     ))}
                                                 </List>
                                             ) : (
-                                                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--modal-text-secondary)', background: 'var(--modal-surface-subtle)', borderRadius: 8, border: '1px dashed var(--modal-border-strong)' }}>
+                                                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--modal-text-secondary)', background: 'var(--modal-surface-subtle)', borderRadius: '8px', border: '1px dashed var(--modal-border-strong)' }}>
                                                     Nenhum aprovador atribuído. Verifique seu Centro de Custo.
                                                 </div>
                                             )}
@@ -1129,7 +1128,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                 <div className="form-section">
                                     <div className="form-grid">
                                         <div className="form-group col-12">
-                                            <div className="alert-info" style={{ marginBottom: 20, padding: 12, borderRadius: 6, background: '#f0fdf4', border: '1px solid #dcfce7', color: '#166534' }}>
+                                            <div className="alert-info" style={{ marginBottom: 20, padding: 12, borderRadius: '8px', background: '#f0fdf4', border: '1px solid #dcfce7', color: '#166534' }}>
                                                 ✅ <strong>Aprovada!</strong> Utilize este espaço para registrar os detalhes da execução.
                                             </div>
                                         </div>
@@ -1274,7 +1273,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                                             {attachments.length > 0 ? (
                                                 <ul style={{ listStyle: 'none', padding: 0 }}>
                                                     {attachments.map(att => (
-                                                        <li key={att.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--modal-surface-subtle)', borderRadius: '6px', marginBottom: '8px', border: '1px solid var(--modal-border)' }}>
+                                                        <li key={att.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--modal-surface-subtle)', borderRadius: '8px', marginBottom: '8px', border: '1px solid var(--modal-border)' }}>
                                                             <a href={getFileURL(att.fileUrl)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#2563eb', fontWeight: 500 }}>
                                                                 📎 {att.fileName}
                                                             </a>

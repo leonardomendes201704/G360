@@ -23,7 +23,7 @@ const buildInsightsTheme = (isDark, theme) => {
         cardStyle: {
             background: colors.cardBg,
             border: colors.border,
-            borderRadius: '16px',
+            borderRadius: '8px',
             padding: '24px'
         }
     };
@@ -34,7 +34,7 @@ const formatPercent = (val) => `${(val || 0).toFixed(1)}%`;
 
 // Insight Card
 const InsightCard = ({ title, value, subtitle, icon, color = '#2563eb', trend, colors }) => (
-    <Box sx={{ flex: 1, minWidth: 150, p: 2.5, background: colors.surface, borderRadius: '12px', borderLeft: `4px solid ${color}` }}>
+    <Box sx={{ flex: 1, minWidth: 150, p: 2.5, background: colors.surface, borderRadius: '8px', borderLeft: `4px solid ${color}` }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <span className="material-icons-round" style={{ fontSize: '18px', color }}>{icon}</span>
             <Typography sx={{ fontSize: '11px', color: colors.textMuted, fontWeight: 600, textTransform: 'uppercase' }}>{title}</Typography>
@@ -44,7 +44,7 @@ const InsightCard = ({ title, value, subtitle, icon, color = '#2563eb', trend, c
         {trend && (
             <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '8px',
-                padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+                padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
                 background: trend.value >= 0 ? colors.warnSoft : colors.successSoft,
                 color: trend.value >= 0 ? colors.warn : colors.success
             }}>
@@ -62,7 +62,7 @@ const ProgressBar = ({ label, value, color = '#2563eb', colors }) => (
             <Typography sx={{ fontSize: '12px', fontWeight: 600, color: colors.textSecondary }}>{label}</Typography>
             <Typography sx={{ fontSize: '12px', fontWeight: 700, color }}>{formatPercent(value)}</Typography>
         </Box>
-        <LinearProgress variant="determinate" value={Math.min(value, 100)} sx={{ height: 8, borderRadius: 4, bgcolor: colors.surface, '& .MuiLinearProgress-bar': { bgcolor: color, borderRadius: 4 } }} />
+        <LinearProgress variant="determinate" value={Math.min(value, 100)} sx={{ height: 8, borderRadius: '8px', bgcolor: colors.surface, '& .MuiLinearProgress-bar': { bgcolor: color, borderRadius: '8px'} }} />
     </Box>
 );
 
@@ -95,7 +95,7 @@ const BudgetInsightsPanel = ({ budgetId }) => {
     if (!insights) {
         return (
             <Box sx={{ ...ui.cardStyle, py: 4 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, background: 'rgba(245, 158, 11, 0.1)', borderRadius: '12px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
                     <span className="material-icons-round" style={{ color: '#f59e0b', fontSize: '24px' }}>warning</span>
                     <Typography sx={{ color: '#f59e0b', fontSize: '14px' }}>Não foi possível carregar os insights</Typography>
                 </Box>
@@ -113,7 +113,7 @@ const BudgetInsightsPanel = ({ budgetId }) => {
             {/* Header KPIs */}
             <Box sx={ui.cardStyle}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                    <Box sx={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(245, 158, 11, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span className="material-icons-round" style={{ color: '#f59e0b', fontSize: '22px' }}>lightbulb</span>
                     </Box>
                     <Box>
@@ -143,13 +143,13 @@ const BudgetInsightsPanel = ({ budgetId }) => {
                     </Box>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <Tooltip title="Novas despesas (sem histórico)">
-                            <Box sx={{ textAlign: 'center', p: 2, background: ui.colors.surface, borderRadius: '12px', minWidth: 80 }}>
+                            <Box sx={{ textAlign: 'center', p: 2, background: ui.colors.surface, borderRadius: '8px', minWidth: 80 }}>
                                 <Typography sx={{ fontSize: '28px', fontWeight: 700, color: '#2563eb' }}>{obzAnalysis?.newExpenses || 0}</Typography>
                                 <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted }}>Novas</Typography>
                             </Box>
                         </Tooltip>
                         <Tooltip title="Despesas com histórico">
-                            <Box sx={{ textAlign: 'center', p: 2, background: ui.colors.surface, borderRadius: '12px', minWidth: 80 }}>
+                            <Box sx={{ textAlign: 'center', p: 2, background: ui.colors.surface, borderRadius: '8px', minWidth: 80 }}>
                                 <Typography sx={{ fontSize: '28px', fontWeight: 700, color: '#10b981' }}>{obzAnalysis?.historicalExpenses || 0}</Typography>
                                 <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted }}>Históricas</Typography>
                             </Box>
@@ -169,10 +169,10 @@ const BudgetInsightsPanel = ({ budgetId }) => {
                         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                             {priorityData.filter(p => p.value > 0).map((p, i) => (
                                 <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <Box sx={{ width: 12, height: 12, borderRadius: '4px', bgcolor: p.color }} />
+                                    <Box sx={{ width: 12, height: 12, borderRadius: '8px', bgcolor: p.color }} />
                                     <Typography sx={{ flex: 1, fontSize: '13px', color: ui.colors.textSecondary }}>{p.label}</Typography>
                                     <Typography sx={{ fontSize: '13px', fontWeight: 600, color: ui.colors.textPrimary }}>{formatCurrency(p.value)}</Typography>
-                                    <span style={{ padding: '3px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: p.color, color: 'white' }}>
+                                    <span style={{ padding: '3px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, background: p.color, color: 'white' }}>
                                         {formatPercent((p.value / summary?.total) * 100)}
                                     </span>
                                 </Box>
@@ -192,7 +192,7 @@ const BudgetInsightsPanel = ({ budgetId }) => {
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                             {risks.map((risk, i) => (
-                                <Box key={i} sx={{ p: 2, background: risk.severity === 'HIGH' ? 'rgba(244, 63, 94, 0.1)' : 'rgba(245, 158, 11, 0.1)', borderRadius: '10px', borderLeft: risk.severity === 'HIGH' ? '3px solid #f43f5e' : '3px solid #f59e0b' }}>
+                                <Box key={i} sx={{ p: 2, background: risk.severity === 'HIGH' ? 'rgba(244, 63, 94, 0.1)' : 'rgba(245, 158, 11, 0.1)', borderRadius: '8px', borderLeft: risk.severity === 'HIGH' ? '3px solid #f43f5e' : '3px solid #f59e0b' }}>
                                     <Typography sx={{ fontSize: '13px', color: risk.severity === 'HIGH' ? '#f43f5e' : '#f59e0b' }}>{risk.message}</Typography>
                                 </Box>
                             ))}
@@ -208,9 +208,9 @@ const BudgetInsightsPanel = ({ budgetId }) => {
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                             {recommendations.map((rec, i) => (
-                                <Box key={i} sx={{ p: 2, background: ui.colors.surface, borderRadius: '10px', borderLeft: `3px solid ${rec.priority === 'HIGH' ? '#f43f5e' : rec.priority === 'MEDIUM' ? '#f59e0b' : '#06b6d4'}` }}>
+                                <Box key={i} sx={{ p: 2, background: ui.colors.surface, borderRadius: '8px', borderLeft: `3px solid ${rec.priority === 'HIGH' ? '#f43f5e' : rec.priority === 'MEDIUM' ? '#f59e0b' : '#06b6d4'}` }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                        <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, background: rec.priority === 'HIGH' ? 'rgba(244, 63, 94, 0.15)' : rec.priority === 'MEDIUM' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(6, 182, 212, 0.15)', color: rec.priority === 'HIGH' ? '#f43f5e' : rec.priority === 'MEDIUM' ? '#f59e0b' : '#06b6d4' }}>
+                                        <span style={{ padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, background: rec.priority === 'HIGH' ? 'rgba(244, 63, 94, 0.15)' : rec.priority === 'MEDIUM' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(6, 182, 212, 0.15)', color: rec.priority === 'HIGH' ? '#f43f5e' : rec.priority === 'MEDIUM' ? '#f59e0b' : '#06b6d4' }}>
                                             {rec.priority}
                                         </span>
                                         <Typography sx={{ fontSize: '13px', fontWeight: 600, color: ui.colors.textPrimary }}>{rec.title}</Typography>

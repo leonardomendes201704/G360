@@ -39,7 +39,7 @@ const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
             justifyContent: 'space-between',
             padding: '16px 24px',
             background: 'transparent',
-            borderRadius: 12,
+            borderRadius: '8px',
             border: 'none',
             margin: '16px 24px 8px',
             position: 'relative',
@@ -62,7 +62,7 @@ const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
                         <div style={{
                             width: 28,
                             height: 28,
-                            borderRadius: '50%',
+                            borderRadius: '8px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -107,7 +107,7 @@ const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
                             background: getConnectorColor(idx),
                             margin: '0 4px',
                             marginBottom: 20,
-                            borderRadius: 1,
+                            borderRadius: '8px',
                             transition: 'background 0.4s ease',
                             position: 'relative',
                             overflow: 'hidden'
@@ -117,8 +117,7 @@ const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
                                     position: 'absolute',
                                     top: 0, left: 0, right: 0, bottom: 0,
                                     background: `linear-gradient(90deg, ${getConnectorColor(idx)}, ${getConnectorColor(idx)}cc)`,
-                                    borderRadius: 1
-                                }} />
+                                    borderRadius: '8px'}} />
                             )}
                         </div>
                     )}

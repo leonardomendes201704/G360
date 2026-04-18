@@ -115,7 +115,7 @@ const ExecutionTimeline = ({
                     <div style={{
                         width: 12,
                         height: 12,
-                        borderRadius: 3,
+                        borderRadius: '8px',
                         background: 'linear-gradient(90deg, #3b82f6, #60a5fa)'
                     }} />
                     <span style={{ color: '#94a3b8' }}>Planejado</span>
@@ -124,7 +124,7 @@ const ExecutionTimeline = ({
                     <div style={{
                         width: 12,
                         height: 12,
-                        borderRadius: 3,
+                        borderRadius: '8px',
                         background: `linear-gradient(90deg, ${deviationColor}, ${deviationColor}aa)`
                     }} />
                     <span style={{ color: '#94a3b8' }}>Real</span>
@@ -145,7 +145,7 @@ const ExecutionTimeline = ({
                     width: `${plannedWidth}%`,
                     height: 16,
                     background: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
-                    borderRadius: 8,
+                    borderRadius: '8px',
                     opacity: 0.4
                 }} />
 
@@ -158,7 +158,7 @@ const ExecutionTimeline = ({
                         width: `${actualWidth}%`,
                         height: 24,
                         background: `linear-gradient(90deg, ${deviationColor}, ${deviationColor}cc)`,
-                        borderRadius: 8,
+                        borderRadius: '8px',
                         boxShadow: `0 4px 12px ${deviationColor}40`,
                         display: 'flex',
                         alignItems: 'center',

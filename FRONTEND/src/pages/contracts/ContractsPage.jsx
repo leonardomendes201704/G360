@@ -125,7 +125,7 @@ const ContractsPage = () => {
     () => ({
       '& .MuiOutlinedInput-root': {
         bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-        borderRadius: 2,
+        borderRadius: '8px',
         '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
         '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
         '&.Mui-focused fieldset': { borderColor: '#2563eb' },
@@ -255,7 +255,7 @@ const ContractsPage = () => {
         sx={{
           mb: 3,
           p: 3,
-          borderRadius: '16px',
+          borderRadius: '8px',
           background: cardBg,
           backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
           border: `1px solid ${borderColor}`,
@@ -272,7 +272,7 @@ const ContractsPage = () => {
             sx={{
               width: 48,
               height: 48,
-              borderRadius: '12px',
+              borderRadius: '8px',
               background: 'rgba(37, 99, 235, 0.15)',
               border: '1px solid rgba(37, 99, 235, 0.2)',
               display: 'flex',
@@ -304,7 +304,7 @@ const ContractsPage = () => {
                 alignItems: 'center',
                 gap: 1,
                 padding: '10px 18px',
-                borderRadius: '12px',
+                borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: 600,
                 textTransform: 'none',
@@ -328,7 +328,7 @@ const ContractsPage = () => {
       <Box
         sx={{
           mb: 3,
-          borderRadius: '16px',
+          borderRadius: '8px',
           bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
           border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
           p: 2,
@@ -356,7 +356,7 @@ const ContractsPage = () => {
               sx={{
                 px: 1,
                 py: 0.25,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 fontSize: '10px',
                 fontWeight: 700,
                 bgcolor: 'rgba(37, 99, 235, 0.15)',
@@ -453,7 +453,7 @@ const ContractsPage = () => {
         accentColor="#2563eb"
         count={filteredContracts.length}
         sx={{
-          borderRadius: '16px',
+          borderRadius: '8px',
           background: cardBg,
           backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
           border: `1px solid ${borderColor}`,
@@ -470,7 +470,7 @@ const ContractsPage = () => {
                 gap: 1.5,
                 background: surfaceBg,
                 border: `1px solid ${borderColor}`,
-                borderRadius: '12px',
+                borderRadius: '8px',
                 padding: '10px 16px',
                 width: 300
               }}
@@ -553,7 +553,7 @@ const ContractsPage = () => {
                         alignItems: 'center',
                         gap: '6px',
                         padding: '6px 12px',
-                        borderRadius: '20px',
+                        borderRadius: '8px',
                         fontSize: '12px',
                         fontWeight: 600,
                         background: statusStyle.bg,

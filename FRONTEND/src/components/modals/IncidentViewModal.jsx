@@ -18,7 +18,7 @@ function formatDate(dateStr) {
 
 const IncidentViewDataField = ({ label, value, icon, fullWidth = false, surfaceBg, borderColor, textMuted, textPrimary }) => (
     <Box sx={{
-        p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}`,
+        p: 2, borderRadius: '8px', background: surfaceBg, border: `1px solid ${borderColor}`,
         gridColumn: fullWidth ? '1 / -1' : 'auto', minHeight: 60, display: 'flex', flexDirection: 'column', gap: 0.5
     }}>
         <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -98,7 +98,7 @@ const IncidentViewModal = ({ open, onClose, incident, onEdit }) => {
         >
             <Box sx={{ px: 2.5, pt: 2, pb: 1.5 }}>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Box sx={{ width: 44, height: 44, borderRadius: '10px', background: priorityColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>⚠️</Box>
+                    <Box sx={{ width: 44, height: 44, borderRadius: '8px', background: priorityColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>⚠️</Box>
                     <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                         <StatusChip status={data.status} type="INCIDENT" />
                         {data.priority && <Chip label={PRIORITY_LABELS[data.priority] || data.priority} size="small" sx={{ height: 22, fontSize: '11px', bgcolor: `${priorityColor}20`, color: priorityColor, fontWeight: 600 }} />}
@@ -134,7 +134,7 @@ const IncidentViewModal = ({ open, onClose, incident, onEdit }) => {
                         <IncidentViewDataField label="Criado em" value={formatDate(data.createdAt)} icon="🕐" {...fieldProps} />
                         <IncidentViewDataField label="Descrição" value={data.description} icon="📝" fullWidth {...fieldProps} />
                         {data.relatedChange && (
-                            <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '10px', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)' }}>
+                            <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '8px', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)' }}>
                                 <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', mb: 1 }}>GMUD Relacionada</Typography>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                                     <Typography sx={{ color: '#818cf8', fontWeight: 600, fontSize: '14px' }}>{data.relatedChange.code}</Typography>
@@ -144,7 +144,7 @@ const IncidentViewModal = ({ open, onClose, incident, onEdit }) => {
                             </Box>
                         )}
                         {data.relatedAsset && (
-                            <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '10px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                            <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '8px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
                                 <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', mb: 1 }}>Ativo Relacionado</Typography>
                                 <Typography sx={{ color: '#10b981', fontWeight: 600, fontSize: '14px' }}>{data.relatedAsset.tag || data.relatedAsset.name}</Typography>
                                 <Typography sx={{ color: textSecondary, fontSize: '13px' }}>{data.relatedAsset.name}</Typography>
@@ -167,7 +167,7 @@ const IncidentViewModal = ({ open, onClose, incident, onEdit }) => {
                     <Box>
                         <Typography sx={{ color: textSecondary, mb: 2, fontSize: '13px' }}>Timeline de eventos do incidente</Typography>
                         {(data.history || []).length > 0 ? (
-                            <List sx={{ bgcolor: surfaceBg, borderRadius: 2, border: `1px solid ${borderColor}`, p: 0 }}>
+                            <List sx={{ bgcolor: surfaceBg, borderRadius: '8px', border: `1px solid ${borderColor}`, p: 0 }}>
                                 {data.history.map((h, idx) => (
                                     <Box key={h.id}>
                                         {idx > 0 && <Divider sx={{ borderColor }} />}
@@ -196,7 +196,7 @@ const IncidentViewModal = ({ open, onClose, incident, onEdit }) => {
                         {(data.comments || []).length > 0 ? (
                             <List>
                                 {data.comments.map((c) => (
-                                    <ListItem key={c.id} sx={{ bgcolor: c.isInternal ? 'rgba(245,158,11,0.08)' : surfaceBg, border: `1px solid ${borderColor}`, borderRadius: '10px', mb: 1.5 }}>
+                                    <ListItem key={c.id} sx={{ bgcolor: c.isInternal ? 'rgba(245,158,11,0.08)' : surfaceBg, border: `1px solid ${borderColor}`, borderRadius: '8px', mb: 1.5 }}>
                                         <ListItemAvatar>
                                             <Avatar sx={{ bgcolor: '#2563eb', width: 32, height: 32, fontSize: '13px' }}>{c.user?.name?.charAt(0)}</Avatar>
                                         </ListItemAvatar>

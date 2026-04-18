@@ -32,7 +32,7 @@ const inputSx = {
     '& .MuiOutlinedInput-root': {
         background: 'var(--modal-surface-hover)',
         border: '1px solid var(--modal-border-strong)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: 'var(--modal-text)',
         fontSize: '14px',
         '& fieldset': { border: 'none' },
@@ -49,7 +49,7 @@ const inputSx = {
 const selectSx = {
     background: 'var(--modal-surface-hover)',
     border: '1px solid var(--modal-border-strong)',
-    borderRadius: '10px',
+    borderRadius: '8px',
     color: 'var(--modal-text)',
     fontSize: '14px',
     '& fieldset': { border: 'none' },
@@ -154,12 +154,12 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
                 padding: '24px',
                 '&::-webkit-scrollbar': { width: '6px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
-                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' }
+                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '8px' }
             }}>
                 <form id="editForm" onSubmit={handleSubmit(onSubmit)}>
 
                     {/* Informações Básicas */}
-                    <Box sx={{ p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
+                    <Box sx={{ p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
                         <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, mb: 2, textTransform: 'uppercase' }}>INFORMAÇÕES BÁSICAS</Typography>
                         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                             <Box sx={{ flex: '0 0 120px' }}>
@@ -182,7 +182,7 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
                     </Box>
 
                     {/* Configurações */}
-                    <Box sx={{ p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
+                    <Box sx={{ p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
                         <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, mb: 2, textTransform: 'uppercase' }}>CONFIGURAÇÕES</Typography>
                         <Box sx={{ display: 'flex', gap: 2 }}>
                             <Box sx={{ flex: 1 }}>
@@ -231,7 +231,7 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
                     </Box>
 
                     {/* Responsáveis */}
-                    <Box sx={{ p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
+                    <Box sx={{ p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)', mb: 2.5 }}>
                         <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, mb: 2, textTransform: 'uppercase' }}>RESPONSÁVEIS</Typography>
                         <Box sx={{ display: 'flex', gap: 2 }}>
                             <Box sx={{ flex: 1 }}>
@@ -269,7 +269,7 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
 
 
                     {/* Cronograma */}
-                    <Box sx={{ p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
+                    <Box sx={{ p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
                         <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, mb: 2, textTransform: 'uppercase' }}>CRONOGRAMA</Typography>
                         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                             <Box sx={{ flex: 1 }}>

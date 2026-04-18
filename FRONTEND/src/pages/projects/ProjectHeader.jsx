@@ -30,10 +30,10 @@ const ProjectHeader = ({ project, onEdit, onDelete }) => {
             <span className="status-dot"></span>
             {project.status}
           </span>
-          <button style={{ padding: '8px 16px', borderRadius: '10px', border: '1px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onEdit}>
+          <button style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #e5e7eb', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onEdit}>
             <Edit style={{ fontSize: 16 }} /> Editar
           </button>
-          <button style={{ padding: '8px 16px', borderRadius: '10px', border: '1px solid #fecaca', background: 'white', color: '#dc2626', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onDelete}>
+          <button style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #fecaca', background: 'white', color: '#dc2626', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onDelete}>
             <Delete style={{ fontSize: 16 }} /> Excluir
           </button>
         </div>

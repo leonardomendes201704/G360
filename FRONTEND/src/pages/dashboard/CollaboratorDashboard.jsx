@@ -20,7 +20,7 @@ import { createChange } from '../../services/change-request.service';
 import RecentActivities from '../../components/projects/RecentActivities';
 
 const commonPaperStyle = {
-    borderRadius: '16px',
+    borderRadius: '8px',
     overflow: 'hidden',
     transition: 'all 0.3s',
 };
@@ -112,7 +112,7 @@ const CollaboratorDashboard = ({ user }) => {
             <Box sx={{
                 mb: 4,
                 p: 3,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 background: mode === 'dark' ? 'rgba(22, 29, 38, 0.5)' : 'rgba(255, 255, 255, 0.8)',
                 backdropFilter: 'blur(10px)',
                 border: '1px solid',
@@ -157,13 +157,13 @@ const CollaboratorDashboard = ({ user }) => {
                     <Paper key={kpi.key} onClick={() => navigate(kpi.key === 'projects' ? '/projects' : kpi.key === 'tasks' ? '/tasks' : '/changes')} sx={{
                         ...commonPaperStyle, p: 3, cursor: 'pointer', transition: 'all 0.3s',
                         '&:hover': { transform: 'translateY(-2px)', borderColor: 'primary.main' },
-                        '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: kpi.gradient, borderRadius: '16px 16px 0 0' }
+                        '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: kpi.gradient, borderRadius: '8px' }
                     }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                            <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: `${kpi.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: `${kpi.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <span className="material-icons-round" style={{ fontSize: '24px', color: kpi.color }}>{kpi.icon}</span>
                             </Box>
-                            <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: `${kpi.color}22`, color: kpi.color }}>
+                            <span style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: `${kpi.color}22`, color: kpi.color }}>
                                 {kpi.badgeLabel}
                             </span>
                         </Box>
@@ -201,13 +201,13 @@ const CollaboratorDashboard = ({ user }) => {
                                             <Box key={task.id} onClick={() => navigate('/tasks')} sx={{
                                                 display: 'flex', alignItems: 'center', gap: 2, p: 2,
                                                 background: theme.palette.background.default,
-                                                border: '1px solid', borderColor: 'divider', borderRadius: '12px', cursor: 'pointer',
+                                                border: '1px solid', borderColor: 'divider', borderRadius: '8px', cursor: 'pointer',
                                                 transition: 'all 0.2s', '&:hover': { transform: 'translateX(4px)', borderColor: 'primary.main' }
                                             }}>
                                                 <Box
                                                     onClick={(e) => handleCompleteTask(task.id, e)}
                                                     sx={{
-                                                        width: 22, height: 22, borderRadius: '6px',
+                                                        width: 22, height: 22, borderRadius: '8px',
                                                         border: '2px solid', borderColor: 'divider',
                                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                         cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0,
@@ -230,13 +230,13 @@ const CollaboratorDashboard = ({ user }) => {
                                                             {task.projectId ? 'Projeto' : 'Geral'}
                                                         </span>
                                                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: getPriorityColor(task.priority), boxShadow: `0 0 8px ${getPriorityColor(task.priority)}` }} />
+                                                            <span style={{ width: 8, height: 8, borderRadius: '8px', background: getPriorityColor(task.priority), boxShadow: `0 0 8px ${getPriorityColor(task.priority)}` }} />
                                                             {getPriorityLabel(task.priority)}
                                                         </span>
                                                     </Box>
                                                 </Box>
                                                 {dueStatus && (
-                                                    <span style={{ padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 500, background: dueStatus.bg, color: dueStatus.color, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <span style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, background: dueStatus.bg, color: dueStatus.color, display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                         <span className="material-icons-round" style={{ fontSize: '14px' }}>event</span>
                                                         {dueStatus.label}
                                                     </span>
@@ -271,21 +271,21 @@ const CollaboratorDashboard = ({ user }) => {
                                 <Box key={proj.id} onClick={() => navigate(`/projects/${proj.id}`)} sx={{
                                     p: 2.5,
                                     background: theme.palette.background.default,
-                                    border: '1px solid', borderColor: 'divider', borderRadius: '12px',
+                                    border: '1px solid', borderColor: 'divider', borderRadius: '8px',
                                     cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)', borderColor: 'primary.main' }
                                 }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                                         <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(14, 165, 233, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <span className="material-icons-round" style={{ fontSize: '20px', color: '#0ea5e9' }}>folder</span>
                                         </Box>
-                                        <span style={{ padding: '4px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>
+                                        <span style={{ padding: '4px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>
                                             {proj.status}
                                         </span>
                                     </Box>
                                     <Typography sx={{ fontSize: '15px', fontWeight: 600, color: 'text.primary', mb: 1.5 }}>{proj.name}</Typography>
                                     <Box sx={{ mb: 1.5 }}>
-                                        <Box sx={{ height: 6, background: theme.palette.action.selected, borderRadius: '3px', overflow: 'hidden', mb: 0.5 }}>
-                                            <Box sx={{ height: '100%', width: `${proj.progress}%`, background: 'linear-gradient(90deg, #0ea5e9, #2563eb)', borderRadius: '3px' }} />
+                                        <Box sx={{ height: 6, background: theme.palette.action.selected, borderRadius: '8px', overflow: 'hidden', mb: 0.5 }}>
+                                            <Box sx={{ height: '100%', width: `${proj.progress}%`, background: 'linear-gradient(90deg, #0ea5e9, #2563eb)', borderRadius: '8px' }} />
                                         </Box>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'text.secondary' }}>
                                             <span>Progresso</span>
@@ -325,7 +325,7 @@ const CollaboratorDashboard = ({ user }) => {
                                             display: 'flex', alignItems: 'center', gap: 2, p: 2,
                                             background: theme.palette.background.default,
                                             border: '1px solid', borderColor: 'divider',
-                                            borderLeft: '3px solid #f59e0b', borderRadius: '12px',
+                                            borderLeft: '3px solid #f59e0b', borderRadius: '8px',
                                             cursor: 'pointer', transition: 'all 0.2s', '&:hover': { borderColor: 'primary.main', borderLeftColor: '#f59e0b' }
                                         }}>
                                             <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

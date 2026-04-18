@@ -53,7 +53,7 @@ const ChangeCalendar = ({ changes, onViewChange }) => {
         return {
             style: {
                 backgroundColor,
-                borderRadius: '6px',
+                borderRadius: '8px',
                 opacity: 0.9,
                 color: 'white',
                 border: '0px',
@@ -98,7 +98,7 @@ const ChangeCalendar = ({ changes, onViewChange }) => {
                 .light-calendar-wrapper,
                 .dark-calendar-wrapper {
                     padding: 20px;
-                    border-radius: 16px;
+                    border-radius: 8px;
                 }
 
                 .dark-calendar-wrapper {
@@ -223,7 +223,7 @@ const ChangeCalendar = ({ changes, onViewChange }) => {
                 .dark-calendar-wrapper .rbc-agenda-view {
                     border-color: rgba(255, 255, 255, 0.06);
                     background: transparent;
-                    border-radius: 0;
+                    border-radius: 8px;
                 }
 
                 .light-calendar-wrapper .rbc-month-view,
@@ -231,7 +231,7 @@ const ChangeCalendar = ({ changes, onViewChange }) => {
                 .light-calendar-wrapper .rbc-agenda-view {
                     border-color: rgba(0, 0, 0, 0.08);
                     background: transparent;
-                    border-radius: 0;
+                    border-radius: 8px;
                 }
 
                 .dark-calendar-wrapper .rbc-month-row,

@@ -16,7 +16,7 @@ export const useOrgThemeStyles = () => {
   const cardStyle = {
     background: cardBg,
     border: cardBorder,
-    borderRadius: '16px'
+    borderRadius: '8px'
   };
 
   const tableHeaderStyle = {

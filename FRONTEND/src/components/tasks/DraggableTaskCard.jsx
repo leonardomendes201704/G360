@@ -111,7 +111,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
             sx={{
                 background: cardBg,
                 border: cardBorder,
-                borderRadius: '14px',
+                borderRadius: '8px',
                 borderLeft: `3px solid ${statusStyle.bg}`,
                 padding: '14px 16px',
                 cursor: isDragging ? 'grabbing' : 'grab',
@@ -192,7 +192,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                         gap: 0.5,
                         px: 1,
                         py: 0.25,
-                        borderRadius: '6px',
+                        borderRadius: '8px',
                         background: `${priorityStyle.bg}18`,
                         border: `1px solid ${priorityStyle.bg}35`,
                     }}>
@@ -208,7 +208,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                             alignItems: 'center',
                             px: 1,
                             py: 0.25,
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             background: tagStyle.bg,
                         }}>
                             <Typography sx={{ fontSize: '11px', fontWeight: 600, color: tagStyle.color }}>{tag}</Typography>
@@ -233,7 +233,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                             {progressValue}%
                         </Typography>
                     </Box>
-                    <Box sx={{ height: '3px', borderRadius: '2px', bgcolor: progressBg, overflow: 'hidden' }}>
+                    <Box sx={{ height: '3px', borderRadius: '8px', bgcolor: progressBg, overflow: 'hidden' }}>
                         <Box sx={{
                             width: `${progressValue}%`,
                             height: '100%',
@@ -266,7 +266,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                             bgcolor: isDark ? 'rgba(37,99,235,0.1)' : '#eff6ff',
                             px: 1,
                             py: 0.5,
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             border: `1px solid ${isDark ? 'rgba(37,99,235,0.2)' : '#bfdbfe'}`
                         }}>
                             <span className="material-icons-round" style={{ fontSize: '14px', color: '#3b82f6' }}>person</span>
@@ -289,7 +289,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                         gap: 0.4,
                         px: 0.75,
                         py: 0.25,
-                        borderRadius: '6px',
+                        borderRadius: '8px',
                         background: `${dueStatus.color}15`,
                     }}>
                         <span className="material-icons-round" style={{ fontSize: '13px', color: dueStatus.color }}>{dueStatus.icon}</span>

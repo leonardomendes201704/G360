@@ -29,9 +29,9 @@ const CostCenterHeatmap = ({ data }) => {
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: "compact" }).format(val);
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: 4, overflowX: 'auto' }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: '8px', overflowX: 'auto' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Box sx={{ width: 32, height: 32, borderRadius: 2, bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔥</Box>
+                <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔥</Box>
                 <Typography variant="h6" fontWeight={700} color="text.primary">Sazonalidade de Despesas (Contas Contábeis)</Typography>
             </Box>
 
@@ -51,14 +51,14 @@ const CostCenterHeatmap = ({ data }) => {
 
                 {/* Data Rows */}
                 {data.map(cc => (
-                    <Box key={cc.id} sx={{ display: 'flex', alignItems: 'center', mb: 0.5, '&:hover': { bgcolor: '#f8fafc' }, borderRadius: 1, transition: 'background-color 0.2s' }}>
+                    <Box key={cc.id} sx={{ display: 'flex', alignItems: 'center', mb: 0.5, '&:hover': { bgcolor: '#f8fafc' }, borderRadius: '8px', transition: 'background-color 0.2s' }}>
                         <Box sx={{ width: 150, flexShrink: 0, px: 1 }}>
                             <Typography variant="body2" fontWeight={600} noWrap title={cc.name}>{cc.name}</Typography>
                             <Typography variant="caption" color="text.secondary">{cc.code}</Typography>
                         </Box>
                         {cc.months.map((val, idx) => (
                             <Tooltip key={idx} title={`${months[idx]}: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)}`} arrow>
-                                <Box sx={{ flex: 1, height: 32, mx: 0.2, bgcolor: getColor(val), borderRadius: 1, cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'scale(1.05)' } }} />
+                                <Box sx={{ flex: 1, height: 32, mx: 0.2, bgcolor: getColor(val), borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { transform: 'scale(1.05)' } }} />
                             </Tooltip>
                         ))}
                         <Box sx={{ width: 80, flexShrink: 0, textAlign: 'right', pr: 1 }}>

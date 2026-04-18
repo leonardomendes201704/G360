@@ -87,7 +87,7 @@ const QuickActionsGrid = ({
             sx={{
                 background: cardBg,
                 border: `1px solid ${borderColor}`,
-                borderRadius: '24px',
+                borderRadius: '8px',
                 p: '28px',
                 boxShadow: cardShadow,
             }}
@@ -116,7 +116,7 @@ const QuickActionsGrid = ({
                                 p: '24px 16px',
                                 background: actionBg,
                                 border: `1px solid ${borderColor}`,
-                                borderRadius: '16px',
+                                borderRadius: '8px',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
                                 textAlign: 'center',
@@ -137,7 +137,7 @@ const QuickActionsGrid = ({
                                 sx={{
                                     width: 52,
                                     height: 52,
-                                    borderRadius: '12px',
+                                    borderRadius: '8px',
                                     background: action.gradient,
                                     boxShadow: `0 4px 12px ${action.shadow}`,
                                     display: 'flex',

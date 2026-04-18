@@ -21,10 +21,10 @@ const budgetColors = ['#2563eb', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#f
 // Variation indicator component
 const VariationBadge = ({ current, previous, showPercent = true }) => {
     if (previous === 0 && current > 0) {
-        return <Tooltip title="Novo item"><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600, marginLeft: '6px' }}>NOVO</span></Tooltip>;
+        return <Tooltip title="Novo item"><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600, marginLeft: '6px' }}>NOVO</span></Tooltip>;
     }
     if (current === 0 && previous > 0) {
-        return <Tooltip title="Item removido"><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600, marginLeft: '6px' }}>REMOVIDO</span></Tooltip>;
+        return <Tooltip title="Item removido"><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600, marginLeft: '6px' }}>REMOVIDO</span></Tooltip>;
     }
     if (previous === 0 || !showPercent) return null;
 
@@ -34,7 +34,7 @@ const VariationBadge = ({ current, previous, showPercent = true }) => {
     return (
         <Tooltip title={`Variação Nominal: ${formatCurrency(diff)} (${formatPercent(variation)})`}>
             <span style={{
-                fontSize: '10px', padding: '2px 6px', borderRadius: '4px', marginLeft: '6px', fontWeight: 600,
+                fontSize: '10px', padding: '2px 6px', borderRadius: '8px', marginLeft: '6px', fontWeight: 600,
                 background: isUp ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                 color: isUp ? '#f43f5e' : '#10b981',
                 display: 'inline-flex', alignItems: 'center', gap: '2px', cursor: 'help'
@@ -53,8 +53,8 @@ const AllocationBar = ({ value, max, color, mode }) => {
     const trackColor = mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 100 }}>
-            <Box sx={{ flex: 1, height: 6, background: trackColor, borderRadius: 3, overflow: 'hidden' }}>
-                <Box sx={{ width: `${Math.min(percent, 100)}%`, height: '100%', background: color, borderRadius: 3, transition: 'width 0.3s' }} />
+            <Box sx={{ flex: 1, height: 6, background: trackColor, borderRadius: '8px', overflow: 'hidden' }}>
+                <Box sx={{ width: `${Math.min(percent, 100)}%`, height: '100%', background: color, borderRadius: '8px', transition: 'width 0.3s' }} />
             </Box>
             <Typography sx={{ fontSize: '10px', color: mode === 'dark' ? '#64748b' : '#334155', minWidth: 35 }}>{percent.toFixed(0)}%</Typography>
         </Box>
@@ -86,7 +86,7 @@ const BudgetComparisonPage = () => {
     const cardStyle = {
         bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
         border: `1px solid ${borderColor}`,
-        borderRadius: '16px',
+        borderRadius: '8px',
         padding: '24px',
         boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)',
     };
@@ -94,7 +94,7 @@ const BudgetComparisonPage = () => {
     const selectStyle = {
         background: surfaceBg,
         border: `1px solid ${borderColor}`,
-        borderRadius: '12px',
+        borderRadius: '8px',
         padding: '12px 14px',
         color: textPrimary,
         fontSize: '14px',
@@ -212,7 +212,7 @@ const BudgetComparisonPage = () => {
                     {selectedIds.map((id, index) => (
                         <Box key={index} sx={{ flex: '1 1 200px', maxWidth: '280px', position: 'relative' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: budgetColors[index] }} />
+                                <Box sx={{ width: 12, height: 12, borderRadius: '8px', background: budgetColors[index] }} />
                                 <label style={{ fontSize: '12px', color: textMuted, fontWeight: 500 }}>
                                     Orçamento {index + 1}
                                 </label>
@@ -248,7 +248,7 @@ const BudgetComparisonPage = () => {
                     onClick={handleCompare}
                     disabled={selectedIds.filter(id => id).length < 2 || loading}
                     sx={{
-                        padding: '14px 28px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                        padding: '14px 28px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                         '&:disabled': { opacity: 0.5 },
                         '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)' }
@@ -269,7 +269,7 @@ const BudgetComparisonPage = () => {
                             <Box key={b.id} sx={{ ...cardStyle, borderTop: `3px solid ${budgetColors[i]}`, p: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                                     <Typography sx={{ fontSize: '14px', fontWeight: 600, color: textPrimary, flex: 1 }}>{b.name}</Typography>
-                                    {b.isOBZ && <span style={{ padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>OBZ</span>}
+                                    {b.isOBZ && <span style={{ padding: '2px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>OBZ</span>}
                                 </Box>
                                 <Typography sx={{ fontSize: '11px', color: textSecondary, mb: 1 }}>Ano: {b.fiscalYear} • {b.itemCount} itens</Typography>
                                 <Typography sx={{ fontSize: '20px', fontWeight: 700, color: budgetColors[i], mb: 1.5 }}>{formatCurrency(b.total)}</Typography>
@@ -298,7 +298,7 @@ const BudgetComparisonPage = () => {
                                     onClick={() => setActiveTab(tab.id)}
                                     data-testid={`tab-${tab.id}`}
                                     style={{
-                                        padding: '10px 16px', borderRadius: '10px', border: 'none',
+                                        padding: '10px 16px', borderRadius: '8px', border: 'none',
                                         background: activeTab === tab.id ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
                                         color: activeTab === tab.id ? '#2563eb' : '#94a3b8',
                                         fontSize: '13px', fontWeight: 500, cursor: 'pointer',
@@ -315,21 +315,21 @@ const BudgetComparisonPage = () => {
                     {/* Legend */}
                     <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600 }}>NOVO</span>
+                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600 }}>NOVO</span>
                             <Typography sx={{ fontSize: '11px', color: textSecondary }}>Nova atividade/fornecedor</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600 }}>REMOVIDO</span>
+                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600 }}>REMOVIDO</span>
                             <Typography sx={{ fontSize: '11px', color: textSecondary }}>Descontinuado</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                                 <span className="material-icons-round" style={{ fontSize: '12px' }}>arrow_upward</span>25%
                             </span>
                             <Typography sx={{ fontSize: '11px', color: textSecondary }}>Aumento de despesa</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
                                 <span className="material-icons-round" style={{ fontSize: '12px' }}>arrow_downward</span>15%
                             </span>
                             <Typography sx={{ fontSize: '11px', color: textSecondary }}>Redução de despesa</Typography>
@@ -472,7 +472,7 @@ const BudgetComparisonPage = () => {
                                             return (
                                                 <tr key={idx} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(37, 99, 235, 0.05)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
                                                     <td style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                                                        <span style={{ padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, background: `${info.color}20`, color: info.color }}>
+                                                        <span style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: `${info.color}20`, color: info.color }}>
                                                             {info.icon} {info.label}
                                                         </span>
                                                     </td>

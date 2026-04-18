@@ -167,7 +167,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                   bgcolor: columnBg,
                   backdropFilter: isDark ? 'blur(10px)' : 'none',
                   border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'transparent'}`,
-                  borderRadius: '16px',
+                  borderRadius: '8px',
                   display: 'flex',
                   flexDirection: 'column',
                   maxHeight: 'calc(100vh - 250px)',
@@ -188,7 +188,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                     <Box sx={{
                       width: 32,
                       height: 32,
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -214,7 +214,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                       bgcolor: badgeBg,
                       px: 1.25,
                       py: 0.25,
-                      borderRadius: 2,
+                      borderRadius: '8px',
                       fontSize: '0.75rem',
                       fontWeight: 700,
                       color: badgeText
@@ -231,7 +231,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                       cursor: 'pointer',
                       color: textSecondary,
                       p: 0.75,
-                      borderRadius: 2,
+                      borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -254,7 +254,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                     mt: 2,
                     p: 1.5,
                     bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                    borderRadius: 2,
+                    borderRadius: '8px',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1
@@ -272,7 +272,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                               color: doneWindow === option.value ? '#2563eb' : textSecondary,
                               px: 1.25,
                               py: 0.25,
-                              borderRadius: 1.5,
+                              borderRadius: '8px',
                               fontSize: '0.7rem',
                               fontWeight: 700,
                               cursor: 'pointer',
@@ -292,7 +292,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                           color: textSecondary,
                           px: 1.25,
                           py: 0.25,
-                          borderRadius: 1.5,
+                          borderRadius: '8px',
                           fontSize: '0.7rem',
                           fontWeight: 700,
                           cursor: 'pointer',
@@ -325,7 +325,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                           ? (isDark ? 'rgba(37, 99, 235, 0.1)' : 'rgba(37, 99, 235, 0.05)')
                           : 'transparent',
                         transition: 'background-color 0.2s',
-                        borderRadius: '0 0 16px 16px'
+                        borderRadius: '8px'
                       }}
                     >
                       {/* Empty State */}
@@ -364,7 +364,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                 sx={{
                                   mb: 2,
                                   p: 2,
-                                  borderRadius: '16px',
+                                  borderRadius: '8px',
                                   bgcolor: cardBg,
                                   backdropFilter: 'blur(8px)',
                                   border: `1px solid ${snapshot.isDragging ? '#2563eb' : cardBorder}`,
@@ -387,7 +387,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                   <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                                     {/* Prioridade */}
                                     <Box sx={{
-                                      px: 1, py: 0.2, borderRadius: 1, fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
+                                      px: 1, py: 0.2, borderRadius: '8px', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
                                       bgcolor: item.priority === 'CRITICAL' ? '#fee2e2' : item.priority === 'HIGH' ? '#ffedd5' : item.priority === 'MEDIUM' ? '#e0f2fe' : '#f1f5f9',
                                       color: item.priority === 'CRITICAL' ? '#991b1b' : item.priority === 'HIGH' ? '#9a3412' : item.priority === 'MEDIUM' ? '#075985' : '#64748b'
                                     }}>
@@ -396,7 +396,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                     {/* Story Points (específico de Projetos) */}
                                     {item.storyPoints && (
                                       <Box sx={{
-                                        px: 1, py: 0.2, borderRadius: 1, fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
+                                        px: 1, py: 0.2, borderRadius: '8px', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
                                         bgcolor: 'rgba(37, 99, 235, 0.1)', color: '#2563eb'
                                       }}>
                                         {item.storyPoints} PTS
@@ -426,7 +426,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                       <Typography variant="caption" color="text.secondary" fontWeight="600" fontSize="0.7rem">Checklist</Typography>
                                       <Typography variant="caption" color="text.primary" fontWeight="700" fontSize="0.7rem">{stats.done}/{stats.total}</Typography>
                                     </Box>
-                                    <Box sx={{ width: '100%', height: 4, bgcolor: isDark ? 'rgba(255,255,255,0.1)' : '#f1f5f9', borderRadius: 2, overflow: 'hidden' }}>
+                                    <Box sx={{ width: '100%', height: 4, bgcolor: isDark ? 'rgba(255,255,255,0.1)' : '#f1f5f9', borderRadius: '8px', overflow: 'hidden' }}>
                                       <Box sx={{ width: `${stats.percent}%`, height: '100%', bgcolor: stats.percent === 100 ? '#22c55e' : '#3b82f6', transition: 'width 0.3s ease' }} />
                                     </Box>
                                   </Box>
@@ -437,7 +437,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                     {item.assignee ? (
                                       <Tooltip title={`Responsável: ${item.assignee.name}`}>
                                         <Box sx={{
-                                          width: 24, height: 24, borderRadius: '50%',
+                                          width: 24, height: 24, borderRadius: '8px',
                                           bgcolor: isDark ? 'rgba(37, 99, 235, 0.2)' : '#e0e7ff',
                                           color: isDark ? '#a5b4fc' : '#1e40af',
                                           fontSize: '0.75rem', fontWeight: 'bold',
@@ -449,7 +449,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                                     ) : (
                                       <Tooltip title="Não atribuído">
                                         <Box sx={{
-                                          width: 24, height: 24, borderRadius: '50%',
+                                          width: 24, height: 24, borderRadius: '8px',
                                           bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9',
                                           color: textSecondary,
                                           fontSize: '0.75rem', fontWeight: 'bold',
@@ -469,7 +469,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
 
                                   {(deadline || item.status === 'DONE') && (
                                     <Box sx={{
-                                      px: 1, py: 0.3, borderRadius: 1.5,
+                                      px: 1, py: 0.3, borderRadius: '8px',
                                       bgcolor: item.status === 'DONE'
                                         ? (isDark ? 'rgba(34, 197, 94, 0.15)' : '#dcfce7')
                                         : overdue
@@ -508,7 +508,7 @@ const KanbanBoard = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete }) => {
                         color: '#64748b',
                         fontSize: '0.75rem',
                         fontWeight: 700,
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         py: 0.75,
                         cursor: 'pointer',
                         '&:hover': { color: '#2563eb', borderColor: '#2563eb' }

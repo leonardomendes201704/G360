@@ -45,7 +45,7 @@ const ExportButton = ({ data = [], columns = [], filename = 'exportacao', varian
                 startIcon={!compact ? <Download /> : undefined}
                 sx={{
                     textTransform: 'none',
-                    borderRadius: 2,
+                    borderRadius: '8px',
                     fontWeight: 600,
                     fontSize: '13px',
                     borderColor: 'rgba(37, 99, 235, 0.3)',
@@ -67,7 +67,7 @@ const ExportButton = ({ data = [], columns = [], filename = 'exportacao', varian
                 onClose={handleClose}
                 PaperProps={{
                     sx: {
-                        borderRadius: 3,
+                        borderRadius: '8px',
                         minWidth: 200,
                         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
                         border: '1px solid',

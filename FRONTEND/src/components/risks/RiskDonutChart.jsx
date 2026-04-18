@@ -38,7 +38,7 @@ const RiskDonutChart = ({ risks = [] }) => {
     return (
         <Paper sx={{
             p: 3,
-            borderRadius: '16px',
+            borderRadius: '8px',
             background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
             border: isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(0, 0, 0, 0.08)',
             height: '100%',
@@ -141,7 +141,7 @@ const RiskDonutChart = ({ risks = [] }) => {
                         <Box sx={{
                             width: 10,
                             height: 10,
-                            borderRadius: '50%',
+                            borderRadius: '8px',
                             bgcolor: item.color,
                             boxShadow: `0 0 6px ${item.color}40`,
                             flexShrink: 0,

@@ -325,7 +325,7 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                     bgcolor: file ? 'rgba(16, 185, 129, 0.12)' : 'rgba(15, 23, 42, 0.45)',
                     borderColor: file ? 'rgba(16, 185, 129, 0.4)' : 'var(--modal-border)',
                     borderStyle: 'dashed',
-                    borderRadius: 2,
+                    borderRadius: '8px',
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -334,7 +334,7 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                     gap: 1
                 }}
             >
-                <Box sx={{ width: 38, height: 38, borderRadius: '10px', bgcolor: file ? 'rgba(16, 185, 129, 0.2)' : 'rgba(37, 99, 235, 0.15)', color: file ? '#10b981' : '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ width: 38, height: 38, borderRadius: '8px', bgcolor: file ? 'rgba(16, 185, 129, 0.2)' : 'rgba(37, 99, 235, 0.15)', color: file ? '#10b981' : '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CloudUpload fontSize="small" />
                 </Box>
                 <Typography variant="caption" fontWeight="bold" sx={{ color: 'var(--modal-text)' }}>{label}</Typography>
@@ -345,7 +345,7 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                     </Box>
                 ) : (
                     !isViewMode ? (
-                        <Button component="label" size="small" startIcon={<CloudUpload />} sx={{ mt: 0.5, textTransform: 'none', borderRadius: 2 }}>
+                        <Button component="label" size="small" startIcon={<CloudUpload />} sx={{ mt: 0.5, textTransform: 'none', borderRadius: '8px'}}>
                             Upload <input type="file" hidden onChange={(e) => handleFileUpload(e, type)} />
                         </Button>
                     ) : <Typography variant="caption" color="textDisabled">Pendente</Typography>
@@ -435,10 +435,10 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                 <form id="contractForm" onSubmit={handleSubmit(onSubmit, onError)}>
 
                                     {/* 1. DADOS BÁSICOS */}
-                                    <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')} elevation={0} sx={{ mb: 3, borderRadius: '14px !important', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(37, 99, 235, 0.35)' } }}>
+                                    <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')} elevation={0} sx={{ mb: 3, borderRadius: '8px', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(37, 99, 235, 0.35)' } }}>
                                         <AccordionSummary expandIcon={<ExpandMore sx={{ color: 'var(--modal-text-secondary)' }} />} sx={{ bgcolor: 'transparent', borderBottom: '1px solid var(--modal-border)' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Box sx={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Box sx={{ width: 34, height: 34, borderRadius: '8px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <Business fontSize="small" />
                                                 </Box>
                                                 <Box>
@@ -497,10 +497,10 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                         </AccordionDetails>
                                     </Accordion>
 
-                                    <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')} elevation={0} sx={{ mb: 3, borderRadius: '14px !important', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(16, 185, 129, 0.35)' } }}>
+                                    <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')} elevation={0} sx={{ mb: 3, borderRadius: '8px', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(16, 185, 129, 0.35)' } }}>
                                         <AccordionSummary expandIcon={<ExpandMore sx={{ color: 'var(--modal-text-secondary)' }} />} sx={{ bgcolor: 'transparent', borderBottom: '1px solid var(--modal-border)' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Box sx={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Box sx={{ width: 34, height: 34, borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <AttachMoney fontSize="small" />
                                                 </Box>
                                                 <Box>
@@ -516,7 +516,7 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                                 <Grid item xs={12} sm={3}><Controller name="startDate" control={control} render={({ field }) => (<TextField {...field} value={field.value ?? ''} label="Início Vigência" type="date" InputLabelProps={{ shrink: true }} fullWidth disabled={isViewMode} error={!!errors.startDate} helperText={errors.startDate?.message} />)} /></Grid>
                                                 <Grid item xs={12} sm={3}><Controller name="endDate" control={control} render={({ field }) => (<TextField {...field} value={field.value ?? ''} label="Fim Vigência" type="date" InputLabelProps={{ shrink: true }} fullWidth disabled={isViewMode} error={!!errors.endDate} helperText={errors.endDate?.message} />)} /></Grid>
                                                 <Grid item xs={12}>
-                                                    <Paper elevation={0} sx={{ bgcolor: 'rgba(16, 185, 129, 0.12)', p: 2.5, border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: 2, display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+                                                    <Paper elevation={0} sx={{ bgcolor: 'rgba(16, 185, 129, 0.12)', p: 2.5, border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '8px', display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
                                                         <Box>
                                                             <Typography variant="caption" sx={{ color: '#10b981', letterSpacing: '0.08em' }} fontWeight="bold">VALOR TOTAL DO CONTRATO</Typography>
                                                             <Controller name="value" control={control} render={({ field }) => (<TextField {...field} value={field.value ?? ''} hiddenLabel variant="standard" fullWidth InputProps={{ disableUnderline: true, startAdornment: <InputAdornment position="start"><span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' }}>R$</span></InputAdornment>, style: { fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' } }} disabled={isViewMode} />)} />
@@ -532,10 +532,10 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                         </AccordionDetails>
                                     </Accordion>
 
-                                    <Accordion expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')} elevation={0} sx={{ mb: 3, borderRadius: '14px !important', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(245, 158, 11, 0.35)' } }}>
+                                    <Accordion expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')} elevation={0} sx={{ mb: 3, borderRadius: '8px', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(245, 158, 11, 0.35)' } }}>
                                         <AccordionSummary expandIcon={<ExpandMore sx={{ color: 'var(--modal-text-secondary)' }} />} sx={{ bgcolor: 'transparent', borderBottom: '1px solid var(--modal-border)' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Box sx={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Box sx={{ width: 34, height: 34, borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <AccountBalance fontSize="small" />
                                                 </Box>
                                                 <Box>
@@ -584,10 +584,10 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                         </AccordionDetails>
                                     </Accordion>
 
-                                    <Accordion expanded={expanded === 'panel4'} onChange={handleChangeAccordion('panel4')} elevation={0} sx={{ borderRadius: '14px !important', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(59, 130, 246, 0.35)' } }}>
+                                    <Accordion expanded={expanded === 'panel4'} onChange={handleChangeAccordion('panel4')} elevation={0} sx={{ borderRadius: '8px', bgcolor: 'var(--modal-surface)', border: '1px solid var(--modal-border)', overflow: 'hidden', '&.Mui-expanded': { boxShadow: '0 12px 30px rgba(2, 6, 23, 0.35)', borderColor: 'rgba(59, 130, 246, 0.35)' } }}>
                                         <AccordionSummary expandIcon={<ExpandMore sx={{ color: 'var(--modal-text-secondary)' }} />} sx={{ bgcolor: 'transparent', borderBottom: '1px solid var(--modal-border)' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Box sx={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Box sx={{ width: 34, height: 34, borderRadius: '8px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <CloudUpload fontSize="small" />
                                                 </Box>
                                                 <Box>
@@ -613,13 +613,13 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                 {!isViewMode && (
                                     <Box display="flex" justifyContent="flex-end" mb={2}>
                                         <Button variant="contained" startIcon={<NoteAdd />} onClick={handleOpenAddendumCreate}
-                                            sx={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', textTransform: 'none', borderRadius: '10px', fontWeight: 600, px: 3 }}>
+                                            sx={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', textTransform: 'none', borderRadius: '8px', fontWeight: 600, px: 3 }}>
                                             Registrar Novo Aditivo
                                         </Button>
                                     </Box>
                                 )}
 
-                                <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
+                                <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: '8px'}}>
                                     <Table size="small">
                                         <TableHead sx={{ bgcolor: 'var(--modal-surface-subtle)' }}>
                                             <TableRow>

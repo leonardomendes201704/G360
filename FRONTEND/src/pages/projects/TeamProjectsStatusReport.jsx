@@ -486,7 +486,7 @@ const TeamProjectsStatusReport = () => {
                                 background: 'transparent',
                                 color: themeStyles.textMuted,
                                 border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : '#e2e8f0'}`,
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 fontSize: '14px',
                                 fontWeight: 600,
                                 cursor: 'pointer',
@@ -508,7 +508,7 @@ const TeamProjectsStatusReport = () => {
                 <div style={{
                     background: themeStyles.cardBg,
                     border: themeStyles.cardBorder,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     padding: '16px 20px',
                     marginBottom: '24px',
                     display: 'flex',
@@ -535,7 +535,7 @@ const TeamProjectsStatusReport = () => {
                                 padding: '10px 12px 10px 42px',
                                 background: themeStyles.inputBg,
                                 border: themeStyles.cardBorder,
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 fontSize: '14px',
                                 color: themeStyles.textPrimary,
                                 fontFamily: 'inherit',
@@ -554,7 +554,7 @@ const TeamProjectsStatusReport = () => {
                             padding: '10px 12px',
                             background: themeStyles.inputBg,
                             border: themeStyles.cardBorder,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             fontSize: '14px',
                             color: themeStyles.textPrimary,
                             fontFamily: 'inherit',
@@ -574,7 +574,7 @@ const TeamProjectsStatusReport = () => {
                 <div style={{
                     background: themeStyles.cardBg,
                     border: themeStyles.cardBorder,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     overflow: 'hidden',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
                 }}>
@@ -732,7 +732,7 @@ const TeamProjectsStatusReport = () => {
                                                         <div style={{
                                                             width: '24px',
                                                             height: '24px',
-                                                            borderRadius: '50%',
+                                                            borderRadius: '8px',
                                                             background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                                                             color: 'white',
                                                             fontSize: '10px',
@@ -754,7 +754,7 @@ const TeamProjectsStatusReport = () => {
                                                         alignItems: 'center',
                                                         gap: '6px',
                                                         padding: '5px 10px',
-                                                        borderRadius: '16px',
+                                                        borderRadius: '8px',
                                                         fontSize: '11px',
                                                         fontWeight: 600,
                                                         textTransform: 'uppercase',
@@ -765,7 +765,7 @@ const TeamProjectsStatusReport = () => {
                                                         <span style={{
                                                             width: '6px',
                                                             height: '6px',
-                                                            borderRadius: '50%',
+                                                            borderRadius: '8px',
                                                             background: statusConfig.hex
                                                         }} />
                                                         {statusConfig.label}
@@ -828,7 +828,7 @@ const TeamProjectsStatusReport = () => {
                                                                             <div style={{
                                                                                 width: '32px',
                                                                                 height: '32px',
-                                                                                borderRadius: '50%',
+                                                                                borderRadius: '8px',
                                                                                 background: 'rgba(6, 182, 212, 0.15)',
                                                                                 border: '2px solid #06b6d4',
                                                                                 display: 'flex',
@@ -847,7 +847,7 @@ const TeamProjectsStatusReport = () => {
                                                                                 flex: 1,
                                                                                 background: themeStyles.cardBg,
                                                                                 border: themeStyles.cardBorder,
-                                                                                borderRadius: '12px',
+                                                                                borderRadius: '8px',
                                                                                 padding: '14px 16px'
                                                                             }}>
                                                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -867,7 +867,7 @@ const TeamProjectsStatusReport = () => {
                                                                                             <span style={{
                                                                                                 fontSize: '10px',
                                                                                                 padding: '3px 8px',
-                                                                                                borderRadius: '10px',
+                                                                                                borderRadius: '8px',
                                                                                                 fontWeight: 600,
                                                                                                 background: 'rgba(244, 63, 94, 0.15)',
                                                                                                 color: '#f43f5e'
@@ -877,7 +877,7 @@ const TeamProjectsStatusReport = () => {
                                                                                             <span style={{
                                                                                                 fontSize: '10px',
                                                                                                 padding: '3px 8px',
-                                                                                                borderRadius: '10px',
+                                                                                                borderRadius: '8px',
                                                                                                 fontWeight: 600,
                                                                                                 background: 'rgba(37, 99, 235, 0.15)',
                                                                                                 color: '#2563eb'

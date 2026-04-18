@@ -190,7 +190,7 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
                 sx={{
                     background: panelBg,
                     border: panelBorder,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     backdropFilter: 'blur(10px)',
                     overflow: 'hidden'
                 }}
@@ -268,12 +268,12 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
                                                     gap: 0.75,
                                                     px: 1.25,
                                                     py: 0.5,
-                                                    borderRadius: 1.5,
+                                                    borderRadius: '8px',
                                                     bgcolor: getRiskBgColor(change.riskLevel),
                                                     color: getRiskColor(change.riskLevel)[1]
                                                 }}
                                             >
-                                                <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: getRiskColor(change.riskLevel)[0] }} />
+                                                <Box sx={{ width: 6, height: 6, borderRadius: '8px', bgcolor: getRiskColor(change.riskLevel)[0] }} />
                                                 <Typography sx={{ fontSize: 11, fontWeight: 600 }}>
                                                     {change.riskLevel || '-'}
                                                 </Typography>
@@ -312,7 +312,7 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
                                                                 bgcolor: isDark
                                                                     ? 'rgba(255, 255, 255, 0.1)'
                                                                     : 'rgba(0, 0, 0, 0.08)',
-                                                                borderRadius: 0.75,
+                                                                borderRadius: '8px',
                                                                 overflow: 'hidden'
                                                             }}
                                                         >
@@ -321,7 +321,7 @@ const ChangeRequestDashboard = ({ changes = [], loading = false, onRefresh, onSe
                                                                     width: impactConfig.width,
                                                                     height: '100%',
                                                                     background: impactConfig.gradient,
-                                                                    borderRadius: 0.75,
+                                                                    borderRadius: '8px',
                                                                     transition: 'width 0.3s ease'
                                                                 }}
                                                             />

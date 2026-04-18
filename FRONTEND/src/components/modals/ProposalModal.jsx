@@ -169,7 +169,7 @@ const ProposalModal = ({
         '&::-webkit-scrollbar-track': { background: 'transparent' },
         '&::-webkit-scrollbar-thumb': {
           background: 'var(--modal-border-strong)',
-          borderRadius: '3px'
+          borderRadius: '8px'
         },
         '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
       }}
@@ -194,7 +194,7 @@ const ProposalModal = ({
                   sx={{
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '10px',
+                    borderRadius: '8px',
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     '& fieldset': { border: 'none' },
@@ -250,7 +250,7 @@ const ProposalModal = ({
                     sx={{
                       background: 'var(--modal-surface-hover)',
                       border: '1px solid var(--modal-border-strong)',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       color: 'var(--modal-text)',
                       fontSize: '14px',
                       '& fieldset': { border: 'none' },
@@ -277,7 +277,7 @@ const ProposalModal = ({
                 sx={{
                   width: '48px',
                   height: '48px',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: '#3b82f6',
                   border: '1px solid rgba(59, 130, 246, 0.2)',
@@ -312,7 +312,7 @@ const ProposalModal = ({
                   '& .MuiOutlinedInput-root': {
                     background: 'var(--modal-surface-hover)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '10px',
+                    borderRadius: '8px',
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     '& fieldset': { border: 'none' },
@@ -363,7 +363,7 @@ const ProposalModal = ({
                     '& .MuiOutlinedInput-root': {
                       background: 'var(--modal-surface-hover)',
                       border: '1px solid var(--modal-border-strong)',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       color: 'var(--modal-text)',
                       fontSize: '14px',
                       paddingLeft: '38px',
@@ -402,7 +402,7 @@ const ProposalModal = ({
                 '& .MuiOutlinedInput-root': {
                   background: 'var(--modal-surface-hover)',
                   border: '1px solid var(--modal-border-strong)',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   color: 'var(--modal-text)',
                   fontSize: '14px',
                   '& fieldset': { border: 'none' },
@@ -434,7 +434,7 @@ const ProposalModal = ({
                 '& .MuiOutlinedInput-root': {
                   background: 'var(--modal-surface-hover)',
                   border: '1px solid var(--modal-border-strong)',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   color: 'var(--modal-text)',
                   fontSize: '14px',
                   '& fieldset': { border: 'none' },
@@ -454,7 +454,7 @@ const ProposalModal = ({
           <Box
             sx={{
               padding: '16px',
-              borderRadius: '12px',
+              borderRadius: '8px',
               border: '1px solid var(--modal-border-strong)',
               background: 'var(--modal-surface-subtle)'
             }}
@@ -486,7 +486,7 @@ const ProposalModal = ({
                 sx={{
                   background: 'var(--modal-surface-hover)',
                   border: '1px dashed var(--modal-border-strong)',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   color: 'var(--modal-text-secondary)',
                   padding: '12px 16px',
                   fontSize: '14px',
@@ -569,7 +569,7 @@ const ProposalModal = ({
         '& .MuiOutlinedInput-root': {
           background: 'var(--modal-surface-hover)',
           border: '1px solid var(--modal-border-strong)',
-          borderRadius: '10px',
+          borderRadius: '8px',
           color: 'var(--modal-text)',
           fontSize: '14px',
           '& fieldset': { border: 'none' },

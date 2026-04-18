@@ -131,7 +131,7 @@ const TimeReportPage = () => {
         <Box>
             {/* Header */}
             <Paper sx={{
-                mb: 3, p: 3, borderRadius: '16px', bgcolor: cardBg,
+                mb: 3, p: 3, borderRadius: '8px', bgcolor: cardBg,
                 border: `1px solid ${borderColor}`,
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             }}>
@@ -148,7 +148,7 @@ const TimeReportPage = () => {
                         variant="outlined"
                         startIcon={<span className="material-icons-round">download</span>}
                         sx={{
-                            color: textSecondary, borderColor: borderColor, borderRadius: '12px',
+                            color: textSecondary, borderColor: borderColor, borderRadius: '8px',
                             textTransform: 'none', fontWeight: 600, fontSize: '13px',
                             '&:hover': { borderColor: '#2563eb', color: '#2563eb' }
                         }}
@@ -161,7 +161,7 @@ const TimeReportPage = () => {
                         variant="outlined"
                         startIcon={<span className="material-icons-round">table_chart</span>}
                         sx={{
-                            color: textSecondary, borderColor: borderColor, borderRadius: '12px',
+                            color: textSecondary, borderColor: borderColor, borderRadius: '8px',
                             textTransform: 'none', fontWeight: 600, fontSize: '13px',
                             '&:hover': { borderColor: '#10b981', color: '#10b981' }
                         }}
@@ -175,16 +175,16 @@ const TimeReportPage = () => {
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2, mb: 3 }}>
                 {kpiConfig.map((item, idx) => (
                     <Paper key={idx} sx={{
-                        bgcolor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px',
+                        bgcolor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '8px',
                         padding: '20px', display: 'flex', alignItems: 'center', gap: 2,
                         position: 'relative', overflow: 'hidden',
                         '&::before': {
                             content: '""', position: 'absolute', top: 0, left: 0, right: 0,
-                            height: '3px', borderRadius: '16px 16px 0 0', background: item.color,
+                            height: '3px', borderRadius: '8px', background: item.color,
                         }
                     }}>
                         <Box sx={{
-                            width: 40, height: 40, borderRadius: '12px',
+                            width: 40, height: 40, borderRadius: '8px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             bgcolor: `${item.color}12`, color: item.color
                         }}>
@@ -207,7 +207,7 @@ const TimeReportPage = () => {
 
             {/* Filters */}
             <Paper sx={{
-                mb: 3, p: 3, borderRadius: '16px', bgcolor: cardBg,
+                mb: 3, p: 3, borderRadius: '8px', bgcolor: cardBg,
                 border: `1px solid ${borderColor}`,
             }}>
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
@@ -241,7 +241,7 @@ const TimeReportPage = () => {
                 </Box>
             ) : !report?.logs?.length ? (
                 <Paper sx={{
-                    p: 6, textAlign: 'center', borderRadius: '16px',
+                    p: 6, textAlign: 'center', borderRadius: '8px',
                     bgcolor: cardBg, border: `1px solid ${borderColor}`
                 }}>
                     <span className="material-icons-round" style={{ fontSize: 48, color: textMuted, opacity: 0.5 }}>timer_off</span>
@@ -260,7 +260,7 @@ const TimeReportPage = () => {
                             count={report.byUser.length}
                             sx={{ mb: 3 }}
                         >
-                            <TableContainer sx={{ borderRadius: 0 }}>
+                            <TableContainer sx={{ borderRadius: '8px'}}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow sx={{ '& th': { color: textMuted, fontSize: '11px', fontWeight: 700, borderColor } }}>
@@ -295,7 +295,7 @@ const TimeReportPage = () => {
                         accentColor="#2563eb"
                         count={report.logs.length}
                     >
-                        <TableContainer sx={{ maxHeight: 500, borderRadius: 0 }}>
+                        <TableContainer sx={{ maxHeight: 500, borderRadius: '8px'}}>
                             <Table size="small" stickyHeader>
                                 <TableHead>
                                     <TableRow sx={{

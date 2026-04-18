@@ -43,7 +43,7 @@ const darkInputStyles = {
     '& .MuiOutlinedInput-root': {
         background: 'var(--modal-surface-hover)',
         border: '1px solid var(--modal-border-strong)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: 'var(--modal-text)',
         fontSize: '14px',
         '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -61,7 +61,7 @@ const darkInputStyles = {
 const darkSelectStyles = {
     background: 'var(--modal-surface-hover)',
     border: '1px solid var(--modal-border-strong)',
-    borderRadius: '10px',
+    borderRadius: '8px',
     color: 'var(--modal-text)',
     fontSize: '14px',
     '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -230,7 +230,7 @@ const ExpenseModal = ({
                 background: 'var(--modal-bg)',
                 '&::-webkit-scrollbar': { width: '6px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
-                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
+                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '8px' },
                 '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
             }}
         >
@@ -284,7 +284,7 @@ const ExpenseModal = ({
                         {/* Categoria Section */}
                         <Box sx={{
                             padding: '16px',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: '1px solid var(--modal-border-strong)',
                             background: 'var(--modal-surface-subtle)',
                             mb: 2.5
@@ -335,7 +335,7 @@ const ExpenseModal = ({
                         {/* Datas Section */}
                         <Box sx={{
                             padding: '16px',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: '1px solid var(--modal-border-strong)',
                             background: 'var(--modal-surface-subtle)',
                             mb: 2.5
@@ -405,7 +405,7 @@ const ExpenseModal = ({
                         {/* Configurações Section */}
                         <Box sx={{
                             padding: '16px',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: '1px solid var(--modal-border-strong)',
                             background: 'var(--modal-surface-subtle)',
                             mb: 2.5
@@ -551,7 +551,7 @@ const ExpenseModal = ({
                         {/* Upload de Arquivo */}
                         <Box sx={{
                             padding: '16px',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: '1px solid var(--modal-border-strong)',
                             background: 'var(--modal-surface-subtle)',
                         }}>
@@ -574,7 +574,7 @@ const ExpenseModal = ({
                                         height: '60px',
                                         borderStyle: 'dashed',
                                         border: '1px dashed var(--modal-border-strong)',
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         color: 'var(--modal-text-muted)',
                                         textTransform: 'none',
                                         fontSize: '14px',

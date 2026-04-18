@@ -197,7 +197,7 @@ const KPICard = ({ icon: Icon, label, value, subtitle, colorType = 'indigo', cha
       sx={{
         background: colors.bgCard,
         border: `1px solid ${colors.borderSubtle}`,
-        borderRadius: '16px',
+        borderRadius: '8px',
         p: 3,
         boxShadow: colors.cardShadow,
         display: 'flex',
@@ -229,7 +229,7 @@ const KPICard = ({ icon: Icon, label, value, subtitle, colorType = 'indigo', cha
         sx={{
           width: 56,
           height: 56,
-          borderRadius: 2,
+          borderRadius: '8px',
           background: c.soft,
           color: c.main,
           display: 'flex',
@@ -279,7 +279,7 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
       sx={{
         background: colors.bgCard,
         border: `1px solid ${colors.borderSubtle}`,
-        borderRadius: '16px',
+        borderRadius: '8px',
         p: 3.5,
         mb: 4,
         boxShadow: colors.cardShadow,
@@ -307,7 +307,7 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
           sx={{
             height: 16,
             background: colors.bgTertiary,
-            borderRadius: 2,
+            borderRadius: '8px',
             overflow: 'hidden',
             position: 'relative',
           }}
@@ -317,7 +317,7 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
               height: '100%',
               width: `${Math.min(usagePercent, 100)}%`,
               background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-              borderRadius: 2,
+              borderRadius: '8px',
               transition: 'width 1s ease',
               position: 'relative',
               '&::after': {
@@ -354,10 +354,10 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
             gap: 1.5,
             p: 2,
             background: colors.bgTertiary,
-            borderRadius: 2,
+            borderRadius: '8px',
           }}
         >
-          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: colors.accentViolet, flexShrink: 0 }} />
+          <Box sx={{ width: 12, height: 12, borderRadius: '8px', background: colors.accentViolet, flexShrink: 0 }} />
           <Box sx={{ flex: 1 }}>
             <Typography sx={{ fontSize: 12, color: colors.textMuted, mb: 0.25 }}>Realizado</Typography>
             <Typography sx={{ fontSize: 16, fontWeight: 600, color: colors.textPrimary }}>{formatCurrency(usedAmount)}</Typography>
@@ -370,10 +370,10 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
             gap: 1.5,
             p: 2,
             background: colors.bgTertiary,
-            borderRadius: 2,
+            borderRadius: '8px',
           }}
         >
-          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: colors.accentAmber, flexShrink: 0 }} />
+          <Box sx={{ width: 12, height: 12, borderRadius: '8px', background: colors.accentAmber, flexShrink: 0 }} />
           <Box sx={{ flex: 1 }}>
             <Typography sx={{ fontSize: 12, color: colors.textMuted, mb: 0.25 }}>Comprometido</Typography>
             <Typography sx={{ fontSize: 16, fontWeight: 600, color: colors.textPrimary }}>{formatCurrency(committedAmount)}</Typography>
@@ -386,10 +386,10 @@ const BudgetProgressCard = ({ totalBudget, usedAmount, committedAmount, formatCu
             gap: 1.5,
             p: 2,
             background: colors.bgTertiary,
-            borderRadius: 2,
+            borderRadius: '8px',
           }}
         >
-          <Box sx={{ width: 12, height: 12, borderRadius: '50%', background: colors.accentEmerald, flexShrink: 0 }} />
+          <Box sx={{ width: 12, height: 12, borderRadius: '8px', background: colors.accentEmerald, flexShrink: 0 }} />
           <Box sx={{ flex: 1 }}>
             <Typography sx={{ fontSize: 12, color: colors.textMuted, mb: 0.25 }}>Disponível</Typography>
             <Typography sx={{ fontSize: 16, fontWeight: 600, color: colors.textPrimary }}>{formatCurrency(available)}</Typography>
@@ -463,7 +463,7 @@ const DistributionCard = ({ expenses, formatCurrency, colors, isDark }) => {
       sx={{
         background: colors.bgCard,
         border: `1px solid ${colors.borderSubtle}`,
-        borderRadius: '16px',
+        borderRadius: '8px',
         p: 3.5,
         mt: 4,
         boxShadow: colors.cardShadow,
@@ -497,7 +497,7 @@ const DistributionCard = ({ expenses, formatCurrency, colors, isDark }) => {
             sx={{
               width: 200,
               height: 200,
-              borderRadius: '50%',
+              borderRadius: '8px',
               background: donutGradient,
               position: 'relative',
               '&::before': {
@@ -509,7 +509,7 @@ const DistributionCard = ({ expenses, formatCurrency, colors, isDark }) => {
                 width: 120,
                 height: 120,
                 background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : colors.bgSecondary,
-                borderRadius: '50%',
+                borderRadius: '8px',
               },
             }}
           >
@@ -542,14 +542,14 @@ const DistributionCard = ({ expenses, formatCurrency, colors, isDark }) => {
                 gap: 2,
                 p: 2,
                 background: colors.bgTertiary,
-                borderRadius: 2,
+                borderRadius: '8px',
               }}
             >
               <Box
                 sx={{
                   width: 16,
                   height: 16,
-                  borderRadius: 1,
+                  borderRadius: '8px',
                   background: item.config.color,
                   flexShrink: 0,
                 }}
@@ -644,7 +644,7 @@ const SupplierDistributionCard = ({ expenses, formatCurrency, colors, isDark }) 
       sx={{
         background: colors.bgCard,
         border: `1px solid ${colors.borderSubtle}`,
-        borderRadius: '16px',
+        borderRadius: '8px',
         p: 3.5,
         mt: 3,
         boxShadow: colors.cardShadow,
@@ -689,7 +689,7 @@ const SupplierDistributionCard = ({ expenses, formatCurrency, colors, isDark }) 
             sx={{
               width: 200,
               height: 200,
-              borderRadius: '50%',
+              borderRadius: '8px',
               background: donutGradient,
               position: 'relative',
               '&::before': {
@@ -701,7 +701,7 @@ const SupplierDistributionCard = ({ expenses, formatCurrency, colors, isDark }) 
                 width: 120,
                 height: 120,
                 background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : colors.bgSecondary,
-                borderRadius: '50%',
+                borderRadius: '8px',
               },
             }}
           >
@@ -734,7 +734,7 @@ const SupplierDistributionCard = ({ expenses, formatCurrency, colors, isDark }) 
                 gap: 2,
                 p: 1.5,
                 background: colors.bgTertiary,
-                borderRadius: 2,
+                borderRadius: '8px',
                 border: `1px solid ${colors.borderSubtle}`,
               }}
             >
@@ -742,7 +742,7 @@ const SupplierDistributionCard = ({ expenses, formatCurrency, colors, isDark }) 
                 sx={{
                   width: 12,
                   height: 12,
-                  borderRadius: '50%',
+                  borderRadius: '8px',
                   background: item.color,
                   flexShrink: 0,
                 }}
@@ -970,7 +970,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
         sx={{
           background: colors.bgCard,
           border: `1px solid ${colors.borderSubtle}`,
-          borderRadius: '16px',
+          borderRadius: '8px',
           overflow: 'hidden',
         }}
       >
@@ -1012,7 +1012,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
                 py: 1.25,
                 background: colors.bgTertiary,
                 border: `1px solid ${colors.borderSubtle}`,
-                borderRadius: 2,
+                borderRadius: '8px',
                 width: 280,
               }}
             >
@@ -1039,7 +1039,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
               sx={{
                 background: colors.bgTertiary,
                 border: `1px solid ${colors.borderSubtle}`,
-                borderRadius: 2,
+                borderRadius: '8px',
                 color: colors.textSecondary,
                 textTransform: 'none',
                 px: 2,
@@ -1060,7 +1060,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
             onClick={handleOpenCreate}
             sx={{
               background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-              borderRadius: 2,
+              borderRadius: '8px',
               textTransform: 'none',
               fontWeight: 600,
               px: 2.5,
@@ -1143,7 +1143,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
                           border: `1px solid ${catConfig.borderColor}`,
                           fontWeight: 500,
                           fontSize: 12,
-                          borderRadius: 1.5,
+                          borderRadius: '8px',
                         }}
                       />
                     </TableCell>
@@ -1166,7 +1166,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
                           fontWeight: 600,
                           fontSize: 11,
                           textTransform: 'uppercase',
-                          borderRadius: 4,
+                          borderRadius: '8px',
                         }}
                       />
                     </TableCell>
@@ -1231,7 +1231,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
                         sx={{
                           width: 80,
                           height: 80,
-                          borderRadius: 4,
+                          borderRadius: '8px',
                           background: colors.accentIndigoSoft,
                           display: 'flex',
                           alignItems: 'center',
@@ -1253,7 +1253,7 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
                         onClick={handleOpenCreate}
                         sx={{
                           background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-                          borderRadius: 2,
+                          borderRadius: '8px',
                           textTransform: 'none',
                           fontWeight: 600,
                           px: 3,

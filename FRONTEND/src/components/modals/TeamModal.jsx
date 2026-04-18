@@ -275,7 +275,7 @@ const TeamModal = ({ open, onClose, onSave, team, projectMembers = [], loading =
                     {formData.memberIds.length > 0 && (
                         <Box sx={{
                             background: 'var(--modal-surface)',
-                            borderRadius: 2,
+                            borderRadius: '8px',
                             p: 2,
                             border: '1px solid var(--modal-border)'
                         }}>

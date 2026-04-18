@@ -48,7 +48,7 @@ const DashboardCustomizer = ({ widgets, onWidgetsChange, isDark = false }) => {
             <IconButton
                 onClick={() => setOpen(true)}
                 sx={{
-                    width: 38, height: 38, borderRadius: '10px',
+                    width: 38, height: 38, borderRadius: '8px',
                     border: cardBorder,
                     bgcolor: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc',
                     color: textMuted,
@@ -102,7 +102,7 @@ const DashboardCustomizer = ({ widgets, onWidgetsChange, isDark = false }) => {
                     {widgets.map((w) => (
                         <Box key={w.id} sx={{
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            p: 1.5, borderRadius: '10px',
+                            p: 1.5, borderRadius: '8px',
                             bgcolor: w.enabled
                                 ? isDark ? 'rgba(102,126,234,0.08)' : 'rgba(102,126,234,0.05)'
                                 : 'transparent',

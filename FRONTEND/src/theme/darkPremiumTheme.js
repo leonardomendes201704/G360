@@ -127,7 +127,7 @@ const darkPremiumTheme = createTheme({
         },
     },
     shape: {
-        borderRadius: 12,
+        borderRadius: 8,
     },
     shadows: [
         'none',
@@ -170,7 +170,7 @@ const darkPremiumTheme = createTheme({
                 root: {
                     backgroundImage: 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: 16,
+                    borderRadius: 8,
                 },
             },
         },
@@ -213,7 +213,7 @@ const darkPremiumTheme = createTheme({
             styleOverrides: {
                 root: {
                     fontWeight: 600,
-                    borderRadius: 20,
+                    borderRadius: 8,
                 },
                 outlined: {
                     borderWidth: 1,
@@ -242,7 +242,7 @@ const darkPremiumTheme = createTheme({
                 indicator: {
                     backgroundColor: '#2563eb',
                     height: 3,
-                    borderRadius: '3px 3px 0 0',
+                    borderRadius: '8px 8px 0 0',
                 },
             },
         },
@@ -263,12 +263,12 @@ const darkPremiumTheme = createTheme({
         MuiLinearProgress: {
             styleOverrides: {
                 root: {
-                    borderRadius: 6,
+                    borderRadius: 8,
                     height: 8,
                     backgroundColor: '#1c2632',
                 },
                 bar: {
-                    borderRadius: 6,
+                    borderRadius: 8,
                     background: '#2563eb',
                 },
             },

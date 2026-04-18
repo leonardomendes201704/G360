@@ -148,13 +148,13 @@ const DashboardPage = () => {
     // small list item
     const ListItem = ({ title, sub, dot, onClick }) => (
         <Box onClick={onClick} sx={{
-            p: 1.5, borderRadius: '10px', cursor: 'pointer',
+            p: 1.5, borderRadius: '8px', cursor: 'pointer',
             bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
             border: '1px solid transparent',
             '&:hover': { bgcolor: isDark ? 'rgba(102,126,234,0.08)' : 'rgba(102,126,234,0.05)', borderColor: 'rgba(102,126,234,0.2)' },
             display: 'flex', alignItems: 'center', gap: 1.5, transition: 'all 0.15s',
         }}>
-            {dot && <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: dot }} />}
+            {dot && <Box sx={{ width: 8, height: 8, borderRadius: '8px', flexShrink: 0, bgcolor: dot }} />}
             <Box sx={{ minWidth: 0 }}>
                 <Typography sx={{ fontSize: '13px', fontWeight: 600, color: textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</Typography>
                 {sub && <Typography sx={{ fontSize: '11px', color: textMuted, mt: 0.2 }}>{sub}</Typography>}
@@ -177,7 +177,7 @@ const DashboardPage = () => {
             <Box sx={{
                 display: 'inline-flex', alignItems: 'center', gap: 0.25, mt: 0.5,
                 bgcolor: isNeutral ? 'rgba(100,116,139,0.1)' : isUp ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
-                px: 0.75, py: 0.25, borderRadius: '6px'
+                px: 0.75, py: 0.25, borderRadius: '8px'
             }}>
                 <Typography sx={{ fontSize: '10px', fontWeight: 700, color }}>
                     {arrow} {Math.abs(val)}% vs 7 dias
@@ -210,7 +210,7 @@ const DashboardPage = () => {
         if (!endDate) return null;
         const days = Math.ceil((new Date(endDate) - new Date()) / 86400000);
         const color = days <= 7 ? '#ef4444' : days <= 30 ? '#f59e0b' : '#10b981';
-        return <Box component="span" sx={{ fontSize: '10px', fontWeight: 700, color, bgcolor: `${color}15`, px: 0.75, py: 0.2, borderRadius: '5px', ml: 0.5 }}>{days}d</Box>;
+        return <Box component="span" sx={{ fontSize: '10px', fontWeight: 700, color, bgcolor: `${color}15`, px: 0.75, py: 0.2, borderRadius: '8px', ml: 0.5 }}>{days}d</Box>;
     };
 
     // Count badge helper for widget headers
@@ -226,7 +226,7 @@ const DashboardPage = () => {
         <Box sx={{ minHeight: '100vh' }}>
             {/* ── Page Header ─────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: 3, borderRadius: '16px',
+                mb: 3, p: 3, borderRadius: '8px',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(102,126,234,0.12) 0%, rgba(102,126,234,0.04) 100%)'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(102,126,234,0.02) 100%)',
@@ -252,13 +252,13 @@ const DashboardPage = () => {
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 2 }}>
                             {kpiItems.map(item => (
                                 <Box key={item.label} onClick={() => navigate('/incidents')} sx={{
-                                    p: 2, borderRadius: '12px', cursor: 'pointer',
+                                    p: 2, borderRadius: '8px', cursor: 'pointer',
                                     bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
                                     border: `1px solid ${item.color}25`,
                                     transition: 'all 0.2s',
                                     '&:hover': { transform: 'translateY(-2px)', borderColor: `${item.color}60` }
                                 }}>
-                                    <Box sx={{ width: 28, height: 28, borderRadius: '7px', bgcolor: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.color, mb: 1 }}>
+                                    <Box sx={{ width: 28, height: 28, borderRadius: '8px', bgcolor: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.color, mb: 1 }}>
                                         <span className="material-icons-round" style={{ fontSize: '15px' }}>{item.icon}</span>
                                     </Box>
                                     <Typography sx={{ fontSize: '28px', fontWeight: 700, color: textPrimary, lineHeight: 1 }}>{item.value ?? '–'}</Typography>
@@ -290,7 +290,7 @@ const DashboardPage = () => {
                                         const overdue = isOverdue(t);
                                         return (
                                             <Box key={t.id} onClick={() => navigate('/tasks')} sx={{
-                                                p: 1.5, borderRadius: '10px', cursor: 'pointer',
+                                                p: 1.5, borderRadius: '8px', cursor: 'pointer',
                                                 bgcolor: overdue
                                                     ? isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.05)'
                                                     : isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
@@ -298,7 +298,7 @@ const DashboardPage = () => {
                                                 '&:hover': { bgcolor: isDark ? 'rgba(59,130,246,0.08)' : 'rgba(59,130,246,0.05)', borderColor: 'rgba(59,130,246,0.2)' },
                                                 display: 'flex', alignItems: 'center', gap: 1.5, transition: 'all 0.15s',
                                             }}>
-                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: overdue ? '#ef4444' : getPriorityColor(t.priority) }} />
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '8px', flexShrink: 0, bgcolor: overdue ? '#ef4444' : getPriorityColor(t.priority) }} />
                                                 <Box sx={{ minWidth: 0, flex: 1 }}>
                                                     <Typography sx={{ fontSize: '13px', fontWeight: 600, color: overdue ? '#ef4444' : textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</Typography>
                                                     <Typography sx={{ fontSize: '11px', color: overdue ? '#ef4444' : textMuted, mt: 0.2 }}>
@@ -370,20 +370,20 @@ const DashboardPage = () => {
                                         const urgentColor = days !== null && days <= 7 ? '#ef4444' : days !== null && days <= 30 ? '#f59e0b' : '#94a3b8';
                                         return (
                                             <Box key={c.id} onClick={() => navigate('/contracts')} sx={{
-                                                p: 1.5, borderRadius: '10px', cursor: 'pointer',
+                                                p: 1.5, borderRadius: '8px', cursor: 'pointer',
                                                 bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
                                                 border: `1px solid ${days !== null && days <= 7 ? 'rgba(239,68,68,0.25)' : 'transparent'}`,
                                                 '&:hover': { bgcolor: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(16,185,129,0.05)', borderColor: 'rgba(16,185,129,0.2)' },
                                                 display: 'flex', alignItems: 'center', gap: 1, transition: 'all 0.15s',
                                             }}>
-                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: urgentColor }} />
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '8px', flexShrink: 0, bgcolor: urgentColor }} />
                                                 <Box sx={{ minWidth: 0, flex: 1 }}>
                                                     <Typography sx={{ fontSize: '13px', fontWeight: 600, color: textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                         {c.name || c.title || c.contractNumber}
                                                     </Typography>
                                                 </Box>
                                                 {days !== null && (
-                                                    <Box sx={{ flexShrink: 0, fontSize: '11px', fontWeight: 700, color: urgentColor, bgcolor: `${urgentColor}15`, px: 1, py: 0.25, borderRadius: '6px' }}>
+                                                    <Box sx={{ flexShrink: 0, fontSize: '11px', fontWeight: 700, color: urgentColor, bgcolor: `${urgentColor}15`, px: 1, py: 0.25, borderRadius: '8px' }}>
                                                         {days}d
                                                     </Box>
                                                 )}

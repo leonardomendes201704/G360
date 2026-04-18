@@ -25,7 +25,7 @@ const LoadingOverlay = ({ loading, color = '#2563eb', size = 36 }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 bgcolor: mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
-                borderRadius: 'inherit',
+                borderRadius: '8px',
                 transition: 'opacity 0.2s',
             }}
         >

@@ -52,7 +52,7 @@ const FloatingTimer = () => {
                     gap: 1.5,
                     px: 2,
                     py: 1.25,
-                    borderRadius: '14px',
+                    borderRadius: '8px',
                     bgcolor: bgColor,
                     border: `1.5px solid ${borderColor}`,
                     boxShadow: `0 8px 32px rgba(0,0,0,${isDark ? 0.4 : 0.15}), 0 0 0 1px ${timerColor}15`,
@@ -73,7 +73,7 @@ const FloatingTimer = () => {
             >
                 {/* Pulsing dot */}
                 <Box sx={{
-                    width: 10, height: 10, borderRadius: '50%',
+                    width: 10, height: 10, borderRadius: '8px',
                     bgcolor: timerColor, flexShrink: 0,
                     animation: 'pulse 1.5s ease-in-out infinite',
                     '@keyframes pulse': {

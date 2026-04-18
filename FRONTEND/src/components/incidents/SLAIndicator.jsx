@@ -84,10 +84,10 @@ const SLAIndicator = ({
                     color={color}
                     sx={{
                         height,
-                        borderRadius: 1,
+                        borderRadius: '8px',
                         bgcolor: 'rgba(255,255,255,0.1)',
                         '& .MuiLinearProgress-bar': {
-                            borderRadius: 1,
+                            borderRadius: '8px',
                             transition: 'none'
                         }
                     }}
@@ -132,7 +132,7 @@ export const SLABadge = ({ dueDate, slaBreached = false }) => {
                 fontWeight: 700,
                 px: 1,
                 py: 0.25,
-                borderRadius: 1,
+                borderRadius: '8px',
                 bgcolor: `${color}15`,
                 display: 'inline-block'
             }}

@@ -124,7 +124,7 @@ const BudgetImportModal = ({ open, onClose, budgetId, onSuccess }) => {
         >
             <Box sx={{
                 display: 'flex', alignItems: 'center', gap: 2, mb: 3,
-                p: 2, borderRadius: '12px',
+                p: 2, borderRadius: '8px',
                 bgcolor: 'action.hover',
                 border: '1px solid', borderColor: 'divider',
             }}>
@@ -174,7 +174,7 @@ const BudgetImportModal = ({ open, onClose, budgetId, onSuccess }) => {
                 sx={{
                     border: '2px dashed',
                     borderColor: dragOver ? 'success.main' : file ? 'success.main' : 'divider',
-                    borderRadius: '14px',
+                    borderRadius: '8px',
                     p: file ? 2.5 : 4,
                     textAlign: 'center',
                     cursor: 'pointer',
@@ -213,7 +213,7 @@ const BudgetImportModal = ({ open, onClose, budgetId, onSuccess }) => {
                     <Fade in>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Box sx={{
-                                width: 48, height: 48, borderRadius: '12px',
+                                width: 48, height: 48, borderRadius: '8px',
                                 bgcolor: 'success.light',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 flexShrink: 0
@@ -237,7 +237,7 @@ const BudgetImportModal = ({ open, onClose, budgetId, onSuccess }) => {
             {uploading && (
                 <Box sx={{ mt: 2 }}>
                     <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>Importando…</Typography>
-                    <LinearProgress sx={{ height: 6, borderRadius: 3 }} />
+                    <LinearProgress sx={{ height: 6, borderRadius: '8px'}} />
                 </Box>
             )}
 
@@ -245,9 +245,9 @@ const BudgetImportModal = ({ open, onClose, budgetId, onSuccess }) => {
                 <Box sx={{
                     mt: 2.5, maxHeight: '180px', overflowY: 'auto',
                     border: '1px solid', borderColor: 'error.light',
-                    borderRadius: '12px', overflow: 'hidden'
+                    borderRadius: '8px', overflow: 'hidden'
                 }}>
-                    <Alert severity="error" icon={<ErrorIcon fontSize="small" />} sx={{ borderRadius: 0, py: 0.5 }}>
+                    <Alert severity="error" icon={<ErrorIcon fontSize="small" />} sx={{ borderRadius: '8px', py: 0.5 }}>
                         {errors.length} {errors.length === 1 ? 'item rejeitado' : 'itens rejeitados'}
                     </Alert>
                     <List dense disablePadding>

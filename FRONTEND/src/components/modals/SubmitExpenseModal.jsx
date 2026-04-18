@@ -8,7 +8,7 @@ const darkInputStyles = {
     '& .MuiOutlinedInput-root': {
         background: 'var(--modal-surface-hover)',
         border: '1px solid var(--modal-border-strong)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: 'var(--modal-text)',
         fontSize: '14px',
         '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -110,7 +110,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
             <Box sx={{
                 mb: 2,
                 padding: '14px 16px',
-                borderRadius: '10px',
+                borderRadius: '8px',
                 background: 'var(--modal-surface-subtle)',
                 border: '1px solid var(--modal-border-strong)',
             }}>
@@ -192,7 +192,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
 
                 <Box sx={{
                     padding: '16px',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: `1px solid ${errors.file ? '#ef4444' : 'var(--modal-border-strong)'}`,
                     background: 'var(--modal-surface-subtle)',
                 }}>
@@ -211,7 +211,7 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
                         sx={{
                             height: '56px',
                             border: `1px dashed ${errors.file ? '#ef4444' : 'var(--modal-border-strong)'}`,
-                            borderRadius: '10px',
+                            borderRadius: '8px',
                             color: selectedFile ? '#10b981' : 'var(--modal-text-muted)',
                             textTransform: 'none',
                             fontSize: '14px',

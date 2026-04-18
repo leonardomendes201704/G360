@@ -226,7 +226,7 @@ const TicketDetails = () => {
       {/* Sticky Header */}
       <Box sx={{ 
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-        p: { xs: 2, md: 3 }, mb: 4, borderRadius: 1, 
+        p: { xs: 2, md: 3 }, mb: 4, borderRadius: '8px', 
         bgcolor: mode === 'dark' ? 'rgba(30,41,59,0.85)' : 'rgba(255,255,255,0.9)',
         backdropFilter: 'blur(16px)',
         position: 'sticky', top: 16, zIndex: 1100,
@@ -245,7 +245,7 @@ const TicketDetails = () => {
         <Chip
           label={getTicketStatusLabel(ticket.status)}
           color={TICKET_STATUS_CHIP_COLOR[ticket.status] ?? 'default'}
-          sx={{ fontWeight: 800, borderRadius: 2, px: 1 }}
+          sx={{ fontWeight: 800, borderRadius: '8px', px: 1 }}
         />
       </Box>
 
@@ -299,7 +299,7 @@ const TicketDetails = () => {
                   <Box sx={{
                     maxWidth: msg.isInternal ? '90%' : '75%',
                     p: 2.5,
-                    borderRadius: 1,
+                    borderRadius: '8px',
                     bgcolor: bubbleBg,
                     color: textColor,
                     boxShadow: mode==='dark'?'0 4px 20px -5px rgba(0,0,0,0.5)':'0 4px 20px -5px rgba(0,0,0,0.05)',
@@ -394,7 +394,7 @@ const TicketDetails = () => {
         {/* Lado Direito: Info de Status */}
         <Grid item xs={12} md={4}>
           <Box sx={{ position: 'sticky', top: 110 }}>
-            <Card elevation={1} sx={{ borderRadius: 1, bgcolor: mode==='dark'?'rgba(30,41,59,0.5)':'#ffffff', backdropFilter: 'blur(10px)' }}>
+            <Card elevation={1} sx={{ borderRadius: '8px', bgcolor: mode==='dark'?'rgba(30,41,59,0.5)':'#ffffff', backdropFilter: 'blur(10px)' }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography variant="h6" fontWeight="800" sx={{ mb: 3, color: mode==='dark'?'#f8fafc':'#0f172a' }}>Ficha do Chamado</Typography>
               <Box mb={2}>
@@ -556,7 +556,7 @@ const TicketDetails = () => {
               {ticket.requesterId === (user?.userId || user?.id) &&
                 (ticket.status === 'RESOLVED' || ticket.status === 'CLOSED') &&
                 !ticket.csatAt && (
-                  <Box mb={2} sx={{ p: 2, bgcolor: mode === 'dark' ? 'rgba(59,130,246,0.08)' : 'rgba(59,130,246,0.06)', borderRadius: 1 }}>
+                  <Box mb={2} sx={{ p: 2, bgcolor: mode === 'dark' ? 'rgba(59,130,246,0.08)' : 'rgba(59,130,246,0.06)', borderRadius: '8px'}}>
                     <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
                       Como foi o atendimento?
                     </Typography>
@@ -602,9 +602,9 @@ const TicketDetails = () => {
                 <>
                   <Divider sx={{ my: 2 }} />
                   <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, color: mode==='dark'?'#38bdf8':'#0284c7' }}>Rastreabilidade Universal</Typography>
-                  {ticket.problemId && <Chip label="Problema Vinculado" color="error" size="small" sx={{ mb: 1, width: '100%', borderRadius: 1, fontWeight: 'bold' }} />}
-                  {ticket.linkedChangeId && <Chip label="Mudança Exigida (GMUD)" color="warning" size="small" sx={{ mb: 1, width: '100%', borderRadius: 1, fontWeight: 'bold' }} />}
-                  {ticket.linkedProjectId && <Chip label="Demanda de Projeto" color="secondary" size="small" sx={{ width: '100%', borderRadius: 1, fontWeight: 'bold' }} />}
+                  {ticket.problemId && <Chip label="Problema Vinculado" color="error" size="small" sx={{ mb: 1, width: '100%', borderRadius: '8px', fontWeight: 'bold' }} />}
+                  {ticket.linkedChangeId && <Chip label="Mudança Exigida (GMUD)" color="warning" size="small" sx={{ mb: 1, width: '100%', borderRadius: '8px', fontWeight: 'bold' }} />}
+                  {ticket.linkedProjectId && <Chip label="Demanda de Projeto" color="secondary" size="small" sx={{ width: '100%', borderRadius: '8px', fontWeight: 'bold' }} />}
                 </>
               )}
 

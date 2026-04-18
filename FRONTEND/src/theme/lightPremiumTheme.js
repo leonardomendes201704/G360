@@ -92,7 +92,7 @@ const lightPremiumTheme = createTheme({
         button: { textTransform: 'none', fontWeight: 600 },
     },
     shape: {
-        borderRadius: 12,
+        borderRadius: 8,
     },
     shadows: [
         'none',
@@ -131,7 +131,7 @@ const lightPremiumTheme = createTheme({
                 root: {
                     backgroundColor: '#ffffff',
                     border: '1px solid #e2e8f0',
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
                 },
             },
@@ -139,7 +139,7 @@ const lightPremiumTheme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 10,
+                    borderRadius: 8,
                     padding: '8px 16px',
                     boxShadow: 'none',
                 },

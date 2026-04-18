@@ -166,7 +166,7 @@ const UserImportModal = ({ open, onClose, onSuccess }) => {
                         </TextField>
                     </Box>
 
-                    <TableContainer sx={{ maxHeight: 400, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                    <TableContainer sx={{ maxHeight: 400, border: 1, borderColor: 'divider', borderRadius: '8px'}}>
                         <Table stickyHeader size="small">
                             <TableHead>
                                 <TableRow>

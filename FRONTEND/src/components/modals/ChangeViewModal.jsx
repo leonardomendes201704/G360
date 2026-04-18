@@ -32,7 +32,7 @@ function formatShortDate(dateStr) {
 function ChangeViewDataField({ label, value, icon, fullWidth = false, surfaceBg, borderColor, textMuted, textPrimary }) {
     return (
         <Box sx={{
-            p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}`,
+            p: 2, borderRadius: '8px', background: surfaceBg, border: `1px solid ${borderColor}`,
             gridColumn: fullWidth ? '1 / -1' : 'auto',
             minHeight: 60, display: 'flex', flexDirection: 'column', gap: 0.5
         }}>
@@ -184,7 +184,7 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                             {df({ label: 'Descrição', value: change.description, fullWidth: true, icon: '📝' })}
 
                             <Box sx={{
-                                gridColumn: '1 / -1', p: 2, borderRadius: '10px',
+                                gridColumn: '1 / -1', p: 2, borderRadius: '8px',
                                 background: surfaceBg, border: `1px solid ${borderColor}`,
                                 display: 'grid', gridTemplateColumns: '1fr 180px', gap: 2, alignItems: 'center'
                             }}>
@@ -304,7 +304,7 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                                     {approvers.map((app) => (
                                         <Box key={app.id} sx={{
-                                            p: 2, borderRadius: '10px', background: surfaceBg,
+                                            p: 2, borderRadius: '8px', background: surfaceBg,
                                             border: `1px solid ${borderColor}`,
                                             display: 'flex', alignItems: 'center', gap: 2
                                         }}>
@@ -348,7 +348,7 @@ const ChangeViewModal = ({ open, onClose, change, onEdit }) => {
                             {df({ label: 'Fim real', value: formatDate(change.actualEnd), icon: '⏹️' })}
 
                             {(change.actualStart || change.actualEnd) && (
-                                <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '10px', background: surfaceBg, border: `1px solid ${borderColor}` }}>
+                                <Box sx={{ gridColumn: '1 / -1', p: 2, borderRadius: '8px', background: surfaceBg, border: `1px solid ${borderColor}` }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 2 }}>
                                         Variação planejado vs real
                                     </Typography>

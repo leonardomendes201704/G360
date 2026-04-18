@@ -22,7 +22,7 @@
     background: rgba(244, 63, 94, 0.15) !important;
     color: #f43f5e !important;
     padding: 4px 12px !important;
-    border-radius: 20px !important;
+    border-radius: 8px;
     font-size: 13px !important;
     font-weight: 600 !important;
     border: 1px solid rgba(244, 63, 94, 0.2) !important;
@@ -33,7 +33,7 @@
     color: white !important;
     border: none !important;
     box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3) !important;
-    border-radius: 12px !important;
+    border-radius: 8px;
     text-transform: none !important;
     font-weight: 600 !important;
     padding: 12px 20px !important;
@@ -49,7 +49,7 @@
     background: #1c2632 !important;
     color: #f1f5f9 !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 12px !important;
+    border-radius: 8px;
     text-transform: none !important;
     font-weight: 600 !important;
     padding: 12px 20px !important;
@@ -73,7 +73,7 @@
 .risk-stat-card {
     background: linear-gradient(145deg, #1a222d 0%, #151c25 100%) !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 16px !important;
+    border-radius: 8px;
     padding: 20px !important;
     text-align: center;
     position: relative;
@@ -161,7 +161,7 @@
 .risk-categories-card {
     background: linear-gradient(145deg, #1a222d 0%, #151c25 100%) !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 24px !important;
+    border-radius: 8px;
     padding: 24px !important;
 }
 
@@ -200,7 +200,7 @@
 }
 
 .matrix-cell {
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -266,7 +266,7 @@
     color: #0f1419;
     width: 18px;
     height: 18px;
-    border-radius: 50%;
+    border-radius: 8px;
     font-size: 10px;
     display: flex;
     align-items: center;
@@ -311,13 +311,13 @@
 .category-bar {
     height: 6px;
     background: #1c2632;
-    border-radius: 3px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 .category-bar-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 8px;
     transition: width 0.5s ease;
 }
 
@@ -333,7 +333,7 @@
 .risk-table-card {
     background: linear-gradient(145deg, #1a222d 0%, #151c25 100%) !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 24px !important;
+    border-radius: 8px;
     overflow: hidden;
     animation: fadeInUp 0.5s ease 0.3s both;
 }
@@ -354,7 +354,7 @@
 .filter-select {
     background: #1c2632 !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
     padding: 8px 32px 8px 12px !important;
     font-size: 13px !important;
     color: #f1f5f9 !important;
@@ -407,7 +407,7 @@
     color: #64748b !important;
     background: #1c2632 !important;
     padding: 4px 8px !important;
-    border-radius: 4px !important;
+    border-radius: 8px;
     display: inline-block;
 }
 
@@ -419,7 +419,7 @@
 
 .risk-category-tag {
     padding: 4px 10px !important;
-    border-radius: 12px !important;
+    border-radius: 8px;
     font-size: 11px !important;
     font-weight: 600 !important;
 }
@@ -456,7 +456,7 @@
 
 .severity-badge {
     padding: 6px 12px !important;
-    border-radius: 20px !important;
+    border-radius: 8px;
     font-size: 12px !important;
     font-weight: 600 !important;
 }
@@ -499,13 +499,13 @@
     width: 60px;
     height: 6px;
     background: #1c2632;
-    border-radius: 3px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 .probability-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 8px;
 }
 
 .probability-fill.muito-alta {
@@ -543,7 +543,7 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
     background: #1c2632;
@@ -560,7 +560,7 @@
 .status-dot {
     width: 8px;
     height: 8px;
-    border-radius: 50%;
+    border-radius: 8px;
 }
 
 .status-dot.open,
@@ -595,7 +595,7 @@
     width: 32px !important;
     height: 32px !important;
     min-width: 32px !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
     background: #1c2632 !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
     color: #64748b !important;

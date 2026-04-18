@@ -192,7 +192,7 @@ const ProjectTeams = ({
                         color: '#0ea5e9',
                         px: 1.5,
                         py: 0.5,
-                        borderRadius: 2.5,
+                        borderRadius: '8px',
                         fontSize: 13,
                         fontWeight: 600
                     }}>
@@ -205,7 +205,7 @@ const ProjectTeams = ({
                         onClick={onAddMember}
                         style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
-                            padding: '12px 20px', borderRadius: 12,
+                            padding: '12px 20px', borderRadius: '8px',
                             fontSize: 14, fontWeight: 600, cursor: 'pointer',
                             background: 'rgba(255, 255, 255, 0.05)',
                             border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -221,7 +221,7 @@ const ProjectTeams = ({
                         onClick={onCreateTeam}
                         style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
-                            padding: '12px 20px', borderRadius: 12,
+                            padding: '12px 20px', borderRadius: '8px',
                             fontSize: 14, fontWeight: 600, cursor: 'pointer', border: 'none',
                             background: 'linear-gradient(135deg, #0ea5e9, #2563eb)',
                             color: 'white',
@@ -253,7 +253,7 @@ const ProjectTeams = ({
             <Box sx={{
                 background: themeColors.cardBg,
                 border: `1px solid ${themeColors.cardBorder}`,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 p: 2,
                 mb: 3,
                 display: 'flex',
@@ -272,7 +272,7 @@ const ProjectTeams = ({
                         style={{
                             background: themeColors.inputBg,
                             border: `1px solid ${themeColors.inputBorder}`,
-                            borderRadius: 8,
+                            borderRadius: '8px',
                             padding: '8px 32px 8px 12px',
                             fontSize: 13,
                             color: themeColors.textPrimary,
@@ -295,7 +295,7 @@ const ProjectTeams = ({
                         style={{
                             background: themeColors.inputBg,
                             border: `1px solid ${themeColors.inputBorder}`,
-                            borderRadius: 8,
+                            borderRadius: '8px',
                             padding: '8px 32px 8px 12px',
                             fontSize: 13,
                             color: themeColors.textPrimary,
@@ -319,7 +319,7 @@ const ProjectTeams = ({
                             width: '100%',
                             background: themeColors.inputBg,
                             border: `1px solid ${themeColors.inputBorder}`,
-                            borderRadius: 8,
+                            borderRadius: '8px',
                             padding: '8px 12px 8px 40px',
                             fontSize: 13,
                             color: themeColors.textPrimary
@@ -358,7 +358,7 @@ const ProjectTeams = ({
                             color: '#0ea5e9',
                             px: 1.5,
                             py: 0.5,
-                            borderRadius: 2.5,
+                            borderRadius: '8px',
                             fontSize: 13,
                             fontWeight: 600
                         }}>
@@ -395,7 +395,7 @@ const StatCard = ({ icon, value, label, color, themeColors }) => {
         <Box sx={{
             background: themeColors.cardBg,
             border: `1px solid ${themeColors.cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 2.5,
             display: 'flex',
             alignItems: 'center',
@@ -409,7 +409,7 @@ const StatCard = ({ icon, value, label, color, themeColors }) => {
             <Box sx={{
                 width: 48,
                 height: 48,
-                borderRadius: 1.5,
+                borderRadius: '8px',
                 background: bg,
                 color: iconColor,
                 display: 'flex',
@@ -453,7 +453,7 @@ const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
         <Box sx={{
             background: themeColors.cardBg,
             border: `1px solid ${themeColors.cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden',
             transition: 'all 0.3s',
             '&:hover': {
@@ -473,7 +473,7 @@ const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
                     <Box sx={{
                         width: 56,
                         height: 56,
-                        borderRadius: 1.5,
+                        borderRadius: '8px',
                         background: team.gradient,
                         display: 'flex',
                         alignItems: 'center',
@@ -493,7 +493,7 @@ const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
                     gap: 0.75,
                     px: 1.5,
                     py: 0.75,
-                    borderRadius: 2.5,
+                    borderRadius: '8px',
                     fontSize: 11,
                     fontWeight: 600,
                     textTransform: 'uppercase',
@@ -568,7 +568,7 @@ const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
                     <Box sx={{
                         width: 32,
                         height: 32,
-                        borderRadius: '50%',
+                        borderRadius: '8px',
                         background: team.gradient,
                         display: 'flex',
                         alignItems: 'center',
@@ -605,7 +605,7 @@ const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
                         sx: {
                             background: '#1a222d',
                             border: '1px solid rgba(255, 255, 255, 0.06)',
-            borderRadius: '16px',
+            borderRadius: '8px',
                             minWidth: 180
                         }
                     }}
@@ -649,7 +649,7 @@ const MemberItem = ({ member, themeColors }) => {
             gap: 1.5,
             p: 1.5,
             background: themeColors.surfaceBg,
-            borderRadius: 1.5,
+            borderRadius: '8px',
             transition: 'all 0.2s',
             '&:hover': {
                 background: themeColors.surfaceHover
@@ -658,7 +658,7 @@ const MemberItem = ({ member, themeColors }) => {
             <Box sx={{
                 width: 40,
                 height: 40,
-                borderRadius: '50%',
+                borderRadius: '8px',
                 background: avatarGradient,
                 display: 'flex',
                 alignItems: 'center',
@@ -684,15 +684,14 @@ const MemberItem = ({ member, themeColors }) => {
                 background: themeColors.footerBg,
                 px: 1.25,
                 py: 0.5,
-                borderRadius: 1
-            }}>
+                borderRadius: '8px'}}>
                 <Task sx={{ fontSize: 14 }} />
                 {member.taskCount || 0}
             </Box>
             <Box sx={{
                 width: 10,
                 height: 10,
-                borderRadius: '50%',
+                borderRadius: '8px',
                 background: statusStyle.bg,
                 boxShadow: statusStyle.shadow,
                 flexShrink: 0
@@ -707,8 +706,7 @@ const MetricItem = ({ value, label, positive, themeColors }) => (
         textAlign: 'center',
         p: 1.5,
         background: themeColors.surfaceBg,
-        borderRadius: 1
-    }}>
+        borderRadius: '8px'}}>
         <Typography variant="h5" sx={{
             fontSize: 20,
             fontWeight: 700,
@@ -733,7 +731,7 @@ const ActionButton = ({ icon, onClick, themeColors }) => (
             py: 1,
             background: themeColors.surfaceBg,
             border: `1px solid ${themeColors.borderSubtle}`,
-            borderRadius: 1,
+            borderRadius: '8px',
             color: themeColors.textSecondary,
             fontSize: 13,
             fontWeight: 500,
@@ -785,7 +783,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
         <Box sx={{
             background: themeColors.cardBg,
             border: `1px solid ${themeColors.cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden'
         }}>
             {/* Table Header */}
@@ -831,7 +829,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
                             <Box sx={{
                                 width: 36,
                                 height: 36,
-                                borderRadius: '50%',
+                                borderRadius: '8px',
                                 background: avatarGradient,
                                 display: 'flex',
                                 alignItems: 'center',
@@ -855,7 +853,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
                             px: 1.25,
                             py: 0.5,
                             background: team.name === 'Sem alocação' ? 'rgba(100, 116, 139, 0.15)' : themeColors.surfaceBg,
-                            borderRadius: 1,
+                            borderRadius: '8px',
                             fontSize: 12,
                             color: team.name === 'Sem alocação' ? themeColors.textSecondary : '#0ea5e9',
                             width: 'fit-content',
@@ -875,7 +873,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
                             <Box sx={{
                                 width: 10,
                                 height: 10,
-                                borderRadius: '50%',
+                                borderRadius: '8px',
                                 background: member.calculatedStatus === 'alocado' ? '#f59e0b' : member.calculatedStatus === 'ativo' ? '#10b981' : '#64748b',
                                 boxShadow: member.calculatedStatus === 'alocado' ? '0 0 8px rgba(245, 158, 11, 0.5)' : member.calculatedStatus === 'ativo' ? '0 0 8px rgba(16, 185, 129, 0.5)' : 'none'
                             }} />
@@ -916,7 +914,7 @@ const MembersTable = ({ members, teams, themeColors, onView, onEdit, onRemove })
                     sx: {
                         background: '#1a222d',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
                     }
                 }}
@@ -942,7 +940,7 @@ const TableActionButton = ({ icon, onClick, themeColors, ...rest }) => (
         sx={{
             width: 32,
             height: 32,
-            borderRadius: 1,
+            borderRadius: '8px',
             background: themeColors.surfaceBg,
             border: `1px solid ${themeColors.borderSubtle}`,
             color: themeColors.textMuted,

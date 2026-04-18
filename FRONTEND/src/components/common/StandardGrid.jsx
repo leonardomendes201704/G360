@@ -95,7 +95,7 @@ const StandardGrid = ({
     // Initial loading — full skeleton
     if (loading && rows.length === 0) {
         return (
-            <Paper variant="outlined" sx={{ borderRadius: 4, overflow: 'hidden', ...sx }}>
+            <Paper variant="outlined" sx={{ borderRadius: '8px', overflow: 'hidden', ...sx }}>
                 <TableSkeleton rows={defaultPageSize} columns={columns.map(() => '1fr')} />
             </Paper>
         );
@@ -105,7 +105,7 @@ const StandardGrid = ({
         <Paper
             variant="outlined"
             sx={{
-                borderRadius: 4,
+                borderRadius: '8px',
                 overflow: 'hidden',
                 position: 'relative',
                 minHeight: 200,
@@ -138,7 +138,7 @@ const StandardGrid = ({
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px'} }}
                     />
                 </Box>
             )}

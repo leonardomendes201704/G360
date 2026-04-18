@@ -45,7 +45,7 @@ export const useUndoToast = () => {
                         border: '1px solid rgba(255,255,255,0.3)',
                         color: '#fff',
                         padding: '4px 12px',
-                        borderRadius: '6px',
+                        borderRadius: '8px',
                         cursor: 'pointer',
                         fontSize: '12px',
                         fontWeight: 600,

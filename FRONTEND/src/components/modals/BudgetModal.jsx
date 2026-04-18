@@ -22,7 +22,7 @@ const BUDGET_FORM_ID = 'budget-form';
 const nativeInput = {
     background: 'var(--modal-surface-subtle)',
     border: '1px solid var(--modal-border)',
-    borderRadius: '10px',
+    borderRadius: '8px',
     padding: '14px 16px',
     color: 'var(--modal-text-soft)',
     fontSize: '14px',
@@ -225,7 +225,7 @@ const BudgetModal = ({ open, onClose, onSave, budget }) => {
                             gap: 2,
                             p: 2,
                             background: 'rgba(37, 99, 235, 0.08)',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: '1px solid rgba(37, 99, 235, 0.2)',
                         }}
                     >
@@ -239,7 +239,7 @@ const BudgetModal = ({ open, onClose, onSave, budget }) => {
                                     sx={{
                                         width: 44,
                                         height: 24,
-                                        borderRadius: '12px',
+                                        borderRadius: '8px',
                                         cursor: 'pointer',
                                         background: field.value
                                             ? 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)'
@@ -254,7 +254,7 @@ const BudgetModal = ({ open, onClose, onSave, budget }) => {
                                         sx={{
                                             width: 18,
                                             height: 18,
-                                            borderRadius: '50%',
+                                            borderRadius: '8px',
                                             background: 'white',
                                             position: 'absolute',
                                             top: 3,

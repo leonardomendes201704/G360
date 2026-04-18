@@ -213,7 +213,7 @@ const AddendumFormModal = ({ open, onClose, contractId, addendum = null, onSaved
                         variant="outlined"
                         fullWidth
                         sx={{
-                            height: '40px', textTransform: 'none', borderRadius: '10px',
+                            height: '40px', textTransform: 'none', borderRadius: '8px',
                             borderColor: 'var(--modal-border)', color: 'var(--modal-text-secondary)',
                             '&:hover': { borderColor: '#3b82f6', color: '#3b82f6' }
                         }}

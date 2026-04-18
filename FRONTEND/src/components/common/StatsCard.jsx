@@ -75,7 +75,7 @@ const StatsCard = ({
             elevation={0}
             onClick={onClick}
             sx={{
-                borderRadius: '6px',
+                borderRadius: '8px',
                 border: active ? `1px solid ${mainColor}` : '1px solid rgba(0,0,0,0.08)',
                 display: 'flex',
                 flexDirection: 'column',

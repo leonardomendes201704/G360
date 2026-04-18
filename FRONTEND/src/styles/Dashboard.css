@@ -76,7 +76,7 @@
 
 .btn {
     padding: 12px 20px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -123,7 +123,7 @@
     padding: 14px 24px;
     background: white;
     border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
     flex: 1;
@@ -138,7 +138,7 @@
 .quick-action-btn .icon {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -182,7 +182,7 @@
 .alerts-banner {
     background: linear-gradient(135deg, #fef2f2, #fee2e2);
     border: 1px solid #fecaca;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 16px 24px;
     margin-bottom: 24px;
     display: flex;
@@ -194,7 +194,7 @@
     width: 48px;
     height: 48px;
     background: white;
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -281,7 +281,7 @@
 
 .kpi-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 24px;
     box-shadow: var(--card-shadow);
     border: 1px solid #f1f5f9;
@@ -340,7 +340,7 @@
 .kpi-icon {
     width: 48px;
     height: 48px;
-    border-radius: 14px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,7 +356,7 @@
     width: 40px;
     height: 40px;
     font-size: 18px;
-    border-radius: 12px;
+    border-radius: 8px;
 }
 
 .main-kpi-grid.col-6 .kpi-header {
@@ -393,7 +393,7 @@
 
 .kpi-badge {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 700;
 }
@@ -493,7 +493,7 @@
 
 .card {
     background: white;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 24px;
     box-shadow: var(--card-shadow);
     border: 1px solid #f1f5f9;
@@ -521,7 +521,7 @@
     width: 32px;
     height: 32px;
     background: #f1f5f9;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -557,7 +557,7 @@
     gap: 14px;
     padding: 14px 16px;
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: 8px;
     transition: all 0.2s;
     cursor: pointer;
 }
@@ -571,7 +571,7 @@
     width: 22px;
     height: 22px;
     border: 2px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -617,7 +617,7 @@
     gap: 4px;
     padding: 2px 8px;
     background: #dbeafe;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 10px;
     font-weight: 600;
     color: #2563eb;
@@ -628,7 +628,7 @@
     font-size: 12px;
     font-weight: 600;
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     white-space: nowrap;
 }
 
@@ -653,7 +653,7 @@
 .priority-dot {
     width: 8px;
     height: 8px;
-    border-radius: 50%;
+    border-radius: 8px;
     flex-shrink: 0;
 }
 
@@ -673,7 +673,7 @@
 .project-item {
     padding: 16px;
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: 8px;
     border-left: 4px solid #2563eb;
     transition: all 0.2s;
     cursor: pointer;
@@ -713,7 +713,7 @@
 
 .project-status {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
 }
@@ -743,13 +743,13 @@
 .progress-bar {
     height: 6px;
     background: #e5e7eb;
-    border-radius: 3px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 .progress-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 8px;
 }
 
 .progress-fill.good {
@@ -778,7 +778,7 @@
     gap: 14px;
     padding: 14px 16px;
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: 8px;
     transition: all 0.2s;
     cursor: pointer;
     border-left: 4px solid transparent;
@@ -807,7 +807,7 @@
 .pending-icon {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -837,7 +837,7 @@
     gap: 4px;
     padding: 2px 8px;
     background: #e5e7eb;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 10px;
     font-weight: 600;
     color: #64748b;
@@ -856,7 +856,7 @@
     gap: 12px;
     padding: 16px;
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
     border: 2px solid transparent;
@@ -872,7 +872,7 @@
 .quick-action-icon {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -940,14 +940,14 @@
     gap: 14px;
     padding: 12px 16px;
     background: #f8fafc;
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
 .deadline-date {
     width: 44px;
     height: 44px;
     background: white;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -991,7 +991,7 @@
 
 .deadline-type {
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 10px;
     font-weight: 600;
 }
@@ -1020,7 +1020,7 @@
 .activity-avatar {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1062,7 +1062,7 @@
 
 .activity-highlight {
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
 }
@@ -1126,7 +1126,7 @@
     flex: 1;
     padding: 12px 16px;
     background: #f8fafc;
-    border-radius: 10px;
+    border-radius: 8px;
     border-left: 3px solid #3b82f6;
 }
 
@@ -1168,7 +1168,7 @@
 .mini-stat {
     padding: 12px;
     background: #f8fafc;
-    border-radius: 10px;
+    border-radius: 8px;
     text-align: center;
 }
 

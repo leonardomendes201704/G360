@@ -25,7 +25,7 @@ const ProjectInfoCard = ({ project }) => {
             sx={{
                 background: cardBg,
                 border: `1px solid ${borderColor}`,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 p: '24px 28px',
                 mb: 4,
                 boxShadow: cardShadow,
@@ -113,7 +113,7 @@ const ProjectInfoCard = ({ project }) => {
                         sx={{
                             width: 52,
                             height: 52,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             background: 'rgba(245, 158, 11, 0.15)',
                             color: '#f59e0b',
                             display: 'flex',
@@ -144,7 +144,7 @@ const ProjectInfoCard = ({ project }) => {
                                 gap: 0.75,
                                 px: 1.5,
                                 py: 0.5,
-                                borderRadius: '6px',
+                                borderRadius: '8px',
                                 fontSize: '12px',
                                 fontWeight: 700,
                                 textTransform: 'uppercase',
@@ -170,7 +170,7 @@ const ProjectInfoCard = ({ project }) => {
                         sx={{
                             width: 52,
                             height: 52,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             background: 'rgba(59, 130, 246, 0.15)',
                             color: '#3b82f6',
                             display: 'flex',

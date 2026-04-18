@@ -59,7 +59,7 @@ const MyApprovalsPage = () => {
         bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: '16px',
+        borderRadius: '8px',
         padding: '24px',
         boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
     };
@@ -166,7 +166,7 @@ const MyApprovalsPage = () => {
             <Paper sx={{
                 mb: 4,
                 p: 3,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
                 border: `1px solid ${borderColor}`,
                 display: 'flex',
@@ -217,7 +217,7 @@ const MyApprovalsPage = () => {
                         key={tab.id}
                         onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
                         style={{
-                            padding: '10px 16px', borderRadius: '10px', border: 'none',
+                            padding: '10px 16px', borderRadius: '8px', border: 'none',
                             background: activeTab === tab.id ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
                             color: activeTab === tab.id ? '#2563eb' : textMuted,
                             fontSize: '13px', fontWeight: 500, cursor: 'pointer',
@@ -230,7 +230,7 @@ const MyApprovalsPage = () => {
                             <span style={{
                                 background: activeTab === tab.id ? '#2563eb' : (mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
                                 color: activeTab === tab.id ? 'white' : textMuted,
-                                padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600
+                                padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: 600
                             }}>{tab.count}</span>
                         )}
                     </button>
@@ -255,12 +255,12 @@ const MyApprovalsPage = () => {
                                     key={`${item.type}-${item.id}`}
                                     sx={{
                                         display: 'flex', alignItems: 'center', gap: 3, p: 2,
-                                        background: surfaceBg, borderRadius: 2, transition: 'all 0.2s',
+                                        background: surfaceBg, borderRadius: '8px', transition: 'all 0.2s',
                                         '&:hover': { background: mode === 'dark' ? '#232f3e' : theme.palette.action.hover }
                                     }}
                                 >
                                     {/* Type Icon */}
-                                    <Box sx={{ width: 44, height: 44, borderRadius: 2, background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box sx={{ width: 44, height: 44, borderRadius: '8px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <span className="material-icons-round" style={{ color: config.color, fontSize: 22 }}>{config.icon}</span>
                                     </Box>
 
@@ -291,7 +291,7 @@ const MyApprovalsPage = () => {
                                             <IconButton
                                                 onClick={() => handleViewDetails(item)}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: 2,
+                                                    width: 40, height: 40, borderRadius: '8px',
                                                     background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb',
                                                     '&:hover': { background: '#2563eb', color: 'white' }
                                                 }}
@@ -304,7 +304,7 @@ const MyApprovalsPage = () => {
                                                 onClick={() => handleApprove(item)}
                                                 disabled={processing === item.id}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: 2,
+                                                    width: 40, height: 40, borderRadius: '8px',
                                                     background: 'rgba(16, 185, 129, 0.15)', color: '#10b981',
                                                     '&:hover': { background: '#10b981', color: 'white' },
                                                     '&:disabled': { opacity: 0.5 }
@@ -318,7 +318,7 @@ const MyApprovalsPage = () => {
                                                 onClick={() => setRejectDialog({ open: true, item })}
                                                 disabled={processing === item.id}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: 2,
+                                                    width: 40, height: 40, borderRadius: '8px',
                                                     background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e',
                                                     '&:hover': { background: '#f43f5e', color: 'white' },
                                                     '&:disabled': { opacity: 0.5 }
@@ -385,7 +385,7 @@ const MyApprovalsPage = () => {
                         <Box sx={{
                             p: 2,
                             background: requiresAdjustment ? 'rgba(245, 158, 11, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-                            borderRadius: 2,
+                            borderRadius: '8px',
                             border: `1px solid ${requiresAdjustment ? '#f59e0b40' : '#f43f5e40'}`,
                             transition: 'all 0.2s'
                         }}>

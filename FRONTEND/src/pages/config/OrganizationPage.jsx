@@ -67,7 +67,7 @@ const DepartmentsTab = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
         <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Diretorias & Departamentos</Typography>
         <Button onClick={handleAdd} sx={{
-          padding: '10px 20px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, textTransform: 'none',
+          padding: '10px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, textTransform: 'none',
           background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
           boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', flexShrink: 0,
           '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -152,7 +152,7 @@ const CostCentersTab = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography sx={{ fontSize: '24px', fontWeight: 600, color: textPrimary }}>Centros de Custo</Typography>
-        <Button onClick={handleAdd} sx={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
+        <Button onClick={handleAdd} sx={{ padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
           Novo Centro de Custo
         </Button>
       </Box>
@@ -183,7 +183,7 @@ const CostCentersTab = () => {
                   <td style={tableCellStyle}>{cc.manager?.name || <span style={{ color: textMuted }}>Nao definido</span>}</td>
                   <td style={tableCellStyle}>{formatCurrency(cc.annualBudget)}</td>
                   <td style={tableCellStyle}>
-                    <span style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, background: cc.isActive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)', color: cc.isActive ? '#10b981' : '#64748b' }}>{cc.isActive ? 'Ativo' : 'Inativo'}</span>
+                    <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: cc.isActive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)', color: cc.isActive ? '#10b981' : '#64748b' }}>{cc.isActive ? 'Ativo' : 'Inativo'}</span>
                   </td>
                   <td style={{ ...tableCellStyle, textAlign: 'right' }}>
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>

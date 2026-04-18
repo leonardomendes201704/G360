@@ -106,7 +106,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
     const styles = darkMode ? darkStyles : lightStyles;
 
     return (
-        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: 'none', bgcolor: 'transparent' }}>
+        <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '8px', border: 'none', bgcolor: 'transparent' }}>
             <Table stickyHeader>
                 <TableHead>
                     <TableRow>
@@ -192,7 +192,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                 gap: 0.75,
                                                 px: 1.5,
                                                 py: 0.5,
-                                                borderRadius: 1.5,
+                                                borderRadius: '8px',
                                                 bgcolor: getRiskBgColor(gmud.riskLevel),
                                                 color: riskColors[1]
                                             }}
@@ -216,7 +216,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                 gap: 0.75,
                                                 px: 1.5,
                                                 py: 0.5,
-                                                borderRadius: 10,
+                                                borderRadius: '8px',
                                                 bgcolor: statusConfig.bg,
                                                 color: statusConfig.color
                                             }}
@@ -270,7 +270,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                     bgcolor: darkMode
                                                         ? 'rgba(255, 255, 255, 0.1)'
                                                         : 'rgba(0, 0, 0, 0.08)',
-                                                    borderRadius: 0.75,
+                                                    borderRadius: '8px',
                                                     overflow: 'hidden'
                                                 }}
                                             >
@@ -279,7 +279,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                         width: impactConfig.width,
                                                         height: '100%',
                                                         background: impactConfig.gradient,
-                                                        borderRadius: 0.75,
+                                                        borderRadius: '8px',
                                                         transition: 'width 0.3s ease'
                                                     }}
                                                 />
@@ -304,7 +304,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                     sx={{
                                                         width: 32,
                                                         height: 32,
-                                                        borderRadius: 2,
+                                                        borderRadius: '8px',
                                                         bgcolor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                                                         color: '#9ca3af',
                                                         '&:hover': {
@@ -327,7 +327,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                             sx={{
                                                                 width: 32,
                                                                 height: 32,
-                                                                borderRadius: 2,
+                                                                borderRadius: '8px',
                                                                 bgcolor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                                                                 color: '#9ca3af',
                                                                 '&:hover': {
@@ -351,7 +351,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                             sx={{
                                                                 width: 32,
                                                                 height: 32,
-                                                                borderRadius: 2,
+                                                                borderRadius: '8px',
                                                                 bgcolor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                                                                 color: '#9ca3af',
                                                                 '&:hover': {
@@ -372,7 +372,7 @@ const ChangeRequestList = ({ changes = [], onEdit, onDelete, onView, onSend, dar
                                                             sx={{
                                                                 width: 32,
                                                                 height: 32,
-                                                                borderRadius: 2,
+                                                                borderRadius: '8px',
                                                                 bgcolor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                                                                 color: '#9ca3af',
                                                                 '&:hover': {

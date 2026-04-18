@@ -328,7 +328,7 @@ const SmtpConfigModal = ({ open, onClose, onSuccess }) => {
                                                 p: 2,
                                                 border: '1px solid',
                                                 borderColor: 'divider',
-                                                borderRadius: 2,
+                                                borderRadius: '8px',
                                                 height: '100%',
                                                 display: 'flex',
                                                 flexDirection: 'column',

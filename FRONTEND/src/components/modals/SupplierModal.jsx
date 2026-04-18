@@ -190,7 +190,7 @@ const SupplierModal = ({ open, onClose, onSave, supplier = null, loading = false
   const inputStyle = {
     background: 'var(--modal-surface)',
     border: '1px solid var(--modal-border)',
-    borderRadius: '12px',
+    borderRadius: '8px',
     padding: '14px 16px',
     color: 'var(--modal-text)',
     fontSize: '14px',

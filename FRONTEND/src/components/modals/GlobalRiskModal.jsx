@@ -21,7 +21,7 @@ const modalStyles = `
         width: 700px; 
         max-width: 95%; 
         max-height: 90vh;
-        border-radius: 10px; 
+        border-radius: 8px; 
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
         display: flex; flex-direction: column; 
         overflow: hidden; 
@@ -60,7 +60,7 @@ const modalStyles = `
         padding: 0 10px; 
         font-size: 0.8125rem; 
         border: 1px solid var(--modal-border, #e5e7eb); 
-        border-radius: 4px; 
+        border-radius: 8px; 
         background-color: var(--modal-surface, #ffffff); 
         transition: border-color 0.2s; 
         color: var(--modal-text, #1f2937);
@@ -498,7 +498,7 @@ const GlobalRiskModal = ({ open, onClose, onSave, riskToEdit, viewMode = false }
                             <div
                                 style={{
                                     padding: '8px 12px',
-                                    borderRadius: '4px',
+                                    borderRadius: '8px',
                                     fontSize: '0.8rem',
                                     fontWeight: 600,
                                     border: '1px solid',

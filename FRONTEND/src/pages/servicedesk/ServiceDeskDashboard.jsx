@@ -309,7 +309,7 @@ const ServiceDeskDashboard = () => {
             color={PRIORITY_COLORS[t.priority] ?? 'default'}
             size="small"
             sx={{
-              borderRadius: 1.5,
+              borderRadius: '8px',
               fontSize: '0.7rem',
               fontWeight: 700,
               maxWidth: '100%',
@@ -345,7 +345,7 @@ const ServiceDeskDashboard = () => {
                     sx={{
                       width: 8,
                       height: 8,
-                      borderRadius: '50%',
+                      borderRadius: '8px',
                       bgcolor: '#ef4444',
                       animation: `${pulseAnim} 2s infinite`,
                       display: 'inline-block',
@@ -371,7 +371,7 @@ const ServiceDeskDashboard = () => {
             size="small"
             variant="outlined"
             sx={{
-              borderRadius: 1.5,
+              borderRadius: '8px',
               fontSize: '0.7rem',
               fontWeight: 600,
               borderWidth: 2,

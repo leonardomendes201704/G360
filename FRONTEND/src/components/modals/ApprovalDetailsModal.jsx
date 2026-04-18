@@ -159,7 +159,7 @@ const ApprovalDetailsModal = ({ open, onClose, item }) => {
                             )}
 
                             {(details.fileUrl || details.meetingLink) && (
-                                <Box sx={{ mt: 3, p: 2, background: 'var(--modal-surface-subtle)', borderRadius: 2 }}>
+                                <Box sx={{ mt: 3, p: 2, background: 'var(--modal-surface-subtle)', borderRadius: '8px'}}>
                                     {details.fileUrl && (
                                         <Button
                                             startIcon={<AttachFile />}

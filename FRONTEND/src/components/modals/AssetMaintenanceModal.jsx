@@ -26,7 +26,7 @@ const schema = yup.object({
 const modalStyles = {
     input: {
         '& .MuiOutlinedInput-root': {
-            background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '10px',
+            background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '8px',
             '& fieldset': { borderColor: 'var(--modal-border)' },
             '&:hover fieldset': { borderColor: 'rgba(234, 88, 12, 0.3)' },
             '&.Mui-focused fieldset': { borderColor: '#ea580c' }
@@ -159,7 +159,7 @@ const AssetMaintenanceModal = ({ open, onClose, onSave, maintenance = null }) =>
 
                         {/* File Upload */}
                         <Box sx={{
-                            border: '1px dashed var(--modal-border-strong)', borderRadius: '12px', p: 2,
+                            border: '1px dashed var(--modal-border-strong)', borderRadius: '8px', p: 2,
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             background: 'var(--modal-surface-subtle)'
                         }}>

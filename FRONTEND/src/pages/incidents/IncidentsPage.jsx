@@ -276,7 +276,7 @@ const IncidentsPage = () => {
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-            borderRadius: 2,
+            borderRadius: '8px',
             color: textPrimary,
             '& fieldset': { borderColor: borderSubtle },
             '&:hover fieldset': { borderColor: 'rgba(102, 126, 234, 0.5)' },
@@ -290,7 +290,7 @@ const IncidentsPage = () => {
         <Box>
             {/* Page Header */}
             <Box sx={{
-                mb: 3, p: 3, borderRadius: '16px',
+                mb: 3, p: 3, borderRadius: '8px',
                 background: cardBg,
                 backdropFilter: isDark ? 'blur(10px)' : 'none',
                 border: cardBorder,
@@ -310,7 +310,7 @@ const IncidentsPage = () => {
                         onClick={handleOpenCreate}
                         sx={{
                             display: 'flex', alignItems: 'center', gap: 1,
-                            padding: '12px 20px', borderRadius: '12px',
+                            padding: '12px 20px', borderRadius: '8px',
                             fontSize: '14px', fontWeight: 600, textTransform: 'none',
                             background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                             color: 'white',
@@ -325,7 +325,7 @@ const IncidentsPage = () => {
             </Box>
 
             {/* Filtros — barra compacta + drawer off-canvas */}
-            <Box sx={{ mb: 3, borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
+            <Box sx={{ mb: 3, borderRadius: '8px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
                 <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
                         <Button
@@ -342,7 +342,7 @@ const IncidentsPage = () => {
                             Filtros
                         </Button>
                         {activeDrawerFilterCount > 0 ? (
-                            <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                            <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
                                 {activeDrawerFilterCount}
                             </Box>
                         ) : null}
@@ -458,7 +458,7 @@ const IncidentsPage = () => {
                 titleIcon="format_list_bulleted"
                 accentColor="#f59e0b"
                 count={filteredIncidents.length}
-                sx={{ borderRadius: '16px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}
+                sx={{ borderRadius: '8px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}
                 toolbar={(
                     <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                         <ExportButton data={filteredIncidents} columns={EXPORT_COLUMNS.incidents} filename="incidentes" compact />
@@ -470,14 +470,14 @@ const IncidentsPage = () => {
                             InputProps={{ startAdornment: (<InputAdornment position="start"><Search sx={{ color: textMuted }} /></InputAdornment>) }}
                             sx={{ width: 250, ...inputSx }}
                         />
-                        <Paper elevation={0} sx={{ display: 'flex', p: 0.5, borderRadius: 2, background: 'transparent', backgroundImage: 'none', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                        <Paper elevation={0} sx={{ display: 'flex', p: 0.5, borderRadius: '8px', background: 'transparent', backgroundImage: 'none', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                             <Tooltip title="Lista">
-                                <IconButton size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: 1.5, color: viewMode === 'LIST' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
+                                <IconButton size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', color: viewMode === 'LIST' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
                                     <FormatListBulleted fontSize="small" />
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Kanban">
-                                <IconButton size="small" onClick={() => setViewMode('KANBAN')} sx={{ borderRadius: 1.5, color: viewMode === 'KANBAN' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'KANBAN' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
+                                <IconButton size="small" onClick={() => setViewMode('KANBAN')} sx={{ borderRadius: '8px', color: viewMode === 'KANBAN' ? '#667eea' : '#9ca3af', bgcolor: viewMode === 'KANBAN' ? 'rgba(102, 126, 234, 0.15)' : 'transparent' }}>
                                     <ViewKanban fontSize="small" />
                                 </IconButton>
                             </Tooltip>
@@ -533,9 +533,9 @@ const IncidentsPage = () => {
                             Exibindo {((page - 1) * rowsPerPage) + 1}-{Math.min(page * rowsPerPage, filteredIncidents.length)} de {filteredIncidents.length} registros
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1 }}>
-                            <IconButton size="small" disabled={page === 1} onClick={() => setPage(p => p - 1)} sx={{ width: 36, height: 36, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>‹</IconButton>
-                            <Box sx={{ display: 'flex', alignItems: 'center', px: 2, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', fontSize: 14 }}>{page} / {totalPages || 1}</Box>
-                            <IconButton size="small" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} sx={{ width: 36, height: 36, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>›</IconButton>
+                            <IconButton size="small" disabled={page === 1} onClick={() => setPage(p => p - 1)} sx={{ width: 36, height: 36, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>‹</IconButton>
+                            <Box sx={{ display: 'flex', alignItems: 'center', px: 2, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', fontSize: 14 }}>{page} / {totalPages || 1}</Box>
+                            <IconButton size="small" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} sx={{ width: 36, height: 36, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)', bgcolor: 'rgba(255, 255, 255, 0.03)', color: '#e0e0e0', '&:hover': { bgcolor: 'rgba(102, 126, 234, 0.2)', borderColor: '#667eea' }, '&.Mui-disabled': { color: '#4a5568', borderColor: 'rgba(255, 255, 255, 0.05)' } }}>›</IconButton>
                         </Box>
                     </Box>
                 )}

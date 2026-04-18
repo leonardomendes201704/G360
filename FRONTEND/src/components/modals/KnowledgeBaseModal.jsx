@@ -236,7 +236,7 @@ export default function KnowledgeBaseModal({ open, onClose, onSubmit, initialDat
                                                         width: 12,
                                                         height: 12,
                                                         bgcolor: cat.color,
-                                                        borderRadius: '3px'
+                                                        borderRadius: '8px'
                                                     }}
                                                 />
                                                 {cat.name}

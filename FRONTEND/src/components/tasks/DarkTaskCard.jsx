@@ -86,7 +86,7 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
             sx={{
                 background: cardBg,
                 border: cardBorder,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 padding: '16px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -107,7 +107,7 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
                         color: textSecondary,
                         bgcolor: badgeBg,
                         padding: '2px 8px',
-                        borderRadius: '4px',
+                        borderRadius: '8px',
                     }}
                 >
                     TSK-{taskIndex !== undefined ? (taskIndex + 1).toString().padStart(3, '0') : '000'}
@@ -116,7 +116,7 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
                     sx={{
                         width: '8px',
                         height: '8px',
-                        borderRadius: '50%',
+                        borderRadius: '8px',
                         bgcolor: priorityStyle.bg,
                         boxShadow: priorityStyle.shadow,
                     }}
@@ -173,7 +173,7 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
                     <Box
                         sx={{
                             height: '4px',
-                            borderRadius: '2px',
+                            borderRadius: '8px',
                             bgcolor: progressBg,
                             overflow: 'hidden',
                         }}
@@ -237,7 +237,7 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
                             bgcolor: isDark ? 'rgba(37,99,235,0.1)' : '#eff6ff',
                             px: 1,
                             py: 0.5,
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             border: `1px solid ${isDark ? 'rgba(37,99,235,0.2)' : '#bfdbfe'}`
                         }}>
                             <span className="material-icons-round" style={{ fontSize: '14px', color: '#3b82f6' }}>person</span>

@@ -41,7 +41,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
   const cardStyle = {
     background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
     border: cardBorder,
-    borderRadius: '16px',
+    borderRadius: '8px',
     boxShadow: cardShadow
   };
 
@@ -256,7 +256,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
       <Box sx={{
         width: 48,
         height: 48,
-        borderRadius: '12px',
+        borderRadius: '8px',
         background: `${color}15`,
         color: color,
         display: 'flex',
@@ -292,7 +292,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
             color: '#0ea5e9',
             px: 1.5,
             py: 0.5,
-            borderRadius: '20px',
+            borderRadius: '8px',
             fontSize: '13px',
             fontWeight: 600
           }}>
@@ -306,7 +306,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
             sx={{
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
               color: 'white',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '12px 20px',
               fontSize: '14px',
               fontWeight: 600,
@@ -439,7 +439,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                     <Box sx={{
                       width: 24,
                       height: 24,
-                      borderRadius: '50%',
+                      borderRadius: '8px',
                       background: getStatusColor(item.computedStatus),
                       display: 'flex',
                       alignItems: 'center',
@@ -457,7 +457,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                     <Box sx={{
                       flex: 1,
                       background: surfaceBg,
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       p: 2,
                       border: `1px solid ${borderSubtle}`,
                       opacity: isCompleted ? 0.6 : 1
@@ -467,7 +467,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                           <Box sx={{
                             px: 1,
                             py: 0.5,
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             background: `${typeConfig.color}20`,
                             color: typeConfig.color,
                             fontSize: '11px',
@@ -482,7 +482,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                           <Box sx={{
                             px: 1,
                             py: 0.5,
-                            borderRadius: '6px',
+                            borderRadius: '8px',
                             background: `${priorityConfig.color}20`,
                             color: priorityConfig.color,
                             fontSize: '11px',
@@ -520,7 +520,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                             <Box sx={{
                               width: 20,
                               height: 20,
-                              borderRadius: '50%',
+                              borderRadius: '8px',
                               background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
                               display: 'flex',
                               alignItems: 'center',
@@ -646,7 +646,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                     textAlign: 'center',
                     fontSize: '12px',
                     py: 0.75,
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     color: day.isOtherMonth ? (isDark ? '#3d4a5c' : '#9ca3af') : day.isToday ? 'white' : textMuted,
                     background: day.isToday ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'transparent',
                     position: 'relative',
@@ -656,7 +656,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                 >
                   {format(day.date, 'd')}
                   {day.hasEvent && !day.isToday && (
-                    <Box sx={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: '#2563eb' }} />
+                    <Box sx={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '8px', background: '#2563eb' }} />
                   )}
                 </Box>
               ))}
@@ -676,7 +676,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                 const typeConfig = TYPE_CONFIG[item.type] || TYPE_CONFIG.TASK;
                 const dueDate = new Date(item.dueDate);
                 return (
-                  <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, background: surfaceBg, borderRadius: '10px' }}>
+                  <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, background: surfaceBg, borderRadius: '8px' }}>
                     <Box sx={{
                       background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
                       borderRadius: '8px',
@@ -722,7 +722,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
                       p: 1.5,
                       background: surfaceBg,
                       border: `1px solid ${borderSubtle}`,
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       color: textMuted,
                       fontSize: '11px',
                       textTransform: 'none',

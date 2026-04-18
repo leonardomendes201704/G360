@@ -72,7 +72,7 @@ const FinanceDashboard = () => {
         bgcolor: isDark ? 'background.paper' : '#FFFFFF',
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: '16px',
+        borderRadius: '8px',
         padding: '24px',
         boxShadow: isDark ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
     };
@@ -80,7 +80,7 @@ const FinanceDashboard = () => {
     const filterSelectStyle = {
         background: isDark ? '#1c2632' : '#FFFFFF',
         border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.06)' : theme.palette.divider}`,
-        borderRadius: '12px',
+        borderRadius: '8px',
         padding: '12px 16px',
         color: isDark ? '#f1f5f9' : theme.palette.text.primary,
         fontSize: '14px',
@@ -165,9 +165,9 @@ const FinanceDashboard = () => {
 
     if (loading) return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 4, bgcolor: surfaceColor }} />
+            <Skeleton variant="rectangular" height={80} sx={{ borderRadius: '8px', bgcolor: surfaceColor }} />
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 3 }}>
-                {[1, 2, 3, 4].map(i => <Skeleton key={i} variant="rectangular" height={140} sx={{ borderRadius: 4, bgcolor: surfaceColor }} />)}
+                {[1, 2, 3, 4].map(i => <Skeleton key={i} variant="rectangular" height={140} sx={{ borderRadius: '8px', bgcolor: surfaceColor }} />)}
             </Box>
         </Box>
     );
@@ -206,7 +206,7 @@ const FinanceDashboard = () => {
                     </Box>
                     <Button onClick={clearFilters} sx={{
                         padding: '12px 16px', bgcolor: 'transparent',
-                        border: '1px solid', borderColor: 'divider', borderRadius: '12px',
+                        border: '1px solid', borderColor: 'divider', borderRadius: '8px',
                         color: textSecondaryColor, fontSize: '14px', textTransform: 'none',
                         '&:hover': { bgcolor: 'action.hover' }
                     }}>
@@ -226,7 +226,7 @@ const FinanceDashboard = () => {
                         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr 1fr' }, gap: 2, mb: 2 }}>
                             {/* Forecast Banner */}
                             <Box sx={{
-                                p: 2.5, borderRadius: '14px', position: 'relative', overflow: 'hidden',
+                                p: 2.5, borderRadius: '8px', position: 'relative', overflow: 'hidden',
                                 background: insights.forecast?.status === 'RISK'
                                     ? 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(244,63,94,0.06) 100%)'
                                     : 'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.06) 100%)',
@@ -234,7 +234,7 @@ const FinanceDashboard = () => {
                                 display: 'flex', alignItems: 'center', gap: 2,
                             }}>
                                 <Box sx={{
-                                    width: 44, height: 44, borderRadius: '12px',
+                                    width: 44, height: 44, borderRadius: '8px',
                                     bgcolor: insights.forecast?.status === 'RISK' ? 'rgba(244,63,94,0.15)' : 'rgba(16,185,129,0.15)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
                                 }}>
@@ -250,7 +250,7 @@ const FinanceDashboard = () => {
                                     </Typography>
                                 </Box>
                                 <Box sx={{
-                                    px: 1.5, py: 0.5, borderRadius: '20px', fontSize: '11px', fontWeight: 700,
+                                    px: 1.5, py: 0.5, borderRadius: '8px', fontSize: '11px', fontWeight: 700,
                                     bgcolor: insights.forecast?.status === 'RISK' ? 'rgba(244,63,94,0.15)' : 'rgba(16,185,129,0.15)',
                                     color: insights.forecast?.status === 'RISK' ? '#f43f5e' : '#10b981', flexShrink: 0,
                                 }}>
@@ -260,7 +260,7 @@ const FinanceDashboard = () => {
 
                             {/* Days Until Empty */}
                             <Box sx={{
-                                p: 2.5, borderRadius: '14px',
+                                p: 2.5, borderRadius: '8px',
                                 bgcolor: isDark ? 'background.paper' : '#fff',
                                 border: `1px solid ${daysColor}30`,
                                 position: 'relative', overflow: 'hidden',
@@ -280,7 +280,7 @@ const FinanceDashboard = () => {
 
                             {/* CCs with overrun */}
                             <Box sx={{
-                                p: 2.5, borderRadius: '14px',
+                                p: 2.5, borderRadius: '8px',
                                 bgcolor: isDark ? 'background.paper' : '#fff',
                                 border: `1px solid ${ccOverrun > 0 ? 'rgba(244,63,94,0.3)' : 'rgba(16,185,129,0.3)'}`,
                                 position: 'relative', overflow: 'hidden',
@@ -328,11 +328,11 @@ const FinanceDashboard = () => {
                             </Box>
                             <Box sx={{ display: 'flex', gap: 3 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
+                                    <Box sx={{ width: 10, height: 10, borderRadius: '8px', background: '#10b981' }} />
                                     <span style={{ fontSize: '13px', color: textSecondaryColor }}>Orçado</span>
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', background: '#06b6d4' }} />
+                                    <Box sx={{ width: 10, height: 10, borderRadius: '8px', background: '#06b6d4' }} />
                                     <span style={{ fontSize: '13px', color: textSecondaryColor }}>Realizado</span>
                                 </Box>
                             </Box>
@@ -385,15 +385,15 @@ const FinanceDashboard = () => {
                                     </Box>
                                 </>
                             ) : (
-                                <Box sx={{ width: 200, height: 200, borderRadius: '50%', background: surfaceColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box sx={{ width: 200, height: 200, borderRadius: '8px', background: surfaceColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Typography sx={{ color: labelColor, fontSize: '14px' }}>Sem dados</Typography>
                                 </Box>
                             )}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                             {pieData.map((d) => (
-                                <Box key={d.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, background: surfaceColor, borderRadius: '10px' }}>
-                                    <Box sx={{ width: 12, height: 12, borderRadius: '4px', background: d.color, flexShrink: 0 }} />
+                                <Box key={d.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, background: surfaceColor, borderRadius: '8px' }}>
+                                    <Box sx={{ width: 12, height: 12, borderRadius: '8px', background: d.color, flexShrink: 0 }} />
                                     <Typography sx={{ flex: 1, fontSize: '14px', fontWeight: 500, color: textPrimaryColor }}>{d.label}</Typography>
                                     <Typography sx={{ fontSize: '14px', fontWeight: 700, color: textPrimaryColor }}>{formatCurrency(d.value)}</Typography>
                                 </Box>
@@ -415,7 +415,7 @@ const FinanceDashboard = () => {
                                     <Box sx={{ pb: 3, borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}` }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Box sx={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <span className="material-icons-round" style={{ color: '#2563eb', fontSize: '22px' }}>timelapse</span>
                                                 </Box>
                                                 <Box>
@@ -424,7 +424,7 @@ const FinanceDashboard = () => {
                                                 </Box>
                                             </Box>
                                             <span style={{
-                                                padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+                                                padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
                                                 background: insights.forecast.status === 'RISK' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                                                 color: insights.forecast.status === 'RISK' ? '#f43f5e' : '#10b981'
                                             }}>
@@ -452,11 +452,11 @@ const FinanceDashboard = () => {
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                         {insights.alerts.length === 0 ? (
-                                            <Box sx={{ p: 2, background: surfaceColor, borderRadius: '12px', textAlign: 'center' }}>
+                                            <Box sx={{ p: 2, background: surfaceColor, borderRadius: '8px', textAlign: 'center' }}>
                                                 <Typography sx={{ color: textSecondaryColor, fontSize: '13px' }}>Nenhum alerta. Tudo em ordem!</Typography>
                                             </Box>
                                         ) : insights.alerts.map((alert, i) => (
-                                            <Box key={i} sx={{ display: 'flex', gap: 2, p: 2, background: 'rgba(244, 63, 94, 0.08)', borderRadius: '12px', borderLeft: '4px solid #f43f5e' }}>
+                                            <Box key={i} sx={{ display: 'flex', gap: 2, p: 2, background: 'rgba(244, 63, 94, 0.08)', borderRadius: '8px', borderLeft: '4px solid #f43f5e' }}>
                                                 <Box sx={{ flex: 1 }}>
                                                     <Typography sx={{ fontWeight: 600, color: textPrimaryColor, fontSize: '13px' }}>{alert.name}</Typography>
                                                 </Box>
@@ -473,7 +473,7 @@ const FinanceDashboard = () => {
                     {isOn('performance') && (
                         <Paper elevation={0} sx={cardStyle}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                                <Box sx={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <span className="material-icons-round" style={{ color: '#10b981', fontSize: '22px' }}>leaderboard</span>
                                 </Box>
                                 <Box>
@@ -504,7 +504,7 @@ const FinanceDashboard = () => {
                                     </Box>
                                 ))}
                                 {ccData.length === 0 && (
-                                    <Box sx={{ p: 3, background: surfaceColor, borderRadius: '12px', textAlign: 'center' }}>
+                                    <Box sx={{ p: 3, background: surfaceColor, borderRadius: '8px', textAlign: 'center' }}>
                                         <Typography sx={{ color: textSecondaryColor, fontSize: '14px' }}>Nenhum dado de performance</Typography>
                                     </Box>
                                 )}

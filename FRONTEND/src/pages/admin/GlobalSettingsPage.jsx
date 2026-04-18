@@ -32,7 +32,7 @@ const useGlobalTheme = () => {
 const cardStyle = (t) => ({
     background: t.cardBg,
     border: t.cardBorder,
-    borderRadius: '14px',
+    borderRadius: '8px',
     p: 2.5,
     mb: 2.5,
     boxShadow: t.isDark
@@ -57,7 +57,7 @@ const inputSx = (t) => ({
 });
 
 const saveBtnSx = {
-    px: 3.5, py: 1.2, borderRadius: '10px', fontSize: '14px', fontWeight: 600,
+    px: 3.5, py: 1.2, borderRadius: '8px', fontSize: '14px', fontWeight: 600,
     textTransform: 'none',
     background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
     color: '#fff', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
@@ -367,7 +367,7 @@ const MaintenanceTab = ({ settings, onSave, onInitialize }) => {
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box sx={{
-                        width: 52, height: 52, borderRadius: '14px',
+                        width: 52, height: 52, borderRadius: '8px',
                         background: isMaintenanceOn ? 'rgba(245, 158, 11, 0.2)' : t.surfaceBg,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
@@ -549,7 +549,7 @@ const GlobalSettingsPage = () => {
             {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2.5 }}>
                 <Box sx={{
-                    width: 44, height: 44, borderRadius: '12px',
+                    width: 44, height: 44, borderRadius: '8px',
                     background: 'linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.15) 100%)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
@@ -580,7 +580,7 @@ const GlobalSettingsPage = () => {
                             onClick={() => selectTab(tab.id)}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: 8,
-                                padding: '10px 20px', borderRadius: '10px',
+                                padding: '10px 20px', borderRadius: '8px',
                                 fontSize: '13px', fontWeight: isActive ? 700 : 500,
                                 border: 'none', cursor: 'pointer',
                                 whiteSpace: 'nowrap',

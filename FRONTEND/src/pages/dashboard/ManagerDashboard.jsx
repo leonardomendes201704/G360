@@ -29,7 +29,7 @@ import RecentActivities from '../../components/projects/RecentActivities';
 
 // Styles
 const commonPaperStyle = {
-    borderRadius: '16px',
+    borderRadius: '8px',
     overflow: 'hidden',
     transition: 'all 0.3s',
 };
@@ -210,7 +210,7 @@ const ManagerDashboard = ({ user }) => {
     // Estilo comum substituindo os hardcoded
     const commonPaperStyle = {
         p: 2.5,
-        borderRadius: '16px',
+        borderRadius: '8px',
         position: 'relative',
         overflow: 'hidden',
         bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
@@ -233,7 +233,7 @@ const ManagerDashboard = ({ user }) => {
             <Box sx={{
                 mb: 3.5,
                 p: 3,
-                borderRadius: '16px',
+                borderRadius: '8px',
                 background: mode === 'dark' ? 'rgba(22, 29, 38, 0.5)' : 'rgba(255, 255, 255, 0.8)',
                 backdropFilter: 'blur(10px)',
                 border: '1px solid',
@@ -264,15 +264,15 @@ const ManagerDashboard = ({ user }) => {
                 <Box sx={{
                     background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(249, 115, 22, 0.08) 100%)',
                     border: '1px solid rgba(244, 63, 94, 0.2)',
-                    borderRadius: '16px', p: 2.5, mb: 3.5, display: 'flex', alignItems: 'center', gap: 2
+                    borderRadius: '8px', p: 2.5, mb: 3.5, display: 'flex', alignItems: 'center', gap: 2
                 }}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(244, 63, 94, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'rgba(244, 63, 94, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span className="material-icons-round" style={{ fontSize: '24px', color: '#f43f5e' }}>warning</span>
                     </Box>
                     <Box sx={{ flex: 1 }}>
                         <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#f1f5f9', mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                             Atenção Requerida
-                            <span style={{ padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 700, background: '#f43f5e', color: 'white' }}>{criticalAlerts}</span>
+                            <span style={{ padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, background: '#f43f5e', color: 'white' }}>{criticalAlerts}</span>
                         </Typography>
                         <Typography sx={{ fontSize: '13px', color: '#94a3b8' }}>
                             Você tem {stats.kpis.gmuds > 0 && `${stats.kpis.gmuds} GMUDs pendentes de aprovação`}
@@ -281,8 +281,8 @@ const ManagerDashboard = ({ user }) => {
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <button onClick={() => setAlertDismissed(true)} style={{ padding: '10px 18px', background: '#1c2632', color: '#f1f5f9', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Ver Detalhes</button>
-                        <button onClick={() => navigate('/approvals')} style={{ padding: '10px 18px', background: '#f43f5e', color: 'white', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Resolver Agora</button>
+                        <button onClick={() => setAlertDismissed(true)} style={{ padding: '10px 18px', background: '#1c2632', color: '#f1f5f9', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Ver Detalhes</button>
+                        <button onClick={() => navigate('/approvals')} style={{ padding: '10px 18px', background: '#f43f5e', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Resolver Agora</button>
                     </Box>
                 </Box>
             )}
@@ -304,13 +304,13 @@ const ManagerDashboard = ({ user }) => {
                             '100%': { opacity: 1, transform: 'translateY(0) scale(1)' },
                         },
                         '&:hover': { transform: 'translateY(-4px)', borderColor: 'primary.main', boxShadow: mode === 'dark' ? '0 12px 28px rgba(0, 0, 0, 0.4)' : '0 12px 28px rgba(0, 0, 0, 0.1)' },
-                        '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: kpi.gradient, borderRadius: '16px 16px 0 0' }
+                        '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: kpi.gradient, borderRadius: '8px' }
                     }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-                            <Box sx={{ width: 42, height: 42, borderRadius: '10px', background: `${kpi.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Box sx={{ width: 42, height: 42, borderRadius: '8px', background: `${kpi.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <span className="material-icons-round" style={{ fontSize: '22px', color: kpi.color }}>{kpi.icon}</span>
                             </Box>
-                            <span style={{ padding: '3px 8px', borderRadius: '12px', fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: badgeStyles[kpi.badgeType].bg, color: badgeStyles[kpi.badgeType].color }}>
+                            <span style={{ padding: '3px 8px', borderRadius: '8px', fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: badgeStyles[kpi.badgeType].bg, color: badgeStyles[kpi.badgeType].color }}>
                                 {kpi.badgeLabel}
                             </span>
                         </Box>
@@ -346,7 +346,7 @@ const ManagerDashboard = ({ user }) => {
                                 <span className="material-icons-round" style={{ fontSize: '20px', color: '#f59e0b' }}>pending_actions</span>
                                 <Typography sx={{ fontSize: '15px', fontWeight: 600, color: 'text.primary' }}>Pendências que Requerem sua Aprovação</Typography>
                                 {stats.pendingApprovals?.length > 0 && (
-                                    <span style={{ padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, background: '#f43f5e', color: 'white' }}>{stats.pendingApprovals.length}</span>
+                                    <span style={{ padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: 700, background: '#f43f5e', color: 'white' }}>{stats.pendingApprovals.length}</span>
                                 )}
                             </Box>
                             <span onClick={() => navigate('/approvals')} style={{ fontSize: '12px', color: '#2563eb', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -362,10 +362,10 @@ const ManagerDashboard = ({ user }) => {
                                             background: theme.palette.background.default,
                                             border: '1px solid', borderColor: 'divider',
                                             borderLeft: `3px solid ${item.type === 'GMUD' ? '#f59e0b' : item.type === 'MINUTE' ? '#3b82f6' : '#14b8a6'}`,
-                                            borderRadius: '12px', transition: 'all 0.2s', '&:hover': { borderColor: 'primary.main' }
+                                            borderRadius: '8px', transition: 'all 0.2s', '&:hover': { borderColor: 'primary.main' }
                                         }}>
                                             <Box sx={{
-                                                width: 40, height: 40, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                                width: 40, height: 40, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                                                 background: item.type === 'GMUD' ? 'rgba(245, 158, 11, 0.15)' : item.type === 'MINUTE' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(20, 184, 166, 0.15)'
                                             }}>
                                                 <span className="material-icons-round" style={{ fontSize: '20px', color: item.type === 'GMUD' ? '#f59e0b' : item.type === 'MINUTE' ? '#3b82f6' : '#14b8a6' }}>
@@ -413,11 +413,11 @@ const ManagerDashboard = ({ user }) => {
                                 <Box key={action.key} onClick={() => handleQuickAction(action.key)} sx={{
                                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.25, p: 2.25,
                                     background: theme.palette.background.default,
-                                    border: '1px solid', borderColor: 'divider', borderRadius: '12px', cursor: 'pointer', textAlign: 'center',
+                                    border: '1px solid', borderColor: 'divider', borderRadius: '8px', cursor: 'pointer', textAlign: 'center',
                                     transition: 'all 0.2s',
                                     '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)', background: theme.palette.action.hover }
                                 }}>
-                                    <Box sx={{ width: 44, height: 44, borderRadius: '10px', background: action.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box sx={{ width: 44, height: 44, borderRadius: '8px', background: action.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <span className="material-icons-round" style={{ fontSize: '22px', color: 'white' }}>{action.icon}</span>
                                     </Box>
                                     <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>{action.title}</Typography>
@@ -449,9 +449,9 @@ const ManagerDashboard = ({ user }) => {
                                             background: theme.palette.background.default,
                                             border: '1px solid', borderColor: 'divider',
                                             borderLeft: `3px solid ${isCritical ? '#f43f5e' : '#f59e0b'}`,
-                                            borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { borderColor: 'primary.main' }
+                                            borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s', '&:hover': { borderColor: 'primary.main' }
                                         }}>
-                                            <Box sx={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(236, 72, 153, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(236, 72, 153, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                                 <span className="material-icons-round" style={{ fontSize: '20px', color: '#ec4899' }}>description</span>
                                             </Box>
                                             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -488,7 +488,7 @@ const ManagerDashboard = ({ user }) => {
                                         <Typography sx={{ fontSize: '14px', fontWeight: 600, opacity: 0.9, mb: 0.5 }}>Orçamento do Ano</Typography>
                                         <Typography sx={{ fontSize: '32px', fontWeight: 700, letterSpacing: '-0.5px' }}>{formatCurrencyFull(budgetTotal)}</Typography>
                                     </Box>
-                                    <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <span className="material-icons-round" style={{ fontSize: '24px' }}>account_balance_wallet</span>
                                     </Box>
                                 </Box>
@@ -498,8 +498,8 @@ const ManagerDashboard = ({ user }) => {
                                         <Typography sx={{ fontSize: '12px', fontWeight: 600 }}>Executado</Typography>
                                         <Typography sx={{ fontSize: '12px', fontWeight: 600 }}>{budgetPercentUsed.toFixed(0)}%</Typography>
                                     </Box>
-                                    <Box sx={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                        <Box sx={{ width: `${budgetPercentUsed.toFixed(0)}%`, height: '100%', background: 'white', borderRadius: '3px' }} />
+                                    <Box sx={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', overflow: 'hidden' }}>
+                                        <Box sx={{ width: `${budgetPercentUsed.toFixed(0)}%`, height: '100%', background: 'white', borderRadius: '8px' }} />
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                                         <Box>

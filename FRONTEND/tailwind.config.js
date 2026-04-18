@@ -5,7 +5,19 @@ export default {
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-        extend: {},
+        extend: {
+            borderRadius: {
+                none: '8px',
+                sm: '8px',
+                DEFAULT: '8px',
+                md: '8px',
+                lg: '8px',
+                xl: '8px',
+                '2xl': '8px',
+                '3xl': '8px',
+                full: '8px',
+            },
+        },
     },
     // Disabling preflight to avoid conflict with Material UI's CssBaseline
     // We will manually add necessary resets if needed.

@@ -23,7 +23,7 @@ const DashboardWidget = ({
 
     return (
         <Box sx={{
-            borderRadius: '16px',
+            borderRadius: '8px',
             background: cardBg,
             border: cardBorder,
             boxShadow: cardShadow,

@@ -167,7 +167,7 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
                 </>
             }
         >
-            <Box className="modal-container large" sx={{ border: 'none', borderRadius: 0, maxHeight: 'none', boxShadow: 'none' }}>
+            <Box className="modal-container large" sx={{ border: 'none', borderRadius: '8px', maxHeight: 'none', boxShadow: 'none' }}>
                 <div className="modal-body">
                     {/* Type Selection */}
                     <div className="form-section">
@@ -417,7 +417,7 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
                     padding: 10px 14px;
                     background: var(--modal-surface-alt);
                     border: 2px solid #334155;
-                    border-radius: 12px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s;
                     min-width: 65px;
@@ -474,7 +474,7 @@ const FollowUpModal = ({ open, onClose, onSave, projectId, followUpToEdit = null
                     padding: 14px 16px;
                     background: var(--modal-surface-alt);
                     border: 2px solid #334155;
-                    border-radius: 12px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: all 0.2s;
                 }

@@ -66,7 +66,7 @@ const StandardModal = ({
         'sm';
 
     const paperSx = {
-        borderRadius: 'var(--g360-radius-modal, 8px)',
+        borderRadius: '8px',
         bgcolor: mode === 'dark' ? '#1a222d' : '#ffffff',
         border: mode === 'dark' ? '1px solid rgba(255,255,255,0.06)' : '1px solid #e2e8f0',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
@@ -115,7 +115,7 @@ const StandardModal = ({
                             sx={{
                                 width: 40,
                                 height: 40,
-                                borderRadius: 2,
+                                borderRadius: '8px',
                                 bgcolor: 'rgba(37, 99, 235, 0.1)',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -202,7 +202,7 @@ const StandardModal = ({
                                     ) : null
                                 }
                                 sx={{
-                                    borderRadius: 2,
+                                    borderRadius: '8px',
                                     textTransform: 'none',
                                     fontWeight: 600,
                                 }}

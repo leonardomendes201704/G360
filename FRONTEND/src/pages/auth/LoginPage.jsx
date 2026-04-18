@@ -134,7 +134,7 @@ const LoginPage = () => {
     padding: '13px 13px 13px 42px',
     background: colors.inputBg,
     border: `1px solid ${colors.inputBorder}`,
-    borderRadius: 'var(--g360-radius-input, 8px)',
+    borderRadius: '8px',
     fontSize: '14px',
     color: colors.textPrimary,
     fontFamily: 'inherit',
@@ -206,7 +206,7 @@ const LoginPage = () => {
               {features.map((f, i) => (
                 <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
                   <Box sx={{
-                    width: 42, height: 42, borderRadius: '10px',
+                    width: 42, height: 42, borderRadius: '8px',
                     background: colors.featureIconBg,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: '1px solid rgba(255,255,255,0.1)',
@@ -261,7 +261,7 @@ const LoginPage = () => {
             <IconButton
               onClick={toggleTheme}
               sx={{
-                width: 38, height: 38, borderRadius: '10px',
+                width: 38, height: 38, borderRadius: '8px',
                 background: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.05)',
                 color: colors.textSecondary,
                 '&:hover': { background: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.08)' },
@@ -308,7 +308,7 @@ const LoginPage = () => {
             {tenantSlugFromUrl && (
               <Box sx={{
                 display: 'inline-flex', alignItems: 'center', gap: 0.5, mt: 1,
-                px: 1.5, py: 0.5, borderRadius: '20px',
+                px: 1.5, py: 0.5, borderRadius: '8px',
                 background: isDark ? 'rgba(37, 99, 235, 0.15)' : 'rgba(37, 99, 235, 0.1)',
                 border: `1px solid ${isDark ? 'rgba(37, 99, 235, 0.3)' : 'rgba(37, 99, 235, 0.2)'}`,
               }}>
@@ -336,7 +336,7 @@ const LoginPage = () => {
           {tenantOptions && (
             <Box sx={{ mb: 3 }}>
               <Box sx={{
-                p: 2, borderRadius: '10px',
+                p: 2, borderRadius: '8px',
                 background: isDark ? 'rgba(37, 99, 235, 0.08)' : 'rgba(37, 99, 235, 0.05)',
                 border: `1px solid ${isDark ? 'rgba(37, 99, 235, 0.2)' : 'rgba(37, 99, 235, 0.15)'}`,
               }}>
@@ -462,7 +462,7 @@ const LoginPage = () => {
                   <Box sx={{
                     width: 16, height: 16,
                     border: `1.5px solid ${rememberMe ? colors.accent : colors.checkboxBorder}`,
-                    borderRadius: '4px',
+                    borderRadius: '8px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: rememberMe ? colors.accent : 'transparent',
                     transition: 'background 0.2s',

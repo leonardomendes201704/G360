@@ -50,9 +50,9 @@ const FinanceSankey = ({ data }) => {
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: "compact" }).format(val);
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: 4, overflowX: 'auto' }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: 2, borderRadius: '8px', overflowX: 'auto' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Box sx={{ width: 32, height: 32, borderRadius: 2, bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🌊</Box>
+                <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🌊</Box>
                 <Typography variant="h6" fontWeight={700} color="text.primary">Fluxo de Orçamento (Sankey)</Typography>
             </Box>
 

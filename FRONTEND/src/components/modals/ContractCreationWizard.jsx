@@ -93,7 +93,7 @@ const LayoutStepper = ({ activeStep, steps }) => {
                         {/* Node */}
                         <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 40 }}>
                             <Box sx={{
-                                width: 32, height: 32, borderRadius: '50%',
+                                width: 32, height: 32, borderRadius: '8px',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 fontSize: '0.875rem', fontWeight: 600,
                                 bgcolor: isActive ? '#2563eb' : (isCompleted ? '#10b981' : '#fff'),
@@ -118,8 +118,7 @@ const LayoutStepper = ({ activeStep, steps }) => {
                         {!isLast && (
                             <Box sx={{
                                 flexGrow: 1, height: 2, bgcolor: index < activeStep ? '#2563eb' : '#e2e8f0',
-                                mt: '15px', mx: 1, borderRadius: 1
-                            }} />
+                                mt: '15px', mx: 1, borderRadius: '8px'}} />
                         )}
                     </Box>
                 )
@@ -277,14 +276,14 @@ const ContractCreationWizard = ({ onSave, onCancel, loading }) => {
             <Box sx={{
                 border: '2px dashed',
                 borderColor: file ? '#818cf8' : '#e2e8f0', // Indigo-300 or Gray-200
-                borderRadius: '16px', p: 3,
+                borderRadius: '8px', p: 3,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
                 bgcolor: '#f9fafb', // Gray-50
                 cursor: 'pointer', transition: 'all 0.2s',
                 '&:hover': { borderColor: '#c7d2fe' } // Indigo-200
             }}>
                 <Box sx={{
-                    width: 48, height: 48, borderRadius: '50%',
+                    width: 48, height: 48, borderRadius: '8px',
                     bgcolor: '#e0e7ff', color: '#2563eb', // Indigo-50, Indigo-500
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}>
@@ -442,7 +441,7 @@ const ContractCreationWizard = ({ onSave, onCancel, loading }) => {
                             )} />
                         </Grid>
                         <Grid size={12}>
-                            <Box sx={{ border: '1px solid #d1fae5', borderRadius: '12px', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', bgcolor: 'white' }}>
+                            <Box sx={{ border: '1px solid #d1fae5', borderRadius: '8px', p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', bgcolor: 'white' }}>
                                 <Box>
                                     <Typography sx={{ fontSize: '10px', fontWeight: 900, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.1em', mb: 0.5 }}>Valor Total do Contrato</Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>

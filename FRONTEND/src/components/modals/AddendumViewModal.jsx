@@ -29,7 +29,7 @@ const AddendumViewModal = ({ open, onClose, addendum }) => {
             }
         >
             <Box sx={{
-                p: 2.5, mb: 3, borderRadius: '14px',
+                p: 2.5, mb: 3, borderRadius: '8px',
                 background: isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                 border: `1px solid ${isPositive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
                 display: 'flex', alignItems: 'center', gap: 2
@@ -90,7 +90,7 @@ const AddendumViewModal = ({ open, onClose, addendum }) => {
                     <Grid item xs={12}>
                         <Typography sx={labelSx}>Descrição / justificativa</Typography>
                         <Box sx={{
-                            p: 2, borderRadius: '10px',
+                            p: 2, borderRadius: '8px',
                             background: 'var(--modal-surface)',
                             border: '1px solid var(--modal-border)'
                         }}>

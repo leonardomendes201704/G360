@@ -61,7 +61,7 @@ const TaskList = ({
     };
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ borderRadius: '16px', overflow: 'hidden' }}>
+        <Paper elevation={0} variant="outlined" sx={{ borderRadius: '8px', overflow: 'hidden' }}>
             <Box sx={{ overflowX: 'auto' }}>
                 <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
                     <Box component="thead" sx={{ bgcolor: '#f8fafc' }}>
@@ -136,7 +136,7 @@ const TaskList = ({
                                         {/* TIPO */}
                                         <Box component="td" sx={{ p: 2 }}>
                                             <Box sx={{
-                                                display: 'inline-block', px: 1, py: 0.3, borderRadius: 1.5,
+                                                display: 'inline-block', px: 1, py: 0.3, borderRadius: '8px',
                                                 bgcolor: task.riskId ? 'rgba(239, 68, 68, 0.12)' : '#f1f5f9',
                                                 color: task.riskId ? '#dc2626' : '#475569',
                                                 fontSize: '0.7rem', fontWeight: 700
@@ -154,7 +154,7 @@ const TaskList = ({
                                         <Box component="td" sx={{ p: 2 }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                                                 <Box sx={{
-                                                    width: 32, height: 32, borderRadius: '50%',
+                                                    width: 32, height: 32, borderRadius: '8px',
                                                     bgcolor: '#e0e7ff', color: '#1e40af', fontSize: '0.75rem', fontWeight: 'bold',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                                                 }}>
@@ -183,7 +183,7 @@ const TaskList = ({
                                         {/* PRIORIDADE */}
                                         <Box component="td" sx={{ p: 2 }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: getPriorityColor(task.priority) }} />
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: getPriorityColor(task.priority) }} />
                                                 <Typography variant="body2" fontSize="0.8rem" color="text.secondary">
                                                     {getPriorityLabel(task.priority)}
                                                 </Typography>
@@ -212,7 +212,7 @@ const TaskList = ({
                                                             bgcolor: activeTimerTaskId === task.id ? 'rgba(16,185,129,0.15)' : 'transparent',
                                                             cursor: 'pointer',
                                                             p: 0.4,
-                                                            borderRadius: '6px',
+                                                            borderRadius: '8px',
                                                             display: 'flex', alignItems: 'center',
                                                             color: activeTimerTaskId === task.id ? '#10b981' : '#64748b',
                                                             transition: 'all 0.15s',

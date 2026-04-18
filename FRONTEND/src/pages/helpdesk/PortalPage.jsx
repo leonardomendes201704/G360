@@ -549,7 +549,7 @@ const PortalPage = () => {
           pt: 4,
           pb: 5,
           px: { xs: 2, sm: 4 },
-          borderRadius: 1,
+          borderRadius: '8px',
           textAlign: 'center',
           background:
             mode === 'dark'
@@ -676,7 +676,7 @@ const PortalPage = () => {
         sx={{
           mb: 2,
           p: 2,
-          borderRadius: 2,
+          borderRadius: '8px',
           border: 1,
           borderColor: 'divider',
           bgcolor: mode === 'dark' ? 'rgba(30,41,59,0.35)' : 'grey.50'
@@ -748,7 +748,7 @@ const PortalPage = () => {
                 de {tickets.length} na conta
               </Typography>
             ) : null,
-          tableContainerSx: { borderRadius: 1, boxShadow: theme.shadows[1] }
+          tableContainerSx: { borderRadius: '8px', boxShadow: theme.shadows[1] }
         }}
         columns={portalTicketColumns}
         rows={filteredTickets}
@@ -861,7 +861,7 @@ const PortalPage = () => {
         aria-labelledby="portal-wizard-title"
         PaperProps={{
           sx: {
-            borderRadius: 2,
+            borderRadius: '8px',
             overflow: 'hidden',
             backgroundImage: 'none',
             border: 1,
@@ -884,9 +884,9 @@ const PortalPage = () => {
             value={wizardStep === 'category' ? 45 : 100}
             sx={{
               height: 3,
-              borderRadius: 0,
+              borderRadius: '8px',
               bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.55)',
-              '& .MuiLinearProgress-bar': { borderRadius: 0, bgcolor: 'primary.main' }
+              '& .MuiLinearProgress-bar': { borderRadius: '8px', bgcolor: 'primary.main' }
             }}
           />
           <Stack direction="row" alignItems="flex-start" sx={{ px: 2.5, py: 2.5, gap: 1 }}>
@@ -935,7 +935,7 @@ const PortalPage = () => {
           {wizardStep === 'category' && (
             <>
               {wizardCategoryRows.length === 0 ? (
-                <Paper variant="outlined" sx={{ p: 4, textAlign: 'center', borderRadius: 2, bgcolor: 'action.hover' }}>
+                <Paper variant="outlined" sx={{ p: 4, textAlign: 'center', borderRadius: '8px', bgcolor: 'action.hover' }}>
                   <Typography variant="body2" color="text.secondary">
                     Nenhuma categoria com serviços disponível no momento.
                   </Typography>
@@ -953,7 +953,7 @@ const PortalPage = () => {
                       key={row.id}
                       variant="outlined"
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         borderColor: mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'divider',
                         transition: 'transform 0.15s, box-shadow 0.2s, border-color 0.2s',
                         '&:hover': {
@@ -973,7 +973,7 @@ const PortalPage = () => {
                             sx={{
                               width: 44,
                               height: 44,
-                              borderRadius: 1.5,
+                              borderRadius: '8px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -1018,7 +1018,7 @@ const PortalPage = () => {
                 }}
               />
               {wizardServices.length === 0 ? (
-                <Paper variant="outlined" sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>
+                <Paper variant="outlined" sx={{ p: 4, textAlign: 'center', borderRadius: '8px'}}>
                   <Typography variant="body2" color="text.secondary">
                     Nenhum serviço encontrado. Ajuste a busca ou volte e escolha outra categoria.
                   </Typography>
@@ -1036,7 +1036,7 @@ const PortalPage = () => {
                       key={svc.id}
                       variant="outlined"
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         height: '100%',
                         borderColor: mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'divider',
                         bgcolor: mode === 'dark' ? 'rgba(30,41,59,0.35)' : 'background.paper',
@@ -1054,7 +1054,7 @@ const PortalPage = () => {
                             sx={{
                               width: 40,
                               height: 40,
-                              borderRadius: 1.5,
+                              borderRadius: '8px',
                               flexShrink: 0,
                               display: 'flex',
                               alignItems: 'center',

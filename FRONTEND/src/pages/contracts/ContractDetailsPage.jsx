@@ -137,7 +137,7 @@ const ContractDetailsPage = () => {
                         ) : null
                     }
                 >
-                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '8px', boxShadow: 'none' }}>
                     <Table>
                         <TableHead><TableRow><TableCell>Nome</TableCell><TableCell>Data</TableCell><TableCell align="right">Ações</TableCell></TableRow></TableHead>
                         <TableBody>

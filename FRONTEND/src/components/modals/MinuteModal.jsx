@@ -117,7 +117,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
     '& .MuiOutlinedInput-root': {
       background: 'var(--modal-surface-hover)',
       border: '1px solid var(--modal-border-strong)',
-      borderRadius: '10px',
+      borderRadius: '8px',
       color: 'var(--modal-text)',
       fontSize: '14px',
       '& fieldset': { border: 'none' },
@@ -208,7 +208,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
         </Box>
 
         {/* Participantes */}
-        <Box sx={{ mb: 3, p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
+        <Box sx={{ mb: 3, p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
           <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1.5 }}>
             PARTICIPANTES
           </Typography>
@@ -224,7 +224,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
         </Box>
 
         {/* Pautas Discutidas */}
-        <Box sx={{ mb: 3, p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
+        <Box sx={{ mb: 3, p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
           <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1.5 }}>
             PAUTAS DISCUTIDAS
           </Typography>
@@ -244,7 +244,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
                 px: 2,
                 background: 'rgba(37, 99, 235, 0.15)',
                 color: '#2563eb',
-                borderRadius: '10px',
+                borderRadius: '8px',
                 '&:hover': { background: 'rgba(37, 99, 235, 0.25)' }
               }}
             >
@@ -269,7 +269,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
         </Box>
 
         {/* Ações Definidas */}
-        <Box sx={{ mb: 3, p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
+        <Box sx={{ mb: 3, p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
           <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1.5 }}>
             AÇÕES DEFINIDAS
           </Typography>
@@ -295,7 +295,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
                 px: 2,
                 background: 'rgba(37, 99, 235, 0.15)',
                 color: '#2563eb',
-                borderRadius: '10px',
+                borderRadius: '8px',
                 '&:hover': { background: 'rgba(37, 99, 235, 0.25)' }
               }}
             >
@@ -346,7 +346,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
         </Box>
 
         {/* Documento da Ata */}
-        <Box sx={{ p: 2, borderRadius: '12px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
+        <Box sx={{ p: 2, borderRadius: '8px', border: '1px solid var(--modal-border-strong)', background: 'var(--modal-surface-subtle)' }}>
           <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1.5 }}>
             DOCUMENTO DA ATA {!minuteToEdit && <span style={{ color: '#ef4444' }}>*</span>}
           </Typography>
@@ -359,7 +359,7 @@ const MinuteModal = ({ open, onClose, onSave, projectId, projectName, minuteToEd
               alignItems: 'center',
               justifyContent: 'center',
               p: 4,
-              borderRadius: '12px',
+              borderRadius: '8px',
               border: '2px dashed rgba(37, 99, 235, 0.3)',
               background: 'rgba(37, 99, 235, 0.05)',
               cursor: 'pointer',

@@ -63,11 +63,11 @@ const getQuickActions = (user, setters) => {
 const QA = ({ icon, label, route, color, navigate, onClick }) => (
     <Box onClick={onClick || (() => navigate(route))} sx={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75,
-        p: 1.5, borderRadius: '12px', cursor: 'pointer', minWidth: 72,
+        p: 1.5, borderRadius: '8px', cursor: 'pointer', minWidth: 72,
         bgcolor: `${color}12`, border: `1px solid ${color}25`, transition: 'all 0.17s',
         '&:hover': { bgcolor: `${color}22`, transform: 'translateY(-2px)', boxShadow: `0 4px 12px ${color}25` }
     }}>
-        <Box sx={{ width: 36, height: 36, borderRadius: '10px', bgcolor: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span className="material-icons-round" style={{ color, fontSize: '18px' }}>{icon}</span>
         </Box>
         <Typography sx={{ fontSize: '10px', fontWeight: 600, color, textAlign: 'center', lineHeight: 1.2 }}>{label}</Typography>
@@ -76,7 +76,7 @@ const QA = ({ icon, label, route, color, navigate, onClick }) => (
 
 const MetricCard = ({ title, value, sub, icon, color, onClick, isDark, highlight }) => (
     <Box onClick={onClick} sx={{
-        p: 2, borderRadius: '14px', cursor: onClick ? 'pointer' : 'default',
+        p: 2, borderRadius: '8px', cursor: onClick ? 'pointer' : 'default',
         position: 'relative', overflow: 'hidden',
         bgcolor: highlight
             ? isDark ? `${color}18` : `${color}08`
@@ -88,7 +88,7 @@ const MetricCard = ({ title, value, sub, icon, color, onClick, isDark, highlight
         boxShadow: isDark ? 'none' : '0 1px 4px rgba(0,0,0,0.06)',
     }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-            <Box sx={{ width: 36, height: 36, borderRadius: '9px', bgcolor: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="material-icons-round" style={{ color, fontSize: '18px' }}>{icon}</span>
             </Box>
         </Box>
@@ -112,7 +112,7 @@ const SectionHeader = ({ icon, title, action, iconColor, isDark }) => (
 
 const ChartCard = ({ children, isDark, sx = {} }) => (
     <Box sx={{
-        p: 2.5, borderRadius: '16px',
+        p: 2.5, borderRadius: '8px',
         bgcolor: isDark ? 'rgba(255,255,255,0.04)' : '#fff',
         border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.07)',
         boxShadow: isDark ? 'none' : '0 1px 4px rgba(0,0,0,0.06)',
@@ -239,7 +239,7 @@ const CollaboratorOverview = () => {
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{
-                mb: 3, p: { xs: 2, md: 3 }, borderRadius: '20px',
+                mb: 3, p: { xs: 2, md: 3 }, borderRadius: '8px',
                 background: isDark
                     ? 'linear-gradient(135deg, rgba(59,130,246,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(59,130,246,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -343,7 +343,7 @@ const CollaboratorOverview = () => {
                                         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                                             {taskPie.map(d => (
                                                 <Box key={d.id} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                                    <Box sx={{ width: 8, height: 8, borderRadius: '2px', bgcolor: d.color, flexShrink: 0 }} />
+                                                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: d.color, flexShrink: 0 }} />
                                                     <Typography sx={{ fontSize: '12px', color: textPrimary, flex: 1 }}>{d.label}</Typography>
                                                     <Typography sx={{ fontSize: '12px', fontWeight: 700, color: textPrimary }}>{d.value}</Typography>
                                                 </Box>
@@ -413,14 +413,14 @@ const CollaboratorOverview = () => {
                                 <Box sx={{
                                     display: 'flex', flexDirection: 'column', gap: 0.75, maxHeight: 260, overflowY: 'auto',
                                     '&::-webkit-scrollbar': { width: '3px' },
-                                    '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(239,68,68,0.3)', borderRadius: '3px' }
+                                    '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(239,68,68,0.3)', borderRadius: '8px' }
                                 }}>
                                     {[...overdueTasks, ...pendingTasks.filter(t => !overdueTasks.includes(t))].slice(0, 10).map((t, i) => {
                                         const isOverdue = overdueTasks.includes(t);
                                         const dueDateInfo = t.dueDate ? formatDueDate(t.dueDate) : null;
                                         return (
                                             <Box key={t.id || i} onClick={() => navigate('/tasks')} sx={{
-                                                p: 1.25, borderRadius: '10px', display: 'flex', gap: 1.5, alignItems: 'center',
+                                                p: 1.25, borderRadius: '8px', display: 'flex', gap: 1.5, alignItems: 'center',
                                                 bgcolor: isOverdue
                                                     ? isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.04)'
                                                     : isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
@@ -428,7 +428,7 @@ const CollaboratorOverview = () => {
                                                 cursor: 'pointer', transition: 'all 0.13s',
                                                 '&:hover': { borderColor: 'rgba(59,130,246,0.3)', bgcolor: isDark ? 'rgba(59,130,246,0.06)' : 'rgba(59,130,246,0.04)' }
                                             }}>
-                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, bgcolor: priorityColor(t.priority) }} />
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '8px', flexShrink: 0, bgcolor: priorityColor(t.priority) }} />
                                                 <Box sx={{ flex: 1, minWidth: 0 }}>
                                                     <Typography sx={{ fontSize: '12px', fontWeight: 600, color: isOverdue ? '#ef4444' : textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                         {isOverdue && '⚠ '}{t.title}
@@ -467,7 +467,7 @@ const CollaboratorOverview = () => {
                                             : daysUntil <= 3 ? '#f59e0b' : '#6366f1';
                                         return (
                                             <Box key={g.id || i} onClick={() => navigate('/change-requests')} sx={{
-                                                p: 1.25, borderRadius: '10px', display: 'flex', gap: 1.25, alignItems: 'center',
+                                                p: 1.25, borderRadius: '8px', display: 'flex', gap: 1.25, alignItems: 'center',
                                                 bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
                                                 border: '1px solid transparent', cursor: 'pointer', transition: 'all 0.13s',
                                                 '&:hover': { borderColor: 'rgba(99,102,241,0.3)', bgcolor: 'rgba(99,102,241,0.06)' }

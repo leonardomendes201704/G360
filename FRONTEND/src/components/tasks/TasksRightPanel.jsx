@@ -102,7 +102,7 @@ const TasksRightPanel = ({
             <Box sx={{
                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%)',
                 border: '1px solid rgba(16, 185, 129, 0.15)',
-                borderRadius: '16px',
+                borderRadius: '8px',
                 padding: '24px',
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
@@ -123,7 +123,7 @@ const TasksRightPanel = ({
                             padding: '12px',
                             background: '#161d26',
                             border: '1px solid rgba(255, 255, 255, 0.06)',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             transition: 'all 0.2s',
                             cursor: 'pointer',
                             '&:hover': { borderColor: 'rgba(37, 99, 235, 0.3)' },
@@ -152,7 +152,7 @@ const TasksRightPanel = ({
             <Box sx={{
                 background: '#161d26',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '16px',
+                borderRadius: '8px',
                 padding: '24px',
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
@@ -167,7 +167,7 @@ const TasksRightPanel = ({
                             <Box sx={{
                                 width: '40px',
                                 height: '40px',
-                                borderRadius: '50%',
+                                borderRadius: '8px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -190,7 +190,7 @@ const TasksRightPanel = ({
                                 <Box sx={{
                                     height: '4px',
                                     background: '#1c2632',
-                                    borderRadius: '2px',
+                                    borderRadius: '8px',
                                     overflow: 'hidden',
                                     mb: 0.5,
                                 }}>
@@ -198,7 +198,7 @@ const TasksRightPanel = ({
                                         height: '100%',
                                         width: `${member.progress}%`,
                                         background: '#10b981',
-                                        borderRadius: '2px',
+                                        borderRadius: '8px',
                                     }} />
                                 </Box>
                                 <Typography sx={{ fontSize: '11px', color: '#64748b' }}>
@@ -218,7 +218,7 @@ const TasksRightPanel = ({
             <Box sx={{
                 background: '#161d26',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '16px',
+                borderRadius: '8px',
                 padding: '24px',
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
@@ -327,7 +327,7 @@ const TasksRightPanel = ({
                                     width: '4px',
                                     height: '4px',
                                     background: today ? 'white' : '#f59e0b',
-                                    borderRadius: '50%',
+                                    borderRadius: '8px',
                                 } : {},
                             }}>
                                 {format(day, 'd')}

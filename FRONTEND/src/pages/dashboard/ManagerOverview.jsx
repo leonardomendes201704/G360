@@ -51,7 +51,7 @@ const QA = ({ icon, label, route, color, navigate, onClick, isDark }) => (
     <Box onClick={onClick || (() => navigate(route))} sx={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         cursor: 'pointer', flexShrink: 0, width: 96,
-        borderRadius: '6px', overflow: 'hidden',
+        borderRadius: '8px', overflow: 'hidden',
         border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.06)',
         bgcolor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
         transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -80,7 +80,7 @@ const MetricCard = ({ title, value, sub, icon, color, trend, onClick, isDark }) 
     const trendColor = isNeutral ? '#64748b' : isUp ? '#ef4444' : '#10b981';
     return (
         <Box onClick={onClick} sx={{
-            p: 2, borderRadius: '14px', cursor: onClick ? 'pointer' : 'default', position: 'relative', overflow: 'hidden',
+            p: 2, borderRadius: '8px', cursor: onClick ? 'pointer' : 'default', position: 'relative', overflow: 'hidden',
             bgcolor: isDark ? 'rgba(255,255,255,0.04)' : '#fff',
             border: `1px solid ${color}25`,
             transition: 'all 0.2s',
@@ -89,11 +89,11 @@ const MetricCard = ({ title, value, sub, icon, color, trend, onClick, isDark }) 
             boxShadow: isDark ? 'none' : '0 1px 4px rgba(0,0,0,0.06)',
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-                <Box sx={{ width: 36, height: 36, borderRadius: '9px', bgcolor: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span className="material-icons-round" style={{ color, fontSize: '18px' }}>{icon}</span>
                 </Box>
                 {trend !== null && trend !== undefined && (
-                    <Box sx={{ px: 0.75, py: 0.25, borderRadius: '6px', bgcolor: isNeutral ? 'rgba(100,116,139,0.1)' : isUp ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)' }}>
+                    <Box sx={{ px: 0.75, py: 0.25, borderRadius: '8px', bgcolor: isNeutral ? 'rgba(100,116,139,0.1)' : isUp ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)' }}>
                         <Typography sx={{ fontSize: '10px', fontWeight: 700, color: trendColor }}>
                             {isNeutral ? '─' : isUp ? '↑' : '↓'} {Math.abs(trend)}%
                         </Typography>
@@ -121,7 +121,7 @@ const SectionHeader = ({ icon, title, action, iconColor, isDark }) => (
 
 const ChartCard = ({ children, isDark, sx = {} }) => (
     <Box sx={{
-        p: 2.5, borderRadius: '16px',
+        p: 2.5, borderRadius: '8px',
         bgcolor: isDark ? 'rgba(255,255,255,0.04)' : '#fff',
         border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.07)',
         boxShadow: isDark ? 'none' : '0 1px 4px rgba(0,0,0,0.06)',
@@ -285,7 +285,7 @@ const ManagerOverview = () => {
                     <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                 </Box>
                 <Box sx={{
-                    p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '20px',
+                    p: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2 }, borderRadius: '8px',
                     background: isDark
                         ? 'linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(16,185,129,0.08) 100%)'
                         : 'linear-gradient(135deg, rgba(102,126,234,0.10) 0%, rgba(16,185,129,0.04) 100%)',
@@ -318,7 +318,7 @@ const ManagerOverview = () => {
                             sx={{
                                 textAlign: 'center', minWidth: 155, px: 2, py: '9px',
                                 bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#ffffff',
-                                borderRadius: '16px',
+                                borderRadius: '8px',
                                 border: isDark ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(0,0,0,0.08)',
                                 boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.06)',
                                 cursor: 'pointer',
@@ -432,7 +432,7 @@ const ManagerOverview = () => {
                                             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                                                 {taskPie.map(d => (
                                                     <Box key={d.id} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                                        <Box sx={{ width: 8, height: 8, borderRadius: '2px', bgcolor: d.color, flexShrink: 0 }} />
+                                                        <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: d.color, flexShrink: 0 }} />
                                                         <Typography sx={{ fontSize: '11px', color: textPrimary, flex: 1 }}>{d.label}</Typography>
                                                         <Typography sx={{ fontSize: '11px', fontWeight: 700, color: textPrimary }}>{d.value}</Typography>
                                                     </Box>
@@ -462,7 +462,7 @@ const ManagerOverview = () => {
                                             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                                                 {riskPie.map(d => (
                                                     <Box key={d.id} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                                        <Box sx={{ width: 8, height: 8, borderRadius: '2px', bgcolor: d.color, flexShrink: 0 }} />
+                                                        <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: d.color, flexShrink: 0 }} />
                                                         <Typography sx={{ fontSize: '11px', color: textPrimary, flex: 1 }}>{d.label}</Typography>
                                                         <Typography sx={{ fontSize: '11px', fontWeight: 700, color: textPrimary }}>{d.value}</Typography>
                                                     </Box>
@@ -507,7 +507,7 @@ const ManagerOverview = () => {
                                 <Typography sx={{ fontSize: '11px', fontWeight: 700, color: budgetColor }}>{budgetPct}%</Typography>
                             </Box>
                             <LinearProgress variant="determinate" value={Math.min(budgetPct, 100)}
-                                sx={{ height: 6, borderRadius: 3, bgcolor: `${budgetColor}18`, '& .MuiLinearProgress-bar': { bgcolor: budgetColor, borderRadius: 3 } }} />
+                                sx={{ height: 6, borderRadius: '8px', bgcolor: `${budgetColor}18`, '& .MuiLinearProgress-bar': { bgcolor: budgetColor, borderRadius: '8px'} }} />
                             <Typography sx={{ fontSize: '10px', color: textMuted, mt: 0.5 }}>{formatCurrency(spent)} de {formatCurrency(budget)}</Typography>
                         </Box>
                     </ChartCard>
@@ -524,19 +524,19 @@ const ManagerOverview = () => {
                             <Box sx={{
                                 display: 'flex', flexDirection: 'column', gap: 0.75, maxHeight: 230, overflowY: 'auto',
                                 '&::-webkit-scrollbar': { width: '3px' },
-                                '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(102,126,234,0.3)', borderRadius: '3px' }
+                                '&::-webkit-scrollbar-thumb': { bgcolor: 'rgba(102,126,234,0.3)', borderRadius: '8px' }
                             }}>
                                 {(stats?.pendingApprovals || []).map((ap, i) => {
                                     const typeColor = { GMUD: '#6366f1', EXPENSE: '#f43f5e', MINUTE: '#f59e0b' }[ap.type] || '#667eea';
                                     return (
                                         <Box key={ap.id || i} sx={{
-                                            p: 1.25, borderRadius: '10px', display: 'flex', gap: 1.5, alignItems: 'center',
+                                            p: 1.25, borderRadius: '8px', display: 'flex', gap: 1.5, alignItems: 'center',
                                             bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
                                             border: '1px solid transparent', cursor: 'pointer',
                                             '&:hover': { borderColor: `${typeColor}30`, bgcolor: `${typeColor}08` },
                                             transition: 'all 0.13s',
                                         }}>
-                                            <Box sx={{ width: 28, height: 28, borderRadius: '7px', bgcolor: `${typeColor}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <Box sx={{ width: 28, height: 28, borderRadius: '8px', bgcolor: `${typeColor}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                                 <Typography sx={{ fontSize: '8px', fontWeight: 800, color: typeColor }}>{ap.type}</Typography>
                                             </Box>
                                             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -582,7 +582,7 @@ const ManagerOverview = () => {
                                                     </Typography>
                                                 </Box>
                                                 <LinearProgress variant="determinate" value={Math.min(overduePct, 100)}
-                                                    sx={{ height: 4, borderRadius: 2, bgcolor: `${barColor}18`, '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: 2 } }} />
+                                                    sx={{ height: 4, borderRadius: '8px', bgcolor: `${barColor}18`, '& .MuiLinearProgress-bar': { bgcolor: barColor, borderRadius: '8px'} }} />
                                             </Box>
                                         </Box>
                                     );
@@ -614,7 +614,7 @@ const ManagerOverview = () => {
                             const dc = days !== null && days <= 7 ? '#ef4444' : '#f59e0b';
                             return (
                                 <Box key={c.id || i} onClick={() => navigate('/contracts')} sx={{
-                                    p: 1.5, borderRadius: '10px',
+                                    p: 1.5, borderRadius: '8px',
                                     bgcolor: isDark ? 'rgba(245,158,11,0.05)' : 'rgba(245,158,11,0.04)',
                                     border: '1px solid rgba(245,158,11,0.2)', cursor: 'pointer',
                                     '&:hover': { borderColor: 'rgba(245,158,11,0.4)' }
@@ -623,7 +623,7 @@ const ManagerOverview = () => {
                                         {c.name || c.contractNumber || 'Contrato'}
                                     </Typography>
                                     {days !== null && (
-                                        <Box sx={{ display: 'inline-flex', mt: 0.5, px: 0.75, py: 0.2, borderRadius: '5px', bgcolor: `${dc}15`, fontSize: '10px', fontWeight: 700, color: dc }}>
+                                        <Box sx={{ display: 'inline-flex', mt: 0.5, px: 0.75, py: 0.2, borderRadius: '8px', bgcolor: `${dc}15`, fontSize: '10px', fontWeight: 700, color: dc }}>
                                             Vence em {days}d
                                         </Box>
                                     )}
@@ -668,7 +668,7 @@ const ManagerOverview = () => {
                             { pct: '30%', label: 'Saúde do Orçamento', desc: 'Quanto menor o consumo vs planejado, melhor', icon: 'account_balance', color: '#10b981' },
                             { pct: '40%', label: 'Cumprimento de SLA', desc: 'Incidentes resolvidos dentro do SLA acordado', icon: 'timer', color: '#f59e0b' },
                         ].map((item) => (
-                            <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, borderRadius: 2, bgcolor: `${item.color}08`, border: `1px solid ${item.color}20` }}>
+                            <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, borderRadius: '8px', bgcolor: `${item.color}08`, border: `1px solid ${item.color}20` }}>
                                 <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                     <span className="material-icons-round" style={{ color: item.color, fontSize: 18 }}>{item.icon}</span>
                                 </Box>
@@ -682,7 +682,7 @@ const ManagerOverview = () => {
                         ))}
                     </Box>
 
-                    <Box sx={{ p: 2, borderRadius: 2, bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', border: '1px solid', borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0' }}>
+                    <Box sx={{ p: 2, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', border: '1px solid', borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0' }}>
                         <Typography sx={{ fontSize: 13, fontWeight: 700, color: textPrimary, mb: 0.5 }}>Classificação</Typography>
                         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                             {[
@@ -691,7 +691,7 @@ const ManagerOverview = () => {
                                 { label: '0–49', tag: 'Crítico', color: '#ef4444' },
                             ].map((c) => (
                                 <Box key={c.tag} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c.color }} />
+                                    <Box sx={{ width: 10, height: 10, borderRadius: '8px', bgcolor: c.color }} />
                                     <Typography sx={{ fontSize: 12, color: textMuted }}><strong style={{ color: c.color }}>{c.label}</strong> {c.tag}</Typography>
                                 </Box>
                             ))}

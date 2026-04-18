@@ -158,7 +158,7 @@ const ActivityLogPage = () => {
     const cardStyle = {
         background: cardBg,
         border: cardBorder,
-        borderRadius: '16px'
+        borderRadius: '8px'
     };
 
     const getActionStyle = (action) => {
@@ -237,7 +237,7 @@ const ActivityLogPage = () => {
                             </div>
                             <div>
                                 <div style={labelStyle}>Modulo</div>
-                                <span style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, background: moduleStyle.bg, color: moduleStyle.color }}>
+                                <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: moduleStyle.bg, color: moduleStyle.color }}>
                                     {log.module}
                                 </span>
                             </div>
@@ -284,7 +284,7 @@ const ActivityLogPage = () => {
                             <span className="material-icons-round" style={{ fontSize: '18px', color: '#f59e0b' }}>code</span>
                             Detalhes Tecnicos (JSON)
                         </div>
-                        <div style={{ background: codeBg, borderRadius: '12px', padding: '16px', border: cardBorder, maxHeight: '200px', overflow: 'auto' }}>
+                        <div style={{ background: codeBg, borderRadius: '8px', padding: '16px', border: cardBorder, maxHeight: '200px', overflow: 'auto' }}>
                             <pre style={{ margin: 0, fontFamily: 'monospace', fontSize: '12px', color: codeText, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
                                 {JSON.stringify(log.changes || { action: log.action, module: log.module, entityType: log.entityType, entityId: log.entityId, timestamp: log.createdAt, userId: log.userId }, null, 2)}
                             </pre>
@@ -297,7 +297,7 @@ const ActivityLogPage = () => {
                             <span className="material-icons-round" style={{ fontSize: '18px', color: '#10b981' }}>info</span>
                             Contexto Adicional
                         </div>
-                        <div style={{ background: surfaceBg, borderRadius: '12px', padding: '16px', border: cardBorder }}>
+                        <div style={{ background: surfaceBg, borderRadius: '8px', padding: '16px', border: cardBorder }}>
                             <div style={{ color: textSecondary, fontSize: '14px', lineHeight: 1.6 }}>
                                 Esta acao foi executada durante o processo de {log.action?.includes('CREATE') ? 'cadastro' : log.action?.includes('UPDATE') ? 'atualizacao' : log.action?.includes('DELETE') ? 'exclusao' : 'operacao'} de {log.entityType?.toLowerCase() || 'registro'}. O usuario acessou o sistema atraves da interface web e completou a operacao com sucesso. Nenhum erro foi reportado durante a operacao.
                             </div>
@@ -312,7 +312,7 @@ const ActivityLogPage = () => {
             {/* Header */}
             <Box sx={{ ...cardStyle, mb: 3, p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
                         <span className="material-icons-round" style={{ fontSize: '24px' }}>history</span>
                     </Box>
                     <Box>
@@ -321,7 +321,7 @@ const ActivityLogPage = () => {
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '12px', border: cardBorder }}>
+                    <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '8px', border: cardBorder }}>
                         <button onClick={() => setViewMode('dashboard')} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: viewMode === 'dashboard' ? '#3b82f6' : 'transparent', color: viewMode === 'dashboard' ? 'white' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>
                             <span className="material-icons-round" style={{ fontSize: '18px' }}>analytics</span>Dashboard
                         </button>
@@ -329,7 +329,7 @@ const ActivityLogPage = () => {
                             <span className="material-icons-round" style={{ fontSize: '18px' }}>list</span>Atividades
                         </button>
                     </Box>
-                    <Button onClick={fetchLogs} sx={{ padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(59, 130, 246, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>refresh</span>}>
+                    <Button onClick={fetchLogs} sx={{ padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(59, 130, 246, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>refresh</span>}>
                         Atualizar
                     </Button>
                 </Box>
@@ -379,7 +379,7 @@ const ActivityLogPage = () => {
                             {analytics.byModule.length > 0 ? (
                                 <PieChart series={[{ data: analytics.byModule, innerRadius: 50, outerRadius: 100, paddingAngle: 2, cornerRadius: 4 }]} height={280} slotProps={{ legend: { hidden: true } }} />
                             ) : (
-                                <Box sx={{ height: 280, background: surfaceBg, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
+                                <Box sx={{ height: 280, background: surfaceBg, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
                                     <span className="material-icons-round" style={{ fontSize: '48px', color: textMuted }}>pie_chart</span>
                                 </Box>
                             )}
@@ -398,13 +398,13 @@ const ActivityLogPage = () => {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                     {analytics.topUsers.map((u, i) => (
                                         <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Box sx={{ width: 36, height: 36, borderRadius: '50%', background: `hsl(${i * 50}, 70%, 50%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: '14px' }}>
+                                            <Box sx={{ width: 36, height: 36, borderRadius: '8px', background: `hsl(${i * 50}, 70%, 50%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: '14px' }}>
                                                 {u.name.charAt(0)}
                                             </Box>
                                             <Box sx={{ flex: 1 }}>
                                                 <Typography sx={{ color: textPrimary, fontSize: '14px', fontWeight: 500 }}>{u.name}</Typography>
-                                                <Box sx={{ height: 6, background: surfaceBg, borderRadius: '3px', mt: 0.5 }}>
-                                                    <Box sx={{ height: '100%', width: `${(u.count / analytics.topUsers[0].count) * 100}%`, background: 'linear-gradient(90deg, #10b981 0%, #06b6d4 100%)', borderRadius: '3px' }} />
+                                                <Box sx={{ height: 6, background: surfaceBg, borderRadius: '8px', mt: 0.5 }}>
+                                                    <Box sx={{ height: '100%', width: `${(u.count / analytics.topUsers[0].count) * 100}%`, background: 'linear-gradient(90deg, #10b981 0%, #06b6d4 100%)', borderRadius: '8px' }} />
                                                 </Box>
                                             </Box>
                                             <Typography sx={{ color: textMuted, fontSize: '14px', fontWeight: 600 }}>{u.count}</Typography>
@@ -412,7 +412,7 @@ const ActivityLogPage = () => {
                                     ))}
                                 </Box>
                             ) : (
-                                <Box sx={{ height: 200, background: surfaceBg, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
+                                <Box sx={{ height: 200, background: surfaceBg, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
                                     <span className="material-icons-round" style={{ fontSize: '48px', color: textMuted }}>leaderboard</span>
                                 </Box>
                             )}
@@ -430,7 +430,7 @@ const ActivityLogPage = () => {
                                     height={200}
                                 />
                             ) : (
-                                <Box sx={{ height: 200, background: surfaceBg, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
+                                <Box sx={{ height: 200, background: surfaceBg, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: isDark ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed rgba(15, 23, 42, 0.12)' }}>
                                     <span className="material-icons-round" style={{ fontSize: '48px', color: textMuted }}>access_time</span>
                                 </Box>
                             )}
@@ -446,13 +446,13 @@ const ActivityLogPage = () => {
                     <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                         <Box sx={{ flex: 1, minWidth: 300, position: 'relative' }}>
                             <span className="material-icons-round" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: textMuted, fontSize: '20px' }}>search</span>
-                            <input type="text" placeholder="Buscar por usuario, acao, modulo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '100%', padding: '14px 16px 14px 48px', background: inputBg, border: inputBorder, borderRadius: '12px', color: textPrimary, fontSize: '14px', outline: 'none' }} />
+                            <input type="text" placeholder="Buscar por usuario, acao, modulo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '100%', padding: '14px 16px 14px 48px', background: inputBg, border: inputBorder, borderRadius: '8px', color: textPrimary, fontSize: '14px', outline: 'none' }} />
                         </Box>
-                        <select value={filters.module} onChange={(e) => setFilters(f => ({ ...f, module: e.target.value }))} style={{ padding: '14px 16px', background: inputBg, border: inputBorder, borderRadius: '12px', color: textPrimary, fontSize: '14px', minWidth: 180 }}>
+                        <select value={filters.module} onChange={(e) => setFilters(f => ({ ...f, module: e.target.value }))} style={{ padding: '14px 16px', background: inputBg, border: inputBorder, borderRadius: '8px', color: textPrimary, fontSize: '14px', minWidth: 180 }}>
                             <option value="">Todos os Modulos</option>
                             {modules.map(m => <option key={m} value={m}>{m}</option>)}
                         </select>
-                        <select value={filters.action} onChange={(e) => setFilters(f => ({ ...f, action: e.target.value }))} style={{ padding: '14px 16px', background: inputBg, border: inputBorder, borderRadius: '12px', color: textPrimary, fontSize: '14px', minWidth: 180 }}>
+                        <select value={filters.action} onChange={(e) => setFilters(f => ({ ...f, action: e.target.value }))} style={{ padding: '14px 16px', background: inputBg, border: inputBorder, borderRadius: '8px', color: textPrimary, fontSize: '14px', minWidth: 180 }}>
                             <option value="">Todas as Acoes</option>
                             {actions.map(a => <option key={a} value={a}>{a}</option>)}
                         </select>
@@ -481,7 +481,7 @@ const ActivityLogPage = () => {
                                 const moduleStyle = getModuleStyle(log.module);
                                 return (
                                     <Box key={log.id || i} onClick={() => setSelectedLog(log)} sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 2, borderBottom: cardBorder, transition: 'all 0.2s', cursor: 'pointer', '&:hover': { background: surfaceBg } }}>
-                                        <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: actionStyle.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                        <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: actionStyle.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                             <span className="material-icons-round" style={{ fontSize: '22px', color: actionStyle.color }}>{actionStyle.icon}</span>
                                         </Box>
                                         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -492,7 +492,7 @@ const ActivityLogPage = () => {
                                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><span className="material-icons-round" style={{ fontSize: '14px' }}>schedule</span>{new Date(log.createdAt).toLocaleString('pt-BR')}</span>
                                             </Box>
                                         </Box>
-                                        <span style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: moduleStyle.bg, color: moduleStyle.color }}>{log.module}</span>
+                                        <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', background: moduleStyle.bg, color: moduleStyle.color }}>{log.module}</span>
                                     </Box>
                                 );
                             })

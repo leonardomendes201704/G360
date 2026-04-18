@@ -188,7 +188,7 @@ const UserModal = ({ open, onClose, onSuccess, editData, isProfileMode = false }
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             background: 'var(--modal-surface)',
-            borderRadius: '10px',
+            borderRadius: '8px',
             minHeight: 48,
             '& fieldset': { borderColor: 'var(--modal-border-strong)' },
             '&:hover fieldset': { borderColor: 'var(--modal-border-strong)' },
@@ -336,7 +336,7 @@ const UserModal = ({ open, onClose, onSuccess, editData, isProfileMode = false }
                                 <Box sx={{
                                     p: 1.5,
                                     bgcolor: 'var(--modal-surface-subtle)',
-                                    borderRadius: '10px',
+                                    borderRadius: '8px',
                                     border: '1px solid',
                                     borderColor: passwordValidation.valid ? 'success.main' : 'var(--modal-border)'
                                 }}>

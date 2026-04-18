@@ -91,7 +91,7 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
             loading={loading}
             footer={
                 <>
-                    <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ borderRadius: 2, textTransform: 'none' }}>
+                    <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ borderRadius: '8px', textTransform: 'none' }}>
                         Cancelar
                     </Button>
                     <Button
@@ -100,7 +100,7 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
                         color="error"
                         disabled={loading}
                         startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <Warning />}
-                        sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
+                        sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}
                     >
                         {loading ? 'Criando...' : 'Registrar Incidente'}
                     </Button>
@@ -141,7 +141,7 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
                             {PRIORITIES.map(p => (
                                 <MenuItem key={p.value} value={p.value}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: p.color, flexShrink: 0 }} />
+                                        <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: p.color, flexShrink: 0 }} />
                                         {p.label}
                                     </Box>
                                 </MenuItem>
@@ -173,12 +173,12 @@ const IncidentCreateModal = ({ open, onClose, onSave }) => {
 
                 {selectedPriority && (
                     <Box sx={{
-                        p: 1.5, borderRadius: '10px',
+                        p: 1.5, borderRadius: '8px',
                         bgcolor: `${selectedPriority.color}10`,
                         border: `1px solid ${selectedPriority.color}25`,
                         display: 'flex', alignItems: 'center', gap: 1
                     }}>
-                        <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: selectedPriority.color, flexShrink: 0 }} />
+                        <Box sx={{ width: 10, height: 10, borderRadius: '8px', bgcolor: selectedPriority.color, flexShrink: 0 }} />
                         <Typography sx={{ fontSize: '12px', color: selectedPriority.color, fontWeight: 600 }}>
                             Prioridade {selectedPriority.label} — o incidente será atribuído à fila correspondente
                         </Typography>

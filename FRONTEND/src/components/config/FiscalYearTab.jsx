@@ -22,7 +22,7 @@ const FiscalYearTab = () => {
     const cardStyle = {
         background: cardBg,
         border: cardBorder,
-        borderRadius: '16px'
+        borderRadius: '8px'
     };
 
     const tableHeaderStyle = {
@@ -123,7 +123,7 @@ const FiscalYearTab = () => {
                     data-testid="fiscal-year-add"
                     onClick={handleAdd}
                     sx={{
-                    padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                    padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                     background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                     boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                     '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -157,7 +157,7 @@ const FiscalYearTab = () => {
                                     <td style={tableCellStyle}>{formatDateUTC(fy.endDate)}</td>
                                     <td style={tableCellStyle}>
                                         <span style={{
-                                            padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                                            padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                                             background: fy.isClosed ? 'rgba(100, 116, 139, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                                             color: fy.isClosed ? '#64748b' : '#10b981'
                                         }}>{fy.isClosed ? 'Fechado' : 'Aberto'}</span>

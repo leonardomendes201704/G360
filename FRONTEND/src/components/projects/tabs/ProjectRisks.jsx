@@ -28,7 +28,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
   const cardStyle = {
     background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
     border: cardBorder,
-    borderRadius: '16px',
+    borderRadius: '8px',
     boxShadow: cardShadow
   };
 
@@ -234,7 +234,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
             color: '#f43f5e',
             px: 1.5,
             py: 0.5,
-            borderRadius: '20px',
+            borderRadius: '8px',
             fontSize: '13px',
             fontWeight: 600
           }}>
@@ -247,7 +247,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
           sx={{
             background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
             color: 'white',
-            borderRadius: '12px',
+            borderRadius: '8px',
             padding: '12px 20px',
             fontSize: '14px',
             fontWeight: 600,
@@ -353,7 +353,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
                 <Box sx={{
                   width: 36,
                   height: 36,
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   background: `${cat.color}20`,
                   color: cat.color,
                   display: 'flex',
@@ -364,12 +364,12 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography sx={{ fontSize: '13px', color: textPrimary, mb: 0.5 }}>{cat.name}</Typography>
-                  <Box sx={{ height: 6, background: surfaceBg, borderRadius: '3px', overflow: 'hidden' }}>
+                  <Box sx={{ height: 6, background: surfaceBg, borderRadius: '8px', overflow: 'hidden' }}>
                     <Box sx={{
                       height: '100%',
                       width: `${(cat.count / Math.max(stats.total, 1)) * 100}%`,
                       background: cat.color,
-                      borderRadius: '3px'
+                      borderRadius: '8px'
                     }} />
                   </Box>
                 </Box>
@@ -456,7 +456,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
                   </TableCell>
                   <TableCell sx={{ borderBottom: `1px solid ${borderSubtle}` }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: getStatusColor(risk.status) }} />
+                      <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: getStatusColor(risk.status) }} />
                       <Typography sx={{ fontSize: '13px', color: textMuted }}>{getStatusText(risk.status)}</Typography>
                     </Box>
                   </TableCell>

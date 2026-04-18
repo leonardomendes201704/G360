@@ -133,7 +133,7 @@ const SupplierViewModal = ({ open, onClose, supplier, onEdit }) => {
                     <Divider sx={{ borderColor, mb: 3 }} />
                     <Box>
                         <Typography sx={{ fontSize: '11px', fontWeight: 700, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1 }}>Observações</Typography>
-                        <Typography sx={{ fontSize: '14px', color: textSecondary, lineHeight: 1.6, whiteSpace: 'pre-wrap', p: 2, bgcolor: surfaceBg, borderRadius: '10px', border: `1px solid ${borderColor}` }}>
+                        <Typography sx={{ fontSize: '14px', color: textSecondary, lineHeight: 1.6, whiteSpace: 'pre-wrap', p: 2, bgcolor: surfaceBg, borderRadius: '8px', border: `1px solid ${borderColor}` }}>
                             {supplier.notes}
                         </Typography>
                     </Box>

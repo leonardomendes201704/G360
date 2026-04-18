@@ -199,7 +199,7 @@ const MainLayout = ({ children }) => {
             backgroundColor: mode === 'dark' ? '#161d26' : 'background.paper', // Dynamic Background
             border: '1px solid',
             borderColor: 'divider', // Dynamic Border
-            borderRadius: '16px', // Rounded corners
+            borderRadius: '8px', // Rounded corners
             mx: { xs: 2, md: 3 }, // Margins horizontal
             mt: { xs: 2, md: 3 }, // Margin top
             mb: 1, // Slight margin bottom
@@ -283,7 +283,7 @@ const MainLayout = ({ children }) => {
                 gap: 1.5,
                 px: 2,
                 py: 1,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 border: '1px solid',
                 borderColor: 'divider',
                 cursor: 'pointer',

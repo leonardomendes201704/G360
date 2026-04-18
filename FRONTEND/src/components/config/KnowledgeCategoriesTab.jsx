@@ -133,7 +133,7 @@ const KnowledgeCategoriesTab = () => {
     const cardStyle = {
         background: cardBg,
         border: cardBorder,
-        borderRadius: '16px'
+        borderRadius: '8px'
     };
 
     const tableHeaderStyle = {
@@ -216,7 +216,7 @@ const KnowledgeCategoriesTab = () => {
                     onClick={handleAdd}
                     sx={{
                         padding: '10px 20px',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         fontSize: '13px',
                         fontWeight: 600,
                         textTransform: 'none',
@@ -291,7 +291,7 @@ const KnowledgeCategoriesTab = () => {
                                         <td style={tableCellStyle}>
                                             <span style={{
                                                 padding: '4px 10px',
-                                                borderRadius: '6px',
+                                                borderRadius: '8px',
                                                 fontSize: '12px',
                                                 fontWeight: 600,
                                                 background: 'rgba(37, 99, 235, 0.15)',
@@ -303,7 +303,7 @@ const KnowledgeCategoriesTab = () => {
                                         <td style={tableCellStyle}>
                                             <span style={{
                                                 padding: '6px 12px',
-                                                borderRadius: '6px',
+                                                borderRadius: '8px',
                                                 fontSize: '12px',
                                                 fontWeight: 600,
                                                 background: cat.isActive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)',

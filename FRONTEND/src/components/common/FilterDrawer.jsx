@@ -62,7 +62,7 @@ const FilterDrawer = ({ open, onClose, onApply, onClear, children, title = 'Filt
                     fullWidth
                     variant="outlined"
                     onClick={() => { onClear?.(); }}
-                    sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
+                    sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}
                 >
                     Limpar
                 </Button>
@@ -71,7 +71,7 @@ const FilterDrawer = ({ open, onClose, onApply, onClear, children, title = 'Filt
                     variant="contained"
                     onClick={handleApply}
                     sx={{
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         textTransform: 'none',
                         fontWeight: 600,
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',

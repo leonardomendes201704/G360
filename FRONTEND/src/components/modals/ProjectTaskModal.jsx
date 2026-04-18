@@ -129,7 +129,7 @@ const ProjectTaskModal = ({
         '& .MuiOutlinedInput-root': {
             background: 'var(--modal-surface-hover)',
             border: '1px solid var(--modal-border-strong)',
-            borderRadius: '10px',
+            borderRadius: '8px',
             color: 'var(--modal-text)',
             fontSize: '14px',
             '& fieldset': { border: 'none' },
@@ -191,7 +191,7 @@ const ProjectTaskModal = ({
                 background: 'var(--modal-bg)',
                 '&::-webkit-scrollbar': { width: '6px' },
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
-                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
+                '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '8px' },
             }}>
                 {/* View Mode: Read-only Detail View */}
                 {viewMode && task && (
@@ -203,7 +203,7 @@ const ProjectTaskModal = ({
                                 const s = statusMap[task.status] || { label: task.status, color: '#64748b' };
                                 return (
                                     <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, px: 1.5, py: 0.5, borderRadius: '8px', background: `${s.color}20`, border: `1px solid ${s.color}40` }}>
-                                        <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: s.color }} />
+                                        <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: s.color }} />
                                         <Typography sx={{ fontSize: '13px', fontWeight: 600, color: s.color }}>{s.label}</Typography>
                                     </Box>
                                 );
@@ -228,7 +228,7 @@ const ProjectTaskModal = ({
 
                         {/* Description */}
                         {task.description && (
-                            <Box sx={{ mb: 3, p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                            <Box sx={{ mb: 3, p: 2, borderRadius: '8px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Descrição</Typography>
                                 <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{task.description}</Typography>
                             </Box>
@@ -237,10 +237,10 @@ const ProjectTaskModal = ({
                         {/* Info Grid */}
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 2, mb: 3 }}>
                             {/* Assignee */}
-                            <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                            <Box sx={{ p: 2, borderRadius: '8px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Responsável</Typography>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box sx={{ width: 28, height: 28, borderRadius: '8px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <Typography sx={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}>{(task.assignee?.name || '?')[0]?.toUpperCase()}</Typography>
                                     </Box>
                                     <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>{task.assignee?.name || 'Não atribuído'}</Typography>
@@ -249,7 +249,7 @@ const ProjectTaskModal = ({
 
                             {/* Timeline */}
                             {(task.startDate || task.endDate) && (
-                                <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                                <Box sx={{ p: 2, borderRadius: '8px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Período</Typography>
                                     <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>
                                         {task.startDate ? new Date(task.startDate).toLocaleDateString('pt-BR') : '-'} → {task.endDate ? new Date(task.endDate).toLocaleDateString('pt-BR') : '-'}
@@ -259,7 +259,7 @@ const ProjectTaskModal = ({
 
                             {/* Story Points */}
                             {task.storyPoints && (
-                                <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                                <Box sx={{ p: 2, borderRadius: '8px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Story Points</Typography>
                                     <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>{task.storyPoints}</Typography>
                                 </Box>
@@ -268,20 +268,20 @@ const ProjectTaskModal = ({
 
                         {/* Checklist */}
                         {checklistItems.length > 0 && (
-                            <Box sx={{ p: 2, borderRadius: '12px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
+                            <Box sx={{ p: 2, borderRadius: '8px', background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)' }}>Checklist</Typography>
                                     <Typography sx={{ fontSize: '12px', color: 'var(--modal-text-secondary)' }}>
                                         {checklistItems.filter(i => i.done).length}/{checklistItems.length}
                                     </Typography>
                                 </Box>
-                                <Box sx={{ width: '100%', height: 4, borderRadius: 2, background: 'var(--modal-border-strong)', mb: 1.5 }}>
-                                    <Box sx={{ width: `${(checklistItems.filter(i => i.done).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: 2, background: '#22c55e', transition: 'width 0.3s ease' }} />
+                                <Box sx={{ width: '100%', height: 4, borderRadius: '8px', background: 'var(--modal-border-strong)', mb: 1.5 }}>
+                                    <Box sx={{ width: `${(checklistItems.filter(i => i.done).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: '8px', background: '#22c55e', transition: 'width 0.3s ease' }} />
                                 </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                                     {checklistItems.map(item => (
                                         <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Box sx={{ width: 16, height: 16, borderRadius: '4px', border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: item.done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <Box sx={{ width: 16, height: 16, borderRadius: '8px', border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: item.done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                                 {item.done && <span style={{ color: '#fff', fontSize: '10px' }}>✓</span>}
                                             </Box>
                                             <Typography sx={{ fontSize: '13px', color: item.done ? 'var(--modal-text-muted)' : 'var(--modal-text)', textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</Typography>
@@ -293,7 +293,7 @@ const ProjectTaskModal = ({
 
                         {/* Dependencies */}
                         {selectedDependencies.length > 0 && (
-                            <Box sx={{ mt: 2, p: 2, borderRadius: '12px', background: 'rgba(37, 99, 235, 0.05)', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
+                            <Box sx={{ mt: 2, p: 2, borderRadius: '8px', background: 'rgba(37, 99, 235, 0.05)', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
                                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#2563eb', mb: 1 }}>Dependências</Typography>
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
                                     {selectedDependencies.map(depId => {
@@ -364,7 +364,7 @@ const ProjectTaskModal = ({
                     {/* Datas e Progresso - Importante para o Gantt */}
                     <Box sx={{
                         padding: '16px',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         border: '1px solid rgba(37, 99, 235, 0.2)',
                         background: 'rgba(37, 99, 235, 0.05)',
                         mb: 2.5
@@ -456,7 +456,7 @@ const ProjectTaskModal = ({
                     {/* Configurações */}
                     <Box sx={{
                         padding: '16px',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         border: '1px solid var(--modal-border-strong)',
                         background: 'var(--modal-surface-subtle)',
                         mb: 2.5
@@ -528,7 +528,7 @@ const ProjectTaskModal = ({
                     {/* Checklist */}
                     <Box sx={{
                         padding: '16px',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         border: '1px solid var(--modal-border-strong)',
                         background: 'var(--modal-surface-subtle)'
                     }}>
@@ -564,7 +564,7 @@ const ProjectTaskModal = ({
                                                 width: '18px',
                                                 height: '18px',
                                                 border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`,
-                                                borderRadius: '4px',
+                                                borderRadius: '8px',
                                                 background: item.done ? '#22c55e' : 'transparent',
                                                 cursor: 'pointer',
                                                 display: 'flex',
@@ -613,7 +613,7 @@ const ProjectTaskModal = ({
                                     border: '1px solid var(--modal-border-strong)',
                                     background: 'var(--modal-surface-hover)',
                                     color: 'var(--modal-text-muted)',
-                                    borderRadius: '10px',
+                                    borderRadius: '8px',
                                     '&:hover': { background: 'var(--modal-border-strong)', color: '#2563eb' }
                                 }}
                             >

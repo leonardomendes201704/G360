@@ -169,7 +169,7 @@ const PaymentConditionModal = ({ open, onClose, proposal, projectId, onSuccess }
                 sx={{ mb: 3 }}
             />
 
-            <Box sx={{ background: 'action.hover', borderRadius: 2, p: 2, border: 1, borderColor: 'divider' }}>
+            <Box sx={{ background: 'action.hover', borderRadius: '8px', p: 2, border: 1, borderColor: 'divider' }}>
                 <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1, textTransform: 'uppercase' }}>
                     Resumo do cronograma
                 </Typography>
@@ -192,7 +192,7 @@ const PaymentConditionModal = ({ open, onClose, proposal, projectId, onSuccess }
             </Box>
 
             {proposal?.costsGenerated && (
-                <Box sx={{ mt: 2, p: 2, background: 'rgba(16, 185, 129, 0.1)', borderRadius: 2, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                <Box sx={{ mt: 2, p: 2, background: 'rgba(16, 185, 129, 0.1)', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                     <Typography sx={{ color: 'success.main', fontSize: 14 }}>
                         Custos já foram gerados para esta proposta
                     </Typography>

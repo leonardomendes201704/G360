@@ -164,7 +164,7 @@ const AddMemberModal = ({ open, onClose, onSave, existingMemberIds = [], loading
 
                     <Box sx={{
                         background: 'rgba(14, 165, 233, 0.08)',
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         p: 2,
                         border: '1px solid rgba(14, 165, 233, 0.2)'
                     }}>

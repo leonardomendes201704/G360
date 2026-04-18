@@ -20,7 +20,7 @@ const buildScenarioTheme = (isDark, theme) => {
     const inputStyle = {
         background: colors.surface,
         border: colors.border,
-        borderRadius: '12px',
+        borderRadius: '8px',
         padding: '12px 16px',
         color: colors.textPrimary,
         fontSize: '14px',
@@ -33,7 +33,7 @@ const buildScenarioTheme = (isDark, theme) => {
         cardStyle: {
             background: colors.cardBg,
             border: colors.border,
-            borderRadius: '16px',
+            borderRadius: '8px',
             padding: '24px'
         },
         inputStyle,
@@ -89,7 +89,7 @@ const CreateScenarioModal = ({ open, onClose, budgetId, onCreated, ui }) => {
                     <label style={{ fontSize: '11px', color: ui.colors.textMuted, textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>Ajuste do Orçamento</label>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Slider value={multiplier} onChange={(e, val) => setMultiplier(val)} min={50} max={150} step={5} sx={{ flex: 1, color: isReduction ? '#10b981' : '#f59e0b' }} />
-                        <span style={{ padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 600, background: isReduction ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', color: isReduction ? '#10b981' : '#f59e0b' }}>
+                        <span style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, background: isReduction ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', color: isReduction ? '#10b981' : '#f59e0b' }}>
                             {changePercent > 0 ? '+' : ''}{changePercent}%
                         </span>
                     </Box>
@@ -106,7 +106,7 @@ const CreateScenarioModal = ({ open, onClose, budgetId, onCreated, ui }) => {
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                     <Button onClick={onClose} sx={{ color: ui.colors.textSecondary }}>Cancelar</Button>
                     <Button onClick={handleCreate} disabled={!name.trim() || loading} sx={{
-                        padding: '10px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                        padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                         '&:disabled': { opacity: 0.5 }
                     }}>
@@ -131,8 +131,8 @@ const ScenarioCard = ({ scenario, onSelect, onDelete, onViewImpact, isSelected, 
                     <Typography sx={{ fontSize: '12px', color: ui.colors.textMuted }}>{scenario.description || 'Sem descrição'}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                    {isSelected && <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>✓ Selecionado</span>}
-                    <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: isReduction ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', color: isReduction ? '#10b981' : '#f59e0b' }}>
+                    {isSelected && <span style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>✓ Selecionado</span>}
+                    <span style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: isReduction ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', color: isReduction ? '#10b981' : '#f59e0b' }}>
                         {multiplierPercent > 0 ? '+' : ''}{multiplierPercent.toFixed(0)}%
                     </span>
                 </Box>
@@ -196,15 +196,15 @@ const ImpactAnalysisModal = ({ open, onClose, scenario, ui }) => {
                 ) : impact ? (
                     <>
                         <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', mb: 3 }}>
-                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: ui.colors.surface, borderRadius: '12px' }}>
+                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: ui.colors.surface, borderRadius: '8px' }}>
                                 <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted }}>Original</Typography>
                                 <Typography sx={{ fontSize: '18px', fontWeight: 700, color: ui.colors.textPrimary }}>{formatCurrency(impact.summary?.originalTotal)}</Typography>
                             </Box>
-                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: ui.colors.surface, borderRadius: '12px' }}>
+                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: ui.colors.surface, borderRadius: '8px' }}>
                                 <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted }}>Cenário</Typography>
                                 <Typography sx={{ fontSize: '18px', fontWeight: 700, color: ui.colors.textPrimary }}>{formatCurrency(impact.summary?.scenarioTotal)}</Typography>
                             </Box>
-                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: impact.summary?.savingsOrExcess > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)', borderRadius: '12px' }}>
+                            <Box sx={{ flex: 1, minWidth: '120px', p: 2, background: impact.summary?.savingsOrExcess > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)', borderRadius: '8px' }}>
                                 <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted }}>{impact.summary?.savingsOrExcess > 0 ? 'Economia' : 'Aumento'}</Typography>
                                 <Typography sx={{ fontSize: '18px', fontWeight: 700, color: impact.summary?.savingsOrExcess > 0 ? '#10b981' : '#f43f5e' }}>{formatCurrency(Math.abs(impact.summary?.savingsOrExcess))}</Typography>
                             </Box>
@@ -273,7 +273,7 @@ const ComparisonModal = ({ open, onClose, scenarios, ui }) => {
                 </Box>
 
                 <Button onClick={handleCompare} disabled={!scenario1Id || !scenario2Id || scenario1Id === scenario2Id || loading} sx={{
-                    mb: 3, padding: '10px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                    mb: 3, padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                     background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', '&:disabled': { opacity: 0.5 }
                 }}>
                     {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Comparar'}
@@ -300,15 +300,15 @@ const ComparisonModal = ({ open, onClose, scenarios, ui }) => {
                         <Box sx={{ flex: 1, overflowY: 'auto' }}>
                             {activeTab === 'summary' && (
                                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
-                                    <Box sx={{ p: 2, background: ui.colors.surface, borderRadius: '12px' }}>
+                                    <Box sx={{ p: 2, background: ui.colors.surface, borderRadius: '8px' }}>
                                         <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted, mb: 1 }}>{comparison.scenario1.name}</Typography>
                                         <Typography sx={{ fontSize: '22px', fontWeight: 700, color: ui.colors.textPrimary }}>{formatCurrency(comparison.scenario1.total)}</Typography>
                                     </Box>
-                                    <Box sx={{ p: 2, background: ui.colors.surface, borderRadius: '12px' }}>
+                                    <Box sx={{ p: 2, background: ui.colors.surface, borderRadius: '8px' }}>
                                         <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted, mb: 1 }}>{comparison.scenario2.name}</Typography>
                                         <Typography sx={{ fontSize: '22px', fontWeight: 700, color: ui.colors.textPrimary }}>{formatCurrency(comparison.scenario2.total)}</Typography>
                                     </Box>
-                                    <Box sx={{ p: 2, background: comparison.difference.total < 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', borderRadius: '12px' }}>
+                                    <Box sx={{ p: 2, background: comparison.difference.total < 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
                                         <Typography sx={{ fontSize: '11px', color: ui.colors.textMuted, mb: 1 }}>Diferença</Typography>
                                         <Typography sx={{ fontSize: '22px', fontWeight: 700, color: comparison.difference.total < 0 ? '#10b981' : '#f59e0b' }}>
                                             {comparison.difference.total > 0 ? '+' : ''}{formatCurrency(comparison.difference.total)}
@@ -400,7 +400,7 @@ const BudgetScenariosPanel = ({ budgetId, budgetTotal }) => {
         <Box sx={ui.cardStyle}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ width: 40, height: 40, borderRadius: '8px', background: 'rgba(37, 99, 235, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span className="material-icons-round" style={{ color: '#2563eb', fontSize: '22px' }}>compare_arrows</span>
                     </Box>
                     <Box>
@@ -411,7 +411,7 @@ const BudgetScenariosPanel = ({ budgetId, budgetTotal }) => {
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     {scenarios.length >= 2 && (
                         <Button onClick={() => setComparisonModalOpen(true)} sx={{
-                            padding: '10px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                            padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                             background: ui.colors.surface, border: ui.colors.border, color: ui.colors.textSecondary,
                             '&:hover': { background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', borderColor: '#2563eb' }
                         }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>compare</span>}>
@@ -419,7 +419,7 @@ const BudgetScenariosPanel = ({ budgetId, budgetTotal }) => {
                         </Button>
                     )}
                     <Button onClick={() => setCreateModalOpen(true)} sx={{
-                        padding: '10px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                        padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white'
                     }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
                         Novo Cenário

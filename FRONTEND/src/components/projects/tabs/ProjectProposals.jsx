@@ -259,7 +259,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
           sx={{
             background: cardBg,
             border: `1px solid ${cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 3,
             display: 'flex',
             alignItems: 'center',
@@ -289,7 +289,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
             sx={{
               width: 56,
               height: 56,
-              borderRadius: 2,
+              borderRadius: '8px',
               background: 'rgba(37, 99, 235, 0.15)',
               color: '#2563eb',
               display: 'flex',
@@ -317,7 +317,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
           sx={{
             background: cardBg,
             border: `1px solid ${cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 3,
             display: 'flex',
             alignItems: 'center',
@@ -347,7 +347,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
             sx={{
               width: 56,
               height: 56,
-              borderRadius: 2,
+              borderRadius: '8px',
               background: 'rgba(16, 185, 129, 0.15)',
               color: '#10b981',
               display: 'flex',
@@ -373,7 +373,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
           sx={{
             background: cardBg,
             border: `1px solid ${cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 3,
             display: 'flex',
             alignItems: 'center',
@@ -403,7 +403,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
             sx={{
               width: 56,
               height: 56,
-              borderRadius: 2,
+              borderRadius: '8px',
               background: 'rgba(245, 158, 11, 0.15)',
               color: '#f59e0b',
               display: 'flex',
@@ -429,7 +429,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
           sx={{
             background: cardBg,
             border: `1px solid ${cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 3,
             display: 'flex',
             alignItems: 'center',
@@ -459,7 +459,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
             sx={{
               width: 56,
               height: 56,
-              borderRadius: 2,
+              borderRadius: '8px',
               background: 'rgba(244, 63, 94, 0.15)',
               color: '#f43f5e',
               display: 'flex',
@@ -487,7 +487,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
         sx={{
           background: cardBg,
           border: `1px solid ${cardBorder}`,
-          borderRadius: '16px',
+          borderRadius: '8px',
           p: 3.5,
           mb: 4
         }}
@@ -512,7 +512,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
             onClick={handleOpenCreate}
             sx={{
               background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-              borderRadius: 2,
+              borderRadius: '8px',
               textTransform: 'none',
               fontWeight: 600,
               boxShadow: 'none',
@@ -539,7 +539,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                 sx={{
                   background: surfaceBg,
                   border: `1px solid ${borderSubtle}`,
-                  borderRadius: '16px',
+                  borderRadius: '8px',
                   p: 3,
                   position: 'relative',
                   overflow: 'hidden',
@@ -730,7 +730,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                         fontWeight: 500,
                         fontSize: 13,
                         py: 1.25,
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         boxShadow: 'none',
                         '&:hover': {
                           background: proposal.status === 'DEVOLVIDA' ? '#f59e0b' : '#3b82f6',
@@ -752,7 +752,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                         justifyContent: 'center',
                         background: 'rgba(59, 130, 246, 0.1)',
                         border: '1px solid rgba(59, 130, 246, 0.2)',
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         p: 1.25,
                       }}
                     >
@@ -776,7 +776,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                         fontWeight: 500,
                         fontSize: 13,
                         py: 1.25,
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         boxShadow: 'none',
                         '&:hover': {
                           background: proposal.paymentCondition ? '#2563eb' : '#f59e0b',
@@ -801,7 +801,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                       fontWeight: 500,
                       fontSize: 13,
                       py: 1.25,
-                      borderRadius: 2,
+                      borderRadius: '8px',
                       '&:hover': {
                         borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.15)',
                         background: hoverBg
@@ -824,7 +824,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
                         fontWeight: 500,
                         fontSize: 13,
                         py: 1.25,
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         '&:hover': {
                           borderColor: 'rgba(244, 63, 94, 0.3)',
                           background: 'rgba(244, 63, 94, 0.1)'
@@ -862,7 +862,7 @@ const ProjectProposals = ({ projectId, projectName }) => {
           sx={{
             background: cardBg,
             border: `1px solid ${cardBorder}`,
-            borderRadius: '16px',
+            borderRadius: '8px',
             p: 3.5
           }}
         >
@@ -888,8 +888,8 @@ const ProjectProposals = ({ projectId, projectName }) => {
                       py: 2,
                       borderBottom: `1px solid ${borderSubtle}`
                     },
-                    '& th:first-of-type': { borderRadius: '12px 0 0 0' },
-                    '& th:last-of-type': { borderRadius: '0 12px 0 0' }
+                    '& th:first-of-type': { borderRadius: '8px' },
+                    '& th:last-of-type': { borderRadius: '8px' }
                   }}
                 >
                   <TableCell>Fornecedor</TableCell>

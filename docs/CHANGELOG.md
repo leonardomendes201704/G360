@@ -7,6 +7,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Changed
+- **UI — raio de cantos unificado a 8px:** `shape.borderRadius` nos temas premium e `theme.js`; tokens `--radius-sm/md/lg/xl` e scrollbar em `index.css`; Tailwind `borderRadius` estendido para 8px em todas as utilidades; script `FRONTEND/scripts/normalize-border-radius.mjs` aplicado ao `src` (CSS + `borderRadius` em JSX). Avatares/indicadores que usavam `50%` passíveis de alinhamento ao mesmo token (ex.: notificação). **~166 ficheiros** tocados no frontend.
+
 ### Fixed
 - **Portal de Chamados — dept./centro de custo opcionais no novo chamado:** Ao abrir o modal, deixou de pré-preencher departamento e centro de custo a partir do perfil do utilizador; o valor inicial é sempre vazio (opção **— Não informado —**), até escolha explícita.
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`

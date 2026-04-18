@@ -83,7 +83,7 @@ const IntegrationsTab = () => {
                                 height: '100%', display: 'flex', flexDirection: 'column',
                                 background: cardBg,
                                 border: `1px solid ${isActive ? item.color + '40' : cardBorder}`,
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 boxShadow: 'none',
                                 transition: 'all 0.2s ease',
                                 '&:hover': {
@@ -96,7 +96,7 @@ const IntegrationsTab = () => {
                                     <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                                         <Box display="flex" alignItems="center" gap={2}>
                                             <Box sx={{
-                                                width: 48, height: 48, borderRadius: '12px',
+                                                width: 48, height: 48, borderRadius: '8px',
                                                 background: item.color + '15',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             }}>

@@ -115,7 +115,7 @@ const TaskPlanningGrid = ({
             background: containerBg,
             backdropFilter: isDark ? 'blur(10px)' : 'none',
             border: containerBorder,
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
@@ -227,7 +227,7 @@ const TaskPlanningGrid = ({
                                 </Box>
                                 <Box sx={{
                                     bgcolor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)',
-                                    borderRadius: '12px',
+                                    borderRadius: '8px',
                                     px: 1,
                                     py: 0.5,
                                     fontSize: '11px',

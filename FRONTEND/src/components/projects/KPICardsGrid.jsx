@@ -68,7 +68,7 @@ const KPICardsGrid = ({ project, tasks = [], risks = [] }) => {
                         flex: 1,
                         background: cardBg,
                         border: `1px solid ${borderColor}`,
-                        borderRadius: '16px',
+                        borderRadius: '8px',
                         p: 3,
                         display: 'flex',
                         alignItems: 'center',
@@ -103,7 +103,7 @@ const KPICardsGrid = ({ project, tasks = [], risks = [] }) => {
                         sx={{
                             width: 56,
                             height: 56,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             background: kpi.bgColor,
                             color: kpi.iconColor,
                             display: 'flex',

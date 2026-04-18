@@ -64,7 +64,7 @@ const AssetsPage = () => {
   const inputSx = {
     '& .MuiOutlinedInput-root': {
       bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
-      borderRadius: 2,
+      borderRadius: '8px',
       color: textPrimary,
       height: '40px',
       '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.12)' },
@@ -388,7 +388,7 @@ const AssetsPage = () => {
   const cardStyle = {
     background: cardBg,
     border: cardBorder,
-    borderRadius: '16px'
+    borderRadius: '8px'
   };
 
   const CHART_COLORS = ['#2563eb', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#3b82f6'];
@@ -403,7 +403,7 @@ const AssetsPage = () => {
       <Box sx={{ ...cardStyle, mb: 3, p: { xs: 2, md: 3 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box sx={{
-            width: 48, height: 48, borderRadius: '12px',
+            width: 48, height: 48, borderRadius: '8px',
             background: 'rgba(37, 99, 235, 0.15)',
             border: '1px solid rgba(37, 99, 235, 0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb'
@@ -418,7 +418,7 @@ const AssetsPage = () => {
         </Box>
         <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* View Toggle */}
-          <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '12px', border: softBorder, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+          <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '8px', border: softBorder, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
             <button
               onClick={() => setViewMode('dashboard')}
               style={{
@@ -466,7 +466,7 @@ const AssetsPage = () => {
                 onClick={handleOpenCategories}
                 variant="outlined"
                 sx={{
-                  padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                  padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                   borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(15, 23, 42, 0.2)', color: textPrimary,
                   '&:hover': { borderColor: '#2563eb', background: 'rgba(37, 99, 235, 0.08)' }
                 }}
@@ -475,7 +475,7 @@ const AssetsPage = () => {
                 Categorias
               </Button>
               <Button data-testid="btn-novo-ativo" onClick={handleOpenNew} sx={{
-              padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+              padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -529,7 +529,7 @@ const AssetsPage = () => {
                     <Box>
                       {kpis.categoryDist.slice(0, 10).map((c, i) => (
                         <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                          <Box sx={{ width: 12, height: 12, borderRadius: '3px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                          <Box sx={{ width: 12, height: 12, borderRadius: '8px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
                           <Typography sx={{ color: textSecondary, fontSize: '14px' }}>{c.label}</Typography>
                           <Typography sx={{ color: textPrimary, fontWeight: 600, ml: 'auto' }}>{c.value}</Typography>
                         </Box>
@@ -566,7 +566,7 @@ const AssetsPage = () => {
                     <Box>
                       {kpis.statusDist.map((c, i) => (
                         <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                          <Box sx={{ width: 12, height: 12, borderRadius: '3px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                          <Box sx={{ width: 12, height: 12, borderRadius: '8px', bgcolor: CHART_COLORS[i % CHART_COLORS.length] }} />
                           <Typography sx={{ color: textSecondary, fontSize: '14px' }}>{c.label}</Typography>
                           <Typography sx={{ color: textPrimary, fontWeight: 600, ml: 'auto' }}>{c.value}</Typography>
                         </Box>
@@ -605,8 +605,8 @@ const AssetsPage = () => {
                           <Typography sx={{ color: textSecondary, fontSize: '13px' }}>{cc.label}</Typography>
                           <Typography sx={{ color: textPrimary, fontSize: '13px', fontWeight: 600 }}>{cc.count}</Typography>
                         </Box>
-                        <Box sx={{ height: 6, borderRadius: 999, bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' }}>
-                          <Box sx={{ height: '100%', borderRadius: 999, width: `${Math.round((cc.count / max) * 100)}%`, bgcolor: '#2563eb' }} />
+                        <Box sx={{ height: 6, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' }}>
+                          <Box sx={{ height: '100%', borderRadius: '8px', width: `${Math.round((cc.count / max) * 100)}%`, bgcolor: '#2563eb' }} />
                         </Box>
                       </Box>
                     );
@@ -627,8 +627,8 @@ const AssetsPage = () => {
                           <Typography sx={{ color: textSecondary, fontSize: '13px' }}>{cc.label}</Typography>
                           <Typography sx={{ color: textPrimary, fontSize: '13px', fontWeight: 600 }}>{formatCurrency(cc.value)}</Typography>
                         </Box>
-                        <Box sx={{ height: 6, borderRadius: 999, bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' }}>
-                          <Box sx={{ height: '100%', borderRadius: 999, width: `${Math.round((cc.value / max) * 100)}%`, bgcolor: '#06b6d4' }} />
+                        <Box sx={{ height: 6, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' }}>
+                          <Box sx={{ height: '100%', borderRadius: '8px', width: `${Math.round((cc.value / max) * 100)}%`, bgcolor: '#06b6d4' }} />
                         </Box>
                       </Box>
                     );
@@ -655,7 +655,7 @@ const AssetsPage = () => {
                   { label: 'Vencidas', value: kpis.licenses.expired },
                   { label: 'Custo total', value: `${formatCurrency(kpis.licenses.totalCost)}/ano` }
                 ].map((item) => (
-                  <Box key={item.label} sx={{ p: 2, borderRadius: '10px', bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.04)' }}>
+                  <Box key={item.label} sx={{ p: 2, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.04)' }}>
                     <Typography sx={{ color: textMuted, fontSize: '12px' }}>{item.label}</Typography>
                     <Typography sx={{ color: textPrimary, fontWeight: 700, fontSize: '18px' }}>{item.value}</Typography>
                   </Box>
@@ -680,12 +680,12 @@ const AssetsPage = () => {
                 )}
                 <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.2 }}>
-                    <Box sx={{ width: 10, height: 10, borderRadius: '3px', bgcolor: '#2563eb' }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: '8px', bgcolor: '#2563eb' }} />
                     <Typography sx={{ color: textSecondary, fontSize: '14px' }}>Assinatura</Typography>
                     <Typography sx={{ color: textPrimary, fontWeight: 600, ml: 'auto' }}>{kpis.licenses.subscription}</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{ width: 10, height: 10, borderRadius: '3px', bgcolor: '#10b981' }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: '8px', bgcolor: '#10b981' }} />
                     <Typography sx={{ color: textSecondary, fontSize: '14px' }}>Perpétua</Typography>
                     <Typography sx={{ color: textPrimary, fontWeight: 600, ml: 'auto' }}>{kpis.licenses.perpetual}</Typography>
                   </Box>
@@ -777,7 +777,7 @@ const AssetsPage = () => {
           <Box
             sx={{
               mb: 3,
-              borderRadius: '16px',
+              borderRadius: '8px',
               bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
               border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
               p: 2,
@@ -801,7 +801,7 @@ const AssetsPage = () => {
                 Filtros
               </Button>
               {activeAssetListFilterCount > 0 ? (
-                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
+                <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>
                   {activeAssetListFilterCount}
                 </Box>
               ) : null}
@@ -928,7 +928,7 @@ const AssetsPage = () => {
                         <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{
-                              width: '40px', height: '40px', borderRadius: '12px',
+                              width: '40px', height: '40px', borderRadius: '8px',
                               background: 'rgba(37, 99, 235, 0.15)',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb'
                             }}>
@@ -945,7 +945,7 @@ const AssetsPage = () => {
                         </td>
                         <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
                           <span style={{
-                            padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                            padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                             background: statusStyle.bg, color: statusStyle.color,
                             display: 'inline-flex', alignItems: 'center', gap: '6px'
                           }}>
@@ -1091,7 +1091,7 @@ const AssetsPage = () => {
                         <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{
-                              width: '40px', height: '40px', borderRadius: '12px',
+                              width: '40px', height: '40px', borderRadius: '8px',
                               background: 'rgba(59, 130, 246, 0.15)',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6',
                               fontWeight: 600, fontSize: '14px'
@@ -1107,7 +1107,7 @@ const AssetsPage = () => {
                         </td>
                         <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
                           <span style={{
-                            padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                            padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                             background: license.licenseType === 'PERPETUA' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(37, 99, 235, 0.15)',
                             color: license.licenseType === 'PERPETUA' ? '#10b981' : '#2563eb'
                           }}>{license.licenseType || 'Anual'}</span>
@@ -1118,7 +1118,7 @@ const AssetsPage = () => {
                         <td style={{ padding: '16px 24px', borderBottom: cardBorder }}>
                           {license.expirationDate ? (
                             <span style={{
-                              padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                              padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                               background: isExpired ? 'rgba(244, 63, 94, 0.15)' : isExpiring ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                               color: isExpired ? '#f43f5e' : isExpiring ? '#f59e0b' : '#10b981'
                             }}>
@@ -1189,7 +1189,7 @@ const AssetsPage = () => {
         PaperProps={{
           sx: {
             bgcolor: surfaceBg, border: softBorder,
-            borderRadius: '12px', boxShadow: isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 12px 24px rgba(15, 23, 42, 0.08)',
+            borderRadius: '8px', boxShadow: isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 12px 24px rgba(15, 23, 42, 0.08)',
             '& .MuiMenuItem-root': {
               color: textSecondary, fontSize: '14px', gap: 1.5, py: 1.5, px: 2,
               '&:hover': { bgcolor: 'rgba(37, 99, 235, 0.1)', color: textPrimary }

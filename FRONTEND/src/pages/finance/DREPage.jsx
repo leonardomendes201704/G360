@@ -83,7 +83,7 @@ const DRERow = ({ row, index, year, filters, mode }) => {
                         <Box sx={{
                             my: 2, p: 2.5,
                             bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.5)' : 'rgba(248, 250, 252, 1)',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             border: `1px solid ${borderColor}`
                         }}>
                             {loadingDetails ? (
@@ -232,14 +232,14 @@ const DREPage = () => {
     const selectSx = {
         minWidth: 180,
         bgcolor: surfaceBg,
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: textPrimary,
         '& .MuiOutlinedInput-notchedOutline': { borderColor },
         '& .MuiSelect-icon': { color: textSecondary },
         '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(37, 99, 235, 0.3)' },
     };
 
-    if (loading && !data) return <Skeleton variant="rectangular" height={400} sx={{ borderRadius: '16px' }} />;
+    if (loading && !data) return <Skeleton variant="rectangular" height={400} sx={{ borderRadius: '8px' }} />;
 
     const kpiCards = [
         { label: 'Total Orçado', value: formatCurrency(totals.planned), icon: '💰', color: '#2563eb', bg: 'rgba(37, 99, 235, 0.12)', border: 'rgba(37, 99, 235, 0.2)' },
@@ -252,7 +252,7 @@ const DREPage = () => {
         <Box>
             {/* Header */}
             <Box sx={{
-                mb: 3, p: 3, borderRadius: '16px', background: cardBg,
+                mb: 3, p: 3, borderRadius: '8px', background: cardBg,
                 backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
                 border: `1px solid ${borderColor}`, boxShadow: cardShadow,
                 display: 'flex', justifyContent: 'space-between',
@@ -261,7 +261,7 @@ const DREPage = () => {
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box sx={{
-                        width: 48, height: 48, borderRadius: '12px',
+                        width: 48, height: 48, borderRadius: '8px',
                         background: 'rgba(37, 99, 235, 0.15)',
                         border: '1px solid rgba(37, 99, 235, 0.2)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb'
@@ -299,7 +299,7 @@ const DREPage = () => {
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 2.5, mb: 3 }}>
                 {kpiCards.map((kpi) => (
                     <Box key={kpi.label} sx={{
-                        p: 2.5, borderRadius: '16px', background: cardBg,
+                        p: 2.5, borderRadius: '8px', background: cardBg,
                         backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
                         border: `1px solid ${borderColor}`, boxShadow: cardShadow,
                         transition: 'all 0.2s ease',
@@ -307,7 +307,7 @@ const DREPage = () => {
                     }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                             <Box sx={{
-                                width: 40, height: 40, borderRadius: '10px',
+                                width: 40, height: 40, borderRadius: '8px',
                                 background: kpi.bg, border: `1px solid ${kpi.border}`,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 fontSize: '18px'
@@ -327,7 +327,7 @@ const DREPage = () => {
 
             {/* Bar Chart */}
             <Box sx={{
-                mb: 3, p: 3, borderRadius: '16px', background: cardBg,
+                mb: 3, p: 3, borderRadius: '8px', background: cardBg,
                 backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
                 border: `1px solid ${borderColor}`, boxShadow: cardShadow,
                 overflow: 'hidden'
@@ -370,7 +370,7 @@ const DREPage = () => {
                 accentColor="#2563eb"
                 count={rows.length}
             >
-                <TableContainer sx={{ borderRadius: 0 }}>
+                <TableContainer sx={{ borderRadius: '8px'}}>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: surfaceBg }}>

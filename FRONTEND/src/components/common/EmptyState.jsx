@@ -29,7 +29,7 @@ const EmptyState = ({
             <Box sx={{
                 width: compact ? 80 : 120,
                 height: compact ? 80 : 120,
-                borderRadius: '50%',
+                borderRadius: '8px',
                 background: isDark
                     ? 'radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.03) 70%, transparent 100%)'
                     : 'radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.02) 70%, transparent 100%)',
@@ -96,7 +96,7 @@ const EmptyState = ({
                     sx={{
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                         color: 'white',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         padding: '10px 24px',
                         fontSize: '14px',
                         fontWeight: 600,

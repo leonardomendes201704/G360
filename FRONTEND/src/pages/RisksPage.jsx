@@ -150,9 +150,9 @@ const RisksPage = () => {
     return (
         <Box>
             {/* Header */}
-            <Box sx={{ mb: 3, p: 3, borderRadius: '16px', background: cardBg, border: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ mb: 3, p: 3, borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: '12px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(37, 99, 235, 0.2)' }}>
+                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(37, 99, 235, 0.2)' }}>
                         <Shield sx={{ color: '#fff', fontSize: 28 }} />
                     </Box>
                     <Box>
@@ -160,11 +160,11 @@ const RisksPage = () => {
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Box sx={{ display: 'flex', gap: 1, bgcolor: isDark ? 'rgba(0,0,0,0.2)' : '#f1f5f9', p: 0.5, borderRadius: 2 }}>
-                        <IconButton size="small" onClick={() => setViewMode('DASHBOARD')} sx={{ borderRadius: 1.5, bgcolor: viewMode === 'DASHBOARD' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'DASHBOARD' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
+                    <Box sx={{ display: 'flex', gap: 1, bgcolor: isDark ? 'rgba(0,0,0,0.2)' : '#f1f5f9', p: 0.5, borderRadius: '8px'}}>
+                        <IconButton size="small" onClick={() => setViewMode('DASHBOARD')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'DASHBOARD' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'DASHBOARD' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
                             <Dashboard fontSize="small" />
                         </IconButton>
-                        <IconButton data-testid="risks-view-list" size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: 1.5, bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
+                        <IconButton data-testid="risks-view-list" size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
                             <ListIcon fontSize="small" />
                         </IconButton>
                     </Box>
@@ -173,7 +173,7 @@ const RisksPage = () => {
                             variant="contained"
                             startIcon={<Add />}
                             onClick={() => { setRiskToEdit(null); setModalOpen(true); }}
-                            sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', borderRadius: '10px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' } }}
+                            sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', borderRadius: '8px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' } }}
                         >
                             Novo Risco
                         </Button>
@@ -182,7 +182,7 @@ const RisksPage = () => {
             </Box>
 
             {/* Filters */}
-            <Box sx={{ mb: 3, p: 2, borderRadius: '16px', background: cardBg, border: `1px solid ${borderColor}` }}>
+            <Box sx={{ mb: 3, p: 2, borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}` }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: showFilters ? 2 : 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <FilterAlt sx={{ color: textSecondary }} />
@@ -190,7 +190,7 @@ const RisksPage = () => {
                         {(() => {
                             const activeCount = [filters.status, filters.category, filters.impact, filters.probability].filter(Boolean).length;
                             return activeCount > 0 ? (
-                                <Box sx={{ px: 1, py: 0.25, borderRadius: '10px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
+                                <Box sx={{ px: 1, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 700, bgcolor: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' }}>{activeCount}</Box>
                             ) : null;
                         })()}
                     </Box>
@@ -242,7 +242,7 @@ const RisksPage = () => {
 
                     {/* Quick Stats / Top Risks */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Paper sx={{ p: 2, borderRadius: '16px', background: cardBg, border: `1px solid ${borderColor}` }}>
+                        <Paper sx={{ p: 2, borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}` }}>
                             <Typography sx={{ fontWeight: 600, mb: 2, color: textPrimary }}>Top Riscos Críticos</Typography>
                             {risks.filter(r => r.severity >= 16).slice(0, 5).map(risk => (
                                 <Box key={risk.id} sx={{ p: 1.5, mb: 1, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)', cursor: 'pointer', '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' } }} onClick={() => { setRiskToEdit(risk); setIsViewMode(true); setModalOpen(true); }}>
@@ -277,7 +277,7 @@ const RisksPage = () => {
                         component={Paper}
                         elevation={0}
                         sx={{
-                            borderRadius: 0,
+                            borderRadius: '8px',
                             border: 'none',
                             borderTop: `1px solid ${borderColor}`,
                             background: cardBg,
@@ -325,9 +325,9 @@ const RisksPage = () => {
                                             </TableCell>
                                             <TableCell sx={{ color: textPrimary, fontSize: '13px', fontFamily: 'monospace' }}>{risk.code}</TableCell>
                                             <TableCell sx={{ color: textPrimary, fontWeight: 600 }}>{risk.title}</TableCell>
-                                            <TableCell><Chip label={risk.category} size="small" variant="outlined" sx={{ borderRadius: '6px', fontSize: '11px', color: textSecondary, borderColor: borderColor }} /></TableCell>
+                                            <TableCell><Chip label={risk.category} size="small" variant="outlined" sx={{ borderRadius: '8px', fontSize: '11px', color: textSecondary, borderColor: borderColor }} /></TableCell>
                                             <TableCell>
-                                                <Chip label={`${risk.severity} - ${sev.label}`} size="small" sx={{ bgcolor: sev.bg, color: sev.color, fontWeight: 700, borderRadius: '6px' }} />
+                                                <Chip label={`${risk.severity} - ${sev.label}`} size="small" sx={{ bgcolor: sev.bg, color: sev.color, fontWeight: 700, borderRadius: '8px' }} />
                                             </TableCell>
                                             <TableCell>
                                                 {risk.owner ? (
@@ -352,7 +352,7 @@ const RisksPage = () => {
                                                         label={risk.mitigationTasks?.length || 0}
                                                         size="small"
                                                         variant="outlined"
-                                                        sx={{ borderRadius: '6px', fontSize: '11px', color: textSecondary, borderColor: borderColor }}
+                                                        sx={{ borderRadius: '8px', fontSize: '11px', color: textSecondary, borderColor: borderColor }}
                                                     />
                                                     <IconButton
                                                         size="small"

@@ -79,7 +79,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleMobil
           <Box
             onClick={toggleSidebar}
             sx={{
-              width: 40, height: 40, borderRadius: '12px',
+              width: 40, height: 40, borderRadius: '8px',
               background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
               color: 'white',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -99,7 +99,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleMobil
             sx={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
               cursor: 'pointer',
-              p: 1, mx: -1, borderRadius: 2,
+              p: 1, mx: -1, borderRadius: '8px',
               transition: 'background-color 0.2s',
               '&:hover': { bgcolor: '#f8fafc' },
               '&:hover .collapse-icon': { opacity: 1, transform: 'translateX(0)' }
@@ -243,7 +243,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar, isMobile, mobileOpen, toggleMobil
                   minHeight: 50,
                   justifyContent: (isCollapsed && !isMobile) ? 'center' : 'initial',
                   px: 2.5,
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   color: '#94a3b8',
                   '&:hover': { bgcolor: '#1e293b', color: '#fff' }
                 }}

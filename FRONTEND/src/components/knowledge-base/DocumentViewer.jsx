@@ -60,7 +60,7 @@ export default function DocumentViewer({ open, onClose, fileUrl, title, descript
                 )}
 
                 {description && (
-                    <Box sx={{ width: '100%', p: 2, bgcolor: 'action.hover', borderRadius: 2 }}>
+                    <Box sx={{ width: '100%', p: 2, bgcolor: 'action.hover', borderRadius: '8px'}}>
                         <Typography variant="subtitle2" gutterBottom>
                             Descricao
                         </Typography>

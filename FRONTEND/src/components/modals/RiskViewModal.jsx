@@ -32,13 +32,13 @@ const STATUS_CONFIG = {
 };
 
 const RiskViewBadge = ({ label, color, bg: bgColor }) => (
-    <Box sx={{ display: 'inline-flex', alignItems: 'center', px: 2, py: 0.75, borderRadius: '20px', bgcolor: bgColor, color, fontSize: '13px', fontWeight: 700 }}>
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', px: 2, py: 0.75, borderRadius: '8px', bgcolor: bgColor, color, fontSize: '13px', fontWeight: 700 }}>
         {label}
     </Box>
 );
 
 const RiskViewField = ({ label, children, surfaceBg, borderColor, textMuted }) => (
-    <Box sx={{ p: 2, borderRadius: '10px', bgcolor: surfaceBg, border: `1px solid ${borderColor}` }}>
+    <Box sx={{ p: 2, borderRadius: '8px', bgcolor: surfaceBg, border: `1px solid ${borderColor}` }}>
         <Typography sx={{ fontSize: '10px', fontWeight: 700, color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 0.75 }}>{label}</Typography>
         {children}
     </Box>
@@ -94,7 +94,7 @@ const RiskViewModal = ({ open, onClose, risk, onEdit }) => {
             contentSx={{ pt: 2 }}
         >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Box sx={{ p: 2.5, borderRadius: '12px', bgcolor: `${scoreColor}12`, border: `1px solid ${scoreColor}30`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ p: 2.5, borderRadius: '8px', bgcolor: `${scoreColor}12`, border: `1px solid ${scoreColor}30`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Typography sx={{ fontSize: '13px', color: textMuted, fontWeight: 600 }}>Score de Risco</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography sx={{ fontSize: '28px', fontWeight: 800, color: scoreColor }}>{riskScore}</Typography>
@@ -117,7 +117,7 @@ const RiskViewModal = ({ open, onClose, risk, onEdit }) => {
                     </Typography>
                 </RiskViewField>
 
-                <Box sx={{ p: 2.5, borderRadius: '12px', background: isDark ? 'rgba(245,158,11,0.06)' : 'rgba(255,251,235,0.8)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                <Box sx={{ p: 2.5, borderRadius: '8px', background: isDark ? 'rgba(245,158,11,0.06)' : 'rgba(255,251,235,0.8)', border: '1px solid rgba(245,158,11,0.2)' }}>
                     <Typography sx={{ fontSize: '10px', fontWeight: 700, color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1 }}>⚡ Estratégia de Mitigação</Typography>
                     <Typography sx={{ fontSize: '14px', lineHeight: 1.6, color: textPrimary, whiteSpace: 'pre-wrap' }}>
                         {risk.strategy || 'Nenhuma estratégia definida.'}

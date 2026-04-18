@@ -97,7 +97,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
         background: 'var(--modal-bg)',
         '&::-webkit-scrollbar': { width: '6px' },
         '&::-webkit-scrollbar-track': { background: 'transparent' },
-        '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
+        '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '8px' },
         '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
       }}
     >
@@ -119,7 +119,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
               '& .MuiOutlinedInput-root': {
                 background: 'var(--modal-surface-hover)',
                 border: '1px solid var(--modal-border-strong)',
-                borderRadius: '10px',
+                borderRadius: '8px',
                 color: 'var(--modal-text)',
                 fontSize: '14px',
                 '& fieldset': { border: 'none' },
@@ -138,7 +138,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
         {/* Avaliação do Risco Section */}
         <Box sx={{
           padding: '16px',
-          borderRadius: '12px',
+          borderRadius: '8px',
           border: '1px solid var(--modal-border-strong)',
           background: 'var(--modal-surface-subtle)',
           mb: 2.5
@@ -276,7 +276,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
                       '& .MuiOutlinedInput-root': {
                         background: 'var(--modal-surface-hover)',
                         border: '1px solid var(--modal-border-strong)',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         color: 'var(--modal-text)',
                         fontSize: '14px',
                         '& fieldset': { border: 'none' },
@@ -292,7 +292,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
                   />
                 )}
                 PaperComponent={({ children }) => (
-                  <Box sx={{ background: 'var(--modal-surface)', border: '1px solid var(--modal-border)', borderRadius: '10px', mt: 0.5 }}>{children}</Box>
+                  <Box sx={{ background: 'var(--modal-surface)', border: '1px solid var(--modal-border)', borderRadius: '8px', mt: 0.5 }}>{children}</Box>
                 )}
                 sx={{ '& .MuiAutocomplete-popupIndicator': { color: 'var(--modal-text-muted)' }, '& .MuiAutocomplete-clearIndicator': { color: 'var(--modal-text-muted)' } }}
               />
@@ -304,7 +304,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
         {/* Plano de Ação Section */}
         <Box sx={{
           padding: '24px',
-          borderRadius: '16px',
+          borderRadius: '8px',
           border: '1px solid rgba(245, 158, 11, 0.2)', // Amber border subtle
           background: 'linear-gradient(180deg, rgba(255, 251, 235, 0.15) 0%, rgba(255, 255, 255, 0) 100%)',
           position: 'relative',
@@ -325,7 +325,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, position: 'relative', zIndex: 1 }}>
             <Box sx={{
-              width: '36px', height: '36px', borderRadius: '10px',
+              width: '36px', height: '36px', borderRadius: '8px',
               background: 'var(--modal-bg, #fff)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               border: '1px solid rgba(245, 158, 11, 0.3)',
@@ -369,7 +369,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
                   '& .MuiOutlinedInput-root': {
                     background: 'var(--modal-bg, #fff)',
                     border: '1px solid var(--modal-border-strong)',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     color: 'var(--modal-text)',
                     fontSize: '14px',
                     transition: 'all 0.2s',
@@ -408,7 +408,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
                   const conf = statusConfig[selected] || statusConfig['OPEN'];
                   return (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: conf.color, boxShadow: `0 0 0 2px ${conf.bg}` }} />
+                      <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: conf.color, boxShadow: `0 0 0 2px ${conf.bg}` }} />
                       <Typography sx={{ fontSize: '14px', fontWeight: 500, color: 'var(--modal-text)' }}>{conf.label}</Typography>
                     </Box>
                   );
@@ -416,7 +416,7 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
                 sx={{
                   background: 'var(--modal-bg, #fff)',
                   border: '1px solid var(--modal-border-strong)',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   '& fieldset': { border: 'none' },
                   '&:hover': { borderColor: 'var(--modal-border-strong)' },
                   '&.Mui-focused': {
@@ -427,25 +427,25 @@ const RiskModal = ({ open, onClose, onSave, projectId, riskToEdit, viewMode = fa
               >
                 <MenuItem value="OPEN">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: '#ef4444' }} />
                     Em Aberto
                   </Box>
                 </MenuItem>
                 <MenuItem value="MONITORING">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: '#d97706' }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: '#d97706' }} />
                     Monitorando
                   </Box>
                 </MenuItem>
                 <MenuItem value="MITIGATED">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: '#16a34a' }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: '#16a34a' }} />
                     Mitigado / Controlado
                   </Box>
                 </MenuItem>
                 <MenuItem value="CLOSED">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: '#475569' }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: '#475569' }} />
                     Fechado
                   </Box>
                 </MenuItem>

@@ -322,7 +322,7 @@ const DarkTaskModal = ({
                     width: '100%',
                     height: '2px',
                     background: '#3b82f6',
-                    borderRadius: '2px 2px 0 0'
+                    borderRadius: '8px'
                   } : {}
                 }}
               >
@@ -340,7 +340,7 @@ const DarkTaskModal = ({
         background: 'transparent',
         '&::-webkit-scrollbar': { width: '6px' },
         '&::-webkit-scrollbar-track': { background: 'transparent' },
-        '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '3px' },
+        '&::-webkit-scrollbar-thumb': { background: 'var(--modal-border-strong)', borderRadius: '8px' },
         '&::-webkit-scrollbar-thumb:hover': { background: 'var(--modal-border-strong)' }
       }}>
         {/* View Mode: Read-only Detail View */}
@@ -353,7 +353,7 @@ const DarkTaskModal = ({
                 const s = statusMap[task.status] || { label: task.status, color: '#64748b' };
                 return (
                   <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, px: 1.5, py: 0.5, borderRadius: '8px', background: `${s.color}20`, border: `1px solid ${s.color}40` }}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: s.color }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: s.color }} />
                     <Typography sx={{ fontSize: '13px', fontWeight: 600, color: s.color }}>{s.label}</Typography>
                   </Box>
                 );
@@ -384,7 +384,7 @@ const DarkTaskModal = ({
               <Box sx={{ p: 2, borderRadius: G360_INPUT_RADIUS, background: 'var(--modal-surface-hover)', border: '1px solid var(--modal-border-strong)' }}>
                 <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)', mb: 1 }}>Responsável</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box sx={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Box sx={{ width: 28, height: 28, borderRadius: '8px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography sx={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}>{(task.assignee?.name || '?')[0]?.toUpperCase()}</Typography>
                   </Box>
                   <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>{task.assignee?.name || 'Não atribuído'}</Typography>
@@ -425,13 +425,13 @@ const DarkTaskModal = ({
                   </Typography>
                 </Box>
                 {/* Progress bar */}
-                <Box sx={{ width: '100%', height: 4, borderRadius: 2, background: 'var(--modal-border-strong)', mb: 1.5 }}>
-                  <Box sx={{ width: `${(checklistItems.filter(i => i.done).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: 2, background: '#22c55e', transition: 'width 0.3s ease' }} />
+                <Box sx={{ width: '100%', height: 4, borderRadius: '8px', background: 'var(--modal-border-strong)', mb: 1.5 }}>
+                  <Box sx={{ width: `${(checklistItems.filter(i => i.done).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: '8px', background: '#22c55e', transition: 'width 0.3s ease' }} />
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                   {checklistItems.map(item => (
                     <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box sx={{ width: 16, height: 16, borderRadius: '4px', border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: item.done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Box sx={{ width: 16, height: 16, borderRadius: '8px', border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: item.done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         {item.done && <span style={{ color: '#fff', fontSize: '10px' }}>✓</span>}
                       </Box>
                       <Typography sx={{ fontSize: '13px', color: item.done ? 'var(--modal-text-muted)' : 'var(--modal-text)', textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</Typography>
@@ -608,7 +608,7 @@ const DarkTaskModal = ({
                           width: '18px',
                           height: '18px',
                           border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`,
-                          borderRadius: '4px',
+                          borderRadius: '8px',
                           background: item.done ? '#22c55e' : 'transparent',
                           cursor: 'pointer',
                           display: 'flex',
@@ -764,7 +764,7 @@ const DarkTaskModal = ({
                         }}
                       >
                         <Box component="span" sx={{
-                          width: 6, height: 6, borderRadius: '50%',
+                          width: 6, height: 6, borderRadius: '8px',
                           bgcolor: isSelected ? '#fff' : colors.bg,
                           mr: 1,
                           display: 'inline-block'

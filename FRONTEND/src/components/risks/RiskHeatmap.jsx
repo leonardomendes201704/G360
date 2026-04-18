@@ -64,7 +64,7 @@ const RiskHeatmap = ({ data }) => {
     return (
         <Paper sx={{
             p: 3,
-            borderRadius: '16px',
+            borderRadius: '8px',
             background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
             border: isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(0, 0, 0, 0.08)'
         }}>

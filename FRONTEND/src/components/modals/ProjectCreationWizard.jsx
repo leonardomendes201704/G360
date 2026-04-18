@@ -43,7 +43,7 @@ const schema = yup.object({
 const inputSx = {
     '& .MuiOutlinedInput-root': {
         background: 'var(--modal-surface)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: 'var(--modal-text)',
         fontSize: '14px',
         '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -59,7 +59,7 @@ const inputSx = {
 
 const selectSx = {
     background: 'var(--modal-surface)',
-    borderRadius: '10px',
+    borderRadius: '8px',
     color: 'var(--modal-text)',
     fontSize: '14px',
     '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -211,7 +211,7 @@ const ProjectCreationWizard = ({ onSave, onCancel, loading }) => {
                                                 />
                                             )}
                                             PaperComponent={({ children }) => (
-                                                <Box sx={{ background: 'var(--modal-surface)', border: '1px solid var(--modal-border)', borderRadius: '10px', mt: 0.5 }}>{children}</Box>
+                                                <Box sx={{ background: 'var(--modal-surface)', border: '1px solid var(--modal-border)', borderRadius: '8px', mt: 0.5 }}>{children}</Box>
                                             )}
                                             sx={{ '& .MuiAutocomplete-popupIndicator': { color: 'var(--modal-text-muted)' }, '& .MuiAutocomplete-clearIndicator': { color: 'var(--modal-text-muted)' } }}
                                         />

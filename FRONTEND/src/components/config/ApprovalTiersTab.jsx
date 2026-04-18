@@ -52,7 +52,7 @@ const ApprovalTiersTab = () => {
   const cardStyle = {
     background: cardBg,
     border: cardBorder,
-    borderRadius: '16px',
+    borderRadius: '8px',
   };
 
   const tableHeaderStyle = {
@@ -232,7 +232,7 @@ const ApprovalTiersTab = () => {
           onClick={openCreate}
           sx={{
             padding: '10px 20px',
-            borderRadius: '10px',
+            borderRadius: '8px',
             fontSize: '13px',
             fontWeight: 600,
             textTransform: 'none',

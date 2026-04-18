@@ -21,7 +21,7 @@ import { getAccounts, createAccount, updateAccount, deleteAccount } from '../../
 import { getErrorMessage } from '../../utils/errorUtils';
 
 const commonPaperStyle = {
-  borderRadius: '16px',
+  borderRadius: '8px',
   overflow: 'hidden',
   transition: 'all 0.3s',
 };
@@ -198,7 +198,7 @@ const FinancePage = () => {
     };
     const config = configs[status] || configs['DRAFT'];
     return (
-      <Box sx={{ px: 1.5, py: 0.5, borderRadius: '20px', fontSize: '12px', fontWeight: 600, bgcolor: config.bg, color: config.color, display: 'inline-block' }}>
+      <Box sx={{ px: 1.5, py: 0.5, borderRadius: '8px', fontSize: '12px', fontWeight: 600, bgcolor: config.bg, color: config.color, display: 'inline-block' }}>
         {config.label}
       </Box>
     );
@@ -208,7 +208,7 @@ const FinancePage = () => {
     const isOPEX = type === 'OPEX';
     return (
       <Box sx={{
-        px: 1.5, py: 0.5, borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+        px: 1.5, py: 0.5, borderRadius: '8px', fontSize: '11px', fontWeight: 600,
         bgcolor: isOPEX ? 'rgba(37, 99, 235, 0.15)' : 'rgba(6, 182, 212, 0.15)',
         color: isOPEX ? '#2563eb' : '#06b6d4'
       }}>
@@ -249,7 +249,7 @@ const FinancePage = () => {
       <Box sx={{
         display: 'inline-flex', gap: 1, mb: 4, p: '6px',
         bgcolor: mode === 'dark' ? '#161d26' : '#ffffff',
-        borderRadius: '16px', border: '1px solid', borderColor: 'divider'
+        borderRadius: '8px', border: '1px solid', borderColor: 'divider'
       }}>
         {tabs.map((tab) => (
           <Button
@@ -257,7 +257,7 @@ const FinancePage = () => {
             data-testid={`tab-${tab.id}`}
             onClick={() => handleTabChange(tab.id)}
             sx={{
-              padding: '12px 20px', borderRadius: '12px', border: 'none',
+              padding: '12px 20px', borderRadius: '8px', border: 'none',
               background: tabValue === tab.id ? 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' : 'transparent',
               color: tabValue === tab.id ? 'white' : 'text.secondary',
               fontSize: '14px', fontWeight: 500, textTransform: 'none',
@@ -285,7 +285,7 @@ const FinancePage = () => {
           <Box data-testid="budgets-tab-content">
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mb: 3 }}>
               <Button onClick={() => navigate('/finance/compare')} data-testid="btn-compare-budgets" sx={{
-                padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', color: 'text.secondary',
                 '&:hover': { bgcolor: 'action.hover', color: 'primary.main', borderColor: 'primary.main' }
               }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>compare</span>}>
@@ -293,7 +293,7 @@ const FinancePage = () => {
               </Button>
               {hasPermission('FINANCE', 'EDIT_BUDGET') && (
               <Button onClick={() => { setSelectedBudget(null); setBudgetModalOpen(true); }} sx={{
-                padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                 boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                 '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -311,7 +311,7 @@ const FinancePage = () => {
               count={budgets.length}
               sx={{ ...commonPaperStyle, overflow: 'hidden' }}
             >
-              <TableContainer sx={{ borderRadius: 0 }}>
+              <TableContainer sx={{ borderRadius: '8px'}}>
                 <Table>
                   <TableHead>
                     <TableRow sx={{ bgcolor: 'action.hover' }}>
@@ -339,7 +339,7 @@ const FinancePage = () => {
                       <TableRow key={budget.id} hover data-testid={`budget-row-${budget.name}`}>
                         <TableCell>
                           <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary', display: 'inline' }}>{budget.name}</Typography>
-                          {budget.isOBZ && <Box component="span" sx={{ ml: 1, px: 0.75, py: 0.25, borderRadius: '4px', fontSize: '10px', fontWeight: 600, bgcolor: 'rgba(37, 99, 235, 0.15)', color: 'primary.main' }}>OBZ</Box>}
+                          {budget.isOBZ && <Box component="span" sx={{ ml: 1, px: 0.75, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 600, bgcolor: 'rgba(37, 99, 235, 0.15)', color: 'primary.main' }}>OBZ</Box>}
                         </TableCell>
                         <TableCell sx={{ color: 'text.secondary' }}>{budget.fiscalYear?.year || '-'}</TableCell>
                         <TableCell>{getStatusBadge(budget.status)}</TableCell>
@@ -378,7 +378,7 @@ const FinancePage = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
               {hasPermission('FINANCE', 'EDIT_BUDGET') && (
               <Button onClick={() => { setSelectedAccount(null); setAccountModalOpen(true); }} sx={{
-                padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                 boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                 '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }

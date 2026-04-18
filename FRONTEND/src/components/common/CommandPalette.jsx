@@ -130,7 +130,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
             PaperProps={{
                 sx: {
                     background: bg,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     border: `1px solid ${border}`,
                     boxShadow: '0 25px 60px -12px rgba(0,0,0,0.6)',
                     overflow: 'hidden',
@@ -154,7 +154,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
                     autoComplete="off"
                 />
                 <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    <Box sx={{ bgcolor: border, borderRadius: '5px', px: 1, py: 0.25, fontSize: '11px', color: textMuted, fontFamily: 'monospace' }}>esc</Box>
+                    <Box sx={{ bgcolor: border, borderRadius: '8px', px: 1, py: 0.25, fontSize: '11px', color: textMuted, fontFamily: 'monospace' }}>esc</Box>
                 </Box>
             </Box>
 
@@ -188,7 +188,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
                                         gap: 2,
                                         px: 1.5,
                                         py: 1.25,
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         cursor: 'pointer',
                                         bgcolor: isSelected ? selectedBg : 'transparent',
                                         border: isSelected ? `1px solid ${tc.color}30` : '1px solid transparent',
@@ -198,7 +198,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
                                     }}
                                 >
                                     {/* Icon */}
-                                    <Box sx={{ width: 36, height: 36, borderRadius: '9px', bgcolor: tc.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: tc.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                         <span className="material-icons-round" style={{ fontSize: '18px', color: tc.color }}>
                                             {item.icon || 'arrow_forward'}
                                         </span>
@@ -214,7 +214,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
 
                                     {/* Type badge */}
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                                        <Box sx={{ bgcolor: tc.bg, borderRadius: '6px', px: 1, py: 0.25, fontSize: '10px', fontWeight: 700, color: tc.color, whiteSpace: 'nowrap' }}>
+                                        <Box sx={{ bgcolor: tc.bg, borderRadius: '8px', px: 1, py: 0.25, fontSize: '10px', fontWeight: 700, color: tc.color, whiteSpace: 'nowrap' }}>
                                             {item.type === 'navigation' ? 'Página' : item.type}
                                         </Box>
                                         {isSelected && <OpenInNew sx={{ fontSize: 14, color: tc.color }} />}
@@ -230,7 +230,7 @@ const CommandPalette = ({ open, onClose, dataIndex = [] }) => {
             <Box sx={{ px: 2.5, py: 1.25, borderTop: `1px solid ${border}`, display: 'flex', gap: 2, alignItems: 'center' }}>
                 {[['↑↓', 'navegar'], ['↵', 'abrir'], ['esc', 'fechar']].map(([key, desc]) => (
                     <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        <Box sx={{ bgcolor: border, borderRadius: '5px', px: 1, py: 0.2, fontSize: '11px', color: textMuted, fontFamily: 'monospace' }}>{key}</Box>
+                        <Box sx={{ bgcolor: border, borderRadius: '8px', px: 1, py: 0.2, fontSize: '11px', color: textMuted, fontFamily: 'monospace' }}>{key}</Box>
                         <Typography sx={{ fontSize: '11px', color: textMuted }}>{desc}</Typography>
                     </Box>
                 ))}

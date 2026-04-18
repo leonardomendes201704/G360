@@ -60,7 +60,7 @@ const RiskAssessment = ({ value, onChange, disabled }) => {
                         padding: '4px 12px',
                         border: answers[prop] === true ? '1px solid #10b981' : '1px solid var(--modal-border)',
                         background: answers[prop] === true ? 'rgba(16, 185, 129, 0.15)' : 'var(--modal-surface)',
-                        borderRadius: '4px',
+                        borderRadius: '8px',
                         cursor: disabled ? 'not-allowed' : 'pointer',
                         fontSize: '13px',
                         color: answers[prop] === true ? '#10b981' : 'var(--modal-text-muted)',
@@ -78,7 +78,7 @@ const RiskAssessment = ({ value, onChange, disabled }) => {
                         padding: '4px 12px',
                         border: answers[prop] === false ? '1px solid #ef4444' : '1px solid var(--modal-border)',
                         background: answers[prop] === false ? 'rgba(239, 68, 68, 0.15)' : 'var(--modal-surface)',
-                        borderRadius: '4px',
+                        borderRadius: '8px',
                         cursor: disabled ? 'not-allowed' : 'pointer',
                         fontSize: '13px',
                         color: answers[prop] === false ? '#ef4444' : 'var(--modal-text-muted)',
@@ -98,7 +98,7 @@ const RiskAssessment = ({ value, onChange, disabled }) => {
         <div style={{
             background: 'var(--modal-surface)',
             padding: '16px',
-            borderRadius: '12px',
+            borderRadius: '8px',
             border: '1px solid var(--modal-border)'
         }}>
             <h4 style={{
@@ -114,7 +114,7 @@ const RiskAssessment = ({ value, onChange, disabled }) => {
                 <span style={{
                     fontSize: '12px',
                     padding: '3px 10px',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     background: `${risk.color}20`,
                     color: risk.color,
                     fontWeight: 600

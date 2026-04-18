@@ -155,7 +155,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                   minWidth: 0,
                   bgcolor: colBg,
                   border: colBorder,
-                  borderRadius: '16px',
+                  borderRadius: '8px',
                   display: 'flex',
                   flexDirection: 'column',
                   maxHeight: 'calc(100vh - 250px)',
@@ -201,7 +201,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                     <Box sx={{
                       minWidth: 22,
                       height: 22,
-                      borderRadius: '11px',
+                      borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -223,7 +223,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         width: 28,
                         height: 28,
                         border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.12)' : '#d1d5db'}`,
-                        borderRadius: '50%',
+                        borderRadius: '8px',
                         bgcolor: 'transparent',
                         cursor: 'pointer',
                         display: 'flex',
@@ -249,7 +249,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                   <Box sx={{
                     mx: 2, mt: 1.5, mb: 0.5, p: 1.5,
                     bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                    borderRadius: 2,
+                    borderRadius: '8px',
                     display: 'flex', flexDirection: 'column', gap: 0.75
                   }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
@@ -264,7 +264,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                               bgcolor: doneWindow === option.value ? `${theme.color}12` : 'transparent',
                               color: doneWindow === option.value ? theme.color : textSecondary,
                               px: 1.25, py: 0.25,
-                              borderRadius: '6px',
+                              borderRadius: '8px',
                               fontSize: '0.68rem', fontWeight: 700,
                               cursor: 'pointer',
                               transition: 'all 0.2s'
@@ -280,7 +280,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         sx={{
                           border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'}`,
                           bgcolor: 'transparent', color: textSecondary,
-                          px: 1.25, py: 0.25, borderRadius: '6px',
+                          px: 1.25, py: 0.25, borderRadius: '8px',
                           fontSize: '0.68rem', fontWeight: 700,
                           cursor: 'pointer', transition: 'all 0.2s',
                           '&:hover': { bgcolor: iconBtnHover }
@@ -313,14 +313,13 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                           ? (isDark ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.04)')
                           : 'transparent',
                         transition: 'background-color 0.2s',
-                        borderRadius: '0 0 16px 16px',
+                        borderRadius: '8px',
                         /* Custom scrollbar */
                         '&::-webkit-scrollbar': { width: 6 },
                         '&::-webkit-scrollbar-track': { background: 'transparent' },
                         '&::-webkit-scrollbar-thumb': {
                           background: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db',
-                          borderRadius: 3
-                        }
+                          borderRadius: '8px'}
                       }}
                     >
                       {/* Empty State */}
@@ -393,7 +392,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                   mb: 1.5,
                                   background: cardBg,
                                   border: `1px solid ${snapshot.isDragging ? '#2563eb' : cardBorder}`,
-                                  borderRadius: '14px',
+                                  borderRadius: '8px',
                                   borderLeft: `3px solid ${statusBg}`,
                                   padding: '14px 16px',
                                   cursor: snapshot.isDragging ? 'grabbing' : 'grab',
@@ -448,7 +447,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                   {item.priority && (
                                     <Box sx={{
                                       display: 'inline-flex', alignItems: 'center', gap: 0.5,
-                                      px: 1, py: 0.25, borderRadius: '6px',
+                                      px: 1, py: 0.25, borderRadius: '8px',
                                       background: `${priorityStyle.bg}18`, border: `1px solid ${priorityStyle.bg}35`,
                                     }}>
                                       <span className="material-icons-round" style={{ fontSize: '12px', color: priorityStyle.bg }}>{priorityStyle.icon}</span>
@@ -460,7 +459,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     return (
                                       <Box key={idx} sx={{
                                         display: 'inline-flex', alignItems: 'center',
-                                        px: 1, py: 0.25, borderRadius: '6px', background: tagStyle.bg,
+                                        px: 1, py: 0.25, borderRadius: '8px', background: tagStyle.bg,
                                       }}>
                                         <Typography sx={{ fontSize: '11px', fontWeight: 600, color: tagStyle.color }}>{tag}</Typography>
                                       </Box>
@@ -484,7 +483,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                         {stats.percent}%
                                       </Typography>
                                     </Box>
-                                    <Box sx={{ height: '3px', borderRadius: '2px', bgcolor: progressBg, overflow: 'hidden' }}>
+                                    <Box sx={{ height: '3px', borderRadius: '8px', bgcolor: progressBg, overflow: 'hidden' }}>
                                       <Box sx={{
                                         width: `${stats.percent}%`, height: '100%',
                                         background: stats.percent === 100
@@ -507,7 +506,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     <Box sx={{
                                       display: 'flex', alignItems: 'center', gap: 0.5,
                                       bgcolor: isDark ? 'rgba(37,99,235,0.1)' : '#eff6ff',
-                                      px: 0.75, py: 0.4, borderRadius: '6px',
+                                      px: 0.75, py: 0.4, borderRadius: '8px',
                                       border: `1px solid ${isDark ? 'rgba(37,99,235,0.2)' : '#bfdbfe'}`,
                                       minWidth: 0,
                                     }}>
@@ -535,7 +534,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                           sx={{
                                             border: 'none',
                                             bgcolor: activeTimerTaskId === item.id ? 'rgba(16,185,129,0.15)' : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'),
-                                            cursor: 'pointer', p: 0.4, borderRadius: '6px',
+                                            cursor: 'pointer', p: 0.4, borderRadius: '8px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             color: activeTimerTaskId === item.id ? '#10b981' : textMuted,
                                             transition: 'all 0.2s',
@@ -559,7 +558,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     {item.status === 'DONE' ? (
                                       <Box sx={{
                                         display: 'flex', alignItems: 'center', gap: 0.3,
-                                        px: 0.6, py: 0.2, borderRadius: '6px',
+                                        px: 0.6, py: 0.2, borderRadius: '8px',
                                         background: 'rgba(34, 197, 94, 0.15)',
                                       }}>
                                         <span className="material-icons-round" style={{ fontSize: '13px', color: '#4ade80' }}>check_circle</span>
@@ -568,7 +567,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     ) : dueStatus && (
                                       <Box sx={{
                                         display: 'flex', alignItems: 'center', gap: 0.3,
-                                        px: 0.6, py: 0.2, borderRadius: '6px',
+                                        px: 0.6, py: 0.2, borderRadius: '8px',
                                         background: `${dueStatus.color}15`,
                                       }}>
                                         <span className="material-icons-round" style={{ fontSize: '12px', color: dueStatus.color }}>{dueStatus.icon}</span>
@@ -622,7 +621,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
         onClose={handleMenuClose}
         PaperProps={{
           sx: {
-            borderRadius: '12px',
+            borderRadius: '8px',
             boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'}`,
             bgcolor: isDark ? '#1e293b' : '#ffffff',

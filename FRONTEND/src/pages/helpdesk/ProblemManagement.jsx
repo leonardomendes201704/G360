@@ -107,7 +107,7 @@ const ProblemManagement = () => {
           </Button>
         }
       >
-      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '8px', boxShadow: 'none' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -189,7 +189,7 @@ const ProblemManagement = () => {
           <Grid container sx={{ height: '100%' }}>
             {/* Lado Esquerdo: Edição do Problema */}
             <Grid item xs={12} md={7} sx={{ p: { xs: 2, md: 4 }, borderRight: `1px solid ${mode==='dark'?'rgba(255,255,255,0.1)':'#e2e8f0'}`, overflowY: 'auto' }}>
-              <Typography variant="body2" mb={4} color="text.secondary" sx={{ p: 2, bgcolor: mode==='dark'?'rgba(255,255,255,0.05)':'#f8fafc', borderRadius: 2, borderLeft: '4px solid #6366f1' }}>
+              <Typography variant="body2" mb={4} color="text.secondary" sx={{ p: 2, bgcolor: mode==='dark'?'rgba(255,255,255,0.05)':'#f8fafc', borderRadius: '8px', borderLeft: '4px solid #6366f1' }}>
                 {selectedProb?.description}
               </Typography>
 
@@ -231,7 +231,7 @@ const ProblemManagement = () => {
                 {selectedProb && selectedProb.incidents && selectedProb.incidents.length > 0 ? (
                   <Box display="flex" flexDirection="column" gap={1}>
                     {selectedProb.incidents.map(inc => (
-                      <Paper key={inc.id} elevation={0} sx={{ p: 1.5, border: `1px solid ${mode==='dark'?'rgba(255,255,255,0.1)':'#e2e8f0'}`, borderRadius: 2, bgcolor: mode==='dark'?'rgba(255,255,255,0.05)':'#ffffff' }}>
+                      <Paper key={inc.id} elevation={0} sx={{ p: 1.5, border: `1px solid ${mode==='dark'?'rgba(255,255,255,0.1)':'#e2e8f0'}`, borderRadius: '8px', bgcolor: mode==='dark'?'rgba(255,255,255,0.05)':'#ffffff' }}>
                         <Box display="flex" justifyContent="space-between" mb={0.5}>
                           <Typography variant="body2" fontWeight="bold">{inc.code}</Typography>
                           <Chip size="small" label={inc.status} sx={{ height: 20, fontSize: '0.65rem' }} color={inc.status==='RESOLVED'||inc.status==='CLOSED'?'success':'warning'} />

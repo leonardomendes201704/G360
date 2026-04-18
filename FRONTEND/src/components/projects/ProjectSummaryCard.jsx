@@ -13,7 +13,7 @@ const ProjectSummaryCard = ({ project }) => {
     const endDate = project.endDate ? new Date(project.endDate) : null;
 
     return (
-        <Paper elevation={0} variant="outlined" sx={{ p: 4, borderRadius: 4, mb: 4, bgcolor: 'white' }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: 4, borderRadius: '8px', mb: 4, bgcolor: 'white' }}>
             <Grid container spacing={4} alignItems="center" justifyContent="space-between">
 
                 {/* 1. Gerente */}
@@ -49,14 +49,14 @@ const ProjectSummaryCard = ({ project }) => {
                 {/* 3. Prioridade */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{ width: 48, height: 48, borderRadius: '50%', bgcolor: '#fef3c7', color: '#b45309', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box sx={{ width: 48, height: 48, borderRadius: '8px', bgcolor: '#fef3c7', color: '#b45309', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Warning fontSize="small" />
                         </Box>
                         <Box>
                             <Typography variant="caption" color="text.secondary" fontWeight="600" sx={{ display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Prioridade</Typography>
                             <Box sx={{
                                 display: 'inline-block',
-                                px: 1.5, py: 0.3, borderRadius: 1.5,
+                                px: 1.5, py: 0.3, borderRadius: '8px',
                                 bgcolor: project.priority === 'CRITICAL' || project.priority === 'HIGH' ? '#fee2e2' : '#f0fdf4',
                                 color: project.priority === 'CRITICAL' || project.priority === 'HIGH' ? '#b91c1c' : '#15803d',
                                 fontSize: '0.8rem', fontWeight: 800, mt: 0.2
@@ -70,7 +70,7 @@ const ProjectSummaryCard = ({ project }) => {
                 {/* 4. Período */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{ width: 48, height: 48, borderRadius: '50%', bgcolor: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box sx={{ width: 48, height: 48, borderRadius: '8px', bgcolor: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <TimelineIcon fontSize="small" />
                         </Box>
                         <Box>

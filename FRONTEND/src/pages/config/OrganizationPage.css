@@ -11,7 +11,7 @@
 .org-page-header {
     margin-bottom: 24px;
     padding: 24px;
-    border-radius: 16px;
+    border-radius: 8px;
     background: rgba(22, 29, 38, 0.5);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -44,12 +44,12 @@
 
 .org-tabs-container::-webkit-scrollbar-thumb {
     background: #3f4a5a;
-    border-radius: 2px;
+    border-radius: 8px;
 }
 
 .org-tab-button {
     padding: 10px 16px;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;

@@ -26,11 +26,11 @@ const TenantAdminPage = () => {
     const surfaceBg = isDark ? '#1c2632' : '#f1f5f9';
     const inputBg = isDark ? '#1c2632' : '#ffffff';
     const inputBorder = isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(15, 23, 42, 0.12)';
-    const cardStyle = { background: cardBg, border: cardBorder, borderRadius: '16px' };
+    const cardStyle = { background: cardBg, border: cardBorder, borderRadius: '8px' };
 
     const inputStyle = {
         width: '100%', padding: '12px 14px', background: inputBg, border: inputBorder,
-        borderRadius: '10px', fontSize: '14px', color: textPrimary, outline: 'none',
+        borderRadius: '8px', fontSize: '14px', color: textPrimary, outline: 'none',
         fontFamily: 'inherit', boxSizing: 'border-box',
     };
 
@@ -408,7 +408,7 @@ const TenantAdminPage = () => {
                                                 key={mod.key}
                                                 onClick={toggleModule}
                                                 style={{
-                                                    padding: '10px 12px', borderRadius: '10px', cursor: 'pointer',
+                                                    padding: '10px 12px', borderRadius: '8px', cursor: 'pointer',
                                                     display: 'flex', alignItems: 'center', gap: '8px',
                                                     background: isActive ? `${mod.color}15` : (isDark ? '#1c2632' : '#f8fafc'),
                                                     border: `1px solid ${isActive ? `${mod.color}40` : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.08)')}`,
@@ -442,7 +442,7 @@ const TenantAdminPage = () => {
             <Box sx={{ ...cardStyle, mb: 3, p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box sx={{
-                        width: 48, height: 48, borderRadius: '12px',
+                        width: 48, height: 48, borderRadius: '8px',
                         background: 'rgba(37, 99, 235, 0.15)', border: '1px solid rgba(37, 99, 235, 0.2)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb',
                     }}>
@@ -462,7 +462,7 @@ const TenantAdminPage = () => {
                         onClick={() => { fetchTenants(); fetchPoolStats(); }}
                         style={{
                             padding: '10px 18px', background: surfaceBg, border: inputBorder,
-                            borderRadius: '10px', color: textSecondary, cursor: 'pointer', fontWeight: 500,
+                            borderRadius: '8px', color: textSecondary, cursor: 'pointer', fontWeight: 500,
                             display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px',
                         }}
                     >
@@ -473,7 +473,7 @@ const TenantAdminPage = () => {
                         onClick={() => setCreateOpen(true)}
                         style={{
                             padding: '10px 20px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                            color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600,
+                            color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600,
                             display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px',
                             boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                         }}
@@ -498,7 +498,7 @@ const TenantAdminPage = () => {
                             transition: 'all 0.2s', '&:hover': { transform: 'translateY(-3px)' },
                         }}>
                             <Box sx={{
-                                width: 52, height: 52, borderRadius: '12px',
+                                width: 52, height: 52, borderRadius: '8px',
                                 background: `${kpi.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
                             }}>
                                 <span className="material-icons-round" style={{ fontSize: '26px', color: kpi.color }}>{kpi.icon}</span>
@@ -563,7 +563,7 @@ const TenantAdminPage = () => {
                                 {/* Name */}
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                     <Box sx={{
-                                        width: 40, height: 40, borderRadius: '10px',
+                                        width: 40, height: 40, borderRadius: '8px',
                                         background: tenant.isActive ? 'rgba(37, 99, 235, 0.12)' : 'rgba(100, 116, 139, 0.12)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     }}>
@@ -611,12 +611,12 @@ const TenantAdminPage = () => {
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <Box sx={{
                                         display: 'flex', alignItems: 'center', gap: 0.5,
-                                        padding: '4px 10px', borderRadius: '20px',
+                                        padding: '4px 10px', borderRadius: '8px',
                                         background: tenant.isActive ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
                                         border: `1px solid ${tenant.isActive ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
                                     }}>
                                         <Box sx={{
-                                            width: 6, height: 6, borderRadius: '50%',
+                                            width: 6, height: 6, borderRadius: '8px',
                                             background: tenant.isActive ? '#10b981' : '#f43f5e',
                                         }} />
                                         <Typography sx={{

@@ -54,7 +54,7 @@ const ExpensesPage = () => {
         bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
         border: '1px solid',
         borderColor: 'divider',
-        borderRadius: '16px',
+        borderRadius: '8px',
         boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
     };
 
@@ -102,7 +102,7 @@ const ExpensesPage = () => {
     const inputStyle = {
         background: mode === 'dark' ? '#1c2632' : '#FFFFFF',
         border: `1px solid ${borderColor}`,
-        borderRadius: '12px',
+        borderRadius: '8px',
         padding: '10px 16px',
         color: textPrimary,
         fontSize: '14px'
@@ -299,7 +299,7 @@ const ExpensesPage = () => {
         };
         const config = configs[status] || configs['PREVISTO'];
         return (
-            <span style={{ padding: '5px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: config.bg, color: config.color }}>
+            <span style={{ padding: '5px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: config.bg, color: config.color }}>
                 {config.label}
             </span>
         );
@@ -317,7 +317,7 @@ const ExpensesPage = () => {
             <Box sx={{ ...cardStyle, p: 3, mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box sx={{
-                        width: 56, height: 56, borderRadius: '14px',
+                        width: 56, height: 56, borderRadius: '8px',
                         background: 'rgba(16, 185, 129, 0.15)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
@@ -339,7 +339,7 @@ const ExpensesPage = () => {
                     </Box>
                     {canManageExpenses && (
                     <Button onClick={handleOpenCreate} sx={{
-                        ml: 2, padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                        ml: 2, padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                         background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                         boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                         '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -360,7 +360,7 @@ const ExpensesPage = () => {
                     <Box sx={{
                         display: 'flex', alignItems: 'center', gap: 2,
                         background: surfaceBg, border: `1px solid ${borderColor}`,
-                        borderRadius: '12px', padding: '10px 16px', flex: 1, minWidth: '250px'
+                        borderRadius: '8px', padding: '10px 16px', flex: 1, minWidth: '250px'
                     }}>
                         <span className="material-icons-round" style={{ color: textSecondary, fontSize: '20px' }}>search</span>
                         <input
@@ -410,7 +410,7 @@ const ExpensesPage = () => {
                             key={tab.id}
                             onClick={() => setTabValue(tab.id)}
                             style={{
-                                padding: '10px 20px', borderRadius: '12px',
+                                padding: '10px 20px', borderRadius: '8px',
                                 background: tabValue === tab.id ? '#2563eb' : surfaceBg,
                                 border: tabValue === tab.id ? 'none' : `1px solid ${borderColor}`,
                                 color: tabValue === tab.id ? 'white' : textMuted,

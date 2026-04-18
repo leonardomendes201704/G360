@@ -32,7 +32,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
   const cardStyle = {
     background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
     border: cardBorder,
-    borderRadius: '16px',
+    borderRadius: '8px',
     boxShadow: cardShadow
   };
 
@@ -132,7 +132,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
       <Box sx={{
         width: 48,
         height: 48,
-        borderRadius: '12px',
+        borderRadius: '8px',
         background: `${color}15`,
         color: color,
         display: 'flex',
@@ -172,7 +172,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
             color: '#14b8a6',
             px: 1.5,
             py: 0.5,
-            borderRadius: '20px',
+            borderRadius: '8px',
             fontSize: '13px',
             fontWeight: 600
           }}>
@@ -185,7 +185,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
           sx={{
             background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
             color: 'white',
-            borderRadius: '12px',
+            borderRadius: '8px',
             padding: '12px 20px',
             fontSize: '14px',
             fontWeight: 600,
@@ -279,7 +279,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
                   <Box sx={{
                     width: 56,
                     height: 56,
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
                     display: 'flex',
                     flexDirection: 'column',
@@ -377,7 +377,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
                           <Box sx={{
                             width: 18,
                             height: 18,
-                            borderRadius: '4px',
+                            borderRadius: '8px',
                             border: action.completed ? 'none' : '2px solid #64748b',
                             background: action.completed ? '#10b981' : 'transparent',
                             display: 'flex',

@@ -193,7 +193,7 @@
     background: var(--modal-surface) !important;
     color: var(--modal-text) !important;
     border: 1px solid var(--modal-border-strong) !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
 }
 
 /* Forca especificamente os campos MUI */
@@ -300,7 +300,7 @@
 .dark-premium-card {
     background: var(--dark-bg-card);
     border: 1px solid var(--dark-border-subtle);
-    border-radius: var(--dark-radius-lg);
+    border-radius: 8px;
     transition: border-color 0.2s ease;
 }
 
@@ -341,7 +341,7 @@
 .dark-kpi-card {
     background: var(--dark-bg-card);
     border: 1px solid var(--dark-border-subtle);
-    border-radius: var(--dark-radius-lg);
+    border-radius: 8px;
     padding: 24px;
     position: relative;
     overflow: hidden;
@@ -368,14 +368,14 @@
 /* Timeline Bar */
 .dark-timeline-bar {
     background: linear-gradient(90deg, var(--dark-accent-indigo), var(--dark-accent-violet));
-    border-radius: 6px;
+    border-radius: 8px;
     transition: width 1s ease;
 }
 
 .dark-timeline-marker {
     background: var(--dark-text-primary);
     border: 3px solid var(--dark-accent-indigo);
-    border-radius: 50%;
+    border-radius: 8px;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }
 
@@ -411,7 +411,7 @@
 
 .dark-premium-theme ::-webkit-scrollbar-thumb {
     background: var(--dark-bg-tertiary);
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .dark-premium-theme ::-webkit-scrollbar-thumb:hover {
@@ -454,7 +454,7 @@
     background: var(--modal-gradient) !important;
     color: var(--modal-text) !important;
     border: 1px solid var(--modal-border) !important;
-    border-radius: 12px !important;
+    border-radius: 8px;
 }
 
 .modal-overlay.dark-modal .modal-header {
@@ -529,7 +529,7 @@
     background: var(--modal-surface) !important;
     color: var(--modal-text) !important;
     border: 1px solid var(--modal-border) !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
 }
 
 .modal-overlay.dark-modal input:focus,
@@ -651,7 +651,7 @@
     background: var(--modal-surface) !important;
     color: var(--modal-text) !important;
     border: 1px solid var(--modal-border) !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
 }
 
 .dark-premium-theme .MuiDialog-root .change-modal-inner input:focus,
@@ -772,7 +772,7 @@
     background: var(--modal-surface) !important;
     color: var(--modal-text) !important;
     border: 1px solid var(--modal-border) !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
 }
 
 .dark-premium-theme .MuiDialog-root .incident-modal-inner input:focus,
@@ -1098,7 +1098,7 @@
         margin: 8px !important;
         width: calc(100% - 16px) !important;
         max-width: none !important;
-        border-radius: 12px !important;
+        border-radius: 8px;
     }
 
     .MuiDialog-root .modal-header {

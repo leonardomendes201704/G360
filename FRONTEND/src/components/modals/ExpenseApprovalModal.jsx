@@ -7,7 +7,7 @@ import StandardModal from '../common/StandardModal';
 
 const inputSx = {
     '& .MuiOutlinedInput-root': {
-        background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '10px',
+        background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '8px',
         '& fieldset': { borderColor: 'var(--modal-border)' },
         '&:hover fieldset': { borderColor: 'rgba(16, 185, 129, 0.3)' },
         '&.Mui-focused fieldset': { borderColor: '#10b981' }
@@ -96,7 +96,7 @@ const ExpenseApprovalModal = ({ open, onClose, onConfirm, expense }) => {
                     sx={{
                         height: '60px', borderStyle: 'dashed',
                         border: selectedFile ? '1px dashed #10b981' : '1px dashed var(--modal-border)',
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         background: selectedFile ? 'rgba(16, 185, 129, 0.05)' : 'var(--modal-surface-subtle)',
                         color: selectedFile ? '#10b981' : 'var(--modal-text-secondary)',
                         textTransform: 'none', fontSize: '14px', fontWeight: 500,

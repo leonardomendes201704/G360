@@ -161,7 +161,7 @@ const NotificationsModal = ({ open, onClose, onMarkAllRead }) => {
                                 }}
                                 secondaryAction={
                                     !notif.isRead && (
-                                        <Box width={10} height={10} borderRadius="50%" bgcolor="#3b82f6" />
+                                        <Box width={10} height={10} borderRadius="8px" bgcolor="#3b82f6" />
                                     )
                                 }
                             >

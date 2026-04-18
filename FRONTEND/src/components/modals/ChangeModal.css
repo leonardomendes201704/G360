@@ -36,7 +36,7 @@
 .change-modal-inner .modal-icon {
     width: 48px;
     height: 48px;
-    border-radius: 14px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -49,7 +49,7 @@
     margin-left: auto;
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: none;
     background: var(--modal-surface-subtle, #f1f5f9);
     color: var(--modal-text-muted, #64748b);
@@ -97,7 +97,7 @@
     background: var(--modal-surface, #f8fafc);
     color: var(--modal-text, #1e293b);
     border: 2px solid var(--modal-border, #e5e7eb);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 12px 16px;
     font-size: 14px;
     font-family: inherit;
@@ -128,7 +128,7 @@
 /* Status Banner Colors */
 .gmud-status-banner {
     padding: 12px 20px;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -198,7 +198,7 @@
     padding: 8px;
     background: var(--modal-surface-subtle);
     border: 1px solid var(--modal-border);
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 20px;
     overflow-x: auto;
     scrollbar-width: thin;
@@ -215,7 +215,7 @@
 
 .gmud-tabs::-webkit-scrollbar-thumb {
     background: rgba(37, 99, 235, 0.5);
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .gmud-tab {
@@ -253,7 +253,7 @@
 .gmud-tab .tab-badge {
     width: 18px;
     height: 18px;
-    border-radius: 50%;
+    border-radius: 8px;
     font-size: 10px;
     font-weight: 700;
     display: flex;
@@ -275,7 +275,7 @@
 .gmud-progress-bar {
     height: 6px;
     background: var(--modal-border-strong);
-    border-radius: 3px;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
 }
@@ -283,7 +283,7 @@
 .gmud-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #2563eb, #3b82f6, #a855f7);
-    border-radius: 3px;
+    border-radius: 8px;
     transition: width 0.5s ease;
 }
 
@@ -291,7 +291,7 @@
 .gmud-section {
     background: var(--modal-surface-subtle);
     border: 1px solid var(--modal-border);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 20px;
     margin-bottom: 16px;
     transition: all 0.2s ease;
@@ -352,7 +352,7 @@
     padding: 12px 14px;
     background: var(--modal-surface);
     border: 1px solid var(--modal-border);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--modal-text-soft);
     font-size: 14px;
     transition: all 0.25s ease;
@@ -440,7 +440,7 @@
 .risk-gauge-bg {
     width: 160px;
     height: 160px;
-    border-radius: 50%;
+    border-radius: 8px;
     background: conic-gradient(from 180deg,
             #10b981 0deg 45deg,
             #f59e0b 45deg 90deg,
@@ -455,7 +455,7 @@
 .risk-gauge-mask {
     width: 120px;
     height: 120px;
-    border-radius: 50%;
+    border-radius: 8px;
     background: var(--modal-surface);
     position: absolute;
     top: 20px;
@@ -471,13 +471,13 @@
     left: 78px;
     transform-origin: bottom center;
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border-radius: 2px;
+    border-radius: 8px;
 }
 
 .risk-gauge-center {
     width: 16px;
     height: 16px;
-    border-radius: 50%;
+    border-radius: 8px;
     background: #a5b4fc;
     position: absolute;
     bottom: -8px;
@@ -531,7 +531,7 @@
 .timeline-track {
     height: 8px;
     background: var(--modal-border-strong);
-    border-radius: 4px;
+    border-radius: 8px;
     position: relative;
     overflow: visible;
 }
@@ -539,7 +539,7 @@
 .timeline-planned {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    border-radius: 4px;
+    border-radius: 8px;
     position: absolute;
     top: 0;
 }
@@ -547,7 +547,7 @@
 .timeline-actual {
     height: 16px;
     background: linear-gradient(90deg, #10b981, #34d399);
-    border-radius: 4px;
+    border-radius: 8px;
     position: absolute;
     top: -4px;
     opacity: 0.8;
@@ -574,7 +574,7 @@
     background: linear-gradient(to bottom right, var(--modal-bg, #fff), var(--modal-surface-subtle, #f8fafc));
     border: 1px solid var(--modal-border);
     border-left: 4px solid #f59e0b;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 32px;
     margin-top: 32px;
     transition: all 0.3s ease;
@@ -600,7 +600,7 @@
 .pir-icon {
     width: 52px;
     height: 52px;
-    border-radius: 14px;
+    border-radius: 8px;
     background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
     display: flex;
@@ -678,7 +678,7 @@
     padding: 16px;
     background: var(--modal-surface);
     border: 1px solid var(--modal-border);
-    border-radius: 12px;
+    border-radius: 8px;
     color: var(--modal-text);
     font-size: 14px;
     line-height: 1.6;
@@ -718,7 +718,7 @@
 .approver-avatar {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+    border-radius: 8px;
     border: 2px solid var(--modal-bg);
     display: flex;
     align-items: center;
@@ -761,7 +761,7 @@
     right: -2px;
     width: 12px;
     height: 12px;
-    border-radius: 50%;
+    border-radius: 8px;
     border: 2px solid var(--modal-bg);
 }
 
@@ -781,7 +781,7 @@
 .gmud-btn {
     padding: 10px 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -871,7 +871,7 @@
     color: var(--modal-text-muted);
     padding: 4px 10px;
     background: var(--modal-surface-hover);
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .autosave-indicator.saving {
@@ -885,7 +885,7 @@
 .autosave-dot {
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    border-radius: 8px;
     animation: pulse 1.5s infinite;
 }
 

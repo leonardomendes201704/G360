@@ -89,10 +89,10 @@ const PortfolioDashboard = () => {
             {/* KPIs */}
             <Grid container spacing={3} mb={4}>
                 <Grid item xs={12} md={3}>
-                    <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}>
+                    <Card elevation={0} sx={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <Box sx={{ p: 1.5, bgcolor: '#e0e7ff', borderRadius: 2 }}>
+                                <Box sx={{ p: 1.5, bgcolor: '#e0e7ff', borderRadius: '8px'}}>
                                     <FolderOpen sx={{ color: '#3b82f6' }} />
                                 </Box>
                                 <Box flex={1}>
@@ -105,10 +105,10 @@ const PortfolioDashboard = () => {
                 </Grid>
 
                 <Grid item xs={12} md={3}>
-                    <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}>
+                    <Card elevation={0} sx={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <Box sx={{ p: 1.5, bgcolor: '#dbeafe', borderRadius: 2 }}>
+                                <Box sx={{ p: 1.5, bgcolor: '#dbeafe', borderRadius: '8px'}}>
                                     <TrendingUp sx={{ color: '#0ea5e9' }} />
                                 </Box>
                                 <Box flex={1}>
@@ -121,10 +121,10 @@ const PortfolioDashboard = () => {
                 </Grid>
 
                 <Grid item xs={12} md={3}>
-                    <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}>
+                    <Card elevation={0} sx={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <Box sx={{ p: 1.5, bgcolor: '#dcfce7', borderRadius: 2 }}>
+                                <Box sx={{ p: 1.5, bgcolor: '#dcfce7', borderRadius: '8px'}}>
                                     <CheckCircle sx={{ color: '#10b981' }} />
                                 </Box>
                                 <Box flex={1}>
@@ -137,10 +137,10 @@ const PortfolioDashboard = () => {
                 </Grid>
 
                 <Grid item xs={12} md={3}>
-                    <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}>
+                    <Card elevation={0} sx={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <Box sx={{ p: 1.5, bgcolor: '#fee2e2', borderRadius: 2 }}>
+                                <Box sx={{ p: 1.5, bgcolor: '#fee2e2', borderRadius: '8px'}}>
                                     <Warning sx={{ color: '#ef4444' }} />
                                 </Box>
                                 <Box flex={1}>
@@ -154,7 +154,7 @@ const PortfolioDashboard = () => {
             </Grid>
 
             {/* Budget Summary */}
-            <Paper elevation={0} variant="outlined" sx={{ p: 3, mb: 4, borderRadius: 4 }}>
+            <Paper elevation={0} variant="outlined" sx={{ p: 3, mb: 4, borderRadius: '8px'}}>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <AttachMoney sx={{ color: 'primary.main' }} />
                     <Typography variant="h6" fontWeight="700">Visão Geral Financeira</Typography>
@@ -180,7 +180,7 @@ const PortfolioDashboard = () => {
                                 variant="determinate"
                                 value={Math.min(budgetUtilization, 100)}
                                 color={budgetUtilization > 90 ? 'error' : budgetUtilization > 75 ? 'warning' : 'success'}
-                                sx={{ height: 8, borderRadius: 4, mb: 0.5 }}
+                                sx={{ height: 8, borderRadius: '8px', mb: 0.5 }}
                             />
                             <Typography variant="body2" fontWeight="600">{budgetUtilization.toFixed(1)}%</Typography>
                         </Box>
@@ -189,7 +189,7 @@ const PortfolioDashboard = () => {
             </Paper>
 
             {/* Projects Table */}
-            <Paper elevation={0} variant="outlined" sx={{ borderRadius: 4, overflow: 'hidden' }}>
+            <Paper elevation={0} variant="outlined" sx={{ borderRadius: '8px', overflow: 'hidden' }}>
                 <Box sx={{ p: 3, bgcolor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                     <Box display="flex" alignItems="center" gap={1}>
                         <Assessment sx={{ color: 'primary.main' }} />
@@ -225,8 +225,7 @@ const PortfolioDashboard = () => {
                                                     width: 4,
                                                     height: 40,
                                                     bgcolor: getPriorityColor(project.priority),
-                                                    borderRadius: 1
-                                                }}
+                                                    borderRadius: '8px'}}
                                             />
                                             <Box>
                                                 <Typography variant="subtitle1" fontWeight="700">{project.name}</Typography>
@@ -253,7 +252,7 @@ const PortfolioDashboard = () => {
                                             <LinearProgress
                                                 variant="determinate"
                                                 value={project.progress || 0}
-                                                sx={{ height: 6, borderRadius: 3 }}
+                                                sx={{ height: 6, borderRadius: '8px'}}
                                             />
                                             <Typography variant="caption" fontWeight="600">{project.progress || 0}%</Typography>
                                         </Box>

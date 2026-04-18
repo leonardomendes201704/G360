@@ -27,7 +27,7 @@ const DroppableColumn = ({ id, children, isDark }) => {
                 overflowY: 'auto',
                 minHeight: '200px',
                 background: isOver ? 'rgba(37, 99, 235, 0.05)' : 'transparent',
-                borderRadius: '0 0 16px 16px', // Adjusted radius for bottom
+                borderRadius: '8px', // Adjusted radius for bottom
                 transition: 'background 0.2s',
                 '&::-webkit-scrollbar': {
                     width: '8px',
@@ -37,7 +37,7 @@ const DroppableColumn = ({ id, children, isDark }) => {
                 },
                 '&::-webkit-scrollbar-thumb': {
                     background: scrollbarThumb,
-                    borderRadius: '4px',
+                    borderRadius: '8px',
                 },
                 '&::-webkit-scrollbar-thumb:hover': {
                     background: scrollbarHover,
@@ -208,7 +208,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                 background: columnBg,
                                 border: columnBorder, // Updated border
                                 backdropFilter: isDark ? 'blur(10px)' : 'none', // Added blur
-                                borderRadius: '16px',
+                                borderRadius: '8px',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 minHeight: '500px',
@@ -223,13 +223,13 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                borderRadius: '16px 16px 0 0' // Rounded top corners
+                                borderRadius: '8px' // Rounded top corners
                             }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                                     <Box sx={{
                                         width: 32,
                                         height: 32,
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -255,7 +255,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                         bgcolor: badgeBg,
                                         px: 1.25,
                                         py: 0.25,
-                                        borderRadius: 2,
+                                        borderRadius: '8px',
                                         fontSize: '0.75rem',
                                         fontWeight: 700,
                                         color: badgeText
@@ -272,7 +272,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                         cursor: 'pointer',
                                         color: textSecondary,
                                         p: 0.75,
-                                        borderRadius: 2,
+                                        borderRadius: '8px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -296,7 +296,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                     mt: 2, // 16px - INCREASED MARGIN (FIX)
                                     p: 1.5, // 12px
                                     bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                                    borderRadius: 2,
+                                    borderRadius: '8px',
                                     display: 'flex',
                                     flexDirection: 'column',
                                     gap: 1
@@ -315,7 +315,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                                         fontSize: '0.7rem', // Smaller text
                                                         fontWeight: 700,
                                                         textTransform: 'none',
-                                                        borderRadius: 1.5, // Smaller radius
+                                                        borderRadius: '8px', // Smaller radius
                                                         color: doneWindow === option.value ? '#2563eb' : textSecondary,
                                                         border: doneWindow === option.value
                                                             ? '1px solid #2563eb'
@@ -342,7 +342,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                                 textTransform: 'none',
                                                 color: textSecondary,
                                                 border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'}`,
-                                                borderRadius: 1.5,
+                                                borderRadius: '8px',
                                                 '&:hover': { bgcolor: addBtnHover }
                                             }}
                                         >
@@ -405,7 +405,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                                 width: '100%',
                                                 background: 'transparent',
                                                 border: '1px dashed #cbd5e1',
-                                                borderRadius: '10px',
+                                                borderRadius: '8px',
                                                 color: '#64748b',
                                                 fontSize: '0.75rem',
                                                 fontWeight: 700,

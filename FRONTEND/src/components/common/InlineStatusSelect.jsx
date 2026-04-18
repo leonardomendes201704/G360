@@ -45,7 +45,7 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
                 gap: 0.75,
                 px: 1.5,
                 py: 0.4,
-                borderRadius: '20px',
+                borderRadius: '8px',
                 bgcolor: `${current.color}18`,
                 border: `1px solid ${current.color}35`,
                 cursor: disabled ? 'default' : 'pointer',
@@ -60,7 +60,7 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
                 })
             }}
         >
-            <Box sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: current.color, flexShrink: 0 }} />
+            <Box sx={{ width: 7, height: 7, borderRadius: '8px', bgcolor: current.color, flexShrink: 0 }} />
             <Typography sx={{ fontSize: '12px', fontWeight: 600, color: current.color, lineHeight: 1 }}>
                 {current.label}
             </Typography>
@@ -90,7 +90,7 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
                 PaperProps={{
                     sx: {
                         mt: 0.5,
-                        borderRadius: '12px',
+                        borderRadius: '8px',
                         border: '1px solid rgba(255,255,255,0.1)',
                         background: '#1a2232',
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
@@ -114,7 +114,7 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
                             '&:hover': { bgcolor: `${cfg.color}15` },
                         }}
                     >
-                        <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: cfg.color, flexShrink: 0 }} />
+                        <Box sx={{ width: 9, height: 9, borderRadius: '8px', bgcolor: cfg.color, flexShrink: 0 }} />
                         <Typography sx={{ fontSize: '13px', fontWeight: key === status ? 700 : 500, color: key === status ? cfg.color : '#cbd5e1' }}>
                             {cfg.label}
                         </Typography>

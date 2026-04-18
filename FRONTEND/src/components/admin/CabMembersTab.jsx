@@ -23,7 +23,7 @@ const CabMembersTab = () => {
     const cardStyle = {
         background: cardBg,
         border: cardBorder,
-        borderRadius: '16px'
+        borderRadius: '8px'
     };
 
     const tableHeaderStyle = {
@@ -141,7 +141,7 @@ const CabMembersTab = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography sx={{ fontSize: '24px', fontWeight: 600, color: textPrimary }}>Change Advisory Board (CAB)</Typography>
                 <Button onClick={() => setOpenModal(true)} sx={{
-                    padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                    padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                     background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                     boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                     '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }

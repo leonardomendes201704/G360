@@ -58,7 +58,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                         sx={{
                             width: 44,
                             height: 44,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             background: btnBg,
                             border: `1px solid ${borderColor}`,
                             color: textSecondary,
@@ -108,7 +108,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                                     gap: 0.75,
                                     px: 1.75,
                                     py: 0.75,
-                                    borderRadius: '20px',
+                                    borderRadius: '8px',
                                     fontSize: '12px',
                                     fontWeight: 600,
                                     textTransform: 'uppercase',
@@ -132,7 +132,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                                     gap: 0.75,
                                     px: 1.75,
                                     py: 0.75,
-                                    borderRadius: '20px',
+                                    borderRadius: '8px',
                                     fontSize: '12px',
                                     fontWeight: 600,
                                     textTransform: 'uppercase',
@@ -159,7 +159,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                             onClick={onSubmit}
                             sx={{
                                 display: 'inline-flex', alignItems: 'center', gap: 1, px: 2.5, py: 1.5,
-                                borderRadius: '12px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb',
+                                borderRadius: '8px', background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb',
                                 border: '1px solid rgba(37, 99, 235, 0.3)', fontSize: '14px', fontWeight: 600,
                                 cursor: 'pointer', transition: 'all 0.2s',
                                 '&:hover': { background: 'rgba(37, 99, 235, 0.25)', borderColor: '#2563eb' },
@@ -176,7 +176,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                             onClick={onEdit}
                             sx={{
                                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                                width: 44, height: 44, borderRadius: '12px',
+                                width: 44, height: 44, borderRadius: '8px',
                                 background: btnBg, color: textPrimary, border: `1px solid ${borderColor}`,
                                 cursor: 'pointer', transition: 'all 0.2s',
                                 '&:hover': { background: mode === 'dark' ? '#1e2835' : '#e2e8f0', borderColor: 'rgba(37, 99, 235, 0.3)' },
@@ -193,7 +193,7 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                             onClick={onDelete}
                             sx={{
                                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                                width: 44, height: 44, borderRadius: '12px',
+                                width: 44, height: 44, borderRadius: '8px',
                                 background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e', border: '1px solid rgba(244, 63, 94, 0.2)',
                                 cursor: 'pointer', transition: 'all 0.2s',
                                 '&:hover': { background: 'rgba(244, 63, 94, 0.25)' },

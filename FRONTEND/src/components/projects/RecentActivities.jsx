@@ -110,7 +110,7 @@ const RecentActivities = ({ projectId, userId }) => {
             sx={{
                 background: cardBg,
                 border: `1px solid ${borderColor}`,
-                borderRadius: '24px',
+                borderRadius: '8px',
                 p: '28px',
                 boxShadow: cardShadow,
                 height: '100%', // Important for alignment
@@ -137,7 +137,7 @@ const RecentActivities = ({ projectId, userId }) => {
                 '&::-webkit-scrollbar-track': { background: 'transparent' },
                 '&::-webkit-scrollbar-thumb': {
                     background: mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.1)',
-                    borderRadius: '4px'
+                    borderRadius: '8px'
                 }
             }}>
                 {loading ? (
@@ -181,7 +181,7 @@ const RecentActivities = ({ projectId, userId }) => {
                                         display: 'flex',
                                         gap: 2,
                                         p: 1.5,
-                                        borderRadius: '12px',
+                                        borderRadius: '8px',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s ease',
                                         '&:hover': {
@@ -194,7 +194,7 @@ const RecentActivities = ({ projectId, userId }) => {
                                     <Box sx={{
                                         width: 36,
                                         height: 36,
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         background: style.bg,
                                         display: 'flex',
                                         alignItems: 'center',
@@ -215,7 +215,7 @@ const RecentActivities = ({ projectId, userId }) => {
                                             <Typography sx={{ fontSize: '12px', color: textSecondary }}>
                                                 {log.user?.name || 'Sistema'}
                                             </Typography>
-                                            <Box sx={{ width: 3, height: 3, borderRadius: '50%', bgcolor: textSecondary, opacity: 0.5 }} />
+                                            <Box sx={{ width: 3, height: 3, borderRadius: '8px', bgcolor: textSecondary, opacity: 0.5 }} />
                                             <Typography sx={{ fontSize: '12px', color: textSecondary }}>
                                                 {formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: ptBR })}
                                             </Typography>

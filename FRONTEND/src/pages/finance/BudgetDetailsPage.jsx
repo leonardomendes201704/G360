@@ -42,7 +42,7 @@ const buildBudgetTheme = (isDark, theme) => {
     cardStyle: {
       background: colors.cardBg,
       border: colors.border,
-      borderRadius: '16px'
+      borderRadius: '8px'
     },
     tableHeaderStyle: {
       background: colors.surface,
@@ -65,7 +65,7 @@ const buildBudgetTheme = (isDark, theme) => {
     actionBtnStyle: (type = 'edit') => ({
       width: 28,
       height: 28,
-      borderRadius: '6px',
+      borderRadius: '8px',
       background: type === 'delete' ? colors.dangerSoft : colors.surface,
       border: `1px solid ${colors.borderSubtle}`,
       color: type === 'delete' ? colors.danger : colors.textSecondary,
@@ -102,7 +102,7 @@ const BudgetGroupRow = ({ group, onEdit, onDelete, ui, isOBZ }) => {
         <td style={{ ...ui.tableCellStyle, color: ui.colors.textMuted, fontStyle: 'italic' }}>Consolidado<br /><span style={{ fontSize: '10px' }}>da Conta</span></td>
         <td style={ui.tableCellStyle}>
           <span style={{
-            padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+            padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
             background: isCapex ? 'rgba(6, 182, 212, 0.15)' : 'rgba(37, 99, 235, 0.15)',
             color: isCapex ? '#06b6d4' : '#2563eb'
           }}>
@@ -125,7 +125,7 @@ const BudgetGroupRow = ({ group, onEdit, onDelete, ui, isOBZ }) => {
         <tr>
           <td colSpan={18} style={{ padding: 0 }}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ m: 2, ml: 6, borderRadius: '12px', overflow: 'hidden', border: ui.colors.border, background: ui.colors.surfaceAlt }}>
+              <Box sx={{ m: 2, ml: 6, borderRadius: '8px', overflow: 'hidden', border: ui.colors.border, background: ui.colors.surfaceAlt }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr>
@@ -159,7 +159,7 @@ const BudgetGroupRow = ({ group, onEdit, onDelete, ui, isOBZ }) => {
                             {item.priority && priorityLabels[item.priority] ? (
                               <span style={{
                                 display: 'inline-flex', alignItems: 'center', gap: '4px',
-                                padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600,
+                                padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: 600,
                                 background: `${priorityLabels[item.priority].color}15`, color: priorityLabels[item.priority].color
                               }}>
                                 {priorityLabels[item.priority].icon} {priorityLabels[item.priority].label}
@@ -169,7 +169,7 @@ const BudgetGroupRow = ({ group, onEdit, onDelete, ui, isOBZ }) => {
                         )}
                         <td style={ui.tableCellStyle}>{item.description || '-'}</td>
                         <td style={ui.tableCellStyle}>
-                          <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '10px', border: `1px solid ${ui.colors.borderSubtle}`, color: ui.colors.textMuted, background: ui.colors.surface }}>
+                          <span style={{ padding: '2px 8px', borderRadius: '8px', fontSize: '10px', border: `1px solid ${ui.colors.borderSubtle}`, color: ui.colors.textMuted, background: ui.colors.surface }}>
                             {item.type}
                           </span>
                         </td>
@@ -314,7 +314,7 @@ const BudgetDetailsPage = () => {
       'CLOSED': { label: 'Fechado', bg: 'rgba(100, 116, 139, 0.15)', color: ui.colors.textMuted }
     };
     const config = configs[status] || configs['DRAFT'];
-    return <span style={{ padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, background: config.bg, color: config.color }}>{config.label}</span>;
+    return <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: config.bg, color: config.color }}>{config.label}</span>;
   };
 
   return (
@@ -335,7 +335,7 @@ const BudgetDetailsPage = () => {
               <Typography sx={{ fontSize: '13px', color: ui.colors.textSecondary }}>|</Typography>
               {getStatusBadge(budget.status)}
               {budget.isOBZ && (
-                <span style={{ padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                   <span className="material-icons-round" style={{ fontSize: '14px' }}>lightbulb</span>
                   OBZ
                 </span>
@@ -356,7 +356,7 @@ const BudgetDetailsPage = () => {
 
           {budget.status === 'DRAFT' && hasPermission('FINANCE', 'EDIT_BUDGET') && (
             <Button onClick={handleSubmitBudgetForApproval} sx={{
-              padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+              padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'transparent', border: '2px solid #f59e0b', color: '#f59e0b',
               '&:hover': { background: '#f59e0b', color: 'white' }
             }}>
@@ -366,7 +366,7 @@ const BudgetDetailsPage = () => {
 
           {(budget.status === 'PENDING_APPROVAL' || budget.status === 'DRAFT') && hasPermission('FINANCE', 'WRITE') && (
             <Button onClick={handleApproveBudget} sx={{
-              padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+              padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'transparent', border: '2px solid #10b981', color: '#10b981',
               '&:hover': { background: '#10b981', color: 'white' }
             }}>
@@ -377,7 +377,7 @@ const BudgetDetailsPage = () => {
           {budget.status !== 'APPROVED' && budget.status !== 'APROVADO' && budget.status !== 'PENDING_APPROVAL' && hasPermission('FINANCE', 'EDIT_BUDGET') && (
             <>
               <Button onClick={() => setImportModalOpen(true)} sx={{
-                padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: ui.colors.surface, color: ui.colors.textPrimary,
                 border: `1px solid ${ui.colors.borderSubtle}`,
                 '&:hover': { background: ui.colors.accentSoft, color: ui.colors.accent, borderColor: ui.colors.accent }
@@ -385,7 +385,7 @@ const BudgetDetailsPage = () => {
                 Importar Excel
               </Button>
               <Button onClick={handleOpenCreate} sx={{
-                padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+                padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
                 boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                 '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }

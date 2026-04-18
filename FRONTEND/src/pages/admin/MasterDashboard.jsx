@@ -66,11 +66,11 @@ const MasterDashboard = () => {
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 3, mb: 4 }}>
                 {kpis.map((kpi, i) => (
                     <Box key={i} sx={{
-                        background: cardBg, border: cardBorder, borderRadius: '16px', p: 3,
+                        background: cardBg, border: cardBorder, borderRadius: '8px', p: 3,
                         display: 'flex', alignItems: 'center', gap: 2.5
                     }}>
                         <Box sx={{
-                            width: 56, height: 56, borderRadius: '14px',
+                            width: 56, height: 56, borderRadius: '8px',
                             background: `${kpi.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}>
                             <span className="material-icons-round" style={{ fontSize: 28, color: kpi.color }}>{kpi.icon}</span>
@@ -86,7 +86,7 @@ const MasterDashboard = () => {
             {/* Charts Row */}
             <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 3, mb: 4 }}>
                 {/* Distribution Chart */}
-                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '16px', p: 3, height: 400 }}>
+                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '8px', p: 3, height: 400 }}>
                     <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, mb: 4 }}>
                         Distribuição por Plano
                     </Typography>
@@ -109,7 +109,7 @@ const MasterDashboard = () => {
                 </Box>
 
                 {/* Recent Tenants */}
-                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '16px', p: 3 }}>
+                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '8px', p: 3 }}>
                     <Typography sx={{ fontSize: '18px', fontWeight: 600, color: textPrimary, mb: 3 }}>
                         Novos Clientes
                     </Typography>
@@ -117,7 +117,7 @@ const MasterDashboard = () => {
                         {stats.recent.map((t, i) => (
                             <Box key={i} sx={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                p: 2, borderRadius: '12px', background: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc'
+                                p: 2, borderRadius: '8px', background: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc'
                             }}>
                                 <Box>
                                     <Typography sx={{ fontSize: '14px', fontWeight: 600, color: textPrimary }}>{t.name}</Typography>
@@ -132,7 +132,7 @@ const MasterDashboard = () => {
 
             {/* System Health */}
             {health && (
-                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '16px', p: 3 }}>
+                <Box sx={{ background: cardBg, border: cardBorder, borderRadius: '8px', p: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                             <span className="material-icons-round" style={{ fontSize: 22, color: '#2563eb' }}>monitor_heart</span>
@@ -158,7 +158,7 @@ const MasterDashboard = () => {
                             { icon: 'storage', label: 'Pool', value: `${health.tenantPool?.size || 0}/${health.tenantPool?.maxClients || 0}`, color: '#3b82f6' },
                             { icon: 'schedule', label: 'Resp.', value: health.responseTime, color: '#f43f5e' },
                         ].map((kpi, i) => (
-                            <Box key={i} sx={{ p: 1.5, borderRadius: '10px', background: surfaceBg, textAlign: 'center' }}>
+                            <Box key={i} sx={{ p: 1.5, borderRadius: '8px', background: surfaceBg, textAlign: 'center' }}>
                                 <span className="material-icons-round" style={{ fontSize: 18, color: kpi.color }}>{kpi.icon}</span>
                                 <Typography sx={{ fontSize: '11px', color: textSecondary, mt: 0.5 }}>{kpi.label}</Typography>
                                 <Typography sx={{ fontSize: '16px', fontWeight: 700, color: textPrimary, lineHeight: 1.3 }}>{kpi.value}</Typography>
@@ -171,9 +171,9 @@ const MasterDashboard = () => {
                         </Typography>
                         <Box sx={{ flex: 1 }}>
                             <LinearProgress variant="determinate" value={heapPercent} sx={{
-                                height: 8, borderRadius: 4, backgroundColor: surfaceBg,
+                                height: 8, borderRadius: '8px', backgroundColor: surfaceBg,
                                 '& .MuiLinearProgress-bar': {
-                                    borderRadius: 4,
+                                    borderRadius: '8px',
                                     background: heapPercent > 80 ? 'linear-gradient(90deg, #f43f5e, #ef4444)' :
                                         heapPercent > 60 ? 'linear-gradient(90deg, #f59e0b, #eab308)' :
                                             'linear-gradient(90deg, #2563eb, #3b82f6)',

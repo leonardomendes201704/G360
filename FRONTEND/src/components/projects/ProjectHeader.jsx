@@ -28,7 +28,7 @@ const ProjectHeader = ({ project, onEdit, onDelete, onSubmitForApproval }) => {
           <IconButton
             onClick={() => navigate('/projects')}
             sx={{
-              bgcolor: 'white', border: '1px solid #e2e8f0', borderRadius: 2, width: 44, height: 44,
+              bgcolor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', width: 44, height: 44,
               '&:hover': { bgcolor: '#f8fafc', borderColor: '#cbd5e1' }
             }}
           >
@@ -48,7 +48,7 @@ const ProjectHeader = ({ project, onEdit, onDelete, onSubmitForApproval }) => {
                 label={project.code}
                 size="small"
                 sx={{
-                  borderRadius: 1, height: 22, fontSize: '0.75rem', fontWeight: 700,
+                  borderRadius: '8px', height: 22, fontSize: '0.75rem', fontWeight: 700,
                   bgcolor: '#f1f5f9', color: '#64748b', fontFamily: 'monospace'
                 }}
               />
@@ -83,7 +83,7 @@ const ProjectHeader = ({ project, onEdit, onDelete, onSubmitForApproval }) => {
               // but first let me update the Header to Accept `onSubmitForApproval`.
               startIcon={<LocalFireDepartment />} // Using an icon to signify action
               sx={{
-                textTransform: 'none', fontWeight: 600, borderRadius: 2,
+                textTransform: 'none', fontWeight: 600, borderRadius: '8px',
                 background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
               }}
             >
@@ -96,7 +96,7 @@ const ProjectHeader = ({ project, onEdit, onDelete, onSubmitForApproval }) => {
             startIcon={<Edit />}
             onClick={onEdit}
             sx={{
-              textTransform: 'none', fontWeight: 600, borderRadius: 2,
+              textTransform: 'none', fontWeight: 600, borderRadius: '8px',
               borderColor: '#e2e8f0', color: '#475569',
               '&:hover': { borderColor: '#cbd5e1', bgcolor: 'white' }
             }}
@@ -109,7 +109,7 @@ const ProjectHeader = ({ project, onEdit, onDelete, onSubmitForApproval }) => {
             onClick={onDelete}
             color="error"
             sx={{
-              textTransform: 'none', fontWeight: 600, borderRadius: 2,
+              textTransform: 'none', fontWeight: 600, borderRadius: '8px',
               borderColor: '#fee2e2', color: '#ef4444',
               bgcolor: '#fef2f2',
               '&:hover': { borderColor: '#fecaca', bgcolor: '#fee2e2' }
@@ -138,10 +138,10 @@ const MetaItem = ({ icon, label, value, color = 'slate', isPriority }) => {
   const c = colors[color] || colors.slate;
 
   return (
-    <Paper elevation={0} variant="outlined" sx={{ p: 1.5, borderRadius: 3, display: 'flex', flexDirection: 'column', gap: 1, bgcolor: 'white' }}>
+    <Paper elevation={0} variant="outlined" sx={{ p: 1.5, borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 1, bgcolor: 'white' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box sx={{
-          width: 28, height: 28, borderRadius: 1.5,
+          width: 28, height: 28, borderRadius: '8px',
           bgcolor: c.bg, color: c.text,
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>

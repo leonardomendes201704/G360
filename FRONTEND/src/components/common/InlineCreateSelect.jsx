@@ -76,7 +76,7 @@ const InlineCreateSelect = ({
 
     const defaultSelectSx = {
         background: 'var(--modal-surface)',
-        borderRadius: '10px',
+        borderRadius: '8px',
         color: 'var(--modal-text)',
         fontSize: '14px',
         '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--modal-border-strong)' },
@@ -109,7 +109,7 @@ const InlineCreateSelect = ({
                             '& .MuiOutlinedInput-root': {
                                 background: 'var(--modal-surface)',
                                 color: 'var(--modal-text)',
-                                borderRadius: '10px',
+                                borderRadius: '8px',
                                 '& fieldset': { borderColor: '#2563eb' },
                             },
                             '& input': { color: 'var(--modal-text)', fontSize: '14px' },
@@ -128,7 +128,7 @@ const InlineCreateSelect = ({
                         sx={{
                             bgcolor: 'rgba(16, 185, 129, 0.15)',
                             color: '#10b981',
-                            borderRadius: '10px',
+                            borderRadius: '8px',
                             width: 36, height: 36,
                             '&:hover': { bgcolor: 'rgba(16, 185, 129, 0.25)' },
                             '&.Mui-disabled': { opacity: 0.4 },
@@ -142,7 +142,7 @@ const InlineCreateSelect = ({
                         sx={{
                             bgcolor: 'rgba(239, 68, 68, 0.1)',
                             color: '#ef4444',
-                            borderRadius: '10px',
+                            borderRadius: '8px',
                             width: 36, height: 36,
                             '&:hover': { bgcolor: 'rgba(239, 68, 68, 0.2)' },
                         }}
@@ -177,7 +177,7 @@ const InlineCreateSelect = ({
                             sx={{
                                 bgcolor: 'rgba(37, 99, 235, 0.1)',
                                 color: '#2563eb',
-                                borderRadius: '10px',
+                                borderRadius: '8px',
                                 width: 40, height: 40,
                                 flexShrink: 0,
                                 border: '1px solid rgba(37, 99, 235, 0.2)',

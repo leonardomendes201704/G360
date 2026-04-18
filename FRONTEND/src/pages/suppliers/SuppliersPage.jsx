@@ -105,7 +105,7 @@ const SuppliersPage = () => {
     () => ({
       '& .MuiOutlinedInput-root': {
         bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
-        borderRadius: 2,
+        borderRadius: '8px',
         color: isDark ? '#f1f5f9' : '#0f172a',
         '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)' },
         '&:hover fieldset': { borderColor: 'rgba(6, 182, 212, 0.5)' },
@@ -249,7 +249,7 @@ const SuppliersPage = () => {
   const cardStyle = {
     background: isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF',
     border: isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(0, 0, 0, 0.08)',
-    borderRadius: '16px',
+    borderRadius: '8px',
     boxShadow: isDark ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.08)'
   };
 
@@ -266,7 +266,7 @@ const SuppliersPage = () => {
       <Box sx={{ ...cardStyle, mb: 3, p: { xs: 2, md: 3 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box sx={{
-            width: 48, height: 48, borderRadius: '12px',
+            width: 48, height: 48, borderRadius: '8px',
             background: 'rgba(6, 182, 212, 0.15)',
             border: '1px solid rgba(6, 182, 212, 0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06b6d4'
@@ -282,7 +282,7 @@ const SuppliersPage = () => {
         <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', width: { xs: '100%', md: 'auto' } }}>
           {canWrite && (
             <Button onClick={handleOpenNew} sx={{
-              padding: '12px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
+              padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
@@ -297,7 +297,7 @@ const SuppliersPage = () => {
       <Box
         sx={{
           mb: 3,
-          borderRadius: '16px',
+          borderRadius: '8px',
           bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
           border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
           p: 2,
@@ -327,7 +327,7 @@ const SuppliersPage = () => {
               sx={{
                 px: 1,
                 py: 0.25,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 fontSize: '10px',
                 fontWeight: 700,
                 bgcolor: 'rgba(6, 182, 212, 0.15)',
@@ -429,7 +429,7 @@ const SuppliersPage = () => {
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <Box sx={{
-              width: 56, height: 56, borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)',
+              width: 56, height: 56, borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b'
             }}>
               <span className="material-icons-round" style={{ fontSize: '24px' }}>star</span>
@@ -451,13 +451,13 @@ const SuppliersPage = () => {
                   ))}
                 </Box>
                 <Box sx={{
-                  flex: 1, height: 8, borderRadius: '4px',
+                  flex: 1, height: 8, borderRadius: '8px',
                   background: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
                   overflow: 'hidden'
                 }}>
                   <Box sx={{
                     width: `${kpis.total > 0 ? (ratingStats[stars] / kpis.total) * 100 : 0}%`,
-                    height: '100%', borderRadius: '4px',
+                    height: '100%', borderRadius: '8px',
                     background: 'linear-gradient(90deg, #f59e0b, #fbbf24)',
                     transition: 'width 0.5s ease'
                   }} />
@@ -490,7 +490,7 @@ const SuppliersPage = () => {
               ml: { xs: 0, md: 2 },
               background: isDark ? '#1c2632' : '#f8fafc',
               border: '1px solid ' + tableBorder,
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '10px 16px',
             }}
           >
@@ -572,7 +572,7 @@ const SuppliersPage = () => {
                     <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{
-                          width: '40px', height: '40px', borderRadius: '12px',
+                          width: '40px', height: '40px', borderRadius: '8px',
                           background: 'rgba(6, 182, 212, 0.15)',
                           border: '1px solid rgba(6, 182, 212, 0.2)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -587,7 +587,7 @@ const SuppliersPage = () => {
                     <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
                       <span style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
+                        padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                         background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6'
                       }}>{supplier.category || 'Tecnologia'}</span>
                     </td>
@@ -603,7 +603,7 @@ const SuppliersPage = () => {
                     <td style={{ padding: '20px 24px', borderBottom: '1px solid ' + tableBorder }}>
                       <span style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
+                        padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
                         background: statusStyle.bg, color: statusStyle.color
                       }}>{statusStyle.icon} {statusStyle.label}</span>
                     </td>

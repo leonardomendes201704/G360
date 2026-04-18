@@ -6,7 +6,7 @@ import StandardModal from '../common/StandardModal';
 const modalStyles = {
     input: {
         '& .MuiOutlinedInput-root': {
-            background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '10px',
+            background: 'var(--modal-surface-subtle)', color: 'var(--modal-text-soft)', borderRadius: '8px',
             '& fieldset': { borderColor: 'var(--modal-border)' },
             '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.3)' },
             '&.Mui-focused fieldset': { borderColor: '#2563eb' }

@@ -251,7 +251,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
             <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openSvcModal()}>Novo Serviço</Button>
           }
         >
-          <TableContainer sx={{ borderRadius: 0 }}>
+          <TableContainer sx={{ borderRadius: '8px'}}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -300,7 +300,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
             <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openCatModal()}>Nova Categoria</Button>
           }
         >
-          <TableContainer sx={{ borderRadius: 0 }}>
+          <TableContainer sx={{ borderRadius: '8px'}}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -335,7 +335,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
             <Button size="small" variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => openSlaModal()}>Nova Política SLA</Button>
           }
         >
-          <TableContainer sx={{ borderRadius: 0 }}>
+          <TableContainer sx={{ borderRadius: '8px'}}>
             <Table size="medium">
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -447,7 +447,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
         contentSx={{ bgcolor: '#f8fafc' }}
       >
           
-          <Paper elevation={0} sx={{ p: 3, mb: 4, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2 }}>
+          <Paper elevation={0} sx={{ p: 3, mb: 4, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px'}}>
             <Typography variant="subtitle1" gutterBottom fontWeight="bold" color="primary.main">
               + Adicionar Novo Campo ao Formulário
             </Typography>
@@ -478,7 +478,7 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
               )}
 
               <Box display="flex" justifyContent="flex-end" mt={1}>
-                <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={addFbField} sx={{ px: 4, borderRadius: 2 }}>
+                <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={addFbField} sx={{ px: 4, borderRadius: '8px'}}>
                   Salvar Parâmetro na Grade
                 </Button>
               </Box>
@@ -501,14 +501,14 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
           </Box>
           
           {fbFields.length === 0 ? (
-            <Paper sx={{ p: 4, textAlign: 'center', bgcolor: '#f1f5f9', border: '1px dashed #cbd5e1', borderRadius: 2 }} elevation={0}>
+            <Paper sx={{ p: 4, textAlign: 'center', bgcolor: '#f1f5f9', border: '1px dashed #cbd5e1', borderRadius: '8px'}} elevation={0}>
                 <Typography variant="body1" color="text.secondary" fontWeight="500">Nenhum campo personalizado adicionado a este serviço.</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Apenas o "Título" e a "Descrição Plana" serão solicitados ao usuário como padrão.</Typography>
             </Paper>
           ) : (
-            <Paper elevation={0} sx={{ p: 3, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Paper elevation={0} sx={{ p: 3, bgcolor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: 3 }}>
               {fbFields.map((field, idx) => (
-                <Box key={idx} sx={{ position: 'relative', p: 2, border: '1px solid #e2e8f0', borderRadius: 2, '&:hover': { borderColor: '#cbd5e1', bgcolor: '#f8fafc' }, transition: 'all 0.2s' }}>
+                <Box key={idx} sx={{ position: 'relative', p: 2, border: '1px solid #e2e8f0', borderRadius: '8px', '&:hover': { borderColor: '#cbd5e1', bgcolor: '#f8fafc' }, transition: 'all 0.2s' }}>
                   <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1.5}>
                     <Typography variant="body1" fontWeight="600" color="text.primary">
                       {field.label} {field.required && <span style={{ color: '#ef4444' }}>*</span>}

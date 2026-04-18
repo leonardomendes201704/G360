@@ -195,7 +195,7 @@ body.light-premium-theme,
 /* Modal input sizing/alignment — raio 8px (sx legado às vezes forçava 12px) */
 .light-premium-theme .MuiDialog-root .MuiOutlinedInput-root {
     min-height: 48px !important;
-    border-radius: var(--g360-radius-input, 8px) !important;
+    border-radius: 8px;
 }
 
 .light-premium-theme .modal-overlay .MuiOutlinedInput-root {
@@ -299,7 +299,7 @@ body.light-premium-theme,
     background: var(--light-bg-secondary) !important;
     color: var(--light-text-primary) !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-    border-radius: var(--g360-radius-modal, 8px) !important;
+    border-radius: 8px;
     overflow: hidden !important;
 }
 
@@ -630,7 +630,7 @@ body.light-premium-theme,
 }
 
 /* KPI cards in project details */
-.light-premium-theme [style*="background: linear-gradient"][style*="borderRadius: '12px'"],
+.light-premium-theme [style*="background: linear-gradient"][style*="borderRadius: '8px'"],
 .light-premium-theme [style*="background: linear-gradient(145deg"] {
     background: var(--light-bg-secondary) !important;
     box-shadow: var(--light-shadow-card) !important;
@@ -791,7 +791,7 @@ body.light-premium-theme,
 
 .light-premium-theme *::-webkit-scrollbar-thumb {
     background: #cbd5e1 !important;
-    border-radius: 4px !important;
+    border-radius: 8px;
 }
 
 .light-premium-theme *::-webkit-scrollbar-thumb:hover {

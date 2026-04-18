@@ -114,7 +114,7 @@ function normalizeDaySchedulesFromCalendar(cal) {
 /** Cantos mais retos (evita “pill”) nos campos do bloco horário operacional. */
 const operationalInputRadiusSx = {
   '& .MuiOutlinedInput-root': {
-    borderRadius: '4px'
+    borderRadius: '8px'
   }
 };
 
@@ -122,7 +122,7 @@ const operationalInputRadiusSx = {
 const scheduleTimeFieldSx = {
   ...operationalInputRadiusSx,
   '& .MuiOutlinedInput-root': {
-    borderRadius: '4px',
+    borderRadius: '8px',
     minHeight: 40,
     alignItems: 'center'
   },
@@ -145,7 +145,7 @@ const scheduleTimeFieldSx = {
 const holidayNameFieldSx = {
   ...operationalInputRadiusSx,
   '& .MuiOutlinedInput-root': {
-    borderRadius: '4px',
+    borderRadius: '8px',
     minHeight: 40,
     alignItems: 'center'
   },
@@ -164,7 +164,7 @@ const holidayNameFieldSx = {
 
 const primaryBtnSx = {
   padding: '10px 20px',
-  borderRadius: '10px',
+  borderRadius: '8px',
   fontSize: '13px',
   fontWeight: 600,
   textTransform: 'none',
@@ -177,7 +177,7 @@ const primaryBtnSx = {
 
 const importOutlineBtnSx = {
   padding: '10px 20px',
-  borderRadius: '10px',
+  borderRadius: '8px',
   fontSize: '13px',
   fontWeight: 600,
   textTransform: 'none',

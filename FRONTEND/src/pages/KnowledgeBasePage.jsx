@@ -45,7 +45,7 @@ const ArticleCard = ({ article, onView, onMenuClick, theme }) => (
         sx={{
             bgcolor: theme.cardBg,
             border: theme.cardBorder,
-            borderRadius: '12px',
+            borderRadius: '8px',
             padding: '24px',
             transition: 'all 0.3s',
             cursor: 'pointer',
@@ -89,7 +89,7 @@ const ArticleCard = ({ article, onView, onMenuClick, theme }) => (
                         padding: '4px 12px',
                         bgcolor: article.category?.color || (theme.isDark ? '#374151' : '#e2e8f0'),
                         color: theme.isDark ? 'white' : '#1f2937',
-                        borderRadius: '20px',
+                        borderRadius: '8px',
                         fontSize: '12px',
                         fontWeight: 500
                     }}
@@ -161,7 +161,7 @@ const ArticleCard = ({ article, onView, onMenuClick, theme }) => (
                         padding: '4px 8px',
                         bgcolor: theme.tagBg,
                         color: theme.tagText,
-                        borderRadius: '4px',
+                        borderRadius: '8px',
                         fontSize: '11px'
                     }}
                 >
@@ -183,7 +183,7 @@ const ViewToggleBtn = ({ active, icon, onClick, theme }) => (
             border: 'none',
             color: active ? 'white' : theme.textSecondary,
             cursor: 'pointer',
-            borderRadius: '4px',
+            borderRadius: '8px',
             transition: 'all 0.2s',
             display: 'flex',
             alignItems: 'center',
@@ -207,7 +207,7 @@ const ArticleTable = ({ articles, onView, onEdit, onDelete, canUpdate, canDelete
         component={embedded ? Box : Paper}
         sx={embedded
             ? { overflowX: 'auto', bgcolor: 'transparent', boxShadow: 'none', border: 'none' }
-            : { bgcolor: theme.cardBg, border: theme.cardBorder, borderRadius: '12px', boxShadow: 'none' }}
+            : { bgcolor: theme.cardBg, border: theme.cardBorder, borderRadius: '8px', boxShadow: 'none' }}
     >
         <Table>
             <TableHead>
@@ -245,7 +245,7 @@ const ArticleTable = ({ articles, onView, onEdit, onDelete, canUpdate, canDelete
                                     padding: '4px 12px',
                                     bgcolor: article.category?.color || (theme.isDark ? '#374151' : '#e2e8f0'),
                                     color: theme.isDark ? 'white' : '#1f2937',
-                                    borderRadius: '20px',
+                                    borderRadius: '8px',
                                     fontSize: '12px',
                                     fontWeight: 500
                                 }}
@@ -340,7 +340,7 @@ export default function KnowledgeBasePage() {
         () => ({
             '& .MuiOutlinedInput-root': {
                 bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
-                borderRadius: 2,
+                borderRadius: '8px',
                 '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)' },
                 '&:hover fieldset': { borderColor: 'rgba(37, 99, 235, 0.35)' },
                 '&.Mui-focused fieldset': { borderColor: '#2563eb' },
@@ -378,7 +378,7 @@ export default function KnowledgeBasePage() {
     const inputSx = {
         '& .MuiOutlinedInput-root': {
             bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
-            borderRadius: 2,
+            borderRadius: '8px',
             color: textPrimary,
             height: '40px',
             '& fieldset': { borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.12)' },
@@ -552,7 +552,7 @@ export default function KnowledgeBasePage() {
                 sx={{
                     mb: 3,
                     p: 3,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     background: panelBg,
                     backdropFilter: 'blur(10px)',
                     border: cardBorder,
@@ -581,7 +581,7 @@ export default function KnowledgeBasePage() {
                             background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                             color: 'white',
                             padding: '12px 20px',
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                             fontSize: '14px',
                             fontWeight: 600,
                             textTransform: 'none',
@@ -629,7 +629,7 @@ export default function KnowledgeBasePage() {
                 sx={{
                     mb: 3,
                     p: 2,
-                    borderRadius: '16px',
+                    borderRadius: '8px',
                     bgcolor: isDark ? 'rgba(22, 29, 38, 0.5)' : '#fff',
                     border: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
                     display: 'flex',
@@ -671,7 +671,7 @@ export default function KnowledgeBasePage() {
                                 flexShrink: 0,
                                 px: 1,
                                 py: 0.25,
-                                borderRadius: '10px',
+                                borderRadius: '8px',
                                 fontSize: '10px',
                                 fontWeight: 700,
                                 bgcolor: 'rgba(37, 99, 235, 0.15)',
@@ -767,7 +767,7 @@ export default function KnowledgeBasePage() {
                     overflowY: 'auto',
                     '&::-webkit-scrollbar': { width: '8px' },
                     '&::-webkit-scrollbar-track': { background: 'transparent' },
-                    '&::-webkit-scrollbar-thumb': { background: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.12)', borderRadius: '4px' },
+                    '&::-webkit-scrollbar-thumb': { background: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.12)', borderRadius: '8px' },
                     '&::-webkit-scrollbar-thumb:hover': { background: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(15, 23, 42, 0.2)' }
                 }}
             >
@@ -784,7 +784,7 @@ export default function KnowledgeBasePage() {
                                 titleIcon="menu_book"
                                 accentColor="#2563eb"
                                 count={articles.length}
-                                sx={{ bgcolor: panelBg, border: cardBorder, borderRadius: '16px', overflow: 'hidden' }}
+                                sx={{ bgcolor: panelBg, border: cardBorder, borderRadius: '8px', overflow: 'hidden' }}
                             >
                                 <ArticleTable
                                     embedded

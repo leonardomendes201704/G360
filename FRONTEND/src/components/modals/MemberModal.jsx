@@ -108,11 +108,11 @@ const MemberModal = ({ open, onClose, onSave, loading, memberToEdit = null, read
 
                 <Box sx={{
                     display: 'flex', alignItems: 'center', gap: 2, p: 2.5,
-                    bgcolor: 'action.hover', borderRadius: 2,
+                    bgcolor: 'action.hover', borderRadius: '8px',
                     border: '2px dashed', borderColor: 'divider'
                 }}>
                     <Box sx={{
-                        width: 56, height: 56, borderRadius: '14px',
+                        width: 56, height: 56, borderRadius: '8px',
                         background: 'linear-gradient(135deg, #667eea, #764ba2)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: 'white', fontSize: '20px', fontWeight: 600

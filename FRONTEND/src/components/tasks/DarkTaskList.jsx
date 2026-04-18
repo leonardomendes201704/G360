@@ -128,7 +128,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
             background: containerBg,
             backdropFilter: isDark ? 'blur(10px)' : 'none',
             border: containerBorder,
-            borderRadius: '16px',
+            borderRadius: '8px',
             overflow: 'hidden',
             boxShadow: isDark ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.08)',
         }}>
@@ -198,7 +198,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
                                     width: '20px',
                                     height: '20px',
                                     border: isCompleted ? 'none' : checkboxBorder,
-                                    borderRadius: '6px',
+                                    borderRadius: '8px',
                                     cursor: 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -229,7 +229,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
                                     <Box sx={{
                                         fontSize: '10px',
                                         padding: '3px 8px',
-                                        borderRadius: '4px',
+                                        borderRadius: '8px',
                                         fontWeight: 600,
                                         textTransform: 'uppercase',
                                         background: categoryConfig.bg,
@@ -257,7 +257,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
                                 <Box sx={{
                                     width: '32px',
                                     height: '32px',
-                                    borderRadius: '50%',
+                                    borderRadius: '8px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -294,7 +294,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
                                 <Box sx={{
                                     width: '8px',
                                     height: '8px',
-                                    borderRadius: '50%',
+                                    borderRadius: '8px',
                                     background: task.priority === 'HIGH' || task.priority === 'CRITICAL' ? '#f43f5e' :
                                         task.priority === 'MEDIUM' ? '#f59e0b' : '#10b981',
                                     boxShadow: `0 0 8px ${task.priority === 'HIGH' || task.priority === 'CRITICAL' ? '#f43f5e' :
@@ -308,7 +308,7 @@ const DarkTaskList = ({ tasks = [], onTaskClick, onTaskDelete, onTaskToggle }) =
                             {/* Status */}
                             <Box sx={{
                                 padding: '5px 12px',
-                                borderRadius: '20px',
+                                borderRadius: '8px',
                                 fontSize: '11px',
                                 fontWeight: 600,
                                 textAlign: 'center',

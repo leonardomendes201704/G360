@@ -73,7 +73,7 @@ const ActivityFeed = ({ isDark = false, maxHeight = 440, showModuleFilter = true
                         onChange={(e) => setModuleFilter(e.target.value)}
                         displayEmpty
                         sx={{
-                            fontSize: '13px', borderRadius: 2,
+                            fontSize: '13px', borderRadius: '8px',
                             color: textSecondary,
                             '& .MuiOutlinedInput-notchedOutline': { borderColor: borderSubtle },
                             bgcolor: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc',
@@ -112,7 +112,7 @@ const ActivityFeed = ({ isDark = false, maxHeight = 440, showModuleFilter = true
                             {/* Events */}
                             <Box sx={{ position: 'relative' }}>
                                 {/* Vertical line */}
-                                <Box sx={{ position: 'absolute', left: 16, top: 0, bottom: 0, width: '2px', bgcolor: lineBg, borderRadius: 1 }} />
+                                <Box sx={{ position: 'absolute', left: 16, top: 0, bottom: 0, width: '2px', bgcolor: lineBg, borderRadius: '8px'}} />
 
                                 {items.map((act, idx) => {
                                     const mod = MODULE_CONFIG[act.entityType] || { label: act.entityType, icon: 'info', color: '#64748b' };
@@ -125,7 +125,7 @@ const ActivityFeed = ({ isDark = false, maxHeight = 440, showModuleFilter = true
                                         }}>
                                             {/* Icon dot on timeline */}
                                             <Box sx={{
-                                                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                                                width: 32, height: 32, borderRadius: '8px', flexShrink: 0,
                                                 bgcolor: `${mod.color}18`, border: `2px solid ${mod.color}40`,
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: mod.color, zIndex: 1,

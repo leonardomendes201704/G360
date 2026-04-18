@@ -24,7 +24,7 @@ const BulkActionsBar = ({ selectedCount, totalCount, onSelectAll, onClearAll, ac
             py: 1.5,
             background: 'linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(59,130,246,0.08) 100%)',
             border: '1px solid rgba(59,130,246,0.25)',
-            borderRadius: '12px',
+            borderRadius: '8px',
             mb: 1.5,
             backdropFilter: 'blur(8px)',
             animation: 'slideInDown 0.2s ease',
@@ -46,7 +46,7 @@ const BulkActionsBar = ({ selectedCount, totalCount, onSelectAll, onClearAll, ac
 
             {/* Count label */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{ width: 24, height: 24, borderRadius: '6px', bgcolor: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ width: 24, height: 24, borderRadius: '8px', bgcolor: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography sx={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>{selectedCount}</Typography>
                 </Box>
                 <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#93c5fd' }}>
