@@ -33,8 +33,9 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 |------|----------|--------|
 | Helpdesk | `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx` | **`DataListTable`** (`problemListColumns`, `sortProblemsRows`); US-025. |
 | Riscos | `FRONTEND/src/pages/RisksPage.jsx` | Modo lista: **`DataListShell`** + `BulkActionsBar` (US-025). |
-| Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Separadores Orçamentos / Plano de contas: **`DataListShell`** (US-026). |
-| Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | «Detalhamento Mensal»: **`DataListShell`** (US-026). |
+| Financeiro | `FRONTEND/src/pages/finance/FinancePage.jsx` | Sep. **Orçamentos** e **Plano de contas:** **`DataListTable`** (`budgetListColumns`/`accountListColumns`, sorts dedicados; `tabela-orcamentos`, `tabela-plano-contas`). |
+| Financeiro | `FRONTEND/src/pages/finance/ExpensesPage.jsx` | Contas a pagar: **`DataListTable`** (`expenseListColumns`, `expenseListSort`; `tabela-despesas`), embutida no separador «Despesas» de `/finance`. |
+| Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | Tabela MUI com **linhas expansíveis** (detalhe mensal aninhado); continua fora do padrão `DataListTable` em massa. «Detalhamento Mensal» com **`DataListShell`** (US-026) onde aplicável. |
 | Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Resumo por colaborador + detalhamento: **`DataListShell`** (US-026). |
 | Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Tabela de chamados: **`DataListShell`** (US-026). |
 | Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Tres separadores (serviços, categorias, SLA): **`DataListShell`** (US-026). |
@@ -46,7 +47,6 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 
 | Ficheiro |
 |----------|
-| `FRONTEND/src/pages/finance/ExpensesPage.jsx` |
 | `FRONTEND/src/pages/finance/BudgetDetailsPage.jsx` |
 | `FRONTEND/src/pages/finance/BudgetComparisonPage.jsx` |
 | `FRONTEND/src/pages/config/OrganizationPage.jsx` |

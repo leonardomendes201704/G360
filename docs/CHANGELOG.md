@@ -13,6 +13,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-16]
 
+### Refactored
+- **Financeiro (`/finance` — Orçamentos, Plano de Contas, Contas a Pagar):** listas migradas para **`DataListTable`** com colunas e ordenação em ficheiros dedicados (`budgetListColumns`/`budgetListSort`, `accountListColumns`/`accountListSort`, `expenseListColumns`/`expenseListSort`); `data-testid` `tabela-orcamentos`, `tabela-plano-contas`, `tabela-despesas`. O separador **DRE** mantém tabela MUI com linhas expansíveis (fora desta migração). Removidos controlos manuais de sort em `ExpensesPage` (ordenação nos cabeçalhos). `docs/patterns/data-grids-inventory.md` atualizado.
+  - `FRONTEND/src/pages/finance/FinancePage.jsx`, `FRONTEND/src/pages/finance/ExpensesPage.jsx`
+  - `FRONTEND/src/pages/finance/budgetListColumns.jsx`, `FRONTEND/src/pages/finance/budgetListSort.js`
+  - `FRONTEND/src/pages/finance/accountListColumns.jsx`, `FRONTEND/src/pages/finance/accountListSort.js`
+  - `FRONTEND/src/pages/finance/expenseListColumns.jsx`, `FRONTEND/src/pages/finance/expenseListSort.js`
+  - `docs/patterns/data-grids-inventory.md`
+
 ### Fixed
 - **`DataListTable` + lista de projetos / Docker:** removido scroll horizontal — células/cabeçalhos com quebra de texto, colunas de projetos em %; **`TablePagination` fora de `TableContainer`** (a barra de rodapé MUI deixou de alargar o contentor com a tabela) com `toolbar` em `flex-wrap`. **Dev via Docker:** `frontend` é imagem com `npm run build` (sem mount do `src`); comentário em `docker-compose.yml` para `docker compose build frontend --no-cache` após mudanças no `FRONTEND/`.
   - `FRONTEND/src/components/common/DataListTable.jsx`

@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { useSnackbar } from 'notistack';
-import { Box, Button, IconButton, Typography, Paper, Tooltip, useTheme } from '@mui/material';
-import { format } from 'date-fns';
+import { Box, Button, IconButton, Typography, Tooltip, useTheme } from '@mui/material';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -10,18 +9,18 @@ import ExpenseApprovalModal from '../../components/modals/ExpenseApprovalModal';
 import SubmitExpenseModal from '../../components/modals/SubmitExpenseModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
+import DataListTable from '../../components/common/DataListTable';
+import { getExpenseListColumns } from './expenseListColumns';
+import { sortExpenseRows } from './expenseListSort';
 import { getExpenses, createExpense, updateExpense, deleteExpense } from '../../services/expense.service';
 import { getErrorMessage } from '../../utils/errorUtils';
-import { getFileURL } from '../../utils/urlUtils';
 
 const ExpensesPage = () => {
     const { mode } = useContext(ThemeContext);
-    const { user, hasPermission } = useContext(AuthContext);
+    const { hasPermission } = useContext(AuthContext);
 
     // Permission detection using granular RBAC
     const canManageExpenses = hasPermission('FINANCE', 'WRITE');
-    const canViewExpenses = hasPermission('FINANCE', 'VIEW_INVOICES');
-
     const canApproveOrEditExpense = hasPermission('FINANCE', 'WRITE');
     const canSubmitForApprovalFlow = hasPermission('FINANCE', 'WRITE') || hasPermission('FINANCE', 'EDIT_BUDGET');
     const theme = useTheme();
@@ -30,9 +29,6 @@ const ExpensesPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [sortBy, setSortBy] = useState('date'); // date, amount, status
-    const [sortDesc, setSortDesc] = useState(true);
-
     const [expenses, setExpenses] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -63,25 +59,6 @@ const ExpensesPage = () => {
     const textMuted = mode === 'dark' ? '#94a3b8' : theme.palette.text.disabled;
     const surfaceBg = mode === 'dark' ? '#1c2632' : theme.palette.background.default;
     const borderColor = mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : theme.palette.divider;
-
-    const tableHeaderStyle = {
-        background: surfaceBg,
-        color: textSecondary,
-        fontSize: '11px',
-        fontWeight: 600,
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        padding: '14px 16px',
-        borderBottom: `1px solid ${borderColor}`,
-        textAlign: 'left'
-    };
-
-    const tableCellStyle = {
-        color: textPrimary,
-        fontSize: '13px',
-        padding: '14px 16px',
-        borderBottom: `1px solid ${borderColor}`
-    };
 
     const actionBtnStyle = (type = 'edit') => ({
         width: 32, height: 32, borderRadius: '8px',
@@ -241,40 +218,30 @@ const ExpensesPage = () => {
 
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-    // Filtros e Ordenação
-    const filtered = expenses.filter(e => {
-        const status = (e.status || '').toUpperCase();
-        const matchesTab = (
-            tabValue === 0 ||
-            (tabValue === 1 && (status === 'PREVISTO' || status === 'ATRASADO')) ||
-            (tabValue === 2 && (status === 'PAGO' || status === 'APROVADO'))
-        );
-        const matchesSearch = (
-            e.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            e.supplier?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+    // Filtros (ordenação na DataListTable)
+    const filtered = useMemo(
+        () =>
+            expenses.filter((e) => {
+                const status = (e.status || '').toUpperCase();
+                const matchesTab =
+                    tabValue === 0 ||
+                    (tabValue === 1 && (status === 'PREVISTO' || status === 'ATRASADO')) ||
+                    (tabValue === 2 && (status === 'PAGO' || status === 'APROVADO'));
+                const matchesSearch =
+                    (e.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (e.supplier?.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+                let matchesDate = true;
+                if (startDate) matchesDate = matchesDate && new Date(e.date) >= new Date(startDate);
+                if (endDate) matchesDate = matchesDate && new Date(e.date) <= new Date(endDate);
+                return matchesTab && matchesSearch && matchesDate;
+            }),
+        [expenses, tabValue, searchTerm, startDate, endDate]
+    );
 
-        let matchesDate = true;
-        if (startDate) matchesDate = matchesDate && new Date(e.date) >= new Date(startDate);
-        if (endDate) matchesDate = matchesDate && new Date(e.date) <= new Date(endDate);
-
-        return matchesTab && matchesSearch && matchesDate;
-    }).sort((a, b) => {
-        let valA = a[sortBy];
-        let valB = b[sortBy];
-
-        if (sortBy === 'date' || sortBy === 'dueDate') {
-            valA = new Date(valA || 0).getTime();
-            valB = new Date(valB || 0).getTime();
-        } else if (sortBy === 'amount') {
-            valA = Number(valA);
-            valB = Number(valB);
-        }
-
-        if (valA < valB) return sortDesc ? 1 : -1;
-        if (valA > valB) return sortDesc ? -1 : 1;
-        return 0;
-    });
+    const expensesResetKey = useMemo(
+        () => [searchTerm, startDate, endDate, tabValue, expenses.length].join('|'),
+        [searchTerm, startDate, endDate, tabValue, expenses.length]
+    );
 
     // KPIs
     const totalPending = expenses.filter(e => {
@@ -286,24 +253,6 @@ const ExpensesPage = () => {
         const s = (e.status || '').toUpperCase();
         return s === 'PAGO' || s === 'APROVADO';
     }).reduce((acc, e) => acc + Number(e.amount), 0);
-
-    const getStatusBadge = (status) => {
-        const configs = {
-            'PREVISTO': { label: 'Previsto', bg: '#1c2632', color: '#94a3b8' },
-            'PENDENTE': { label: 'Pendente', bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' },
-            'AGUARDANDO_APROVACAO': { label: 'Aguardando Aprovação', bg: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' },
-            'APROVADO': { label: 'Aprovado', bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' },
-            'ATRASADO': { label: 'Atrasado', bg: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e' },
-            'PAGO': { label: 'Pago', bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' },
-            'CANCELADO': { label: 'Cancelado', bg: 'rgba(100, 116, 139, 0.15)', color: '#64748b' }
-        };
-        const config = configs[status] || configs['PREVISTO'];
-        return (
-            <span style={{ padding: '5px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: config.bg, color: config.color }}>
-                {config.label}
-            </span>
-        );
-    };
 
     const tabs = [
         { id: 0, label: 'Todas' },
@@ -387,20 +336,6 @@ const ExpensesPage = () => {
                         onChange={(e) => setEndDate(e.target.value)}
                         style={inputStyle}
                     />
-
-                    {/* Sort Controls */}
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        style={inputStyle}
-                    >
-                        <option value="date">Data</option>
-                        <option value="amount">Valor</option>
-                        <option value="status">Status</option>
-                    </select>
-                    <IconButton onClick={() => setSortDesc(!sortDesc)} sx={{ border: `1px solid ${borderColor}` }}>
-                        <span className="material-icons-round" style={{ color: textMuted }}>{sortDesc ? 'arrow_downward' : 'arrow_upward'}</span>
-                    </IconButton>
                 </Box>
 
                 {/* Filter Tabs */}
@@ -423,125 +358,54 @@ const ExpensesPage = () => {
                 </Box>
             </Box>
 
-            {/* Table */}
-            <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-                <Box sx={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
-                        <thead>
-                            <tr>
-                                <th style={tableHeaderStyle}>Data</th>
-                                <th style={tableHeaderStyle}>Descrição</th>
-                                <th style={tableHeaderStyle}>Fornecedor</th>
-                                <th style={tableHeaderStyle}>Conta / Centro</th>
-                                <th style={tableHeaderStyle}>Vencimento</th>
-                                <th style={tableHeaderStyle}>Status</th>
-                                <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Valor</th>
-                                <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filtered.length === 0 ? (
-                                <tr><td colSpan={8} style={{ padding: 0, border: 'none' }}>
-                                    <EmptyState
-                                        icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>receipt_long</span>}
-                                        title="Nenhuma despesa encontrada"
-                                        description="Ajuste os filtros de busca ou lance uma nova despesa para começar."
-                                        actionLabel="Lançar Despesa"
-                                        actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                                        onAction={handleOpenCreate}
-                                        compact
-                                    />
-                                </td></tr>
-                            ) : filtered.map((item) => (
-                                <tr key={item.id} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = surfaceBg} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ ...tableCellStyle, color: textSecondary }}>{format(new Date(item.date), 'dd/MM/yyyy')}</td>
-                                    <td style={tableCellStyle}>
-                                        <Typography sx={{ fontWeight: 500, color: textPrimary, fontSize: '13px' }}>{item.description}</Typography>
-                                        {/* Indicador de Extra-Orçamentário */}
-                                        {item.approvalStatus === 'UNPLANNED' && (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                                                <span className="material-icons-round" style={{ fontSize: '12px', color: '#f59e0b' }}>warning</span>
-                                                <Typography sx={{ fontSize: '11px', color: '#f59e0b', fontWeight: 600 }}>Extra-Orçamentário</Typography>
-                                            </Box>
-                                        )}
-                                        {item.invoiceNumber && (
-                                            item.fileUrl ? (
-                                                <a href={getFileURL(item.fileUrl)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                                                    <Typography sx={{ fontSize: '11px', color: '#2563eb', cursor: 'pointer', '&:hover': { textDecoration: 'underline', mt: 0.5, display: 'block' } }}>
-                                                        NF: {item.invoiceNumber}
-                                                    </Typography>
-                                                </a>
-                                            ) : (
-                                                <Typography sx={{ fontSize: '11px', color: textSecondary, mt: 0.5 }}>NF: {item.invoiceNumber}</Typography>
-                                            )
-                                        )}
-                                    </td>
-                                    <td style={tableCellStyle}>{item.supplier?.name || '-'}</td>
-                                    <td style={tableCellStyle}>
-                                        <Typography sx={{ fontSize: '12px', color: textPrimary }}>{item.costCenter?.code}</Typography>
-                                        <Typography sx={{ fontSize: '11px', color: textSecondary }}>{item.account?.name}</Typography>
-                                    </td>
-                                    <td style={{ ...tableCellStyle, color: textSecondary }}>{item.dueDate ? format(new Date(item.dueDate), 'dd/MM/yyyy') : '-'}</td>
-                                    <td style={tableCellStyle}>{getStatusBadge(item.status)}</td>
-                                    <td style={{ ...tableCellStyle, textAlign: 'right', fontWeight: 600, color: textPrimary }}>{formatCurrency(item.amount)}</td>
-                                    <td style={{ ...tableCellStyle, textAlign: 'right' }}>
-                                        <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-                                            {/* Enviar para Aprovação - Financeiro + PREVISTO */}
-                                            {(() => {
-                                                const s = (item.status || '').toUpperCase();
-                                                if (s !== 'PREVISTO') return null;
-                                                if (!canSubmitForApprovalFlow) return null;
-                                                return (
-                                                    <Tooltip title="Enviar para Aprovação" arrow>
-                                                        <IconButton onClick={() => handleOpenSubmit(item)} sx={actionBtnStyle('success')}>
-                                                            <span className="material-icons-round" style={{ fontSize: '16px' }}>send</span>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                );
-                                            })()}
-                                            {/* Aprovar - apenas Gestores/Admin e AGUARDANDO_APROVACAO */}
-                                            {item.status === 'AGUARDANDO_APROVACAO' && canApproveOrEditExpense && (
-                                                <Tooltip title="Aprovar e anexar NF" arrow>
-                                                    <IconButton
-                                                        onClick={() => handleOpenApproval(item)}
-                                                        sx={actionBtnStyle('success')}
-                                                    >
-                                                        <span className="material-icons-round" style={{ fontSize: '16px' }}>check_circle</span>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )}
-                                            {/* Editar - Manager/Admin + PREVISTO somente */}
-                                            {(() => {
-                                                const s = (item.status || '').toUpperCase();
-                                                if (s !== 'PREVISTO') return null;
-                                                if (!canApproveOrEditExpense) return null;
-                                                return (
-                                                    <Tooltip title="Editar" arrow>
-                                                        <IconButton onClick={() => handleOpenEdit(item)} sx={actionBtnStyle('edit')}>
-                                                            <span className="material-icons-round" style={{ fontSize: '16px' }}>edit</span>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                );
-                                            })()}
-                                            {(() => {
-                                                const s = (item.status || '').toUpperCase();
-                                                if (['APROVADO', 'PAGO', 'AGUARDANDO_APROVACAO'].includes(s)) return null;
-                                                return (
-                                                    <Tooltip title="Excluir" arrow>
-                                                        <IconButton onClick={() => handleDeleteClick(item)} sx={actionBtnStyle('delete')}>
-                                                            <span className="material-icons-round" style={{ fontSize: '16px' }}>delete</span>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                );
-                                            })()}
-                                        </Box>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </Box>
-            </Box>
+            <DataListTable
+                dataTestidTable="tabela-despesas"
+                shell={{
+                    title: 'Contas a Pagar',
+                    titleIcon: 'receipt_long',
+                    accentColor: '#10b981',
+                    count: filtered.length,
+                    sx: { ...cardStyle, overflow: 'hidden' },
+                }}
+                columns={getExpenseListColumns({
+                    formatCurrency,
+                    textPrimary,
+                    textSecondary,
+                    borderColor,
+                    surfaceBg,
+                    actionBtnStyle,
+                    canSubmitForApprovalFlow,
+                    canApproveOrEditExpense,
+                    onOpenSubmit: handleOpenSubmit,
+                    onOpenApproval: handleOpenApproval,
+                    onOpenEdit: handleOpenEdit,
+                    onDelete: handleDeleteClick,
+                })}
+                rows={filtered}
+                sortRows={sortExpenseRows}
+                defaultOrderBy="date"
+                defaultOrder="desc"
+                getDefaultOrderForColumn={(colId) =>
+                    colId === 'date' || colId === 'dueDate' || colId === 'amount' ? 'desc' : 'asc'
+                }
+                resetPaginationKey={expensesResetKey}
+                emptyMessage="Nenhuma despesa encontrada."
+                emptyContent={
+                    canManageExpenses
+                        ? (
+                            <EmptyState
+                                icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>receipt_long</span>}
+                                title="Nenhuma despesa encontrada"
+                                description="Ajuste os filtros de busca ou lance uma nova despesa para começar."
+                                actionLabel="Lançar Despesa"
+                                actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                                onAction={handleOpenCreate}
+                                compact
+                            />
+                        )
+                        : undefined
+                }
+            />
 
             <ExpenseModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSave} expense={selectedItem} />
             <ExpenseApprovalModal

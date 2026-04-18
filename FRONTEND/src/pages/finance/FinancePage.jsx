@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Button, IconButton, Typography, Paper, useTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { Box, Button, Typography, Paper, useTheme, TextField } from '@mui/material';
 
 import FinanceDashboard from './FinanceDashboard';
 import ExpensesPage from './ExpensesPage';
@@ -13,7 +13,11 @@ import AccountModal from '../../components/modals/AccountModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import StandardModal from '../../components/common/StandardModal';
 import EmptyState from '../../components/common/EmptyState';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getBudgetListColumns } from './budgetListColumns';
+import { sortBudgetRows } from './budgetListSort';
+import { getAccountListColumns } from './accountListColumns';
+import { sortAccountRows } from './accountListSort';
 import { AuthContext } from '../../contexts/AuthContext';
 
 import budgetService, { duplicateBudget } from '../../services/budget.service';
@@ -181,6 +185,11 @@ const FinancePage = () => {
 
   const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
+  const budgetResetKey = useMemo(() => budgets.map((b) => b.id).join(','), [budgets]);
+  const accountResetKey = useMemo(() => accounts.map((a) => a.id).join(','), [accounts]);
+
+  const canEditBudget = hasPermission('FINANCE', 'EDIT_BUDGET');
+
   const tabs = [
     { id: 0, label: 'Dashboard', icon: 'dashboard' },
     { id: 1, label: 'Despesas e Contas', icon: 'payments' },
@@ -188,21 +197,6 @@ const FinancePage = () => {
     { id: 3, label: 'Plano de Contas', icon: 'account_tree' },
     { id: 4, label: 'DRE', icon: 'table_chart' }
   ];
-
-  const getStatusBadge = (status) => {
-    const configs = {
-      'DRAFT': { label: 'Rascunho', bg: 'action.hover', color: 'text.secondary' },
-      'APPROVED': { label: 'Aprovado', bg: 'rgba(37, 99, 235, 0.15)', color: 'primary.main' },
-      'REJECTED': { label: 'Rejeitado', bg: 'rgba(244, 63, 94, 0.15)', color: 'error.main' },
-      'CLOSED': { label: 'Fechado', bg: 'action.disabledBackground', color: 'text.disabled' }
-    };
-    const config = configs[status] || configs['DRAFT'];
-    return (
-      <Box sx={{ px: 1.5, py: 0.5, borderRadius: '8px', fontSize: '12px', fontWeight: 600, bgcolor: config.bg, color: config.color, display: 'inline-block' }}>
-        {config.label}
-      </Box>
-    );
-  };
 
   const getTypeBadge = (type) => {
     const isOPEX = type === 'OPEX';
@@ -291,7 +285,7 @@ const FinancePage = () => {
               }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>compare</span>}>
                 Comparar Orçamentos
               </Button>
-              {hasPermission('FINANCE', 'EDIT_BUDGET') && (
+              {canEditBudget && (
               <Button onClick={() => { setSelectedBudget(null); setBudgetModalOpen(true); }} sx={{
                 padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
@@ -304,68 +298,46 @@ const FinancePage = () => {
               )}
             </Box>
 
-            <DataListShell
-              title="Orçamentos"
-              titleIcon="account_balance_wallet"
-              accentColor="#2563eb"
-              count={budgets.length}
-              sx={{ ...commonPaperStyle, overflow: 'hidden' }}
-            >
-              <TableContainer sx={{ borderRadius: '8px'}}>
-                <Table>
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: 'action.hover' }}>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', py: 1.5 }}>Nome</TableCell>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', py: 1.5 }}>Ano</TableCell>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', py: 1.5 }}>Status</TableCell>
-                      <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', py: 1.5 }}>Total</TableCell>
-                      <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', py: 1.5 }}>Ações</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {budgets.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} sx={{ p: 0 }}>
-                        <EmptyState
-                          icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>account_balance_wallet</span>}
-                          title="Nenhum orçamento cadastrado"
-                          description="Crie seu primeiro orçamento para acompanhar receitas e despesas."
-                          actionLabel="Novo Orçamento"
-                          actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                          onAction={() => { setSelectedBudget(null); setBudgetModalOpen(true); }}
-                          compact
-                        />
-                      </TableCell></TableRow>
-                    ) : budgets.map((budget) => (
-                      <TableRow key={budget.id} hover data-testid={`budget-row-${budget.name}`}>
-                        <TableCell>
-                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary', display: 'inline' }}>{budget.name}</Typography>
-                          {budget.isOBZ && <Box component="span" sx={{ ml: 1, px: 0.75, py: 0.25, borderRadius: '8px', fontSize: '10px', fontWeight: 600, bgcolor: 'rgba(37, 99, 235, 0.15)', color: 'primary.main' }}>OBZ</Box>}
-                        </TableCell>
-                        <TableCell sx={{ color: 'text.secondary' }}>{budget.fiscalYear?.year || '-'}</TableCell>
-                        <TableCell>{getStatusBadge(budget.status)}</TableCell>
-                        <TableCell align="right" sx={{ color: 'primary.main', fontWeight: 600 }}>{formatCurrency(budget.totalOpex)}</TableCell>
-                        <TableCell align="right">
-                          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                            <IconButton onClick={() => handleDuplicateClick(budget)} size="small" sx={{ color: 'primary.light' }} title="Duplicar">
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>content_copy</span>
-                            </IconButton>
-                            <IconButton onClick={() => handleOpenDetails(budget)} size="small" sx={{ color: 'text.secondary' }} title="Visualizar">
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>visibility</span>
-                            </IconButton>
-                            <IconButton onClick={() => { setSelectedBudget(budget); setBudgetModalOpen(true); }} size="small" sx={{ color: 'primary.main' }} title="Editar" disabled={budget.status === 'APPROVED'}>
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span>
-                            </IconButton>
-                            <IconButton onClick={() => handleDeleteBudgetClick(budget.id)} size="small" sx={{ color: 'error.main' }} title="Excluir" disabled={budget.status === 'APPROVED'}>
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span>
-                            </IconButton>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </DataListShell>
+            <DataListTable
+              dataTestidTable="tabela-orcamentos"
+              shell={{
+                title: 'Orçamentos',
+                titleIcon: 'account_balance_wallet',
+                accentColor: '#2563eb',
+                count: budgets.length,
+                sx: { ...commonPaperStyle, overflow: 'hidden' },
+              }}
+              columns={getBudgetListColumns({
+                formatCurrency,
+                onDuplicate: handleDuplicateClick,
+                onOpenDetails: handleOpenDetails,
+                onEdit: (b) => { setSelectedBudget(b); setBudgetModalOpen(true); },
+                onDelete: handleDeleteBudgetClick,
+                canEditBudget,
+              })}
+              rows={budgets}
+              sortRows={sortBudgetRows}
+              defaultOrderBy="name"
+              defaultOrder="asc"
+              resetPaginationKey={budgetResetKey}
+              loading={loadingBudgets}
+              emptyMessage="Nenhum orçamento cadastrado."
+              emptyContent={
+                canEditBudget
+                  ? (
+                    <EmptyState
+                      icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>account_balance_wallet</span>}
+                      title="Nenhum orçamento cadastrado"
+                      description="Crie seu primeiro orçamento para acompanhar receitas e despesas."
+                      actionLabel="Novo Orçamento"
+                      actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                      onAction={() => { setSelectedBudget(null); setBudgetModalOpen(true); }}
+                      compact
+                    />
+                    )
+                  : undefined
+              }
+            />
             <BudgetModal open={budgetModalOpen} onClose={() => setBudgetModalOpen(false)} onSave={handleSaveBudget} budget={selectedBudget} />
           </Box>
         )
@@ -374,9 +346,9 @@ const FinancePage = () => {
       {/* Tab 3: Plano de Contas */}
       {
         tabValue === 3 && (
-          <Box>
+          <Box data-testid="accounts-tab-content">
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
-              {hasPermission('FINANCE', 'EDIT_BUDGET') && (
+              {canEditBudget && (
               <Button onClick={() => { setSelectedAccount(null); setAccountModalOpen(true); }} sx={{
                 padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
                 background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
@@ -388,53 +360,43 @@ const FinancePage = () => {
               )}
             </Box>
 
-            <Paper sx={{ ...commonPaperStyle, overflow: 'hidden' }}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: 'action.hover' }}>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Código</TableCell>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Nome</TableCell>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tipo</TableCell>
-                      <TableCell sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hierarquia</TableCell>
-                      <TableCell align="right" sx={{ color: 'text.secondary', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ações</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {accounts.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} sx={{ p: 0 }}>
-                        <EmptyState
-                          icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>account_tree</span>}
-                          title="Nenhuma conta cadastrada"
-                          description="Configure o plano de contas para organizar suas categorias financeiras."
-                          actionLabel="Nova Conta"
-                          actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                          onAction={() => { setSelectedAccount(null); setAccountModalOpen(true); }}
-                          compact
-                        />
-                      </TableCell></TableRow>
-                    ) : accounts.map((acc) => (
-                      <TableRow key={acc.id} hover>
-                        <TableCell sx={{ fontFamily: 'monospace', color: 'text.primary' }}>{acc.code}</TableCell>
-                        <TableCell sx={{ color: 'text.primary' }}>{acc.name}</TableCell>
-                        <TableCell>{getTypeBadge(acc.type)}</TableCell>
-                        <TableCell sx={{ color: 'text.secondary' }}>{acc.parent ? `Sub de: ${acc.parent.name}` : 'Raiz'}</TableCell>
-                        <TableCell align="right">
-                          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                            <IconButton onClick={() => { setSelectedAccount(acc); setAccountModalOpen(true); }} size="small" sx={{ color: 'primary.main' }} title="Editar">
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span>
-                            </IconButton>
-                            <IconButton onClick={() => handleDeleteAccountClick(acc.id)} size="small" sx={{ color: 'error.main' }} title="Excluir">
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span>
-                            </IconButton>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
+            <DataListTable
+              dataTestidTable="tabela-plano-contas"
+              shell={{
+                title: 'Plano de Contas',
+                titleIcon: 'account_tree',
+                accentColor: '#2563eb',
+                count: accounts.length,
+                sx: { ...commonPaperStyle, overflow: 'hidden' },
+              }}
+              columns={getAccountListColumns({
+                getTypeBadge,
+                onEdit: (a) => { setSelectedAccount(a); setAccountModalOpen(true); },
+                onDelete: handleDeleteAccountClick,
+                canEdit: canEditBudget,
+              })}
+              rows={accounts}
+              sortRows={sortAccountRows}
+              defaultOrderBy="code"
+              defaultOrder="asc"
+              resetPaginationKey={accountResetKey}
+              emptyMessage="Nenhuma conta cadastrada."
+              emptyContent={
+                canEditBudget
+                  ? (
+                    <EmptyState
+                      icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>account_tree</span>}
+                      title="Nenhuma conta cadastrada"
+                      description="Configure o plano de contas para organizar suas categorias financeiras."
+                      actionLabel="Nova Conta"
+                      actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                      onAction={() => { setSelectedAccount(null); setAccountModalOpen(true); }}
+                      compact
+                    />
+                    )
+                  : undefined
+              }
+            />
             <AccountModal open={accountModalOpen} onClose={() => setAccountModalOpen(false)} onSave={handleSaveAccount} account={selectedAccount} />
           </Box>
         )
