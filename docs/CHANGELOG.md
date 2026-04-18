@@ -20,6 +20,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-20]
 
+### Docs
+- **Docker (frontend local):** diretriz pós-`git push` (regra 7 do `CLAUDE.md`) — reconstruir imagem com `docker compose build frontend --no-cache` e `docker compose up -d frontend`, ou `scripts/docker-rebuild-frontend.ps1` / `scripts/docker-rebuild-frontend.sh` (ambiente 8080 pronto para teste; sem bind mount do `src`).
+
 ### Refactored
 - **Projetos (`/projects`):** `ProjectsListPage` — lista com **`DataListTable`** em **`paginationMode: 'server'`** (ordenação e `limit`/`page` na API, sem re-sort no cliente); colunas em `projectListColumns.jsx`. **`DataListTable`** estendeu-se com props de **paginação/ordenação controladas no servidor** (`serverTotalCount`, `serverPage`, `onServerPageChange`, `serverOrderBy`/`serverOrder`/`onServerSort`, `dataTestidTable`, `shell.tableClassName`). Testes de lista com `AuthContext`; vazio com CTA só sem filtros ativos (com permissão de criação). Removida paginação manual em HTML.
   - `FRONTEND/src/components/common/DataListTable.jsx`

@@ -174,12 +174,11 @@ docs/backlog/
    - Garantir `docs/CHANGELOG.md` atualizado na mesma entrega quando houver mudanca de produto ou documentacao relevante (ja exigido abaixo).
    - Executar **`git commit`** com mensagem no formato do projeto (incluir ID US/BUG/Epic quando aplicavel).
    - Executar **`git push`** para o remoto do branch atual.
-   - **Docker (stack local):** Apos **`git push`** bem-sucedido, se a entrega alterar artefactos que entram nas imagens (`FRONTEND/`, `BACKEND/`, Dockerfiles, `docker-compose.yml`), executar na **raiz do repo** a reconstrucao/subida dos servicos afetados, por exemplo:
-     - So frontend: `docker compose up -d --build frontend`
-     - So backend: `docker compose up -d --build backend`
-     - Ambos ou duvida: `docker compose up -d --build`
-     Alteracoes **apenas** em `docs/`, testes sem impacto de build, ou ficheiros que nao entram na imagem podem omitir o passo Docker.
-   Excecoes: o usuario pedir explicitamente para nao commitar/push ou nao atualizar Docker; ou impossibilidade tecnica (sem credenciais, sem rede, Docker indisponivel) — nesse caso registar no chat o que ficou pendente.
+   - **Docker (stack local, ambiente de teste em 8080/8500):** A imagem do **frontend** nao tem bind mount: reflete apenas o `npm run build` feito **no** `docker build`. **Diretriz fixa:** apos **`git push`** bem-sucedido, se a entrega tocar ficheiros que entram na **imagem** (em especial `FRONTEND/`, `BACKEND/`, Dockerfiles, `docker-compose.yml`), o agente **DEVE** reconstruir e subir os servicos afetados para o Docker ficar pronto a validar no browser.
+     - **Frontend (tipico apos entregas de UI):** na **raiz do repo**, `docker compose build frontend --no-cache` seguido de `docker compose up -d frontend`, **ou** os scripts `scripts/docker-rebuild-frontend.ps1` (Windows) / `scripts/docker-rebuild-frontend.sh` (Linux/macOS). O `--no-cache` evita servir JS/CSS antigo por cache de camada.
+     - **Backend:** `docker compose build backend --no-cache` e `docker compose up -d backend`, ou `docker compose up -d --build backend` se aceitavel; em duvida, `docker compose up -d --build` para tudo.
+     - Alteracoes **apenas** em `docs/`, ficheiros que nao entram no contexto de build da imagem, podem **omitir** o passo Docker.
+   Excecoes: o usuario pedir explicitamente **nao** atualizar Docker; ou impossibilidade tecnica (sem Docker, sem rede) — nesse caso **registar no chat** o que ficou pendente.
 
    Exemplo de secao de resolucao:
    ```markdown

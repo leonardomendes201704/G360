@@ -1,12 +1,18 @@
 # G360 — PostgreSQL + API + frontend (desenvolvimento local via Docker).
 #
+# O frontend NÃO usa bind mount: o que corre em 8080 é o bundle de `npm run build` na imagem.
+# Diretriz: após mudanças em FRONTEND/ (e push), reconstruir imagem e subir — ver scripts/ e CLAUDE.md (regra 7).
+#
 # Apenas Postgres:
 #   docker compose up -d g360-postgres
 #
 # Stack completo (build na primeira vez):
 #   docker compose up -d --build
 #
-# Após alterar código do FRONTEND, a imagem precisa de rebuild (não há bind mount do src):
+# Frontend: rebuild “limpo” + pronto para teste (recomendado pós-entregas de UI)
+#   ./scripts/docker-rebuild-frontend.sh
+#   .\scripts\docker-rebuild-frontend.ps1
+#   (equivalente manual na raiz do repo)
 #   docker compose build frontend --no-cache && docker compose up -d frontend
 #
 # URLs: frontend http://localhost:8080  |  API http://localhost:8500  |  Postgres host 127.0.0.1:5433
