@@ -1,0 +1,14 @@
+# Contexto usado pelo build do frontend (raiz do repo). Reduz tráfego para o daemon Docker.
+BACKEND/node_modules
+FRONTEND/node_modules
+**/node_modules
+.git
+**/.git
+**/coverage
+**/dist
+**/test-results
+**/playwright-report
+**/.env
+**/.env.*
+BACKEND/uploads
+*.log

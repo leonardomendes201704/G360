@@ -1,7 +1,13 @@
-# PostgreSQL dedicado ao G360 (desenvolvimento local).
-# Uso: na raiz do repo → docker compose up -d
-# Porta no host: 5433 (evita colisão com Postgres padrão na 5432).
-# Credenciais alinhadas a BACKEND/.env (DATABASE_URL).
+# G360 — PostgreSQL + API + frontend (desenvolvimento local via Docker).
+#
+# Apenas Postgres:
+#   docker compose up -d g360-postgres
+#
+# Stack completo (build na primeira vez):
+#   docker compose up -d --build
+#
+# URLs: frontend http://localhost:8080  |  API http://localhost:8500  |  Postgres host 127.0.0.1:5433
+# Seed (após primeira subida): docker compose exec backend npm run seed
 
 services:
   g360-postgres:
@@ -22,5 +28,40 @@ services:
       timeout: 5s
       retries: 10
 
+  backend:
+    build:
+      context: .
+      dockerfile: BACKEND/Dockerfile
+    container_name: g360-backend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8500:8500"
+    environment:
+      DATABASE_URL: postgresql://g360_dev:G360localDev2026@g360-postgres:5432/g360?schema=public
+      JWT_SECRET: ${JWT_SECRET:-g360-local-development-jwt-secret-key-min-32-chars-long}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN:-7d}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+      NODE_ENV: development
+      DEV_HTTP: "true"
+      PORT: "8500"
+    volumes:
+      - g360_uploads:/app/uploads
+    depends_on:
+      g360-postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: FRONTEND/Dockerfile
+    container_name: g360-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+
 volumes:
   g360_pgdata:
+  g360_uploads:

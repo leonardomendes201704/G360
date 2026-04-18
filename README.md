@@ -177,6 +177,28 @@ npm run dev
 
 O backend estara disponivel em `https://localhost:8500` e o frontend em `https://localhost:5176` (HTTP se sem certificados locais; ver `vite.config.js`).
 
+### Docker (Postgres + backend + frontend)
+
+Na raiz do repositorio:
+
+```bash
+docker compose up -d --build
+```
+
+- **Frontend:** http://localhost:8080 (Nginx com build estatico do Vite)
+- **API:** http://localhost:8500 (HTTP; `DEV_HTTP=true` no contentor)
+- **PostgreSQL no host:** `127.0.0.1:5433` (mesmas credenciais que em `docker-compose.yml`)
+
+A API aplica o schema com `prisma db push` ao iniciar. Para dados iniciais:
+
+```bash
+docker compose exec backend npm run seed
+```
+
+Apenas o Postgres (sem API/frontend): `docker compose up -d g360-postgres`.
+
+O ficheiro `rbac-matrix.json` na raiz do repositorio entra nas imagens de **backend** e **frontend** (resolucao de permissoes RBAC).
+
 **Credenciais padrao (apos seed):**
 - Email: `admin@g360.com.br`
 - Senha: `L89*Eb5v@`
