@@ -7,6 +7,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Refactored
+- **Base de conhecimento (`/knowledge`):** Vista em **lista** (`KnowledgeBasePage`) passa a **`DataListTable`** (ordenação, paginação, linha clica no visualizador); colunas e sort em ficheiros dedicados. **Vista grelha** inalterada. Vazio: `emptyContent` com **`EmptyState` + “Novo artigo”** (permissão CREATE) ou `emptyMessage` quando não houver criação; na vista grelha mantém-se o bloco de vazio na vista grelha.
+  - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
+  - `FRONTEND/src/pages/knowledgeArticleListColumns.jsx`, `FRONTEND/src/pages/knowledgeArticleListSort.js`
+  - `docs/patterns/data-grids-inventory.md` (linha Grupo A)
+
 ### Added
 - **`DataListTable`:** prop opcional **`emptyContent`** — quando `rows` está vazio, pode substituir `emptyMessage` por conteúdo rico (ex.: **`EmptyState`** com CTA). Listas existentes que só usam `emptyMessage` mantêm o comportamento.
 - **`AssetModal`:** prop **`defaultCreateType`** (`'HARDWARE' | 'LICENSE'`, default `HARDWARE`) para abrir o modal já no tipo certo (ex.: «Nova licença» vinda da lista vazia).

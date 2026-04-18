@@ -13,9 +13,10 @@ import FilterAlt from '@mui/icons-material/FilterAlt';
 import Refresh from '@mui/icons-material/Refresh';
 import FilterDrawer from '../components/common/FilterDrawer';
 import EmptyState from '../components/common/EmptyState';
-import DataListShell from '../components/common/DataListShell';
+import DataListTable from '../components/common/DataListTable';
+import { getKnowledgeArticleColumns } from './knowledgeArticleListColumns';
+import { sortKnowledgeArticleRows } from './knowledgeArticleListSort';
 import {
-    Search as SearchIcon,
     Add as AddIcon,
     Description as ArticleIcon,
     Visibility as VisibilityIcon,
@@ -23,8 +24,6 @@ import {
     ViewList as ListViewIcon,
     MoreVert as MoreVertIcon,
     CalendarToday as CalendarIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon
 } from '@mui/icons-material';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import StatsCard from '../components/common/StatsCard';
@@ -197,113 +196,6 @@ const ViewToggleBtn = ({ active, icon, onClick, theme }) => (
     </Box>
 );
 
-// Article Table Component - New Requirement
-import {
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
-} from '@mui/material';
-
-const ArticleTable = ({ articles, onView, onEdit, onDelete, canUpdate, canDelete, theme, embedded = false }) => (
-    <TableContainer
-        component={embedded ? Box : Paper}
-        sx={embedded
-            ? { overflowX: 'auto', bgcolor: 'transparent', boxShadow: 'none', border: 'none' }
-            : { bgcolor: theme.cardBg, border: theme.cardBorder, borderRadius: '8px', boxShadow: 'none' }}
-    >
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Titulo</TableCell>
-                    <TableCell sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Categoria</TableCell>
-                    <TableCell sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Autor</TableCell>
-                    <TableCell sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Visualizacoes</TableCell>
-                    <TableCell sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Criado em</TableCell>
-                    <TableCell align="right" sx={{ color: theme.textSecondary, borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)' }}>Acoes</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {articles.map((article) => (
-                    <TableRow
-                        key={article.id}
-                        hover
-                        onClick={() => onView(article)}
-                        sx={{
-                            cursor: 'pointer',
-                            '&:hover': { bgcolor: theme.surfaceBg },
-                            '& td': { borderColor: theme.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)' }
-                        }}
-                    >
-                        <TableCell sx={{ color: theme.textPrimary, fontWeight: 500 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <ArticleIcon sx={{ color: '#2563eb', fontSize: 20 }} />
-                                {article.title}
-                            </Box>
-                        </TableCell>
-                        <TableCell>
-                            <Box
-                                sx={{
-                                    display: 'inline-block',
-                                    padding: '4px 12px',
-                                    bgcolor: article.category?.color || (theme.isDark ? '#374151' : '#e2e8f0'),
-                                    color: theme.isDark ? 'white' : '#1f2937',
-                                    borderRadius: '8px',
-                                    fontSize: '12px',
-                                    fontWeight: 500
-                                }}
-                            >
-                                {article.category?.name || 'Sem categoria'}
-                            </Box>
-                        </TableCell>
-                        <TableCell sx={{ color: theme.textSecondary }}>{article.author?.name || 'Desconhecido'}</TableCell>
-                        <TableCell sx={{ color: theme.textSecondary }}>{article.views || 0}</TableCell>
-                        <TableCell sx={{ color: theme.textSecondary }}>{new Date(article.createdAt).toLocaleDateString('pt-BR')}</TableCell>
-                        <TableCell align="right">
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                <IconButton
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onView(article);
-                                    }}
-                                    sx={{ color: '#2563eb' }}
-                                    title="Visualizar"
-                                >
-                                    <VisibilityIcon fontSize="small" />
-                                </IconButton>
-                                {canUpdate && (
-                                    <IconButton
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            onEdit(article);
-                                        }}
-                                        sx={{ color: theme.textSecondary, '&:hover': { color: '#fbbf24' } }}
-                                        title="Editar"
-                                    >
-                                        <EditIcon fontSize="small" />
-                                    </IconButton>
-                                )}
-                                {canDelete && (
-                                    <IconButton
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            onDelete(article);
-                                        }}
-                                        sx={{ color: theme.textSecondary, '&:hover': { color: '#ef4444' } }}
-                                        title="Excluir"
-                                    >
-                                        <DeleteIcon fontSize="small" />
-                                    </IconButton>
-                                )}
-                            </Box>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </TableContainer>
-);
-
 export default function KnowledgeBasePage() {
     const { enqueueSnackbar } = useSnackbar();
     const { mode } = useContext(ThemeContext);
@@ -354,6 +246,11 @@ export default function KnowledgeBasePage() {
     const activeDrawerFilterCount = useMemo(
         () => (filters.categoryId ? 1 : 0),
         [filters.categoryId]
+    );
+
+    const kbListResetKey = useMemo(
+        () => `${filters.search}|${filters.categoryId}`,
+        [filters.search, filters.categoryId]
     );
 
     const openFilterDrawer = () => {
@@ -779,24 +676,49 @@ export default function KnowledgeBasePage() {
                     <>
                         {/* CONDITIONAL RENDER: LIST OR GRID */}
                         {viewMode === 'list' ? (
-                            <DataListShell
-                                title="Artigos"
-                                titleIcon="menu_book"
-                                accentColor="#2563eb"
-                                count={articles.length}
-                                sx={{ bgcolor: panelBg, border: cardBorder, borderRadius: '8px', overflow: 'hidden' }}
-                            >
-                                <ArticleTable
-                                    embedded
-                                    articles={articles}
-                                    onView={handleOpenViewer}
-                                    onEdit={handleEditClick}
-                                    onDelete={handleDeleteClick}
-                                    canUpdate={canUpdate}
-                                    canDelete={canDelete}
-                                    theme={themeTokens}
-                                />
-                            </DataListShell>
+                            <DataListTable
+                                shell={{
+                                    title: 'Artigos',
+                                    titleIcon: 'menu_book',
+                                    accentColor: '#2563eb',
+                                    count: articles.length,
+                                    sx: { bgcolor: panelBg, border: cardBorder, borderRadius: '8px', overflow: 'hidden' },
+                                }}
+                                columns={getKnowledgeArticleColumns({
+                                    isDark,
+                                    textPrimary,
+                                    textSecondary,
+                                    onView: handleOpenViewer,
+                                    onEdit: handleEditClick,
+                                    onDelete: handleDeleteClick,
+                                    canUpdate,
+                                    canDelete,
+                                })}
+                                rows={articles}
+                                sortRows={sortKnowledgeArticleRows}
+                                defaultOrderBy="createdAt"
+                                defaultOrder="desc"
+                                getDefaultOrderForColumn={(id) => (id === 'createdAt' || id === 'views' ? 'desc' : 'asc')}
+                                emptyMessage="Nenhum artigo corresponde aos filtros atuais."
+                                emptyContent={
+                                    canCreate
+                                        ? (
+                                            <EmptyState
+                                                icon={<ArticleIcon sx={{ fontSize: 'inherit' }} />}
+                                                title="Nenhum artigo encontrado"
+                                                description="Comece criando um artigo para compartilhar conhecimento com a equipe."
+                                                actionLabel="Novo artigo"
+                                                actionIcon={<AddIcon />}
+                                                onAction={() => { setEditData(null); setIsModalOpen(true); }}
+                                            />
+                                        )
+                                        : undefined
+                                }
+                                resetPaginationKey={kbListResetKey}
+                                onRowClick={handleOpenViewer}
+                                rowsPerPageDefault={10}
+                                rowsPerPageOptions={[5, 10, 25, 50]}
+                            />
                         ) : (
                             <Box
                                 sx={{
@@ -817,12 +739,12 @@ export default function KnowledgeBasePage() {
                             </Box>
                         )}
 
-                        {articles.length === 0 && (
+                        {articles.length === 0 && viewMode === 'grid' && (
                             <EmptyState
                                 icon={<ArticleIcon sx={{ fontSize: 'inherit' }} />}
                                 title="Nenhum artigo encontrado"
                                 description="Comece criando um artigo para compartilhar conhecimento com a equipe."
-                                actionLabel={canCreate ? 'Novo Artigo' : undefined}
+                                actionLabel={canCreate ? 'Novo artigo' : undefined}
                                 actionIcon={canCreate ? <AddIcon /> : undefined}
                                 onAction={canCreate ? () => { setEditData(null); setIsModalOpen(true); } : undefined}
                             />
