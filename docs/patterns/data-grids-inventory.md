@@ -38,7 +38,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 | Financeiro | `FRONTEND/src/pages/finance/DREPage.jsx` | Tabela MUI com **linhas expansíveis** (detalhe mensal aninhado); continua fora do padrão `DataListTable` em massa. «Detalhamento Mensal» com **`DataListShell`** (US-026) onde aplicável. |
 | Tarefas | `FRONTEND/src/pages/tasks/TimeReportPage.jsx` | Resumo por colaborador + detalhamento: **`DataListShell`** (US-026). |
 | Service desk | `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx` | Tabela de chamados: **`DataListShell`** (US-026). |
-| Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | Tres separadores (serviços, categorias, SLA): **`DataListShell`** (US-026). |
+| Service desk | `FRONTEND/src/pages/servicedesk/CatalogAdmin.jsx` | `CatalogAdminPanel`: três separadores com **`DataListTable`** (`catalogServiceList*`, `catalogCategoryList*`, `catalogSlaList*`); `tabela-catalogo-servicos`, `tabela-catalogo-categorias`, `tabela-catalogo-slas`. |
 | Contratos | `FRONTEND/src/pages/contracts/ContractDetailsPage.jsx` | Sep. **Anexos:** **`DataListTable`** (`contractAttachmentListColumns`, `contractAttachmentListSort`; `tabela-contrato-anexos`). Sep. **Aditivos:** lista em `<ul>` com **`DataListShell`** (US-026). |
 
 ---

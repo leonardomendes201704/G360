@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { 
-  Box, Typography, Paper, Grid, Table, TableBody, TableCell, 
-  TableContainer, TableHead, TableRow, IconButton, Button,
-  TextField, MenuItem, Chip, Tabs, Tab
+import {
+  Box, Typography, Paper, IconButton, Button,
+  TextField, MenuItem, Tabs, Tab
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import serviceCatalogService from '../../services/service-catalog.service';
 import slaPolicyService from '../../services/sla-policy.service';
 import StandardModal from '../../components/common/StandardModal';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getCatalogServiceListColumns } from './catalogServiceListColumns';
+import { sortCatalogServiceRows } from './catalogServiceListSort';
+import { getCatalogCategoryListColumns } from './catalogCategoryListColumns';
+import { sortCatalogCategoryRows } from './catalogCategoryListSort';
+import { getCatalogSlaListColumns } from './catalogSlaListColumns';
+import { sortCatalogSlaRows } from './catalogSlaListSort';
 
 export const CatalogAdminPanel = ({ embedded = false }) => {
   const [categories, setCategories] = useState([]);
@@ -217,10 +221,6 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
     } catch(err) { alert('Erro ao excluir SLA (Provavelmente em uso): ' + (err.response?.data?.error || err.message)); }
   };
 
-  const formatHours = (minutes) => {
-    return `${Math.round(minutes/60)}h`;
-  };
-
   return (
     <Box>
       <Typography variant={embedded ? 'subtitle1' : 'h5'} fontWeight="bold" mb={embedded ? 2 : 3}>
@@ -240,130 +240,93 @@ export const CatalogAdminPanel = ({ embedded = false }) => {
         </Tabs>
       </Box>
 
-      {/* Services Table */}
       {activeTab === 0 && (
-        <DataListShell
-          title="Serviços Habilitados"
-          titleIcon="design_services"
-          accentColor="#2563eb"
-          count={services.length}
-          toolbar={
-            <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openSvcModal()}>Novo Serviço</Button>
-          }
-        >
-          <TableContainer sx={{ borderRadius: '8px'}}>
-            <Table size="medium">
-              <TableHead>
-                <TableRow sx={{ bgcolor: 'grey.50' }}>
-                  <TableCell><strong>Serviço e Descrição</strong></TableCell>
-                  <TableCell><strong>Categoria</strong></TableCell>
-                  <TableCell><strong>Política de SLA</strong></TableCell>
-                  <TableCell align="right"><strong>Ações Administrativas</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {services.map(s => (
-                  <TableRow key={s.id} hover>
-                    <TableCell>
-                      <Typography variant="body1" fontWeight="600" color="primary.main">{s.name}</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{s.description}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip size="small" label={s.category?.name || 'Sem Categoria'} variant="outlined" />
-                    </TableCell>
-                    <TableCell>
-                      {s.slaPolicy ? <Chip size="small" label={s.slaPolicy.name} color="success" /> : <Chip size="small" label="Sem SLA (Best-effort)" />}
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton size="small" color="primary" onClick={() => openFormBuilder(s)} title="Construir Formulário Dinâmico">
-                        <DynamicFormIcon fontSize="small"/>
-                      </IconButton>
-                      <IconButton size="small" onClick={() => openSvcModal(s)}><EditIcon fontSize="small"/></IconButton>
-                      <IconButton size="small" color="error" onClick={() => handleDeleteService(s.id)}><DeleteIcon fontSize="small"/></IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DataListShell>
+        <DataListTable
+          size="medium"
+          shell={{
+            title: 'Serviços Habilitados',
+            titleIcon: 'design_services',
+            accentColor: '#2563eb',
+            count: services.length,
+            toolbar: (
+              <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openSvcModal()}>
+                Novo Serviço
+              </Button>
+            ),
+          }}
+          columns={getCatalogServiceListColumns({
+            onOpenFormBuilder: openFormBuilder,
+            onEditService: openSvcModal,
+            onDeleteService: handleDeleteService,
+          })}
+          rows={services}
+          sortRows={sortCatalogServiceRows}
+          defaultOrderBy="name"
+          defaultOrder="asc"
+          emptyMessage="Nenhum serviço cadastrado."
+          resetPaginationKey={services.map((s) => s.id).join('-')}
+          dataTestidTable="tabela-catalogo-servicos"
+        />
       )}
 
-      {/* Categories Table */}
       {activeTab === 1 && (
-        <DataListShell
-          title="Categorias do Catálogo"
-          titleIcon="folder"
-          accentColor="#2563eb"
-          count={categories.length}
-          toolbar={
-            <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openCatModal()}>Nova Categoria</Button>
-          }
-        >
-          <TableContainer sx={{ borderRadius: '8px'}}>
-            <Table size="medium">
-              <TableHead>
-                <TableRow sx={{ bgcolor: 'grey.50' }}>
-                  <TableCell><strong>Nome da Categoria</strong></TableCell>
-                  <TableCell align="right"><strong>Ações</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {categories.map(c => (
-                  <TableRow key={c.id} hover>
-                    <TableCell><Typography variant="body1" fontWeight="500">{c.name}</Typography></TableCell>
-                    <TableCell align="right">
-                      <IconButton size="small" onClick={() => openCatModal(c)}><EditIcon fontSize="small"/></IconButton>
-                      <IconButton size="small" color="error" onClick={() => handleDeleteCategory(c.id)}><DeleteIcon fontSize="small"/></IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DataListShell>
+        <DataListTable
+          size="medium"
+          shell={{
+            title: 'Categorias do Catálogo',
+            titleIcon: 'folder',
+            accentColor: '#2563eb',
+            count: categories.length,
+            toolbar: (
+              <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={() => openCatModal()}>
+                Nova Categoria
+              </Button>
+            ),
+          }}
+          columns={getCatalogCategoryListColumns({
+            onEditCategory: openCatModal,
+            onDeleteCategory: handleDeleteCategory,
+          })}
+          rows={categories}
+          sortRows={sortCatalogCategoryRows}
+          defaultOrderBy="name"
+          defaultOrder="asc"
+          emptyMessage="Nenhuma categoria cadastrada."
+          resetPaginationKey={categories.map((c) => c.id).join('-')}
+          dataTestidTable="tabela-catalogo-categorias"
+        />
       )}
 
-      {/* SLAs Table */}
       {activeTab === 2 && (
-        <DataListShell
-          title="Políticas de Acordo (SLA)"
-          titleIcon="schedule"
-          accentColor="#7c3aed"
-          count={slas.length}
-          toolbar={
-            <Button size="small" variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => openSlaModal()}>Nova Política SLA</Button>
-          }
-        >
-          <TableContainer sx={{ borderRadius: '8px'}}>
-            <Table size="medium">
-              <TableHead>
-                <TableRow sx={{ bgcolor: 'grey.50' }}>
-                  <TableCell><strong>Nome da Política</strong></TableCell>
-                  <TableCell><strong>Prazos Fixados (Resposta / Solução)</strong></TableCell>
-                  <TableCell align="right"><strong>Ações</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {slas.map(sla => (
-                  <TableRow key={sla.id} hover>
-                    <TableCell>
-                      <Typography variant="body1" fontWeight="bold" color="secondary.main">{sla.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">{sla.description || 'SLA Global de Sistema'}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>1ª Resposta em MÁX: <b>{formatHours(sla.responseMinutes)}</b></Typography>
-                      <Typography variant="body2">Solução em MÁX: <b>{formatHours(sla.resolveMinutes)}</b></Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton size="small" color="error" onClick={() => handleDeleteSla(sla.id)}><DeleteIcon fontSize="small"/></IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DataListShell>
+        <DataListTable
+          size="medium"
+          shell={{
+            title: 'Políticas de Acordo (SLA)',
+            titleIcon: 'schedule',
+            accentColor: '#7c3aed',
+            count: slas.length,
+            toolbar: (
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                startIcon={<AddIcon />}
+                onClick={() => openSlaModal()}
+              >
+                Nova Política SLA
+              </Button>
+            ),
+          }}
+          columns={getCatalogSlaListColumns({ onDeleteSla: handleDeleteSla })}
+          rows={slas}
+          sortRows={sortCatalogSlaRows}
+          defaultOrderBy="name"
+          defaultOrder="asc"
+          getDefaultOrderForColumn={(id) => (id === 'deadlines' ? 'desc' : 'asc')}
+          emptyMessage="Nenhuma política de SLA cadastrada."
+          resetPaginationKey={slas.map((s) => s.id).join('-')}
+          dataTestidTable="tabela-catalogo-slas"
+        />
       )}
 
       {/* Cat Modal */}
