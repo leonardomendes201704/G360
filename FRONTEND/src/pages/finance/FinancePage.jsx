@@ -434,7 +434,7 @@ const FinancePage = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </DataListShell>
+            </Paper>
             <AccountModal open={accountModalOpen} onClose={() => setAccountModalOpen(false)} onSave={handleSaveAccount} account={selectedAccount} />
           </Box>
         )

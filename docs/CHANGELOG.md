@@ -7,6 +7,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-18]
 
+### Fixed
+- **FinancePage:** Tag JSX incorreta no separador Plano de Contas — fechamento `</DataListShell>` onde o bloco abre com `<Paper>`; corrigido para `</Paper>` (erro de compilação Vite/Babel).
+  - `FRONTEND/src/pages/finance/FinancePage.jsx`
+
 ### Refactored
 - **US-028 / EP-011:** Portal «Meus Chamados» migrado para **`DataListTable`**: ordenação via `sortPortalTickets`, paginação e mensagens de vazio preservadas; KPIs, busca, `FilterDrawer` e wizard inalterados.
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
