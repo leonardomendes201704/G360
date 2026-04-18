@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, forwardRef, useContext } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 import {
   Box,
   Typography,
@@ -31,7 +31,6 @@ import KnowledgeBaseService from '../../services/knowledge-base.service';
 import { getActiveSupportGroups } from '../../services/support-group.service';
 import { getDepartments } from '../../services/department.service';
 import { getCostCenters } from '../../services/cost-center.service';
-import { AuthContext } from '../../contexts/AuthContext';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -121,7 +120,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const PortalPage = () => {
-  const { user } = useContext(AuthContext);
   const [tickets, setTickets] = useState([]);
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -221,8 +219,9 @@ const PortalPage = () => {
     setDescription('');
     setRelatedAssetId('');
     setSupportGroupId('');
-    setPortalDepartmentId(user?.departmentId || '');
-    setPortalCostCenterId(user?.costCenterId || '');
+    // Opcionais: não herdar dept./CC do utilizador — sempre «— Não informado —» até escolha explícita.
+    setPortalDepartmentId('');
+    setPortalCostCenterId('');
     setCustomAnswers({});
 
     let parsedFields = [];

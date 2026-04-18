@@ -8,6 +8,8 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Fixed
+- **Portal de Chamados — dept./centro de custo opcionais no novo chamado:** Ao abrir o modal, deixou de pré-preencher departamento e centro de custo a partir do perfil do utilizador; o valor inicial é sempre vazio (opção **— Não informado —**), até escolha explícita.
+  - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
 - **Portal de Chamados — labels dos selects no modal:** Com `SelectProps.displayEmpty` e valor `''`, o MUI não aplicava `shrink` ao label; o tema força posição «vazia» com `!important`, pelo que o texto do rótulo sobrepunha o valor. **`InputLabelProps={{ shrink: true }}`** em todos os `TextField` `select` do `StandardModal` (schema dinâmico, equipe, departamento, centro de custo, ativo).
   - `FRONTEND/src/pages/helpdesk/PortalPage.jsx`
 - **Portal de Chamados / StandardModal — MUI `Select` (TextField `select`):** O mesmo bloco CSS do Dialog aplicava `display: flex` a `.MuiSelect-select`, o que podia esconder o texto do valor no Chrome; a regra foi separada: **flex** só em `.MuiOutlinedInput-input` que **não** é `.MuiSelect-select`, com **cor** explícita (`color` / `-webkit-text-fill-color`) no `.MuiDialog-root .MuiSelect-select` em tema claro e escuro.
