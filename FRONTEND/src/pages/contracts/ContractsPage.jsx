@@ -1,18 +1,19 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, MenuItem, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Box, Typography, Button, TextField, MenuItem, useTheme } from '@mui/material';
 import FilterAlt from '@mui/icons-material/FilterAlt';
 import Refresh from '@mui/icons-material/Refresh';
 import FilterDrawer from '../../components/common/FilterDrawer';
-import { format, isAfter, isBefore, addDays } from 'date-fns';
-
 import { ThemeContext } from '../../contexts/ThemeContext';
 import ContractModal from '../../components/modals/ContractModal';
 import AddendumFormModal from '../../components/modals/AddendumFormModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getContractListColumns } from './contractListColumns';
+import { sortContractRows } from './contractListSort';
+import { getContractStatus } from './contractListUtils';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import { getContracts, createContract, updateContract, deleteContract } from '../../services/contract.service';
@@ -57,13 +58,10 @@ const ContractsPage = () => {
 
   // Theme-aware styles
   const textPrimary = mode === 'dark' ? '#f1f5f9' : theme.palette.text.primary;
-  const textSecondary = mode === 'dark' ? '#64748b' : theme.palette.text.secondary;
   const cardBg = mode === 'dark' ? 'rgba(22, 29, 38, 0.5)' : '#FFFFFF';
   const borderColor = mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)';
   const cardShadow = mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)';
   const surfaceBg = mode === 'dark' ? '#1c2632' : '#FFFFFF';
-  const tableHeaderBg = mode === 'dark' ? '#1c2632' : '#f8fafc';
-
   const fetchContracts = async () => {
     setLoading(true);
     try {
@@ -77,15 +75,6 @@ const ContractsPage = () => {
   };
 
   useEffect(() => { fetchContracts(); }, []);
-
-  // Contract Status Helper
-  const getContractStatus = (contract) => {
-    const end = new Date(contract.endDate);
-    const today = new Date();
-    if (isAfter(today, end)) return 'VENCIDO';
-    if (isBefore(end, addDays(today, 30))) return 'A VENCER';
-    return 'VIGENTE';
-  };
 
   // Filter Logic
   const filteredContracts = useMemo(() => {
@@ -112,6 +101,11 @@ const ContractsPage = () => {
       return matchesSearch && matchesStatus && matchesType && matchesPeriod;
     });
   }, [contracts, searchTerm, filters]);
+
+  const listResetKey = useMemo(
+    () => [searchTerm, filters.status, filters.type, filters.period, contracts.length].join('|'),
+    [searchTerm, filters.status, filters.type, filters.period, contracts.length]
+  );
 
   const activeDrawerFilterCount = useMemo(
     () =>
@@ -201,16 +195,6 @@ const ContractsPage = () => {
   const handleOpenNew = () => { setSelectedContract(null); setModalOpen(true); };
   const handleOpenEdit = (c) => { setSelectedContract(c); setModalOpen(true); };
   const handleOpenDetails = (c) => { navigate(`/contracts/${c.id}`); };
-
-  // Status Badge Styles
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'VIGENTE': return { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' };
-      case 'A VENCER': return { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' };
-      case 'VENCIDO': return { bg: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e' };
-      default: return { bg: 'rgba(148, 163, 184, 0.15)', color: '#94a3b8' };
-    }
-  };
 
   // Stat Card Configuration
   const statCards = [
@@ -446,234 +430,88 @@ const ContractsPage = () => {
         ))}
       </KpiGrid>
 
-      {/* Table Section */}
-      <DataListShell
-        title="Lista de Contratos"
-        titleIcon="list"
-        accentColor="#2563eb"
-        count={filteredContracts.length}
-        sx={{
-          borderRadius: '8px',
-          background: cardBg,
-          backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
-          border: `1px solid ${borderColor}`,
-          boxShadow: cardShadow,
-          overflow: 'hidden'
-        }}
-        toolbar={(
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <ExportButton data={filteredContracts} columns={EXPORT_COLUMNS.contracts} filename="contratos" compact />
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
-                background: surfaceBg,
-                border: `1px solid ${borderColor}`,
-                borderRadius: '8px',
-                padding: '10px 16px',
-                width: 300
-              }}
-            >
-              <span className="material-icons-round" style={{ fontSize: '20px', color: mode === 'dark' ? '#64748b' : '#94a3b8' }}>search</span>
-              <input
-                type="text"
-                placeholder="Buscar contrato..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  flex: 1,
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  color: mode === 'dark' ? '#f1f5f9' : '#0f172a',
-                  fontSize: '14px'
+      <DataListTable
+        dataTestidTable="tabela-contratos"
+        shell={{
+          title: 'Lista de Contratos',
+          titleIcon: 'list',
+          accentColor: '#2563eb',
+          count: filteredContracts.length,
+          sx: {
+            borderRadius: '8px',
+            background: cardBg,
+            backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
+            border: `1px solid ${borderColor}`,
+            boxShadow: cardShadow,
+            overflow: 'hidden',
+          },
+          toolbar: (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <ExportButton data={filteredContracts} columns={EXPORT_COLUMNS.contracts} filename="contratos" compact />
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  background: surfaceBg,
+                  border: `1px solid ${borderColor}`,
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  width: 300,
                 }}
-              />
+              >
+                <span className="material-icons-round" style={{ fontSize: '20px', color: mode === 'dark' ? '#64748b' : '#94a3b8' }}>search</span>
+                <input
+                  type="text"
+                  placeholder="Buscar contrato..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    flex: 1,
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    color: mode === 'dark' ? '#f1f5f9' : '#0f172a',
+                    fontSize: '14px',
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
-      >
-        <Box sx={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: '#1c2632' }}>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Número
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Fornecedor
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Objeto
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Vigência
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Valor
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Status
-                </th>
-                <th style={{ padding: '16px 24px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredContracts.map(contract => {
-                const status = getContractStatus(contract);
-                const statusStyle = getStatusStyle(status);
-                return (
-                  <tr
-                    key={contract.id}
-                    style={{ transition: 'all 0.2s ease', cursor: 'pointer' }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = '#1c2632'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: '#2563eb', fontWeight: 600, borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      {contract.number}
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: '#f1f5f9', fontWeight: 500, borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      {contract.supplier?.name || '-'}
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: '#94a3b8', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {contract.description}
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '13px', color: '#94a3b8', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      {format(new Date(contract.startDate), 'dd/MM/yyyy')} - {format(new Date(contract.endDate), 'dd/MM/yyyy')}
-                    </td>
-                    <td style={{ padding: '20px 24px', fontSize: '14px', color: '#f1f5f9', fontWeight: 600, borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      {formatCurrency(contract.value)}
-                    </td>
-                    <td style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      <span style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        background: statusStyle.bg,
-                        color: statusStyle.color
-                      }}>
-                        <span className="material-icons-round" style={{ fontSize: '14px' }}>
-                          {status === 'VIGENTE' ? 'check_circle' : status === 'A VENCER' ? 'schedule' : 'error'}
-                        </span>
-                        {status}
-                      </span>
-                    </td>
-                    <td style={{ padding: '20px 24px', textAlign: 'right', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                        <Tooltip title="Ver Detalhes">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleOpenDetails(contract)}
-                            sx={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: '8px',
-                              border: '1px solid rgba(255, 255, 255, 0.06)',
-                              color: '#94a3b8',
-                              '&:hover': {
-                                background: '#1c2632',
-                                borderColor: '#2563eb',
-                                color: '#2563eb'
-                              }
-                            }}
-                          >
-                            <span className="material-icons-round" style={{ fontSize: '18px' }}>visibility</span>
-                          </IconButton>
-                        </Tooltip>
-                        {canEdit && (
-                          <Tooltip title="Editar">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleOpenEdit(contract)}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255, 255, 255, 0.06)',
-                                color: '#94a3b8',
-                                '&:hover': {
-                                  background: '#1c2632',
-                                  borderColor: '#2563eb',
-                                  color: '#2563eb'
-                                }
-                              }}
-                            >
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span>
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {canAddendum && (
-                          <Tooltip title="Aditivo Rápido">
-                            <IconButton
-                              size="small"
-                              onClick={() => setQuickAddendumContract(contract)}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255, 255, 255, 0.06)',
-                                color: '#94a3b8',
-                                '&:hover': {
-                                  background: 'rgba(59, 130, 246, 0.1)',
-                                  borderColor: '#3b82f6',
-                                  color: '#3b82f6'
-                                }
-                              }}
-                            >
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>note_add</span>
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {canDeletePerm && (
-                          <Tooltip title="Excluir">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleDeleteClick(contract.id)}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255, 255, 255, 0.06)',
-                                color: '#94a3b8',
-                                '&:hover': {
-                                  background: 'rgba(244, 63, 94, 0.1)',
-                                  borderColor: '#f43f5e',
-                                  color: '#f43f5e'
-                                }
-                              }}
-                            >
-                              <span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span>
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Box>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Box>
-
-        {/* Empty State */}
-        {filteredContracts.length === 0 && !loading && (
-          <EmptyState
-            icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>description</span>}
-            title="Nenhum contrato encontrado"
-            description="Ajuste os filtros ou adicione um novo contrato para começar a gerenciar seus acordos comerciais."
-            actionLabel="Novo Contrato"
-            actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-            onAction={handleOpenNew}
-          />
-        )}
-      </DataListShell>
+          ),
+        }}
+        columns={getContractListColumns({
+          formatCurrency,
+          onDetails: handleOpenDetails,
+          onEdit: handleOpenEdit,
+          onQuickAddendum: (c) => setQuickAddendumContract(c),
+          onDelete: handleDeleteClick,
+          canEdit,
+          canAddendum,
+          canDeletePerm,
+        })}
+        rows={filteredContracts}
+        sortRows={sortContractRows}
+        defaultOrderBy="period"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (id === 'period' || id === 'value' ? 'desc' : 'asc')}
+        resetPaginationKey={listResetKey}
+        loading={loading}
+        emptyMessage="Nenhum contrato encontrado. Ajuste os filtros ou a pesquisa."
+        emptyContent={
+          canWrite
+            ? (
+              <EmptyState
+                icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>description</span>}
+                title="Nenhum contrato encontrado"
+                description="Ajuste os filtros ou adicione um novo contrato para começar a gerenciar seus acordos comerciais."
+                actionLabel="Novo Contrato"
+                actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                onAction={handleOpenNew}
+              />
+            )
+            : undefined
+        }
+      />
 
       {/* Modals */}
       <ContractModal

@@ -8,6 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-18]
 
 ### Refactored
+- **Contratos (`/contracts`):** lista migrada de `<table>` HTML + **`DataListShell`** para **`DataListTable`**; `contractListColumns.jsx`, `contractListSort.js`, `contractListUtils.js` (status de vigência); `data-testid` `tabela-contratos`; vazio rico com **`EmptyState`** quando `CONTRACTS` CREATE. Filtros em **`FilterDrawer`** e export inalterados na toolbar.
+  - `FRONTEND/src/pages/contracts/ContractsPage.jsx`, `FRONTEND/src/pages/contracts/contractListColumns.jsx`, `FRONTEND/src/pages/contracts/contractListSort.js`, `FRONTEND/src/pages/contracts/contractListUtils.js`
+  - `docs/patterns/data-grids-inventory.md`
 - **Tarefas (`/tasks`):** vista **Lista** passa a **`DataListTable`** com `taskListColumns.jsx` e `taskListSort.js` (ordenação e paginação no cliente, `data-testid` `tabela-tarefas-gerais`); `BulkActionsBar` na página corrente; `getRowSx` para atraso/seleção. Kanban e planejamento inalterados. Inventário de grelhas atualizado.
   - `FRONTEND/src/pages/tasks/TasksPage.jsx`, `FRONTEND/src/pages/tasks/taskListColumns.jsx`, `FRONTEND/src/pages/tasks/taskListSort.js`, `FRONTEND/src/pages/tasks/__tests__/TasksPage.test.jsx`, `docs/patterns/data-grids-inventory.md`
 

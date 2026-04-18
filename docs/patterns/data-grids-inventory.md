@@ -18,7 +18,7 @@ Componentes base existentes:
 | Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: **`DataListTable`** (`incidentListColumns`, `sortIncidentsRows`); casca partilhada com Kanban via **`DataListShell`**; Kanban alternativo. |
 | GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | Dashboard + vista Lista: **`DataListTable`**; `ChangeRequestDashboard.jsx` reutiliza as mesmas colunas/ordenação. Calendário em **`DataListShell`**. |
 | Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |
-| Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | `<table>`; cabeçalho **`DataListShell`** (export + busca). |
+| Contratos | `FRONTEND/src/pages/contracts/ContractsPage.jsx` | **`DataListTable`** (`contractListColumns`, `contractListSort`, `contractListUtils`); `FilterDrawer` + export + busca na toolbar; `tabela-contratos`. |
 | Base de conhecimento | `FRONTEND/src/pages/KnowledgeBasePage.jsx` | Modo lista: **`DataListTable`** (`knowledgeArticleListColumns`, `sortKnowledgeArticleRows`); grelha de cartões inalterada; vazio rico com **`EmptyState`** (CTA) quando `KB` CREATE. |
 | Tarefas | `FRONTEND/src/pages/tasks/TasksPage.jsx` | Lista/Kanban/Planning; modo **lista** com **`DataListTable`** (`taskListColumns.jsx`, `taskListSort.js`); `BulkActionsBar` em `renderBeforeTable`. |
 | Ativos | `FRONTEND/src/pages/assets/AssetsPage.jsx` | Vista **Hardware** e **Licenças:** **`DataListTable`** (`assetListColumns` / `licenseListColumns`, `sortAssetRows` / `sortLicenseRows`); hardware com **`BulkActionsBar`** em `renderBeforeTable`; clique na linha abre vista (`AssetViewModal` distingue ativo/licença). |
