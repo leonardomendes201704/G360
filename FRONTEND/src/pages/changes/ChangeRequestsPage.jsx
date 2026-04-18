@@ -780,11 +780,10 @@ const ChangeRequestsPage = () => {
                     changes={changes}
                     loading={loading}
                     onRefresh={fetchChanges}
-                    onSelectChange={(change) => {
-                        setSelectedChange(change);
-                        setIsViewMode(true);
-                        setModalOpen(true);
-                    }}
+                    onView={handleOpenView}
+                    onEdit={handleOpenEdit}
+                    onDelete={handleDeleteClick}
+                    onSend={handleSendRequest}
                 />
             )}
 

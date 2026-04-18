@@ -8,6 +8,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Refactored
+- **GMUD (`/changes`):** `ChangeRequestDashboard.jsx` passa a usar **`DataListTable`** (mesmas colunas/ordenação que a vista Lista); clique na linha abre **`ChangeViewModal`** (`onView`/`handleOpenView`), alinhado à lista.
 - **GMUD (`/changes`):** `ChangeRequestsPage.jsx` — modo lista migrado de `ChangeRequestList` para **`DataListTable`** com `changeRequestListColumns.jsx` e `sortChangeRequestRows`; paginação MUI; calendário e estados loading/vazio mantêm **`DataListShell`**. Removido `ChangeRequestList.jsx`.
   - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
   - `FRONTEND/src/pages/changes/changeRequestListColumns.jsx`
