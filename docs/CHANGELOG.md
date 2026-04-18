@@ -7,6 +7,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-18]
 
+### Fixed
+- **Service Desk:** Grelha de chamados (`ServiceDeskDashboard`) — texto de Dept., centro de custo, prioridade e SLA deixava de respeitar colunas após `DataListShell`; aplicado `table-layout: fixed`, larguras por coluna e truncamento (`ellipsis`) para evitar sobreposição.
+  - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`
+
 ### Changed
 - **US-026 / EP-010:** **Grupo B (fecho)** — **`DataListShell`** em **Central de Serviços** (`ServiceDeskDashboard.jsx`), **DRE** (`DREPage.jsx`), **Relatório de Horas** (`TimeReportPage.jsx`), **Finance** separadores Orçamentos e Plano de contas (`FinancePage.jsx`), **Catálogo ITBM** (`CatalogAdmin.jsx`), **Detalhe do contrato** anexos/aditivos (`ContractDetailsPage.jsx`). **EP-010** encerrado.
   - `FRONTEND/src/pages/servicedesk/ServiceDeskDashboard.jsx`

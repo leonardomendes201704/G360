@@ -230,21 +230,21 @@ const ServiceDeskDashboard = () => {
         accentColor="#2563eb"
         count={totalTickets}
       >
-      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none' }}>
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, boxShadow: 'none', width: '100%', overflowX: 'auto' }}>
         {loading ? (
           <Box p={4} display="flex" justifyContent="center"><CircularProgress /></Box>
         ) : (
-          <Table>
+          <Table size="small" sx={{ tableLayout: 'fixed', width: '100%' }}>
             <TableHead sx={{ bgcolor: mode==='dark'?'#1e293b':'#f8fafc' }}>
               <TableRow>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Cód.</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Solicitação</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Dept.</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>C. custo</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Prioridade</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Prazo SLA</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Status</TableCell>
-                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Operar</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '8%', minWidth: 88 }}>Cód.</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '26%', minWidth: 160 }}>Solicitação</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '13%', minWidth: 100 }}>Dept.</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '13%', minWidth: 100 }}>C. custo</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '10%', minWidth: 92 }}>Prioridade</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '11%', minWidth: 104 }}>Prazo SLA</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '11%', minWidth: 100 }}>Status</TableCell>
+                <TableCell sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', width: '8%', minWidth: 88 }}>Operar</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -257,30 +257,30 @@ const ServiceDeskDashboard = () => {
                   const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
                   return (
                     <TableRow key={t.id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell sx={{ fontWeight: '700', fontSize: '0.85rem' }}>{t.code}</TableCell>
-                      <TableCell>
-                        <Typography variant="body2" fontWeight="600" sx={{ mb: 0.5 }}>{t.title}</Typography>
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem' }}>{t.requester?.name?.charAt(0) || 'U'}</Avatar>
-                          <Typography variant="caption" color="text.secondary">{t.requester?.name}</Typography>
+                      <TableCell sx={{ fontWeight: '700', fontSize: '0.85rem', verticalAlign: 'top', minWidth: 0, overflow: 'hidden' }}>{t.code}</TableCell>
+                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
+                        <Typography variant="body2" fontWeight="600" sx={{ mb: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', wordBreak: 'break-word' }} title={t.title}>{t.title}</Typography>
+                        <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
+                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', flexShrink: 0 }}>{t.requester?.name?.charAt(0) || 'U'}</Avatar>
+                          <Typography variant="caption" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }} title={t.requester?.name}>{t.requester?.name}</Typography>
                         </Box>
                       </TableCell>
-                      <TableCell sx={{ maxWidth: 140 }}>
-                        <Typography variant="caption" noWrap title={t.department?.name || ''}>
+                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
+                        <Typography variant="caption" component="span" display="block" title={t.department?.name || ''} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {t.department?.name || '—'}
                         </Typography>
                       </TableCell>
-                      <TableCell sx={{ maxWidth: 140 }}>
-                        <Typography variant="caption" noWrap title={t.costCenter?.name || ''}>
+                      <TableCell sx={{ minWidth: 0, overflow: 'hidden', verticalAlign: 'top' }}>
+                        <Typography variant="caption" component="span" display="block" title={t.costCenter?.name || ''} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {t.costCenter?.name || '—'}
                         </Typography>
                       </TableCell>
-                      <TableCell>
-                        <Chip label={t.priority} color={PRIORITY_COLORS[t.priority]} size="small" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 700 }} />
+                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                        <Chip label={t.priority} color={PRIORITY_COLORS[t.priority]} size="small" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 700, maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
                       </TableCell>
-                      <TableCell>
-                        <Box display="flex" alignItems="center">
-                          <Typography variant="body2" sx={{ fontWeight: 500, color: isBreached ? '#ef4444' : 'inherit' }}>
+                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', minWidth: 0, overflow: 'hidden' }}>
+                        <Box display="flex" alignItems="center" sx={{ minWidth: 0 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 500, color: isBreached ? '#ef4444' : 'inherit', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {t.slaResolveDue ? new Date(t.slaResolveDue).toLocaleDateString() : 'Sem SLA'}
                           </Typography>
                           {isBreached && (
@@ -293,10 +293,10 @@ const ServiceDeskDashboard = () => {
                           )}
                         </Box>
                       </TableCell>
-                      <TableCell>
-                        <Chip label={t.status} color={STATUS_COLORS[t.status]} size="small" variant="outlined" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 600, borderWidth: 2 }} />
+                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap', overflow: 'hidden', minWidth: 0 }}>
+                        <Chip label={t.status} color={STATUS_COLORS[t.status]} size="small" variant="outlined" sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 600, borderWidth: 2, maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ verticalAlign: 'top', whiteSpace: 'nowrap' }}>
                         <IconButton 
                           component="a" 
                           href={`/portal/tickets/${t.id}`} 
