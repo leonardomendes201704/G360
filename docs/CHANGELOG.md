@@ -7,6 +7,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Added
+- **`DataListTable`:** prop opcional **`emptyContent`** — quando `rows` está vazio, pode substituir `emptyMessage` por conteúdo rico (ex.: **`EmptyState`** com CTA). Listas existentes que só usam `emptyMessage` mantêm o comportamento.
+- **`AssetModal`:** prop **`defaultCreateType`** (`'HARDWARE' | 'LICENSE'`, default `HARDWARE`) para abrir o modal já no tipo certo (ex.: «Nova licença» vinda da lista vazia).
+- **Ativos (`/assets`):** Vistas Hardware e Licenças com inventário vazio voltam a mostrar **`EmptyState`** com ação (Novo ativo / Nova licença), via `emptyContent`. Botão do header alinha o rótulo e o tipo de criação à vista (Hardware vs Licenças).
+
 ### Refactored
 - **Ativos (`/assets`):** Vistas do toggle **Hardware** e **Licenças** passam a **`DataListTable`** (ordenação, paginação MUI, linha clicável para `AssetViewModal`); em hardware, **`BulkActionsBar`** alinhada à página atual. Colunas e sorts em ficheiros dedicados na pasta da página.
   - `FRONTEND/src/pages/assets/AssetsPage.jsx`

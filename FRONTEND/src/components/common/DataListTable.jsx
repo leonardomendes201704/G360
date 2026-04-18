@@ -30,6 +30,7 @@ import DataListShell from './DataListShell';
  * @param {boolean} [loading]
  * @param {ReactNode} [loadingContent]
  * @param {string} [emptyMessage]
+ * @param {ReactNode} [emptyContent] — se definido, substitui `emptyMessage` quando `rows` está vazio (ex.: `EmptyState` com CTA)
  * @param {number} [rowsPerPageDefault=10]
  * @param {number[]} [rowsPerPageOptions=[5,10,25,50]]
  * @param {boolean} [tableLayoutFixed=true]
@@ -52,6 +53,7 @@ const DataListTable = ({
   loading = false,
   loadingContent,
   emptyMessage = 'Nenhum registro.',
+  emptyContent,
   rowsPerPageDefault = 10,
   rowsPerPageOptions = [5, 10, 25, 50],
   tableLayoutFixed = true,
@@ -208,8 +210,17 @@ const DataListTable = ({
               <TableBody>
                 {rows.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={colCount} align="center" sx={{ py: 6, color: 'text.secondary' }}>
-                      {emptyMessage}
+                    <TableCell
+                      colSpan={colCount}
+                      align="center"
+                      sx={{
+                        py: emptyContent ? 2 : 6,
+                        color: 'text.secondary',
+                        border: 0,
+                        verticalAlign: 'top',
+                      }}
+                    >
+                      {emptyContent ?? emptyMessage}
                     </TableCell>
                   </TableRow>
                 ) : (

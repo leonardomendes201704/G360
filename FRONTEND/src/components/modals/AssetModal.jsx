@@ -52,7 +52,7 @@ const createSchema = (assetType) => {
     }).required();
 };
 
-const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = null, isViewMode = false, categories: propCategories = [], users = [] }) => {
+const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = null, isViewMode = false, categories: propCategories = [], users = [], defaultCreateType = 'HARDWARE' }) => {
     const { enqueueSnackbar } = useSnackbar();
     const [assetType, setAssetType] = useState('HARDWARE'); // HARDWARE ou LICENSE
     const [activeTab, setActiveTab] = useState(0);
@@ -92,8 +92,10 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
 
     useEffect(() => {
         if (open) {
-            // Determina o tipo baseado no asset
-            const type = asset?.licenseType ? 'LICENSE' : 'HARDWARE';
+            // Edição: tipo vem do registo; criação: `defaultCreateType` (Novo ativo vs Nova licença)
+            const type = asset
+                ? (asset.licenseType ? 'LICENSE' : 'HARDWARE')
+                : (defaultCreateType === 'LICENSE' ? 'LICENSE' : 'HARDWARE');
             setAssetType(type);
 
             if (propCategories.length > 0) {
@@ -142,6 +144,16 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
                     });
                     loadMaintenances();
                 }
+            } else if (type === 'LICENSE') {
+                reset({
+                    assetType: 'LICENSE',
+                    code: '', name: '', categoryId: '', status: 'PROPRIO',
+                    supplierId: '', contractId: '', costCenterId: '',
+                    serialNumber: '', location: '', assignedTo: '',
+                    acquisitionDate: '', acquisitionValue: '', rentValue: '',
+                    vendor: '', licenseType: 'ASSINATURA', quantity: 1,
+                    licenseKey: '', purchaseDate: '', expirationDate: '', cost: '', notes: '',
+                });
             } else {
                 reset({
                     assetType: 'HARDWARE',
@@ -155,7 +167,7 @@ const AssetModal = ({ open, onClose, onSave, onSaveLicense, onDelete, asset = nu
             }
         }
         setActiveTab(0);
-    }, [open, asset]);
+    }, [open, asset, defaultCreateType]);
 
     const loadMaintenances = async () => {
         if (!asset) return;

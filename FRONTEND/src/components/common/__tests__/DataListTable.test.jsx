@@ -37,4 +37,18 @@ describe('DataListTable', () => {
     );
     expect(screen.getByText('Nada aqui')).toBeInTheDocument();
   });
+
+  it('usa emptyContent em vez de emptyMessage quando definido', () => {
+    renderWithTheme(
+      <DataListTable
+        shell={{ title: 'Fila' }}
+        columns={[{ id: 'x', label: 'X', render: () => '-' }]}
+        rows={[]}
+        emptyMessage="Mensagem curta"
+        emptyContent={<div data-testid="rich-empty">Vazio rico com CTA</div>}
+      />
+    );
+    expect(screen.getByTestId('rich-empty')).toBeInTheDocument();
+    expect(screen.queryByText('Mensagem curta')).not.toBeInTheDocument();
+  });
 });

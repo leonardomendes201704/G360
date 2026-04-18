@@ -18,6 +18,7 @@ import AssetCategoryModal from '../../components/modals/AssetCategoryModal';
 import AssetViewModal from '../../components/modals/AssetViewModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import DataListTable from '../../components/common/DataListTable';
+import EmptyState from '../../components/common/EmptyState';
 import { getAssetColumns } from './assetListColumns';
 import { sortAssetRows } from './assetListSort';
 import { getLicenseColumns } from './licenseListColumns';
@@ -110,6 +111,8 @@ const AssetsPage = () => {
 
   // Modals
   const [modalOpen, setModalOpen] = useState(false);
+  /** Só criação: 'HARDWARE' | 'LICENSE' — usado com `defaultCreateType` no `AssetModal` selecionada pelo toggle da página e pelos vazios. */
+  const [createModalKind, setCreateModalKind] = useState('HARDWARE');
   const [selectedItem, setSelectedItem] = useState(null);
   const [isViewMode, setIsViewMode] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -322,7 +325,13 @@ const AssetsPage = () => {
   const handleOpenView = (item) => { setSelectedItem(item); setViewModalOpen(true); handleMenuClose(); };
   const handleViewToEdit = (item) => { setViewModalOpen(false); setSelectedItem(item); setIsViewMode(false); setModalOpen(true); };
   const handleOpenEdit = (item) => { setSelectedItem(item); setIsViewMode(false); setModalOpen(true); handleMenuClose(); };
-  const handleOpenNew = () => { setSelectedItem(null); setIsViewMode(false); setModalOpen(true); };
+  const openCreateModal = (kind) => {
+    setCreateModalKind(kind);
+    setSelectedItem(null);
+    setIsViewMode(false);
+    setModalOpen(true);
+  };
+  const handleOpenNew = () => openCreateModal(viewMode === 'licenses' ? 'LICENSE' : 'HARDWARE');
 
   const handleOpenCategories = () => {
     setEditingCategory(null);
@@ -483,13 +492,16 @@ const AssetsPage = () => {
               >
                 Categorias
               </Button>
-              <Button data-testid="btn-novo-ativo" onClick={handleOpenNew} sx={{
+              <Button
+                data-testid="btn-novo-ativo"
+                onClick={handleOpenNew}
+                sx={{
               padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
               '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
             }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
-              Novo Ativo
+              {viewMode === 'licenses' ? 'Nova licença' : 'Novo ativo'}
             </Button>
             </>
           )}
@@ -906,6 +918,20 @@ const AssetsPage = () => {
             getDefaultOrderForColumn={(id) => (id === 'acquisitionValue' ? 'desc' : 'asc')}
             loading={loading}
             emptyMessage="Nenhum ativo com os filtros atuais."
+            emptyContent={
+              !loading && assets.length === 0
+                ? (
+                    <EmptyState
+                      icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>inventory_2</span>}
+                      title="Nenhum ativo encontrado"
+                      description="Ajuste os filtros ou adicione um novo ativo para gerenciar seu inventário de hardware."
+                      actionLabel="Novo ativo"
+                      actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                      onAction={() => openCreateModal('HARDWARE')}
+                    />
+                  )
+                : undefined
+            }
             rowsPerPageDefault={10}
             rowsPerPageOptions={[5, 10, 25, 50]}
             resetPaginationKey={assetListResetKey}
@@ -1025,6 +1051,20 @@ const AssetsPage = () => {
                 ? 'Nenhuma licença cadastrada.'
                 : 'Nenhuma licença corresponde ao termo de busca atual.'
             }
+            emptyContent={
+              !loading && licenses.length === 0
+                ? (
+                    <EmptyState
+                      icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>key</span>}
+                      title="Nenhuma licença cadastrada"
+                      description="Adicione licenças de software para acompanhar validade, custos e uso."
+                      actionLabel="Nova licença"
+                      actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                      onAction={() => openCreateModal('LICENSE')}
+                    />
+                  )
+                : undefined
+            }
             rowsPerPageDefault={10}
             rowsPerPageOptions={[5, 10, 25, 50]}
             resetPaginationKey={licenseListResetKey}
@@ -1071,7 +1111,17 @@ const AssetsPage = () => {
         onSave={handleSaveCategory}
         category={editingCategory}
       />
-      <AssetModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSaveAsset} onSaveLicense={handleSaveLicense} asset={selectedItem} users={users} categories={categories} isViewMode={isViewMode} />
+      <AssetModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={handleSaveAsset}
+        onSaveLicense={handleSaveLicense}
+        asset={selectedItem}
+        defaultCreateType={createModalKind}
+        users={users}
+        categories={categories}
+        isViewMode={isViewMode}
+      />
       <AssetViewModal open={viewModalOpen} onClose={() => setViewModalOpen(false)} asset={selectedItem} onEdit={canEdit ? handleViewToEdit : undefined} />
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Ativo" content="Tem certeza que deseja excluir este ativo? Esta acao nao pode ser desfeita." />
     </Box>

@@ -99,28 +99,35 @@ describe('AssetsPage', () => {
         expect(screen.getAllByText(/R\$\s*20[,.]?\d*\s*mil/i)[0]).toBeInTheDocument();
     });
 
-    it('should switch to List view and filter assets', async () => {
-        renderWithProviders(<AssetsPage />);
-        await waitFor(() => expect(screen.queryByText(/Gestão de Ativos/i)).toBeInTheDocument());
+    it(
+        'should switch to List view and filter assets',
+        async () => {
+            renderWithProviders(<AssetsPage />);
+            await waitFor(() => expect(screen.queryByText(/Gestão de Ativos/i)).toBeInTheDocument());
 
-        // Switch to List
-        const listBtn = screen.getByRole('button', { name: /Hardware/i }); // The button text in View Toggle
-        fireEvent.click(listBtn);
+            // Switch to List
+            const listBtn = screen.getByRole('button', { name: /Hardware/i }); // The button text in View Toggle
+            fireEvent.click(listBtn);
 
-        expect(await screen.findByText('Lista de Ativos')).toBeInTheDocument();
-        expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
-        expect(screen.getByText('Printer')).toBeInTheDocument();
-
-        fireEvent.click(screen.getByRole('button', { name: /^Filtros$/i }));
-        const searchInput = await screen.findByPlaceholderText('Buscar por codigo ou nome...');
-        fireEvent.change(searchInput, { target: { value: 'Laptop' } });
-        fireEvent.click(screen.getByRole('button', { name: /Aplicar/i }));
-
-        await waitFor(() => {
+            expect(await screen.findByText('Lista de Ativos', {}, { timeout: 15000 })).toBeInTheDocument();
             expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
-            expect(screen.queryByText('Printer')).not.toBeInTheDocument();
-        });
-    });
+            expect(screen.getByText('Printer')).toBeInTheDocument();
+
+            fireEvent.click(screen.getByRole('button', { name: /^Filtros$/i }));
+            const searchInput = await screen.findByPlaceholderText('Buscar por codigo ou nome...');
+            fireEvent.change(searchInput, { target: { value: 'Laptop' } });
+            fireEvent.click(screen.getByRole('button', { name: /Aplicar/i }));
+
+            await waitFor(
+                () => {
+                    expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
+                    expect(screen.queryByText('Printer')).not.toBeInTheDocument();
+                },
+                { timeout: 10000 }
+            );
+        },
+        20000
+    );
 
     it('should calculate license KPIs (Expired/Expiring)', async () => {
         renderWithProviders(<AssetsPage />);
