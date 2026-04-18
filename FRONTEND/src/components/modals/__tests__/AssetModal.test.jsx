@@ -50,7 +50,7 @@ describe('AssetModal', () => {
     it('should validate required fields for Hardware', async () => {
         renderWithProviders(<AssetModal open={true} onClose={mockOnClose} onSave={mockOnSave} />);
 
-        const saveBtn = screen.getByText('Salvar Ativo');
+        const saveBtn = screen.getByRole('button', { name: /Salvar ativo/i });
         fireEvent.click(saveBtn);
 
         // Required fields: Code, Name, Category, Status
@@ -68,7 +68,7 @@ describe('AssetModal', () => {
         const licenseTypeBtn = screen.getByText('Licença de Software'); // Button text
         fireEvent.click(licenseTypeBtn);
 
-        const saveBtn = screen.getByText('Salvar Licença');
+        const saveBtn = screen.getByRole('button', { name: /Salvar licença/i });
         fireEvent.click(saveBtn);
 
         // Required License fields

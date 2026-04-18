@@ -7,9 +7,17 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-18]
 
+### Added
+- **Frontend QA:** Testes Vitest para **`FinancePage`** (tabs Dashboard, Orçamentos, Plano de Contas, DRE) com mocks de serviços e subpáginas; cobre regressão de JSX na área financeira.
+  - `FRONTEND/src/pages/finance/__tests__/FinancePage.test.jsx`
+- **CI:** Workflow `ci-frontend.yml` passa a executar **`npx vitest run`** e **`npm run build`** antes do job Playwright (erros de parse/compilação falham no pipeline).
+
 ### Fixed
 - **FinancePage:** Tag JSX incorreta no separador Plano de Contas — fechamento `</DataListShell>` onde o bloco abre com `<Paper>`; corrigido para `</Paper>` (erro de compilação Vite/Babel).
   - `FRONTEND/src/pages/finance/FinancePage.jsx`
+- **Testes:** `AssetModal.test.jsx` — botões passam a usar nome acessível case-insensitive (`Salvar ativo` / `Salvar licença`). `PortalPage.test.jsx` — timeout de 15s no fluxo wizard + submit (evita falha intermitente em CI).
+  - `FRONTEND/src/components/modals/__tests__/AssetModal.test.jsx`
+  - `FRONTEND/src/pages/helpdesk/__tests__/PortalPage.test.jsx`
 
 ### Refactored
 - **US-028 / EP-011:** Portal «Meus Chamados» migrado para **`DataListTable`**: ordenação via `sortPortalTickets`, paginação e mensagens de vazio preservadas; KPIs, busca, `FilterDrawer` e wizard inalterados.

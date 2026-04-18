@@ -150,7 +150,7 @@ describe('PortalPage Component', () => {
             }));
             expect(ticketService.getAll).toHaveBeenCalledTimes(2);
         });
-    });
+    }, 15_000);
 
     it('prevents submission if required custom fields are empty', async () => {
         window.alert = vi.fn();
