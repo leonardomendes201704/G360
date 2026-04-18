@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { useSnackbar } from 'notistack';
 import {
-    Add, Search, CalendarToday, FormatListBulleted, FilterAlt,
-    Refresh, Download
+    Search, CalendarToday, FormatListBulleted, FilterAlt,
+    Refresh
 } from '@mui/icons-material';
 import {
     Box, Paper, Typography, Button, TextField, MenuItem,
@@ -14,8 +14,10 @@ import KpiGrid from '../../components/common/KpiGrid';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
-import ChangeRequestList from '../../components/changes/ChangeRequestList';
 import ChangeCalendar from '../../components/changes/ChangeCalendar';
+import DataListTable from '../../components/common/DataListTable';
+import { getChangeRequestColumns } from './changeRequestListColumns';
+import { sortChangeRequestRows } from './changeRequestListSort';
 import ChangeRequestDashboard from '../../components/changes/ChangeRequestDashboard';
 import { getChanges, createChange, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
 import { getReferenceUsers } from '../../services/reference.service';
@@ -61,7 +63,6 @@ const ChangeRequestsPage = () => {
     const cardBg = isDark ? 'rgba(22, 29, 38, 0.5)' : '#ffffff';
     const borderColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)';
     const cardShadow = isDark ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)';
-    const tableHeaderBg = isDark ? '#1c2632' : '#f8fafc';
     const headerBg = cardBg;
     const headerBorder = borderColor;
     const toggleGroupBg = isDark ? 'rgba(0, 0, 0, 0.2)' : '#f1f5f9';
@@ -93,10 +94,6 @@ const ChangeRequestsPage = () => {
         () => [filters.status, filters.risk, filters.type, filters.impact, filters.responsibleId, filters.dateFrom, filters.dateTo].filter(Boolean).length,
         [filters.status, filters.risk, filters.type, filters.impact, filters.responsibleId, filters.dateFrom, filters.dateTo]
     );
-
-    // Pagination
-    const [page, setPage] = useState(1);
-    const [rowsPerPage] = useState(10);
 
     const filteredChanges = useMemo(() => {
         return changes.filter(c => {
@@ -137,13 +134,6 @@ const ChangeRequestsPage = () => {
         });
     }, [changes, filters]);
 
-    const paginatedChanges = useMemo(() => {
-        const startIndex = (page - 1) * rowsPerPage;
-        return filteredChanges.slice(startIndex, startIndex + rowsPerPage);
-    }, [filteredChanges, page, rowsPerPage]);
-
-    const totalPages = Math.ceil(filteredChanges.length / rowsPerPage);
-
     // Estados do Modal
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedChange, setSelectedChange] = useState(null);
@@ -154,6 +144,22 @@ const ChangeRequestsPage = () => {
     // Estado da View (Dashboard vs Lista vs Calendario)
     const [viewMode, setViewMode] = useState('DASHBOARD'); // 'DASHBOARD', 'LIST', 'CALENDAR'
     const [modalTab, setModalTab] = useState('geral');
+
+    const resetPaginationKey = useMemo(
+        () =>
+            `${filters.search}|${filters.status}|${filters.risk}|${filters.type}|${filters.impact}|${filters.responsibleId}|${filters.dateFrom}|${filters.dateTo}|${viewMode}`,
+        [
+            filters.search,
+            filters.status,
+            filters.risk,
+            filters.type,
+            filters.impact,
+            filters.responsibleId,
+            filters.dateFrom,
+            filters.dateTo,
+            viewMode,
+        ]
+    );
 
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
@@ -268,11 +274,6 @@ const ChangeRequestsPage = () => {
 
         handleDeepLink();
     }, []);
-
-    // Reset page when filters change
-    useEffect(() => {
-        setPage(1);
-    }, [filters]);
 
     // --- Handlers ---
     const handleOpenCreate = () => {
@@ -426,6 +427,77 @@ const ChangeRequestsPage = () => {
         '& .MuiInputLabel-root': { color: textMuted },
         '& .MuiSelect-icon': { color: textMuted }
     };
+
+    const gmudListShellSx = {
+        borderRadius: '8px',
+        background: cardBg,
+        backdropFilter: isDark ? 'blur(10px)' : 'none',
+        border: `1px solid ${borderColor}`,
+        overflow: 'hidden',
+    };
+
+    const gmudListToolbar = (
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <ExportButton data={filteredChanges} columns={EXPORT_COLUMNS.changes} filename="gmuds" compact />
+            <TextField
+                placeholder="Buscar GMUD..."
+                size="small"
+                value={filters.search}
+                onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <Search sx={{ color: textMuted }} />
+                        </InputAdornment>
+                    ),
+                }}
+                sx={{
+                    width: 250,
+                    ...inputSx,
+                }}
+            />
+            <Paper
+                elevation={0}
+                sx={{
+                    display: 'flex',
+                    p: 0.5,
+                    borderRadius: '8px',
+                    background: 'transparent',
+                    backgroundImage: 'none',
+                    border: `1px solid ${filterHeaderBorder}`,
+                }}
+            >
+                <Tooltip title="Lista">
+                    <IconButton
+                        size="small"
+                        onClick={() => setViewMode('LIST')}
+                        sx={{
+                            borderRadius: '8px',
+                            color: viewMode === 'LIST' ? '#667eea' : textMuted,
+                            bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
+                            '&:hover': { bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg },
+                        }}
+                    >
+                        <FormatListBulleted fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Calendario">
+                    <IconButton
+                        size="small"
+                        onClick={() => setViewMode('CALENDAR')}
+                        sx={{
+                            borderRadius: '8px',
+                            color: viewMode === 'CALENDAR' ? '#667eea' : textMuted,
+                            bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
+                            '&:hover': { bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg },
+                        }}
+                    >
+                        <CalendarToday fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </Paper>
+        </Box>
+    );
 
     return (
         <Box>
@@ -758,87 +830,29 @@ const ChangeRequestsPage = () => {
                         )}
                     </KpiGrid>
 
-                    {/* Table Section */}
-                    <DataListShell
-                        title="Lista de GMUDs"
-                        titleIcon="sync_alt"
-                        accentColor="#667eea"
-                        count={filteredChanges.length}
-                        sx={{
-                            borderRadius: '8px',
-                            background: cardBg,
-                            backdropFilter: isDark ? 'blur(10px)' : 'none',
-                            border: `1px solid ${borderColor}`,
-                            overflow: 'hidden'
-                        }}
-                        toolbar={(
-                            <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                                <ExportButton data={filteredChanges} columns={EXPORT_COLUMNS.changes} filename="gmuds" compact />
-                                <TextField
-                                    placeholder="Buscar GMUD..."
-                                    size="small"
-                                    value={filters.search}
-                                    onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Search sx={{ color: textMuted }} />
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                    sx={{
-                                        width: 250,
-                                        ...inputSx
-                                    }}
-                                />
-                                <Paper
-                                    elevation={0}
-                                    sx={{
-                                        display: 'flex',
-                                        p: 0.5,
-                                        borderRadius: '8px',
-                                        background: 'transparent',
-                                        backgroundImage: 'none',
-                                        border: `1px solid ${filterHeaderBorder}`
-                                    }}
-                                >
-                                    <Tooltip title="Lista">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => setViewMode('LIST')}
-                                            sx={{
-                                                borderRadius: '8px',
-                                                color: viewMode === 'LIST' ? '#667eea' : textMuted,
-                                                bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
-                                                '&:hover': { bgcolor: viewMode === 'LIST' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg }
-                                            }}
-                                        >
-                                            <FormatListBulleted fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Calendario">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => setViewMode('CALENDAR')}
-                                            sx={{
-                                                borderRadius: '8px',
-                                                color: viewMode === 'CALENDAR' ? '#667eea' : textMuted,
-                                                bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
-                                                '&:hover': { bgcolor: viewMode === 'CALENDAR' ? 'rgba(102, 126, 234, 0.2)' : filterHoverBg }
-                                            }}
-                                        >
-                                            <CalendarToday fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Paper>
-                            </Box>
-                        )}
-                    >
-                        {loading ? (
+                    {/* Table Section — lista: DataListTable; calendário: shell + calendário */}
+                    {loading ? (
+                        <DataListShell
+                            title="Lista de GMUDs"
+                            titleIcon="sync_alt"
+                            accentColor="#667eea"
+                            count={filteredChanges.length}
+                            sx={gmudListShellSx}
+                            toolbar={gmudListToolbar}
+                        >
                             <Box sx={{ p: 2 }}>
                                 <TableSkeleton rows={5} columns={9} />
                             </Box>
-                        ) : filteredChanges.length === 0 ? (
+                        </DataListShell>
+                    ) : filteredChanges.length === 0 ? (
+                        <DataListShell
+                            title="Lista de GMUDs"
+                            titleIcon="sync_alt"
+                            accentColor="#667eea"
+                            count={0}
+                            sx={gmudListShellSx}
+                            toolbar={gmudListToolbar}
+                        >
                             <EmptyState
                                 title="Nenhuma GMUD encontrada"
                                 description="Nao encontramos solicitacoes com os filtros atuais."
@@ -850,116 +864,56 @@ const ChangeRequestsPage = () => {
                                         sx={{
                                             borderColor: 'rgba(102, 126, 234, 0.5)',
                                             color: '#667eea',
-                                            '&:hover': { borderColor: '#667eea', bgcolor: 'rgba(102, 126, 234, 0.1)' }
+                                            '&:hover': { borderColor: '#667eea', bgcolor: 'rgba(102, 126, 234, 0.1)' },
                                         }}
                                     >
                                         Criar Nova GMUD
                                     </Button>
                                 }
                             />
-                        ) : (
-                            <>
-                                {viewMode === 'LIST' ? (
-                                    <ChangeRequestList
-                                        changes={paginatedChanges}
-                                        onEdit={handleOpenEdit}
-                                        onDelete={handleDeleteClick}
-                                        onView={handleOpenView}
-                                        onSend={handleSendRequest}
-                                        darkMode={isDark}
-                                    />
-                                ) : (
-                                    <ChangeCalendar
-                                        changes={changes}
-                                        onViewChange={handleOpenView}
-                                    />
-                                )}
-                            </>
-                        )}
-
-                        {/* Pagination */}
-                        {viewMode === 'LIST' && filteredChanges.length > 0 && (
-                            <Box sx={{
-                                p: 2.5,
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                borderTop: `1px solid ${filterHeaderBorder}`
-                            }}>
-                                <Typography sx={{ fontSize: 14, color: textMuted }}>
-                                    Exibindo {((page - 1) * rowsPerPage) + 1}-{Math.min(page * rowsPerPage, filteredChanges.length)} de {filteredChanges.length} registros
-                                </Typography>
-                                <Box sx={{ display: 'flex', gap: 1 }}>
-                                    <IconButton
-                                        size="small"
-                                        disabled={page === 1}
-                                        onClick={() => setPage(p => p - 1)}
-                                        sx={{
-                                            width: 36,
-                                            height: 36,
-                                            borderRadius: '8px',
-                                            border: `1px solid ${borderColor}`,
-                                            bgcolor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
-                                            color: textPrimary,
-                                            '&:hover': { bgcolor: filterHoverBg, borderColor: '#667eea' },
-                                            '&.Mui-disabled': { color: textMuted, borderColor: borderColor }
-                                        }}
-                                    >
-                                        <span className="material-icons-round">chevron_left</span>
-                                    </IconButton>
-                                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                                        let pageNum = i + 1;
-                                        if (totalPages > 5) {
-                                            if (page > 3) pageNum = page - 2 + i;
-                                            if (page > totalPages - 3) pageNum = totalPages - 4 + i;
-                                        }
-                                        return (
-                                            <IconButton
-                                                key={pageNum}
-                                                size="small"
-                                                onClick={() => setPage(pageNum)}
-                                                sx={{
-                                                    width: 36,
-                                                    height: 36,
-                                                    borderRadius: '8px',
-                                                    border: `1px solid ${borderColor}`,
-                                                    bgcolor: page === pageNum
-                                                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                                                        : (isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff'),
-                                                    background: page === pageNum
-                                                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                                                        : (isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff'),
-                                                    color: textPrimary,
-                                                    fontWeight: page === pageNum ? 700 : 400,
-                                                    borderColor: page === pageNum ? 'transparent' : borderColor,
-                                                    '&:hover': { bgcolor: filterHoverBg, borderColor: '#667eea' }
-                                                }}
-                                            >
-                                                {pageNum}
-                                            </IconButton>
-                                        );
-                                    })}
-                                    <IconButton
-                                        size="small"
-                                        disabled={page === totalPages}
-                                        onClick={() => setPage(p => p + 1)}
-                                        sx={{
-                                            width: 36,
-                                            height: 36,
-                                            borderRadius: '8px',
-                                            border: `1px solid ${borderColor}`,
-                                            bgcolor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
-                                            color: textPrimary,
-                                            '&:hover': { bgcolor: filterHoverBg, borderColor: '#667eea' },
-                                            '&.Mui-disabled': { color: textMuted, borderColor: borderColor }
-                                        }}
-                                    >
-                                        <span className="material-icons-round">chevron_right</span>
-                                    </IconButton>
-                                </Box>
-                            </Box>
-                        )}
-                    </DataListShell>
+                        </DataListShell>
+                    ) : viewMode === 'CALENDAR' ? (
+                        <DataListShell
+                            title="Lista de GMUDs"
+                            titleIcon="sync_alt"
+                            accentColor="#667eea"
+                            count={filteredChanges.length}
+                            sx={gmudListShellSx}
+                            toolbar={gmudListToolbar}
+                        >
+                            <ChangeCalendar changes={changes} onViewChange={handleOpenView} />
+                        </DataListShell>
+                    ) : (
+                        <DataListTable
+                            shell={{
+                                title: 'Lista de GMUDs',
+                                titleIcon: 'sync_alt',
+                                accentColor: '#667eea',
+                                count: filteredChanges.length,
+                                toolbar: gmudListToolbar,
+                                sx: gmudListShellSx,
+                            }}
+                            columns={getChangeRequestColumns({
+                                isDark,
+                                onEdit: handleOpenEdit,
+                                onDelete: handleDeleteClick,
+                                onView: handleOpenView,
+                                onSend: handleSendRequest,
+                            })}
+                            rows={filteredChanges}
+                            sortRows={sortChangeRequestRows}
+                            defaultOrderBy="scheduledStart"
+                            defaultOrder="desc"
+                            getDefaultOrderForColumn={(id) =>
+                                id === 'scheduledStart' || id === 'code' ? 'desc' : 'asc'
+                            }
+                            rowsPerPageDefault={10}
+                            rowsPerPageOptions={[5, 10, 25, 50]}
+                            resetPaginationKey={resetPaginationKey}
+                            emptyMessage="Nenhuma GMUD encontrada."
+                            onRowClick={handleOpenView}
+                        />
+                    )}
                 </>
             )}
 

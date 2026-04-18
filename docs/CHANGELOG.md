@@ -8,6 +8,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Refactored
+- **GMUD (`/changes`):** `ChangeRequestsPage.jsx` — modo lista migrado de `ChangeRequestList` para **`DataListTable`** com `changeRequestListColumns.jsx` e `sortChangeRequestRows`; paginação MUI; calendário e estados loading/vazio mantêm **`DataListShell`**. Removido `ChangeRequestList.jsx`.
+  - `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx`
+  - `FRONTEND/src/pages/changes/changeRequestListColumns.jsx`
+  - `FRONTEND/src/pages/changes/changeRequestListSort.js`
+  - `docs/patterns/data-grids-inventory.md`
+
 - **Service Desk — Problemas (ITIL):** `ProblemManagement.jsx` migrado para **`DataListTable`** com `problemListColumns.jsx` e `problemListSort.js` (ordenação, paginação, linha clicável para gerenciar); estado de loading no carregamento inicial.
   - `FRONTEND/src/pages/helpdesk/ProblemManagement.jsx`
   - `FRONTEND/src/pages/helpdesk/problemListColumns.jsx`
