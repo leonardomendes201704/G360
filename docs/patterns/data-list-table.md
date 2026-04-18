@@ -11,7 +11,8 @@ Composição de:
 
 - Listas com linhas heterogéneas (chips, links, várias linhas por célula) onde **`StandardGrid`** (dados planos por `key`) é insuficiente.
 - Ordenação **no cliente** após `GET` (ou dados já em memória).
-- Ordenação **custom**: passar `sortRows(list, orderBy, order)` (ex.: prioridades, SLA nulo, estado ITIL).
+- Ordenação **no servidor** + **paginação no servidor**: `paginationMode="server"`, `rows` = só a página corrente, `serverTotalCount` = total, `onServerPageChange` / `onServerSort` (ver JSDoc). Ex.: [ProjectsListPage](../../FRONTEND/src/pages/projects/ProjectsListPage.jsx).
+- Ordenação **custom** (cliente): passar `sortRows(list, orderBy, order)` (ex.: prioridades, SLA nulo, estado ITIL).
 
 ## API resumida
 
@@ -19,7 +20,9 @@ Ver JSDoc em [`FRONTEND/src/components/common/DataListTable.jsx`](../../FRONTEND
 
 | Prop | Notas |
 |------|--------|
-| `shell` | `{ title, titleIcon?, accentColor?, count?, toolbar?, sx?, className?, tableContainerSx? }` |
+| `shell` | `{ title, titleIcon?, accentColor?, count?, toolbar?, sx?, className?, tableClassName?, tableContainerSx? }` — `tableClassName` aplica-se ao `<Table>` MUI (ex.: `pl-projects-table`) |
+| `paginationMode` | `client` (padrão) ou `server` — em `server`, não se faz sort/slice no cliente; usa-se `serverTotalCount`, `serverPage`, `serverRowsPerPage`, `onServerPageChange`, `onServerRowsPerPageChange`, `serverOrderBy`, `serverOrder`, `onServerSort` |
+| `dataTestidTable` | `data-testid` no `<Table>` (e2e) |
 | `columns` | `{ id, label, render(row), sortable?, width?, minWidth?, align?, headerSx?, cellSx?, accessor? }` |
 | `sortRows` | Opcional; substitui o sort genérico por `accessor` |
 | `getDefaultOrderForColumn` | Direção inicial ao mudar coluna (ex.: datas → `desc`) |

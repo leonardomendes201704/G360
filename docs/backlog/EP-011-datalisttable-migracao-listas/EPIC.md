@@ -31,7 +31,8 @@ Introduzir o componente **`DataListTable`** (`DataListShell` + tabela MUI + orde
 1. ~~Service Desk (`ServiceDeskDashboard`)~~ (piloto US-027)
 2. ~~Portal — `PortalPage` (Meus Chamados)~~ (US-028)
 3. ~~`KnowledgeBasePage` (lista)~~
-4. Incidentes, Problemas, GMUD (Changes), Ativos, Projetos, Tarefas (lista), Finance (tabs com tabela), Contratos, Fornecedores, Riscos (lista), Auditoria/Atividades, Organizacao (tabelas HTML — avaliar)
+4. ~~`ProjectsListPage` (lista)~~
+5. Incidentes, Problemas, GMUD (Changes), Ativos, Tarefas (lista), Finance (tabs com tabela), Contratos, Fornecedores, Riscos (lista), Auditoria/Atividades, Organizacao (tabelas HTML — avaliar)
 
 ## Notas
 

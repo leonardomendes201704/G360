@@ -14,7 +14,7 @@ Componentes base existentes:
 | Área | Ficheiro | Notas |
 |------|----------|--------|
 | Helpdesk | `FRONTEND/src/pages/helpdesk/PortalPage.jsx` | Referência; `TableSortLabel` + `TablePagination`; casca **`DataListShell`** na secção «Meus Chamados» (US-024). |
-| Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | `<table>` + CSS; ordenação própria; cabeçalho **`DataListShell`** + classe `pl-projects-table-card`. |
+| Projetos | `FRONTEND/src/pages/projects/ProjectsListPage.jsx` | **`DataListTable`** em modo **servidor** (`paginationMode: 'server'`, sort/paginação via API); `projectListColumns.jsx`; busca na toolbar do shell. |
 | Incidentes | `FRONTEND/src/pages/incidents/IncidentsPage.jsx` | Lista: **`DataListTable`** (`incidentListColumns`, `sortIncidentsRows`); casca partilhada com Kanban via **`DataListShell`**; Kanban alternativo. |
 | GMUD | `FRONTEND/src/pages/changes/ChangeRequestsPage.jsx` | Dashboard + vista Lista: **`DataListTable`**; `ChangeRequestDashboard.jsx` reutiliza as mesmas colunas/ordenação. Calendário em **`DataListShell`**. |
 | Fornecedores | `FRONTEND/src/pages/suppliers/SuppliersPage.jsx` | `<table>`; **cabeçalho de lista** via `DataListShell`. |

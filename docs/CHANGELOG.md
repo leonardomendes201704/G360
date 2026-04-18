@@ -5,6 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-20]
+
+### Refactored
+- **Projetos (`/projects`):** `ProjectsListPage` — lista com **`DataListTable`** em **`paginationMode: 'server'`** (ordenação e `limit`/`page` na API, sem re-sort no cliente); colunas em `projectListColumns.jsx`. **`DataListTable`** estendeu-se com props de **paginação/ordenação controladas no servidor** (`serverTotalCount`, `serverPage`, `onServerPageChange`, `serverOrderBy`/`serverOrder`/`onServerSort`, `dataTestidTable`, `shell.tableClassName`). Testes de lista com `AuthContext`; vazio com CTA só sem filtros ativos (com permissão de criação). Removida paginação manual em HTML.
+  - `FRONTEND/src/components/common/DataListTable.jsx`
+  - `FRONTEND/src/components/common/__tests__/DataListTable.test.jsx`
+  - `FRONTEND/src/pages/projects/ProjectsListPage.jsx`, `FRONTEND/src/pages/projects/projectListColumns.jsx`
+  - `FRONTEND/src/pages/projects/__tests__/ProjectsListPage.test.jsx`, `.../ProjectsListPage_sorting.test.jsx`
+  - `docs/patterns/data-grids-inventory.md`
+
 ## [2026-04-19]
 
 ### Refactored

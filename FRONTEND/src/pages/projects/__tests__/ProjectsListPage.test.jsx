@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProjectsListPage from '../ProjectsListPage';
 import { SnackbarProvider } from 'notistack';
 import { MemoryRouter } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthContext';
 import * as projectService from '../../../services/project.service';
 import * as referenceService from '../../../services/reference.service';
 
@@ -23,20 +24,24 @@ vi.mock('../../../components/modals/ProjectModal', () => ({
 // Auth & Permission mocks
 vi.mock('../../../hooks/useAuth', () => ({ default: () => ({ user: { id: '1', name: 'Test', roles: [{ name: 'Super Admin' }] }, token: 't', hasRole: () => true }) }));
 
+const authValue = { hasPermission: () => true, user: { id: '1', roles: [{ name: 'Test' }] }, login: () => {}, logout: () => {} };
+
 const renderWithProviders = (ui) => {
     return render(
         <SnackbarProvider>
-            <MemoryRouter>
-                {ui}
-            </MemoryRouter>
+            <AuthContext.Provider value={authValue}>
+                <MemoryRouter>
+                    {ui}
+                </MemoryRouter>
+            </AuthContext.Provider>
         </SnackbarProvider>
     );
 };
 
 describe('ProjectsListPage', () => {
     const mockProjects = [
-        { id: 1, name: 'Project Alpha', code: 'PROJ-001', status: 'IN_PROGRESS', progress: 50, manager: { name: 'Manager A' }, startDate: '2024-01-01', endDate: '2024-12-31' },
-        { id: 2, name: 'Project Beta', code: 'PROJ-002', status: 'PLANNING', progress: 0, manager: { name: 'Manager B' }, startDate: '2024-02-01', endDate: '2024-11-30' }
+        { id: 1, name: 'Project Alpha', code: 'PROJ-001', status: 'IN_PROGRESS', approvalStatus: 'APPROVED', progress: 50, manager: { name: 'Manager A' }, startDate: '2024-01-01', endDate: '2024-12-31' },
+        { id: 2, name: 'Project Beta', code: 'PROJ-002', status: 'PLANNING', approvalStatus: 'APPROVED', progress: 0, manager: { name: 'Manager B' }, startDate: '2024-02-01', endDate: '2024-11-30' }
     ];
     const mockUsers = [{ id: 1, name: 'Manager A' }, { id: 2, name: 'Manager B' }];
 

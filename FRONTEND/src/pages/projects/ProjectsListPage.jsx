@@ -14,7 +14,8 @@ import debounce from 'lodash/debounce';
 import ProjectModal from '../../components/modals/ProjectModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
-import DataListShell from '../../components/common/DataListShell';
+import DataListTable from '../../components/common/DataListTable';
+import { getProjectListColumns } from './projectListColumns';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 
@@ -401,12 +402,12 @@ const ProjectsListPage = () => {
     };
     const [page, setPage] = useState(1);
     const [totalProjects, setTotalProjects] = useState(0);
-    const pageSize = 10;
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
-    const fetchData = async (currentFilters, currentPage = page, currentOrderBy = orderBy, currentOrderDirection = orderDirection) => {
+    const fetchData = async (currentFilters, currentPage = page, currentOrderBy = orderBy, currentOrderDirection = orderDirection, currentLimit = rowsPerPage) => {
         setLoading(true);
         try {
             const apiFilters = {};
@@ -416,7 +417,7 @@ const ProjectsListPage = () => {
             if (currentFilters.techLeadId !== 'ALL') apiFilters.techLeadId = currentFilters.techLeadId;
             
             apiFilters.page = currentPage;
-            apiFilters.limit = pageSize;
+            apiFilters.limit = currentLimit;
             apiFilters.sortBy = currentOrderBy;
             apiFilters.sortDirection = currentOrderDirection;
 
@@ -453,7 +454,7 @@ const ProjectsListPage = () => {
     const handleFilterChange = (field, value) => {
         const newFilters = { ...filters, [field]: value };
         setFilters(newFilters);
-        debouncedFetch(newFilters, 1, orderBy, orderDirection); // fetch page 1 on filter
+        debouncedFetch(newFilters); // `fetchData` reutiliza a página em curso; debounce 500ms
     };
 
     const openFilterDrawer = () => {
@@ -473,21 +474,21 @@ const ProjectsListPage = () => {
             techLeadId: draftFilters.techLeadId,
         };
         setFilters(next);
-        fetchData(next, 1, orderBy, orderDirection);
+        fetchData(next, 1, orderBy, orderDirection, rowsPerPage);
     };
 
     const handleClearDrawerOnly = () => {
         const next = { ...filters, ...PROJECT_DRAWER_DEFAULTS };
         setDraftFilters({ ...PROJECT_DRAWER_DEFAULTS });
         setFilters(next);
-        fetchData(next, 1, orderBy, orderDirection);
+        fetchData(next, 1, orderBy, orderDirection, rowsPerPage);
     };
 
     const clearAllFilters = () => {
         const next = { search: '', ...PROJECT_DRAWER_DEFAULTS };
         setDraftFilters({ ...PROJECT_DRAWER_DEFAULTS });
         setFilters(next);
-        fetchData(next, 1, orderBy, orderDirection);
+        fetchData(next, 1, orderBy, orderDirection, rowsPerPage);
     };
 
     const handleSave = async (data) => {
@@ -558,45 +559,30 @@ const ProjectsListPage = () => {
         const newDir = isAsc ? 'desc' : 'asc';
         setOrderDirection(newDir);
         setOrderBy(property);
-        fetchData(filters, page, property, newDir);
+        fetchData(filters, page, property, newDir, rowsPerPage);
     };
 
-    // Since we now paginate on the server, we just use the loaded projects array directly
-    const paginatedProjects = projects;
-    const totalPages = Math.ceil(totalProjects / pageSize);
-    const startItem = totalProjects === 0 ? 0 : (page - 1) * pageSize + 1;
-    const endItem = Math.min(page * pageSize, totalProjects);
+    const totalPages = Math.ceil((totalProjects || 0) / (rowsPerPage || 1));
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
-            fetchData(filters, newPage, orderBy, orderDirection);
+            fetchData(filters, newPage, orderBy, orderDirection, rowsPerPage);
         }
     };
 
-    const renderPageButtons = () => {
-        const buttons = [];
-        const maxVisible = 5;
-        let start = Math.max(1, page - Math.floor(maxVisible / 2));
-        let end = Math.min(totalPages, start + maxVisible - 1);
-
-        if (end - start < maxVisible - 1) {
-            start = Math.max(1, end - maxVisible + 1);
-        }
-
-        for (let i = start; i <= end; i++) {
-            buttons.push(
-                <button
-                    key={i}
-                    className={`pl-pagination-btn ${i === page ? 'active' : ''}`}
-                    onClick={() => handlePageChange(i)}
-                >
-                    {i}
-                </button>
-            );
-        }
-        return buttons;
+    const handleServerPage = (_e, newPage0) => {
+        handlePageChange(newPage0 + 1);
     };
+
+    const handleServerRowsPerPage = (e) => {
+        const n = parseInt(e.target.value, 10);
+        setRowsPerPage(n);
+        setPage(1);
+        fetchData(filters, 1, orderBy, orderDirection, n);
+    };
+
+    const hasActiveListFilters = Boolean((filters.search || '').trim()) || activeDrawerFilterCount > 0;
 
     return (
         <div className="projects-list-page" >
@@ -756,328 +742,86 @@ const ProjectsListPage = () => {
                     </TextField>
                 </FilterDrawer>
 
-                {/* Projects Table */}
-                <DataListShell
-                    className="pl-projects-table-card"
-                    title="Lista de Projetos"
-                    titleIcon="list_alt"
-                    accentColor="#2563eb"
-                    count={totalProjects}
-                    sx={{
-                        bgcolor: 'transparent',
-                        boxShadow: 'none',
-                        border: '1px solid var(--pl-border-subtle)',
-                    }}
-                    toolbar={(
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, justifyContent: 'flex-end', minWidth: '260px' }}>
-                            <div className="pl-search-input-container" style={{ flex: '1 1 220px', maxWidth: '360px' }}>
-                                <span className="material-icons-round">search</span>
-                                <input
-                                    data-testid="input-busca-projeto"
-                                    type="text"
-                                    className="pl-search-input"
-                                    placeholder="Buscar por nome ou código..."
-                                    value={filters.search}
-                                    onChange={(e) => handleFilterChange('search', e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    )}
-                >
-                    {loading ? (
-                        <div className="pl-loading">
-                            <div className="pl-loading-spinner"></div>
-                        </div>
-                    ) : projects.length === 0 ? (
-                        <EmptyState
-                            icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>folder_off</span>}
-                            title="Nenhum projeto encontrado"
-                            description="Não encontramos projetos com os filtros selecionados. Crie um novo projeto para começar a gerenciar seu portfólio."
-                            actionLabel="Criar Novo Projeto"
-                            actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
-                            onAction={handleOpenNew}
-                        />
-                    ) : (
-                        <>
-                            <table data-testid="tabela-projetos" className="pl-projects-table">
-                                <thead>
-                                    <tr>
-                                        <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Projeto
-                                                {orderBy === 'name' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Status
-                                                {orderBy === 'status' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('priority')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Prioridade
-                                                {orderBy === 'priority' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('manager')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Gerente
-                                                {orderBy === 'manager' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('techLead')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Tech Lead
-                                                {orderBy === 'techLead' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('progress')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Progresso
-                                                {orderBy === 'progress' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th onClick={() => handleSort('endDate')} style={{ cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                Cronograma
-                                                {orderBy === 'endDate' && (
-                                                    <span className="material-icons-round" style={{ fontSize: '16px' }}>
-                                                        {orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginatedProjects.map((project) => {
-                                        const statusConfig = getStatusConfig(project.status);
-                                        const progressClass = getProgressClass(project.progress || 0);
-                                        const daysInfo = getDaysRemaining(project.endDate, project.status);
-                                        const managerName = project.manager?.name || '';
-                                        const avatarGradient = getAvatarGradient(managerName);
-
-                                        const isApproved = project.approvalStatus === 'APPROVED';
-                                        const isReturnedForAdjustment = project.approvalStatus === 'DRAFT' && project.requiresAdjustment;
-                                        const approvalConfig = getApprovalStatusConfig(project.approvalStatus, project.requiresAdjustment);
-
-                                        const handleRowClick = () => {
-                                            // Validate access is now handled in ProjectDetailsPage (DRAFTS must be accessible to submit)
-                                            navigate(`/projects/${project.id}`);
-                                        };
-
-                                        return (
-                                            <tr
-                                                key={project.id}
-                                                onClick={handleRowClick}
-                                                style={{ cursor: isApproved ? 'pointer' : 'not-allowed', opacity: isApproved ? 1 : 0.7 }}
-                                            >
-                                                <td>
-                                                    <div className="pl-project-info">
-                                                        <span className="pl-project-name">{project.name}</span>
-                                                        <span className="pl-project-code">{project.code}</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {!isApproved ? (
-                                                        <span className="pl-status-badge" style={{ background: `${approvalConfig.color}20`, color: approvalConfig.color, border: `1px solid ${approvalConfig.color}40` }}>
-                                                            <span className="material-icons-round">{approvalConfig.icon}</span>
-                                                            {approvalConfig.label}
-                                                        </span>
-                                                    ) : (
-                                                        <span className={`pl-status-badge ${statusConfig.className}`}>
-                                                            <span className="material-icons-round">{statusConfig.icon}</span>
-                                                            {statusConfig.label}
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td>
-
-                                                    <span className={`pl-priority-badge ${getPriorityConfig(project.priority).className}`}>
-                                                        <span className="material-icons-round" style={{ fontSize: '14px' }}>
-                                                            {getPriorityConfig(project.priority).icon}
-                                                        </span>
-                                                        {getPriorityConfig(project.priority).label}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    {
-                                                        project.manager ? (
-                                                            <div className="pl-manager-cell">
-                                                                <div className={`pl-manager-avatar ${avatarGradient}`}>
-                                                                    {getInitials(managerName)}
-                                                                </div>
-                                                                <span className="pl-manager-name">{managerName}</span>
-                                                            </div>
-                                                        ) : (
-                                                            <span style={{ color: 'var(--pl-text-muted)' }}>-</span>
-                                                        )
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {project.techLead ? (
-                                                        <div className="pl-manager-cell">
-                                                            <div className={`pl-manager-avatar ${getAvatarGradient(project.techLead.name)}`}>
-                                                                {getInitials(project.techLead.name)}
-                                                            </div>
-                                                            <span className="pl-manager-name">{project.techLead.name}</span>
-                                                        </div>
-                                                    ) : (
-                                                        <span style={{ color: 'var(--pl-text-muted)' }}>-</span>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    <div className="pl-progress-cell">
-                                                        <div className="pl-progress-bar-container">
-                                                            <div
-                                                                className={`pl-progress-bar ${progressClass}`}
-                                                                style={{ width: `${project.progress || 0}%` }}
-                                                            ></div>
-                                                        </div>
-                                                        <span className="pl-progress-value">{project.progress || 0}%</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className="pl-timeline-cell">
-                                                        <div className="pl-timeline-dates">
-                                                            <span className="material-icons-round">calendar_today</span>
-                                                            {formatDate(project.startDate)} → {formatDate(project.endDate)}
-                                                        </div>
-                                                        <span className={`pl-timeline-remaining ${daysInfo.className}`}>
-                                                            {daysInfo.text}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className="pl-actions-cell">
-                                                        <button
-                                                            className="pl-action-btn view"
-                                                            title="Visualizar"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                navigate(`/projects/${project.id}`);
-                                                            }}
-                                                        >
-                                                            <span className="material-icons-round">visibility</span>
-                                                        </button>
-
-                                                        {/* Resubmit button - only for returned projects */}
-                                                        {isReturnedForAdjustment && (
-                                                            <button
-                                                                className="pl-action-btn"
-                                                                title="Reenviar para Aprovação"
-                                                                onClick={(e) => handleResubmit(e, project.id)}
-                                                                style={{
-                                                                    background: 'rgba(16, 185, 129, 0.15)',
-                                                                    color: '#10b981',
-                                                                    border: 'none',
-                                                                    borderRadius: '8px',
-                                                                    width: '32px',
-                                                                    height: '32px',
-                                                                    cursor: 'pointer',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center'
-                                                                }}
-                                                            >
-                                                                <span className="material-icons-round" style={{ fontSize: '18px' }}>send</span>
-                                                            </button>
-                                                        )}
-
-                                                        {/* Edit button - disabled for permanently rejected projects */}
-                                                        {canWrite && (() => {
-                                                            const isPermanentlyRejected = project.approvalStatus === 'REJECTED' && !project.requiresAdjustment;
-                                                            const canEditProject = !isPermanentlyRejected;
-                                                            return (
-                                                                <button
-                                                                    className="pl-action-btn edit"
-                                                                    title={isPermanentlyRejected ? 'Projeto rejeitado (somente leitura)' : 'Editar'}
-                                                                    disabled={!canEditProject}
-                                                                    onClick={(e) => canEditProject && handleOpenEdit(e, project)}
-                                                                    style={{ opacity: canEditProject ? 1 : 0.4 }}
-                                                                >
-                                                                    <span className="material-icons-round">edit</span>
-                                                                </button>
-                                                            );
-                                                        })()}
-
-                                                        {/* Delete button - disabled for permanently rejected projects */}
-                                                        {canDeletePerm && (() => {
-                                                            const isPermanentlyRejected = project.approvalStatus === 'REJECTED' && !project.requiresAdjustment;
-                                                            const canDeleteProject = !isPermanentlyRejected;
-                                                            return (
-                                                                <button
-                                                                    className="pl-action-btn delete"
-                                                                    title={isPermanentlyRejected ? 'Projeto rejeitado (somente leitura)' : 'Excluir'}
-                                                                    disabled={!canDeleteProject}
-                                                                    onClick={(e) => canDeleteProject && handleDeleteClick(e, project.id)}
-                                                                    style={{ opacity: canDeleteProject ? 1 : 0.4 }}
-                                                                >
-                                                                    <span className="material-icons-round">delete</span>
-                                                                </button>
-                                                            );
-                                                        })()}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-
-                            {totalPages > 1 && (
-                                <div className="pl-table-footer">
-                                    <div className="pl-pagination-info">
-                                        Mostrando {startItem}-{endItem} de {projects.length} projetos
-                                    </div>
-                                    <div className="pl-pagination-controls">
-                                        <button
-                                            className="pl-pagination-btn"
-                                            disabled={page === 1}
-                                            onClick={() => handlePageChange(page - 1)}
-                                        >
-                                            <span className="material-icons-round">chevron_left</span>
-                                        </button>
-                                        {renderPageButtons()}
-                                        <button
-                                            className="pl-pagination-btn"
-                                            disabled={page === totalPages}
-                                            onClick={() => handlePageChange(page + 1)}
-                                        >
-                                            <span className="material-icons-round">chevron_right</span>
-                                        </button>
-                                    </div>
+                <DataListTable
+                    paginationMode="server"
+                    serverTotalCount={totalProjects}
+                    serverPage={page - 1}
+                    onServerPageChange={handleServerPage}
+                    serverRowsPerPage={rowsPerPage}
+                    onServerRowsPerPageChange={handleServerRowsPerPage}
+                    serverOrderBy={orderBy}
+                    serverOrder={orderDirection}
+                    onServerSort={handleSort}
+                    dataTestidTable="tabela-projetos"
+                    shell={{
+                        title: 'Lista de Projetos',
+                        titleIcon: 'list_alt',
+                        accentColor: '#2563eb',
+                        count: totalProjects,
+                        className: 'pl-projects-table-card',
+                        tableClassName: 'pl-projects-table',
+                        sx: {
+                            bgcolor: 'transparent',
+                            boxShadow: 'none',
+                            border: '1px solid var(--pl-border-subtle)',
+                        },
+                        toolbar: (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, justifyContent: 'flex-end', minWidth: 260 }}>
+                                <div className="pl-search-input-container" style={{ flex: '1 1 220px', maxWidth: 360 }}>
+                                    <span className="material-icons-round">search</span>
+                                    <input
+                                        data-testid="input-busca-projeto"
+                                        type="text"
+                                        className="pl-search-input"
+                                        placeholder="Buscar por nome ou código..."
+                                        value={filters.search}
+                                        onChange={(e) => handleFilterChange('search', e.target.value)}
+                                    />
                                 </div>
-                            )}
-                        </>
-                    )}
-                </DataListShell>
+                            </div>
+                        ),
+                    }}
+                    columns={getProjectListColumns({
+                        navigate,
+                        canWrite,
+                        canDeletePerm,
+                        getStatusConfig,
+                        getApprovalStatusConfig,
+                        getPriorityConfig,
+                        getProgressClass,
+                        getDaysRemaining,
+                        getAvatarGradient,
+                        getInitials,
+                        formatDate,
+                        onResubmit: handleResubmit,
+                        onOpenEdit: handleOpenEdit,
+                        onDelete: handleDeleteClick,
+                    })}
+                    rows={projects}
+                    getRowKey={(p) => p.id}
+                    loading={loading}
+                    onRowClick={(p) => navigate(`/projects/${p.id}`)}
+                    getRowSx={(p) => ({
+                        cursor: 'pointer',
+                        opacity: p.approvalStatus === 'APPROVED' ? 1 : 0.7,
+                    })}
+                    emptyMessage="Não encontramos projetos com os filtros atuais."
+                    emptyContent={
+                        canWrite && !hasActiveListFilters
+                            ? (
+                                <EmptyState
+                                    icon={<span className="material-icons-round" style={{ fontSize: 'inherit' }}>folder_off</span>}
+                                    title="Nenhum projeto encontrado"
+                                    description="Crie um novo projeto para começar a gerenciar seu portfólio."
+                                    actionLabel="Novo projeto"
+                                    actionIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}
+                                    onAction={handleOpenNew}
+                                />
+                            )
+                            : undefined
+                    }
+                    tableLayoutFixed={false}
+                />
             </div >
 
             <ProjectModal

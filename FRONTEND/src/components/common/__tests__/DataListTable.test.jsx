@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import DataListTable from '../DataListTable';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 
@@ -50,5 +50,31 @@ describe('DataListTable', () => {
     );
     expect(screen.getByTestId('rich-empty')).toBeInTheDocument();
     expect(screen.queryByText('Mensagem curta')).not.toBeInTheDocument();
+  });
+
+  it('em paginationMode server não aplica sort/slice: count vem de serverTotalCount', () => {
+    const rows = [{ id: 'a', n: 1 }];
+    const onPage = vi.fn();
+    const onSort = vi.fn();
+    renderWithTheme(
+      <DataListTable
+        shell={{ title: 'Server' }}
+        columns={[
+          { id: 'n', label: 'N', accessor: (r) => r.n, render: (r) => String(r.n) },
+        ]}
+        rows={rows}
+        paginationMode="server"
+        serverTotalCount={42}
+        serverPage={0}
+        serverRowsPerPage={10}
+        onServerPageChange={onPage}
+        onServerRowsPerPageChange={vi.fn()}
+        serverOrderBy="n"
+        serverOrder="asc"
+        onServerSort={onSort}
+      />
+    );
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText(/de 42/)).toBeInTheDocument();
   });
 });

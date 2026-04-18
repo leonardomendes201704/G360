@@ -40,6 +40,16 @@ import DataListShell from './DataListShell';
  * @param {function(row): void} [onRowClick] — clique na linha (ex.: abrir detalhe)
  * @param {function(row): boolean} [isRowSelected]
  * @param {function(row): object} [getRowSx]
+ * @param {'client'|'server'} [paginationMode='client'] — em `server`, `rows` = página atual; ordenação e paginação vêm de props; não há sort/slice no cliente
+ * @param {number} [serverTotalCount] — total de linhas (API) quando `paginationMode='server'`
+ * @param {number} [serverPage] — página 0-based (MUI) quando `server`
+ * @param {number} [serverRowsPerPage] — itens por página no servidor
+ * @param {function} [onServerPageChange] — `(e, newPage) =>` como `TablePagination`
+ * @param {function} [onServerRowsPerPageChange] — `(e) =>` como MUI
+ * @param {string} [serverOrderBy] — coluna ativa (id) em `server`
+ * @param {'asc'|'desc'} [serverOrder] — em `server`
+ * @param {function(string): void} [onServerSort] — clique no header de ordenação em `server` (a página chama a API e atualiza `serverOrderBy` / `serverOrder`)
+ * @param {string} [dataTestidTable] — `data-testid` no elemento `<Table>` (ex.: e2e)
  */
 const DataListTable = ({
   shell,
@@ -63,9 +73,21 @@ const DataListTable = ({
   onRowClick,
   isRowSelected,
   getRowSx,
+  paginationMode = 'client',
+  serverTotalCount = 0,
+  serverPage = 0,
+  serverRowsPerPage,
+  onServerPageChange,
+  onServerRowsPerPageChange,
+  serverOrderBy = '',
+  serverOrder = 'asc',
+  onServerSort,
+  dataTestidTable,
 }) => {
   const { mode } = useContext(ThemeContext);
   const isDark = mode === 'dark';
+
+  const isServer = paginationMode === 'server';
 
   const firstSortable = columns.find((c) => c.sortable !== false && c.id);
   const initialOrderBy = defaultOrderBy ?? firstSortable?.id ?? '';
@@ -74,6 +96,11 @@ const DataListTable = ({
   const [order, setOrder] = useState(defaultOrder);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageDefault);
+
+  const effectiveOrderBy = isServer ? serverOrderBy : orderBy;
+  const effectiveOrder = isServer ? serverOrder : order;
+  const effectiveRowsPerPage = isServer ? (serverRowsPerPage ?? rowsPerPageDefault) : rowsPerPage;
+  const effectivePage = isServer ? serverPage : page;
 
   const headerBg = isDark ? '#1e293b' : '#f8fafc';
   const thBase = {
@@ -84,6 +111,7 @@ const DataListTable = ({
   };
 
   const sortedRows = useMemo(() => {
+    if (isServer) return rows;
     if (!rows.length) return rows;
     if (sortRowsProp) return sortRowsProp([...rows], orderBy, order);
     if (!orderBy) return [...rows];
@@ -107,23 +135,29 @@ const DataListTable = ({
       else cmp = String(va).localeCompare(String(vb), 'pt-BR', { numeric: true, sensitivity: 'base' });
       return mult * cmp;
     });
-  }, [rows, orderBy, order, sortRowsProp, columns]);
+  }, [isServer, rows, orderBy, order, sortRowsProp, columns]);
 
-  const paginatedRows = useMemo(
-    () => sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [sortedRows, page, rowsPerPage]
-  );
+  const paginatedRows = useMemo(() => {
+    if (isServer) return rows;
+    return sortedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [isServer, rows, sortedRows, page, rowsPerPage]);
 
   useEffect(() => {
+    if (isServer) return;
     const maxPage = Math.max(0, Math.ceil(sortedRows.length / rowsPerPage) - 1);
     if (page > maxPage) setPage(maxPage);
-  }, [sortedRows.length, rowsPerPage, page]);
+  }, [isServer, sortedRows.length, rowsPerPage, page]);
 
   useEffect(() => {
+    if (isServer) return;
     setPage(0);
-  }, [resetPaginationKey]);
+  }, [isServer, resetPaginationKey]);
 
   const handleRequestSort = (property) => {
+    if (isServer) {
+      onServerSort?.(property);
+      return;
+    }
     if (orderBy === property) {
       setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
     } else {
@@ -151,7 +185,7 @@ const DataListTable = ({
       {!loading &&
         rows.length > 0 &&
         typeof renderBeforeTable === 'function' &&
-        renderBeforeTable({ paginatedRows, page, rowsPerPage })}
+        renderBeforeTable({ paginatedRows, page: effectivePage, rowsPerPage: effectiveRowsPerPage })}
       <TableContainer
         component={Paper}
         elevation={0}
@@ -166,6 +200,8 @@ const DataListTable = ({
         ) : (
           <>
             <Table
+              className={shell.tableClassName}
+              data-testid={dataTestidTable}
               size={size}
               sx={{
                 tableLayout: tableLayoutFixed ? 'fixed' : 'auto',
@@ -186,15 +222,15 @@ const DataListTable = ({
                     return (
                       <TableCell
                         key={col.id}
-                        sortDirection={orderBy === col.id ? order : false}
+                        sortDirection={effectiveOrderBy === col.id ? effectiveOrder : false}
                         sx={cellSx}
                       >
                         {typeof col.renderHeader === 'function' ? (
                           col.renderHeader({ paginatedRows })
                         ) : sortable ? (
                           <TableSortLabel
-                            active={orderBy === col.id}
-                            direction={orderBy === col.id ? order : 'asc'}
+                            active={effectiveOrderBy === col.id}
+                            direction={effectiveOrderBy === col.id ? effectiveOrder : 'asc'}
                             onClick={() => handleRequestSort(col.id)}
                           >
                             {col.label}
@@ -262,14 +298,22 @@ const DataListTable = ({
             {rows.length > 0 ? (
               <TablePagination
                 component="div"
-                count={sortedRows.length}
-                page={page}
-                onPageChange={(_, newPage) => setPage(newPage)}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={(e) => {
-                  setRowsPerPage(parseInt(e.target.value, 10));
-                  setPage(0);
-                }}
+                count={isServer ? serverTotalCount : sortedRows.length}
+                page={isServer ? serverPage : page}
+                onPageChange={
+                  isServer
+                    ? onServerPageChange ?? (() => {})
+                    : (_, newPage) => setPage(newPage)
+                }
+                rowsPerPage={effectiveRowsPerPage}
+                onRowsPerPageChange={
+                  isServer
+                    ? onServerRowsPerPageChange ?? (() => {})
+                    : (e) => {
+                        setRowsPerPage(parseInt(e.target.value, 10));
+                        setPage(0);
+                      }
+                }
                 rowsPerPageOptions={rowsPerPageOptions}
                 labelRowsPerPage="Linhas por página"
                 labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
