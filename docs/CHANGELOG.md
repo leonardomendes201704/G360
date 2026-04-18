@@ -8,7 +8,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Refactored
-- **Base de conhecimento (`/knowledge`):** Vista em **lista** (`KnowledgeBasePage`) passa a **`DataListTable`** (ordenação, paginação, linha clica no visualizador); colunas e sort em ficheiros dedicados. **Vista grelha** inalterada. Vazio: `emptyContent` com **`EmptyState` + “Novo artigo”** (permissão CREATE) ou `emptyMessage` quando não houver criação; na vista grelha mantém-se o bloco de vazio na vista grelha.
+- **Base de conhecimento (`/knowledge`):** Vista em **lista** (`KnowledgeBasePage`) passa a **`DataListTable`** (ordenação, paginação, linha clica no visualizador); colunas e sort em ficheiros dedicados. **Vista grelha** inalterada. Vazio: `emptyContent` com **`EmptyState` + “Novo artigo”** (CREATE e **sem** busca/categoria ativa) ou `emptyMessage` noutros casos; grelha vazia fora da tabela na vista grelha.
   - `FRONTEND/src/pages/KnowledgeBasePage.jsx`
   - `FRONTEND/src/pages/knowledgeArticleListColumns.jsx`, `FRONTEND/src/pages/knowledgeArticleListSort.js`
   - `docs/patterns/data-grids-inventory.md` (linha Grupo A)
