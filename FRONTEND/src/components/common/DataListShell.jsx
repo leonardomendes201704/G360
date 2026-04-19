@@ -15,6 +15,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
  * @param {object} [sx] — Estilos do contentor exterior (ex.: mesmo `cardStyle` da página)
  * @param {object} [headerSx] — Estilos da faixa do cabeçalho (título + toolbar); sobrepõe `p`/`fontSize` predefinidos (ex.: densidade ~75%)
  * @param {string} [className] — Classe CSS no contentor exterior (ex.: tema premium da página)
+ * @param {boolean} [hideHeader] — Se true, não renderiza a faixa título+toolbar (ex.: título via PageTitleCard acima)
  */
 const DataListShell = ({
   title,
@@ -26,6 +27,7 @@ const DataListShell = ({
   sx = {},
   headerSx = {},
   className,
+  hideHeader = false,
 }) => {
   const { mode } = useContext(ThemeContext);
   const isDark = mode === 'dark';
@@ -46,56 +48,58 @@ const DataListShell = ({
         ...sx,
       }}
     >
-      <Box
-        sx={{
-          p: 3,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: `1px solid ${borderColor}`,
-          flexWrap: 'wrap',
-          gap: 2,
-          ...headerSx,
-        }}
-      >
-        <Typography
+      {!hideHeader ? (
+        <Box
           sx={{
-            fontSize: denseHeader ? '13.5px' : '18px',
-            fontWeight: 600,
-            color: textPrimary,
+            p: 3,
             display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            gap: 1,
+            borderBottom: `1px solid ${borderColor}`,
             flexWrap: 'wrap',
+            gap: 2,
+            ...headerSx,
           }}
         >
-          <Box
-            component="span"
-            className="material-icons-round"
+          <Typography
             sx={{
-              fontSize: denseHeader ? '15px' : '20px',
-              color: accentColor,
-              lineHeight: 1,
+              fontSize: denseHeader ? '13.5px' : '18px',
+              fontWeight: 600,
+              color: textPrimary,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap',
             }}
           >
-            {titleIcon}
-          </Box>
-          {title}
-          {count != null && (
-            <Typography
+            <Box
               component="span"
-              sx={{ fontSize: denseHeader ? '10.5px' : '14px', color: textMuted, fontWeight: 400 }}
+              className="material-icons-round"
+              sx={{
+                fontSize: denseHeader ? '15px' : '20px',
+                color: accentColor,
+                lineHeight: 1,
+              }}
             >
-              ({count})
-            </Typography>
-          )}
-        </Typography>
-        {toolbar ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 auto', justifyContent: 'flex-end' }}>
-            {toolbar}
-          </Box>
-        ) : null}
-      </Box>
+              {titleIcon}
+            </Box>
+            {title}
+            {count != null && (
+              <Typography
+                component="span"
+                sx={{ fontSize: denseHeader ? '10.5px' : '14px', color: textMuted, fontWeight: 400 }}
+              >
+                ({count})
+              </Typography>
+            )}
+          </Typography>
+          {toolbar ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 auto', justifyContent: 'flex-end' }}>
+              {toolbar}
+            </Box>
+          ) : null}
+        </Box>
+      ) : null}
       {children}
     </Box>
   );

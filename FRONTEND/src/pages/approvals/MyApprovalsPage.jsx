@@ -10,6 +10,7 @@ import LoadingOverlay from '../../components/common/LoadingOverlay';
 import StatsCard from '../../components/common/StatsCard';
 import StandardModal from '../../components/common/StandardModal';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 const formatCurrency = (val) => val ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val) : '-';
 const formatDate = (date) => date ? new Date(date).toLocaleDateString('pt-BR') : '-';
@@ -51,7 +52,6 @@ const MyApprovalsPage = () => {
     // Theme-aware styles
     const textPrimary = mode === 'dark' ? '#f1f5f9' : theme.palette.text.primary;
     const textSecondary = mode === 'dark' ? '#64748b' : theme.palette.text.secondary;
-    const textMuted = mode === 'dark' ? '#94a3b8' : theme.palette.text.disabled;
     const surfaceBg = mode === 'dark' ? '#1c2632' : theme.palette.background.default;
     const borderColor = mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : theme.palette.divider;
 
@@ -60,7 +60,7 @@ const MyApprovalsPage = () => {
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: '8px',
-        padding: '24px',
+        padding: '12px',
         boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
     };
 
@@ -149,47 +149,18 @@ const MyApprovalsPage = () => {
         setDetailsModalOpen(true);
     };
 
-    const tabs = [
-        { id: 'all', label: 'Todas', count: counts.total, icon: 'inbox' },
-        { id: 'expenses', label: 'Despesas', count: counts.expenses, icon: 'payments' },
-        { id: 'projectCosts', label: 'Custos', count: counts.projectCosts, icon: 'folder' },
-        { id: 'minutes', label: 'Atas', count: counts.minutes, icon: 'description' },
-        { id: 'gmuds', label: 'GMUDs', count: counts.gmuds, icon: 'build' },
-        { id: 'projects', label: 'Projetos', count: counts.projects, icon: 'work' },
-        { id: 'proposals', label: 'Propostas', count: counts.proposals, icon: 'handshake' },
-        { id: 'budgets', label: 'Orçamentos', count: counts.budgets ?? 0, icon: 'account_balance' },
-    ];
-
     return (
         <Box>
-            {/* Page Header */}
-            <Paper sx={{
-                mb: 4,
-                p: 3,
-                borderRadius: '8px',
-                bgcolor: mode === 'dark' ? 'background.paper' : '#FFFFFF',
-                border: `1px solid ${borderColor}`,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)',
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <span className="material-icons-round" style={{ fontSize: '36px', color: '#2563eb' }}>fact_check</span>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-                            Minhas Aprovações
-                        </Typography>
-                        <Typography sx={{ color: textSecondary, fontSize: '15px' }}>
-                            Central de aprovações pendentes de todos os módulos
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
+            <PageTitleCard
+                iconName="fact_check"
+                title="Minhas Aprovações"
+                subtitle="Central de aprovações pendentes de todos os módulos"
+            />
 
-            {/* Summary Cards — usando StatsCard + KpiGrid padrao */}
-            <KpiGrid maxColumns={7} maxColumnsMd={7}>
+            {/* Summary Cards — usando StatsCard + KpiGrid padrao (8: Todas + 7 tipos) */}
+            <KpiGrid maxColumns={8} maxColumnsMd={8} mb={1.5}>
                 {[
+                    { key: 'all', label: 'Todas', iconName: 'inbox', hexColor: '#64748b' },
                     { key: 'expenses', label: 'Despesas', iconName: 'payments', hexColor: '#2563eb' },
                     { key: 'projectCosts', label: 'Custos Projeto', iconName: 'folder', hexColor: '#3b82f6' },
                     { key: 'minutes', label: 'Atas', iconName: 'description', hexColor: '#06b6d4' },
@@ -201,7 +172,7 @@ const MyApprovalsPage = () => {
                     <StatsCard
                         key={card.key}
                         title={card.label}
-                        value={counts[card.key]}
+                        value={card.key === 'all' ? counts.total : counts[card.key]}
                         iconName={card.iconName}
                         hexColor={card.hexColor}
                         active={activeTab === card.key}
@@ -209,65 +180,6 @@ const MyApprovalsPage = () => {
                     />
                 ))}
             </KpiGrid>
-
-            {/* Tabs — escala ~75% (fonte/ícone/chip) para caber as 8 abas numa linha */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    gap: 0.5,
-                    mb: 3,
-                    borderBottom: `1px solid ${borderColor}`,
-                    pb: 1.5,
-                    flexWrap: 'nowrap',
-                    overflowX: 'auto',
-                    WebkitOverflowScrolling: 'touch',
-                    '&::-webkit-scrollbar': { height: 4 },
-                    '&::-webkit-scrollbar-thumb': { borderRadius: 2, bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)' },
-                }}
-            >
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.id}
-                        type="button"
-                        onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
-                        style={{
-                            flexShrink: 0,
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            border: 'none',
-                            background: activeTab === tab.id ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
-                            color: activeTab === tab.id ? '#2563eb' : textMuted,
-                            fontSize: '10px',
-                            fontWeight: 500,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            lineHeight: 1.2,
-                        }}
-                    >
-                        <span className="material-icons-round" style={{ fontSize: 12 }}>{tab.icon}</span>
-                        {tab.label}
-                        {tab.count > 0 && (
-                            <span
-                                style={{
-                                    background: activeTab === tab.id ? '#2563eb' : (mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
-                                    color: activeTab === tab.id ? 'white' : textMuted,
-                                    padding: '1px 5px',
-                                    borderRadius: '6px',
-                                    fontSize: '8px',
-                                    fontWeight: 600,
-                                    minWidth: 14,
-                                    textAlign: 'center',
-                                    lineHeight: 1.35,
-                                }}
-                            >
-                                {tab.count}
-                            </span>
-                        )}
-                    </button>
-                ))}
-            </Box>
 
             {/* Items List */}
             <Paper sx={{ ...cardStyle, position: 'relative', minHeight: 300 }}>
@@ -279,28 +191,28 @@ const MyApprovalsPage = () => {
                         description="Todos os itens foram processados. Quando novos itens precisarem de sua aprovação, eles aparecerão aqui."
                     />
                 ) : (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                         {items.map((item) => {
                             const config = typeConfig[item.type] || typeConfig.expense;
                             return (
                                 <Box
                                     key={`${item.type}-${item.id}`}
                                     sx={{
-                                        display: 'flex', alignItems: 'center', gap: 3, p: 2,
+                                        display: 'flex', alignItems: 'center', gap: 1.5, p: 1,
                                         background: surfaceBg, borderRadius: '8px', transition: 'all 0.2s',
                                         '&:hover': { background: mode === 'dark' ? '#232f3e' : theme.palette.action.hover }
                                     }}
                                 >
                                     {/* Type Icon */}
-                                    <Box sx={{ width: 44, height: 44, borderRadius: '8px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <span className="material-icons-round" style={{ color: config.color, fontSize: 22 }}>{config.icon}</span>
+                                    <Box sx={{ width: 36, height: 36, borderRadius: '6px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span className="material-icons-round" style={{ color: config.color, fontSize: 18 }}>{config.icon}</span>
                                     </Box>
 
                                     {/* Info */}
                                     <Box sx={{ flex: 1 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.25 }}>
                                             <Typography sx={{ fontSize: 14, fontWeight: 600, color: textPrimary }}>{item.title}</Typography>
-                                            <Chip label={config.label} size="small" sx={{ background: config.bg, color: config.color, fontSize: 10, height: 20, fontWeight: 600 }} />
+                                            <Chip label={config.label} size="small" sx={{ background: config.bg, color: config.color, fontSize: 9, height: 18, fontWeight: 600 }} />
                                         </Box>
                                         <Typography sx={{ fontSize: 12, color: textSecondary }}>
                                             {item.subtitle}
@@ -310,7 +222,7 @@ const MyApprovalsPage = () => {
                                     </Box>
 
                                     {/* Value */}
-                                    <Box sx={{ textAlign: 'right', minWidth: 120 }}>
+                                    <Box sx={{ textAlign: 'right', minWidth: 100 }}>
                                         <Typography sx={{ fontSize: 16, fontWeight: 600, color: item.value ? textPrimary : textSecondary }}>
                                             {formatCurrency(item.value)}
                                         </Typography>
@@ -318,17 +230,17 @@ const MyApprovalsPage = () => {
                                     </Box>
 
                                     {/* Actions */}
-                                    <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <Box sx={{ display: 'flex', gap: 0.5 }}>
                                         <Tooltip title="Ver Detalhes">
                                             <IconButton
                                                 onClick={() => handleViewDetails(item)}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: '8px',
+                                                    width: 32, height: 32, p: 0.5, borderRadius: '6px',
                                                     background: 'rgba(37, 99, 235, 0.15)', color: '#2563eb',
                                                     '&:hover': { background: '#2563eb', color: 'white' }
                                                 }}
                                             >
-                                                <span className="material-icons-round" style={{ fontSize: 20 }}>visibility</span>
+                                                <span className="material-icons-round" style={{ fontSize: 16 }}>visibility</span>
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Aprovar">
@@ -336,13 +248,13 @@ const MyApprovalsPage = () => {
                                                 onClick={() => handleApprove(item)}
                                                 disabled={processing === item.id}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: '8px',
+                                                    width: 32, height: 32, p: 0.5, borderRadius: '6px',
                                                     background: 'rgba(16, 185, 129, 0.15)', color: '#10b981',
                                                     '&:hover': { background: '#10b981', color: 'white' },
                                                     '&:disabled': { opacity: 0.5 }
                                                 }}
                                             >
-                                                {processing === item.id ? <CircularProgress size={18} sx={{ color: '#10b981' }} /> : <span className="material-icons-round" style={{ fontSize: 20 }}>check</span>}
+                                                {processing === item.id ? <CircularProgress size={14} sx={{ color: '#10b981' }} /> : <span className="material-icons-round" style={{ fontSize: 16 }}>check</span>}
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Rejeitar">
@@ -350,13 +262,13 @@ const MyApprovalsPage = () => {
                                                 onClick={() => setRejectDialog({ open: true, item })}
                                                 disabled={processing === item.id}
                                                 sx={{
-                                                    width: 40, height: 40, borderRadius: '8px',
+                                                    width: 32, height: 32, p: 0.5, borderRadius: '6px',
                                                     background: 'rgba(244, 63, 94, 0.15)', color: '#f43f5e',
                                                     '&:hover': { background: '#f43f5e', color: 'white' },
                                                     '&:disabled': { opacity: 0.5 }
                                                 }}
                                             >
-                                                <span className="material-icons-round" style={{ fontSize: 20 }}>close</span>
+                                                <span className="material-icons-round" style={{ fontSize: 16 }}>close</span>
                                             </IconButton>
                                         </Tooltip>
                                     </Box>

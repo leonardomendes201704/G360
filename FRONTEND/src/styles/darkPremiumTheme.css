@@ -137,9 +137,20 @@
     color: var(--dark-text-primary) !important;
 }
 
-/* Force padding on dark theme content */
+/* Page content — lateral = margem do header (MainLayout mx só); ver lightPremiumTheme .page-content */
 .page-content.dark-premium-theme {
-    padding: 32px !important;
+    padding: 16px 8px 32px 8px !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 900px) {
+    .page-content.dark-premium-theme {
+        padding: 16px 12px 32px 12px !important;
+    }
 }
 
 /* EXCEÇÃO: Modais devem manter estilo claro */

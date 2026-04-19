@@ -23,7 +23,7 @@ import {
  * Lista em cartão (DataListShell) + tabela MUI com ordenação e paginação no cliente.
  * Para linhas compostas ou regras de sort específicas, use `sortRows` ou `column.accessor`.
  *
- * @param {object} shell — Repasse ao DataListShell: title, titleIcon, accentColor, count, toolbar, sx, headerSx, className
+ * @param {object} shell — Repasse ao DataListShell: title, titleIcon, accentColor, count, toolbar, sx, headerSx, className, hideHeader
  * @param {Array<{ id: string, label: string, sortable?: boolean, width?: string, minWidth?: number|string, align?: 'left'|'right'|'center', headerSx?: object, cellSx?: object|function, hideSortIcon?: boolean, render: function(row): ReactNode, accessor?: function(row): any }>} columns — `hideSortIcon`: por defeito **true** (TableSortLabel sem seta nem espaço reservado quando a coluna não ordena); `hideSortIcon: false` repõe o comportamento clássico do MUI (seta com opacity 0)
  * @param {Array} rows
  * @param {function(row): string} [getRowKey] — chave estável da linha (default: row.id)
@@ -199,6 +199,7 @@ const DataListTable = ({
       sx={shellSxMerged}
       headerSx={shell.headerSx}
       className={shell.className}
+      hideHeader={Boolean(shell?.hideHeader)}
     >
       {!loading &&
         rows.length > 0 &&

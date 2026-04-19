@@ -276,12 +276,13 @@ const ManagerOverview = () => {
 
     // ─────────────────────────────────────────────────────────────────────────
     return (
-        <Box sx={{ mt: -1.5 }}>
+        <Box sx={{ mt: 0 }}>
+            {/* Espaço até o hero = só o padding-top do main (~16px); mt extra removido p/ ~50% menos que mt:2 */}
 
             {/* ── HERO BANNER ────────────────────────────────────────────────── */}
             <Box sx={{ position: 'relative', mb: 3 }}>
-                {/* Gear icon floating top-right of banner */}
-                <Box sx={{ position: 'absolute', top: -17, right: -17, zIndex: 10 }}>
+                {/* Gear: canto do banner; evitar right negativo (corta na viewport/scrollbar) */}
+                <Box sx={{ position: 'absolute', top: 0, right: 0, zIndex: 10 }}>
                     <DashboardCustomizer widgets={widgets} onWidgetsChange={handleWidgetsChange} isDark={isDark} />
                 </Box>
                 <Box sx={{

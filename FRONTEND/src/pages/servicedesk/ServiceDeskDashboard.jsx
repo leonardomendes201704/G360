@@ -30,6 +30,7 @@ import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import DataListTable from '../../components/common/DataListTable';
 import FilterDrawer from '../../components/common/FilterDrawer';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import usePersistedFilters from '../../hooks/usePersistedFilters';
 import { getTicketStatusSortIndex, splitTicketTitleEmDash } from '../../constants/ticketStatus';
 
@@ -719,26 +720,27 @@ const ServiceDeskDashboard = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Box display="flex" alignItems="center">
-          <Typography variant="h5" fontWeight="bold" mr={2}>
-            Central de Serviços (Service Desk)
-          </Typography>
+      <PageTitleCard
+        iconName="support_agent"
+        title="Central de Serviços (Service Desk)"
+        subtitle={
+          !loading && metrics
+            ? `Indicadores (${metrics.periodDays} dias)`
+            : !loading
+              ? 'Indicadores'
+              : undefined
+        }
+        actions={
           <Tooltip title="Exportar chamados (CSV)">
-            <IconButton onClick={handleExportCsv} size="small" sx={{ bgcolor: 'rgba(0,0,0,0.04)' }}>
+            <IconButton onClick={handleExportCsv} size="small" sx={{ bgcolor: 'rgba(0,0,0,0.04)' }} aria-label="Exportar CSV">
               <DownloadIcon color="action" />
             </IconButton>
           </Tooltip>
-        </Box>
-      </Box>
+        }
+      />
 
       {!loading && (
         <Box sx={{ mb: 4 }}>
-          {metrics && (
-            <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
-              Indicadores ({metrics.periodDays} dias)
-            </Typography>
-          )}
           <KpiGrid maxColumns={5} mb={0} clampChildHeight={false} gap={2}>
             {metrics && (
               <>

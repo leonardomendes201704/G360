@@ -526,7 +526,7 @@ const GlobalSettingsPage = () => {
             .page-content.light-premium-theme,
             .page-content {
                 padding-bottom: 0px !important;
-                padding-top: 24px !important;
+                padding-top: 12px !important;
             }
         `;
         document.head.appendChild(style);

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import DarkSidebar, { SIDEBAR_WIDTH_EXPANDED, SIDEBAR_WIDTH_COLLAPSED } from './DarkSidebar';
@@ -24,8 +24,16 @@ const MainLayout = ({ children }) => {
   const { mode, toggleTheme } = useContext(ThemeContext);
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
+  const mainScrollRef = useRef(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Scroll do conteúdo fica no <main.page-content>, não na window — repor ao navegar
+  useEffect(() => {
+    const el = mainScrollRef.current;
+    if (el) el.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [location.key]);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -214,17 +222,18 @@ const MainLayout = ({ children }) => {
             border: '1px solid',
             borderColor: 'divider', // Dynamic Border
             borderRadius: '8px', // Rounded corners
-            mx: { xs: 2, md: 3 }, // Margins horizontal
-            mt: { xs: 2, md: 3 }, // Margin top
-            mb: 1, // Slight margin bottom
-            height: { xs: '64px', md: '80px' },
+            mx: { xs: 1, md: 1.5 },
+            mt: { xs: 1, md: 1.5 },
+            mb: 0.25,
+            height: { xs: '48px', md: '56px' },
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             position: 'sticky',
-            top: 24, // Sticks with gap from top
+            top: 12,
             zIndex: 1100,
-            gap: { xs: 1, md: 2 },
+            gap: { xs: 0.5, md: 1 },
+            px: { xs: 1.5, md: 2 },
             // hidden corta busca/breadcrumbs em zoom alto; X permite scroll raro se faltar espaço
             overflowX: 'auto',
             overflowY: 'hidden',
@@ -234,7 +243,7 @@ const MainLayout = ({ children }) => {
           }}
         >
           {/* Left: Hamburger + Breadcrumbs */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: '1 1 0%', minWidth: 0, overflow: 'hidden' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: '1 1 0%', minWidth: 0, overflow: 'hidden' }}>
             {isMobile && (
               <IconButton
                 onClick={handleDrawerToggle}
@@ -255,7 +264,7 @@ const MainLayout = ({ children }) => {
                   return 'Gestão';
                 })()}
               </span>
-              <span style={{ margin: '0 8px', opacity: 0.4 }}>/</span>
+              <span style={{ margin: '0 4px', opacity: 0.4 }}>/</span>
               <span style={{ color: mode === 'dark' ? '#f1f5f9' : '#0f172a', fontWeight: 600 }}>
                 {(() => {
                   const routeLabelMap = {
@@ -294,12 +303,12 @@ const MainLayout = ({ children }) => {
                 flex: '2 1 0%',
                 minWidth: 0,
                 maxWidth: 400,
-                mx: 2,
+                mx: 1,
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1.5,
-                px: 2,
-                py: 1,
+                gap: 0.75,
+                px: 1,
+                py: 0.5,
                 borderRadius: '8px',
                 border: '1px solid',
                 borderColor: 'divider',
@@ -315,7 +324,7 @@ const MainLayout = ({ children }) => {
           )}
 
           {/* Right Side Actions Wrapper — não compete com flex:1 (evita esmagar centro em zoom 100%) */}
-          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', justifyContent: 'flex-end', flex: '0 0 auto', flexShrink: 0, ml: isMobile ? 'auto' : { xs: 1, md: 2 } }}>
+          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', justifyContent: 'flex-end', flex: '0 0 auto', flexShrink: 0, ml: isMobile ? 'auto' : { xs: 0.5, md: 1 } }}>
             {/* Theme Toggle */}
             <Tooltip title={mode === 'dark' ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}>
               <IconButton onClick={toggleTheme} className="top-bar-icon">
@@ -336,10 +345,10 @@ const MainLayout = ({ children }) => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 0, sm: 1.5 },
-                px: { xs: 0.5, sm: 1.5 },
-                ml: 1,
-                py: 0.75,
+                gap: { xs: 0, sm: 0.75 },
+                px: { xs: 0.25, sm: 0.75 },
+                ml: 0.5,
+                py: 0.5,
                 background: { xs: 'transparent', sm: mode === 'dark' ? '#1c2632' : 'transparent' },
                 border: { xs: 'none', sm: '1px solid' },
                 borderColor: 'divider',
@@ -353,8 +362,8 @@ const MainLayout = ({ children }) => {
             >
               <Avatar
                 sx={{
-                  width: { xs: 32, sm: 36 },
-                  height: { xs: 32, sm: 36 },
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
                   fontSize: { xs: 12, sm: 14 },
                   fontWeight: 600,
@@ -372,11 +381,14 @@ const MainLayout = ({ children }) => {
           </Box>
         </Box>
 
-        <main className={`page-content ${mode === 'dark' ? 'dark-premium-theme' : 'light-premium-theme'}`} style={{
-          padding: 0,
-          background: mode === 'dark' ? '#0f172a' : '#f8fafc', // Explicit background color
-          minHeight: 'calc(100vh - 80px)'
-        }}>
+        <main
+          ref={mainScrollRef}
+          className={`page-content ${mode === 'dark' ? 'dark-premium-theme' : 'light-premium-theme'}`}
+          style={{
+            background: mode === 'dark' ? '#0f172a' : '#f8fafc', // Explicit background color
+            minHeight: 'calc(100vh - 64px)'
+          }}
+        >
           <PageTransition>{children}</PageTransition>
         </main>
 

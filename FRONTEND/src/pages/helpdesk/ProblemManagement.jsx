@@ -9,6 +9,7 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import problemService from '../../services/problem.service';
 import StandardModal from '../../components/common/StandardModal';
 import DataListTable from '../../components/common/DataListTable';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import { getProblemColumns } from './problemListColumns';
 import { sortProblemsRows } from './problemListSort';
 
@@ -103,18 +104,23 @@ const ProblemManagement = () => {
 
   return (
     <Box>
+      <PageTitleCard
+        iconName="bug_report"
+        iconColor="#7c3aed"
+        title="Gestão de Problemas (ITIL)"
+        subtitle="Problemas crônicos, causa raiz e vínculos com chamados"
+        pushActionsToEnd
+        mb={3}
+        actions={
+          <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>
+            Declarar Problema
+          </Button>
+        }
+      />
       <DataListTable
         shell={{
-          title: 'Gestão de Problemas (ITIL)',
-          titleIcon: 'bug_report',
-          accentColor: '#7c3aed',
-          count: problems.length,
+          hideHeader: true,
           sx: { mb: 3 },
-          toolbar: (
-            <Button variant="contained" color="secondary" startIcon={<BugReportIcon />} onClick={() => setModalOpen(true)}>
-              Declarar Problema
-            </Button>
-          ),
         }}
         columns={problemColumns}
         rows={problems}

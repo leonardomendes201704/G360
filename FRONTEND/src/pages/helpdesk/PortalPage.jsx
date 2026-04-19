@@ -661,14 +661,22 @@ const PortalPage = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, p: { xs: 2, md: 3 } }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        /* Sem px extra: o alinhamento esq/dir vem só do main.page-content (igual ao header) */
+        px: 0,
+        pt: { xs: 0, md: 0.5 },
+        pb: { xs: 2, md: 3 }
+      }}
+    >
       {/* HERO */}
       <Box
         sx={{
-          mb: 3,
-          pt: 4,
-          pb: 5,
-          px: { xs: 2, sm: 4 },
+          mb: 1.5,
+          pt: 1.5,
+          pb: 2,
+          px: { xs: 1, sm: 2 },
           borderRadius: '8px',
           textAlign: 'center',
           background:
@@ -707,7 +715,7 @@ const PortalPage = () => {
         <Typography
           variant="h4"
           fontWeight="800"
-          sx={{ mb: 1.5, color: mode === 'dark' ? '#f8fafc' : '#0f172a', letterSpacing: '-0.5px' }}
+          sx={{ mb: 1, color: mode === 'dark' ? '#f8fafc' : '#0f172a', letterSpacing: '-0.5px' }}
         >
           Olá, como podemos ajudar?
         </Typography>

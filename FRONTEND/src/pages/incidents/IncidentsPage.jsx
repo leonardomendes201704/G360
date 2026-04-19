@@ -28,6 +28,7 @@ import FilterDrawer from '../../components/common/FilterDrawer';
 import DataListShell from '../../components/common/DataListShell';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import { getIncidentColumns } from './incidentListColumns';
 import { sortIncidentsRows } from './incidentListSort';
 
@@ -317,41 +318,37 @@ const IncidentsPage = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box sx={{
-                mb: 3, p: 3, borderRadius: '8px',
-                background: cardBg,
-                backdropFilter: isDark ? 'blur(10px)' : 'none',
-                border: cardBorder,
-                boxShadow: cardShadow,
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <span className="material-icons-round" style={{ fontSize: '36px', color: '#f59e0b' }}>warning</span>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-                            Gestão de Incidentes
-                        </Typography>
-                    </Box>
-                </Box>
-                {canWrite && (
-                    <Button
-                        onClick={handleOpenCreate}
-                        sx={{
-                            display: 'flex', alignItems: 'center', gap: 1,
-                            padding: '12px 20px', borderRadius: '8px',
-                            fontSize: '14px', fontWeight: 600, textTransform: 'none',
-                            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                            color: 'white',
-                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                            '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
-                        }}
-                        startIcon={<Add />}
-                    >
-                        Novo Incidente
-                    </Button>
-                )}
-            </Box>
+            <PageTitleCard
+                iconName="warning"
+                iconColor="#f59e0b"
+                title="Gestão de Incidentes"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    canWrite ? (
+                        <Button
+                            onClick={handleOpenCreate}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1,
+                                padding: '12px 20px',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                                color: 'white',
+                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' },
+                            }}
+                            startIcon={<Add />}
+                        >
+                            Novo Incidente
+                        </Button>
+                    ) : null
+                }
+            />
 
             <KpiGrid maxColumns={5}>
                 {statCards.map((card) => (

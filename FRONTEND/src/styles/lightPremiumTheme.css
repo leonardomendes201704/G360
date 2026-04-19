@@ -123,10 +123,21 @@ body.light-premium-theme,
     box-shadow: var(--light-shadow-hover) !important;
 }
 
-/* Page Content Background */
+/* Page Content — lateral = margem do header (MainLayout mx só: 8px xs / 12px md), igual à borda do card do top-bar */
 .page-content.light-premium-theme {
-    padding: 32px !important;
+    padding: 16px 8px 32px 8px !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     background: var(--light-bg-primary) !important;
+}
+
+@media (min-width: 900px) {
+    .page-content.light-premium-theme {
+        padding: 16px 12px 32px 12px !important;
+    }
 }
 
 /* ===============================================
