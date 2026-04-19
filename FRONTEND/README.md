@@ -1,4 +1,11 @@
-# React + Vite
+# G360 — Frontend (React + Vite)
+
+## E2E e auditoria de consola
+
+- **Suite habitual:** `npm run test:e2e` (Playwright, `playwright.g360.config.ts`, Vite tipicamente na porta **5176**).
+- **Auditoria de consola com browser visível:** `npm run test:e2e:console-headed` — imprime no terminal cada passo (`[console-smoke] 1/N → /rota`). Para saída Playwright mais explícita: `npm run test:e2e:console-headed:line` (`--reporter=line`). Timeout **20 min**; `PLAYWRIGHT_HEADED_SLOW_MO=80` opcional. Falha se houver `console.error` ou `pageerror`.
+
+---
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

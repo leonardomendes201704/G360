@@ -405,7 +405,16 @@ const ManagerOverview = () => {
                                     ]}
                                     height={280}
                                     margin={{ top: 10, bottom: 30, left: 35, right: 10 }}
-                                    slotProps={{ legend: { hidden: false, position: { vertical: 'top', horizontal: 'right' }, itemMarkWidth: 10, itemMarkHeight: 10, labelStyle: { fontSize: 11, fill: labelColor } } }}
+                                    slotProps={{
+                                        legend: {
+                                            direction: 'horizontal',
+                                            position: { vertical: 'top', horizontal: 'right' },
+                                            sx: {
+                                                '& .MuiChartsLegend-mark': { width: 10, height: 10 },
+                                                '& .MuiChartsLegend-label': { fontSize: 11, fill: labelColor },
+                                            },
+                                        },
+                                    }}
                                     sx={{ '& .MuiChartsAxis-line': { stroke: 'transparent' }, '& .MuiChartsAxis-tick': { stroke: 'transparent' }, '& .MuiAreaElement-root': { fillOpacity: 0.15 } }}
                                 />
                             ) : (
@@ -533,7 +542,10 @@ const ManagerOverview = () => {
                                         <Box key={ap.id || i} sx={{
                                             p: 1.25, borderRadius: '8px', display: 'flex', gap: 1.5, alignItems: 'center',
                                             bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                                            border: '1px solid transparent', cursor: 'pointer',
+                                            borderWidth: 1,
+                                            borderStyle: 'solid',
+                                            borderColor: 'transparent',
+                                            cursor: 'pointer',
                                             '&:hover': { borderColor: `${typeColor}30`, bgcolor: `${typeColor}08` },
                                             transition: 'all 0.13s',
                                         }}>
@@ -617,8 +629,11 @@ const ManagerOverview = () => {
                                 <Box key={c.id || i} onClick={() => navigate('/contracts')} sx={{
                                     p: 1.5, borderRadius: '8px',
                                     bgcolor: isDark ? 'rgba(245,158,11,0.05)' : 'rgba(245,158,11,0.04)',
-                                    border: '1px solid rgba(245,158,11,0.2)', cursor: 'pointer',
-                                    '&:hover': { borderColor: 'rgba(245,158,11,0.4)' }
+                                    borderWidth: 1,
+                                    borderStyle: 'solid',
+                                    borderColor: 'rgba(245,158,11,0.2)',
+                                    cursor: 'pointer',
+                                    '&:hover': { borderColor: 'rgba(245,158,11,0.4)' },
                                 }}>
                                     <Typography sx={{ fontSize: '12px', fontWeight: 600, color: textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                         {c.name || c.contractNumber || 'Contrato'}
@@ -683,7 +698,12 @@ const ManagerOverview = () => {
                         ))}
                     </Box>
 
-                    <Box sx={{ p: 2, borderRadius: '8px', bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', border: '1px solid', borderColor: isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0' }}>
+                    <Box sx={{
+                        p: 2,
+                        borderRadius: '8px',
+                        bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+                        border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0'}`,
+                    }}>
                         <Typography sx={{ fontSize: 13, fontWeight: 700, color: textPrimary, mb: 0.5 }}>Classificação</Typography>
                         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                             {[

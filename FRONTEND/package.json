@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:e2e": "playwright test --config=playwright.g360.config.ts",
+    "test:e2e:console-headed": "playwright test --config=playwright.g360.config.ts --project=chromium-headed-console",
+    "test:e2e:console-headed:line": "playwright test --config=playwright.g360.config.ts --project=chromium-headed-console --reporter=line",
     "test:e2e:update-snapshots": "playwright test --config=playwright.g360.config.ts --update-snapshots"
   },
   "dependencies": {

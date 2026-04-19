@@ -39,6 +39,22 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      // Auditoria de consola (browser visível) corre só no projeto `chromium-headed-console`
+      testIgnore: ['**/console-smoke-headed.spec.ts'],
+    },
+    {
+      name: 'chromium-headed-console',
+      testMatch: '**/console-smoke-headed.spec.ts',
+      // Tour longo (muitas rotas + login); o default global 120s não chega
+      timeout: 20 * 60 * 1000,
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: false,
+        // slowMo torna o tour muito longo; headed já mostra o browser. Override: PLAYWRIGHT_HEADED_SLOW_MO=80
+        launchOptions: {
+          slowMo: parseInt(process.env.PLAYWRIGHT_HEADED_SLOW_MO || '0', 10),
+        },
+      },
     },
   ],
   webServer: {

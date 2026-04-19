@@ -23,8 +23,9 @@ const PortfolioDashboard = () => {
 
     const loadProjects = async () => {
         try {
-            const data = await getAllProjects();
-            setProjects(data);
+            const raw = await getAllProjects();
+            const list = Array.isArray(raw) ? raw : raw?.data;
+            setProjects(Array.isArray(list) ? list : []);
         } catch (error) {
             console.error('Erro ao carregar projetos:', error);
         } finally {

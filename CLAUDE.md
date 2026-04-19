@@ -284,6 +284,8 @@ Ao concluir uma **task**, **historia**, **bug** ou entrega com **impacto em UI, 
    - **comando(s)** utilizados (ex.: `npm run test:e2e -- e2e/config.spec.ts`);
    - se nao foi possivel correr Playwright: **motivo** explicito (ex.: apenas backend; ambiente indisponivel; pedido documental sem UI).
 
+6. **Auditoria de consola (browser visivel):** `cd FRONTEND && npm run test:e2e:console-headed` — Playwright em modo headed (ver navegacao) com `e2e/console-smoke-headed.spec.ts`, monitor em `e2e/helpers/console-monitor.helper.ts`; o terminal mostra passos `[console-smoke] N/total → /rota`. Alternativa mais verbosa: `npm run test:e2e:console-headed:line`. O login do tour usa por defeito **admin@devcraft.local** (tenant DevCraft; ver seed `seed-model-tenant-devcraft`); override com `E2E_CONSOLE_SMOKE_EMAIL` e `E2E_CONSOLE_SMOKE_PASSWORD`. O projeto `chromium-headed-console` tem **timeout 20 min** (tour longo); slow motion opcional `PLAYWRIGHT_HEADED_SLOW_MO=80`. Exige **API** com esse utilizador no ambiente (ex. porta 8500) alem do Vite (Playwright pode arrancar o Vite na **5176**). O projeto default `npm run test:e2e` **nao** inclui este spec (usa o projeto `chromium-headed-console`).
+
 **Nota:** Vitest cobre componentes/logica em JSDOM; **nao** substitui evidencia de browser quando a entrega e fluxo E2E. Pode coexistir com Playwright na mesma entrega.
 
 ### IMPORTANTE — Stack do Frontend
