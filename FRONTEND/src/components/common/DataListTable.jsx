@@ -14,6 +14,10 @@ import {
 } from '@mui/material';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import DataListShell from './DataListShell';
+import {
+  DATA_LIST_TABLE_COMPACT_SHELL_SX,
+  DATA_LIST_TABLE_COMPACT_CONTAINER_SX,
+} from './dataListTableCompactSx';
 
 /**
  * Lista em cartão (DataListShell) + tabela MUI com ordenação e paginação no cliente.
@@ -51,9 +55,11 @@ import DataListShell from './DataListShell';
  * @param {'asc'|'desc'} [serverOrder] — em `server`
  * @param {function(string): void} [onServerSort] — clique no header de ordenação em `server` (a página chama a API e atualiza `serverOrderBy` / `serverOrder`)
  * @param {string} [dataTestidTable] — `data-testid` no elemento `<Table>` (ex.: e2e)
+ * @param {'default'|'compact'} [density='default'] — `compact` aplica o preset ~75% (ver `dataListTableCompactSx.js`) em `shell.sx` e `shell.tableContainerSx`; fusão com o que a página já passar em `shell`.
  */
 const DataListTable = ({
   shell,
+  density = 'default',
   columns,
   rows = [],
   getRowKey = (r) => r.id,
@@ -173,6 +179,16 @@ const DataListTable = ({
 
   const colCount = columns.length;
 
+  const shellSxMerged = useMemo(() => {
+    if (density !== 'compact') return shell?.sx;
+    return { ...DATA_LIST_TABLE_COMPACT_SHELL_SX, ...shell?.sx };
+  }, [density, shell?.sx]);
+
+  const tableContainerSxMerged = useMemo(() => {
+    if (density !== 'compact') return shell?.tableContainerSx;
+    return { ...DATA_LIST_TABLE_COMPACT_CONTAINER_SX, ...shell?.tableContainerSx };
+  }, [density, shell?.tableContainerSx]);
+
   return (
     <DataListShell
       title={shell.title}
@@ -180,7 +196,7 @@ const DataListTable = ({
       accentColor={shell.accentColor ?? '#2563eb'}
       count={shell.count}
       toolbar={shell.toolbar}
-      sx={shell.sx}
+      sx={shellSxMerged}
       headerSx={shell.headerSx}
       className={shell.className}
     >
@@ -195,7 +211,7 @@ const DataListTable = ({
           maxWidth: '100%',
           minWidth: 0,
           overflow: 'hidden',
-          ...shell.tableContainerSx,
+          ...tableContainerSxMerged,
         }}
       >
         {loading ? (

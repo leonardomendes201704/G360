@@ -5,6 +5,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-20]
+
+### Refactored
+- **Configuração — Organização (`/config/organization`), aba Diretorias:** lista em `<table>` HTML substituída por **`DataListTable`** com `departmentListColumns.jsx` e `departmentListSort.js` (ordenação por código, nome, diretor, CCs vinculados); paginação no cliente; estado vazio com ícone; `data-testid` **`tabela-organizacao-diretorias`**. Modais e demais abas da página inalterados.
+  - `FRONTEND/src/pages/config/OrganizationPage.jsx`, `FRONTEND/src/pages/config/departmentListColumns.jsx`, `FRONTEND/src/pages/config/departmentListSort.js`
+  - `docs/patterns/data-grids-inventory.md`, `docs/patterns/data-list-table-migration-plan.md`
+
+---
+
 ## [2026-04-18]
 
 ### Docs

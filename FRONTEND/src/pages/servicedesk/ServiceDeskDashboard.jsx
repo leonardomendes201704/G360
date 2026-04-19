@@ -50,51 +50,6 @@ const PRIORITY_COLORS = {
   URGENT: 'error',
 };
 
-/** Escala ~75% para grelha «Chamados» (fonte, células, paginação). */
-const SD_TABLE_SHELL_SX = {
-  '& > div:first-of-type': {
-    py: 2.25,
-    px: 2.25,
-  },
-  '& > div:first-of-type .material-icons-round': {
-    fontSize: '15px !important',
-  },
-  '& > div:first-of-type > .MuiTypography-root': {
-    fontSize: '13.5px !important',
-  },
-  '& > div:first-of-type > .MuiTypography-root .MuiTypography-root': {
-    fontSize: '10.5px !important',
-  },
-};
-
-const SD_TABLE_CONTAINER_SX = {
-  fontSize: '0.75rem',
-  '& thead .MuiTableCell-root': {
-    fontSize: '0.5625rem !important',
-    py: 0.5,
-    px: 1,
-    lineHeight: 1.25,
-  },
-  '& tbody .MuiTableCell-root': {
-    py: 0.75,
-    px: 1,
-    fontSize: '0.65rem !important',
-  },
-  '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
-  '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
-  '& .MuiChip-root': {
-    height: 21,
-    '& .MuiChip-label': { px: 0.75, fontSize: '0.525rem', lineHeight: 1.2 },
-  },
-  '& .MuiIconButton-root': { padding: '4px' },
-  '& .MuiSvgIcon-root': { fontSize: '1.125rem' },
-  '& .MuiTablePagination-root': {
-    fontSize: '0.75rem',
-    '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
-    '& .MuiInputBase-root': { fontSize: '0.75rem' },
-  },
-};
-
 const SD_SORT_HEADER_CENTER_SX = {
   textAlign: 'center',
   '& .MuiTableSortLabel-root': {
@@ -990,14 +945,13 @@ const ServiceDeskDashboard = () => {
       </FilterDrawer>
 
       <DataListTable
+        density="compact"
         shell={{
           title: 'Chamados',
           titleIcon: 'confirmation_number',
           accentColor: '#2563eb',
           count: filteredTickets.length,
           toolbar: tableToolbar,
-          sx: SD_TABLE_SHELL_SX,
-          tableContainerSx: SD_TABLE_CONTAINER_SX,
         }}
         columns={columns}
         rows={filteredTickets}

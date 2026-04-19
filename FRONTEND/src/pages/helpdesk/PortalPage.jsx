@@ -117,7 +117,6 @@ export function sortPortalTickets(list, orderBy, order) {
   return sorted;
 }
 
-/** Escala ~75% — cabeçalho do cartão (via DataListShell `headerSx`, sobrepõe padding/fontSize fixos). */
 /** Cabeçalho de coluna ordenável centrado (TableSortLabel). */
 const PORTAL_SORT_HEADER_CENTER_SX = {
   textAlign: 'center',
@@ -135,64 +134,8 @@ const PORTAL_SORT_HEADER_LEFT_SX = {
   },
 };
 
-const PORTAL_HEADER_DENSE_SX = {
-  py: 2.25,
-  px: 2.25,
-  gap: 1.5,
-  '& .material-icons-round': {
-    fontSize: '15px !important',
-  },
-  '& > .MuiTypography-root': {
-    fontSize: '13.5px !important',
-    lineHeight: 1.3,
-  },
-  '& > .MuiTypography-root .MuiTypography-root': {
-    fontSize: '10.5px !important',
-  },
-};
-
 /** Colunas «encolhem ao conteúdo» com `table-layout: auto` (ver `tableLayoutFixed={false}` no DataListTable). */
 const COL_WIDTH_SHRINK = '1%';
-
-const PORTAL_TABLE_CONTAINER_SX = {
-  fontSize: '0.75rem',
-  overflow: 'auto',
-  '& .MuiTable-root': {
-    width: '100%',
-    minWidth: 0,
-  },
-  /* thead/tbody — .MuiTableHead não é classe MUI (é MuiTableHead-root); antes as regras não batiam */
-  '& thead .MuiTableCell-root': {
-    fontSize: '0.5625rem !important',
-    py: 0.5,
-    px: 1,
-    lineHeight: 1.25,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-  '& tbody .MuiTableCell-root': {
-    py: 0.75,
-    px: 1,
-    fontSize: '0.65rem !important',
-    overflow: 'hidden',
-    verticalAlign: 'middle',
-  },
-  '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
-  '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
-  '& .MuiChip-root': {
-    height: 21,
-    maxWidth: '100%',
-    '& .MuiChip-label': { px: 0.75, fontSize: '0.525rem', lineHeight: 1.2 },
-  },
-  '& .MuiIconButton-root': { padding: '4px' },
-  '& .MuiSvgIcon-root': { fontSize: '1.125rem' },
-  '& .MuiTablePagination-root': {
-    fontSize: '0.75rem',
-    '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
-    '& .MuiInputBase-root': { fontSize: '0.75rem' },
-  },
-};
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -913,13 +856,13 @@ const PortalPage = () => {
       </Paper>
 
       <DataListTable
+        density="compact"
         tableLayoutFixed={false}
         shell={{
           title: 'Meus Chamados',
           titleIcon: 'confirmation_number',
           accentColor: '#2563eb',
           count: filteredTickets.length,
-          headerSx: PORTAL_HEADER_DENSE_SX,
           sx: { mb: 2 },
           toolbar:
             hasListRefinement && tickets.length !== filteredTickets.length ? (
@@ -928,7 +871,6 @@ const PortalPage = () => {
               </Typography>
             ) : null,
           tableContainerSx: {
-            ...PORTAL_TABLE_CONTAINER_SX,
             borderRadius: '8px',
             boxShadow: theme.shadows[1],
           },

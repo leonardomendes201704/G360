@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -16,6 +16,7 @@ import ApprovalTiersTab from '../../components/config/ApprovalTiersTab';
 import ServiceDeskConfigSection from '../../components/config/ServiceDeskConfigSection';
 
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import DataListTable from '../../components/common/DataListTable';
 
 import departmentService from '../../services/department.service';
 import costCenterService from '../../services/cost-center.service';
@@ -23,10 +24,12 @@ import { getErrorMessage } from '../../utils/errorUtils';
 import { AuthContext } from '../../contexts/AuthContext';
 import './OrganizationPage.css';
 import { useOrgThemeStyles } from './useOrgThemeStyles';
+import { getDepartmentListColumns } from './departmentListColumns';
+import { sortDepartmentRows } from './departmentListSort';
 
 // Aba de Diretorias
 const DepartmentsTab = () => {
-  const { textPrimary, textMuted, cardStyle, tableHeaderStyle, tableCellStyle, actionBtnStyle, rowHoverBg } = useOrgThemeStyles();
+  const { textPrimary, textMuted, cardStyle, actionBtnStyle } = useOrgThemeStyles();
   const [departments, setDepartments] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -43,11 +46,24 @@ const DepartmentsTab = () => {
     }
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const handleEdit = (dept) => { setEditData(dept); setModalOpen(true); };
-  const handleAdd = () => { setEditData(null); setModalOpen(true); };
-  const handleDeleteClick = (id) => { setDeleteId(id); setConfirmOpen(true); };
+  const handleEdit = useCallback((dept) => {
+    setEditData(dept);
+    setModalOpen(true);
+  }, []);
+
+  const handleAdd = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+
+  const handleDeleteClick = useCallback((id) => {
+    setDeleteId(id);
+    setConfirmOpen(true);
+  }, []);
 
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
@@ -62,57 +78,82 @@ const DepartmentsTab = () => {
     }
   };
 
+  const departmentColumns = useMemo(
+    () =>
+      getDepartmentListColumns({
+        textPrimary,
+        actionBtnStyle,
+        onEdit: handleEdit,
+        onDelete: handleDeleteClick,
+      }),
+    [textPrimary, actionBtnStyle, handleEdit, handleDeleteClick]
+  );
+
+  const departmentEmptyContent = useMemo(
+    () => (
+      <Box sx={{ textAlign: 'center', py: 4, px: 2 }}>
+        <span
+          className="material-icons-round"
+          style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}
+        >
+          corporate_fare
+        </span>
+        <Typography sx={{ color: textMuted, fontSize: '16px', mb: 1 }}>Nenhuma diretoria cadastrada</Typography>
+        <Typography sx={{ color: textMuted, fontSize: '14px' }}>Clique em &quot;Nova Diretoria&quot; para começar</Typography>
+      </Box>
+    ),
+    [textMuted]
+  );
+
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Diretorias & Departamentos</Typography>
-        <Button onClick={handleAdd} sx={{
-          padding: '10px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, textTransform: 'none',
-          background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
-          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', flexShrink: 0,
-          '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' }
-        }} startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>add</span>}>
-          Nova Diretoria
-        </Button>
-      </Box>
-
-      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <Box sx={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={tableHeaderStyle}>Codigo</th>
-                <th style={tableHeaderStyle}>Nome</th>
-                <th style={tableHeaderStyle}>Diretor</th>
-                <th style={tableHeaderStyle}>CCs Vinculados</th>
-                <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Acoes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {departments.length === 0 ? (
-                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px' }}>
-                  <span className="material-icons-round" style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}>corporate_fare</span>
-                  <Typography sx={{ color: textMuted, fontSize: '16px', mb: 1 }}>Nenhuma diretoria cadastrada</Typography>
-                  <Typography sx={{ color: textMuted, fontSize: '14px' }}>Clique em "Nova Diretoria" para comecar</Typography>
-                </td></tr>
-              ) : departments.map((dept) => (
-                <tr key={dept.id} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = rowHoverBg} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                  <td style={tableCellStyle}><strong style={{ color: textPrimary }}>{dept.code}</strong></td>
-                  <td style={tableCellStyle}>{dept.name}</td>
-                  <td style={tableCellStyle}>{dept.director?.name || <span style={{ color: textMuted }}>Nao definido</span>}</td>
-                  <td style={tableCellStyle}>{dept._count?.costCenters || 0}</td>
-                  <td style={{ ...tableCellStyle, textAlign: 'right' }}>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                      <IconButton onClick={() => handleEdit(dept)} sx={actionBtnStyle('edit')}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
-                      <IconButton onClick={() => handleDeleteClick(dept.id)} sx={actionBtnStyle('delete')}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
-                    </Box>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Box>
-      </Box>
+      <DataListTable
+        density="compact"
+        shell={{
+          title: 'Diretorias & Departamentos',
+          titleIcon: 'corporate_fare',
+          accentColor: '#2563eb',
+          count: departments.length,
+          sx: { ...cardStyle, mb: 2 },
+          toolbar: (
+            <Button
+              onClick={handleAdd}
+              sx={{
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                color: 'white',
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                flexShrink: 0,
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)',
+                },
+              }}
+              startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>add</span>}
+            >
+              Nova Diretoria
+            </Button>
+          ),
+          tableContainerSx: {
+            borderRadius: 0,
+            boxShadow: 'none',
+          },
+        }}
+        columns={departmentColumns}
+        rows={departments}
+        sortRows={sortDepartmentRows}
+        defaultOrderBy="name"
+        defaultOrder="asc"
+        emptyMessage="Nenhuma diretoria cadastrada."
+        emptyContent={departmentEmptyContent}
+        dataTestidTable="tabela-organizacao-diretorias"
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        rowsPerPageDefault={10}
+      />
       <DepartmentModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={loadData} editData={editData} />
       <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Diretoria" content="Tem certeza que deseja excluir esta diretoria?" />
     </>

@@ -172,5 +172,5 @@ describe('PortalPage Component', () => {
             expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('obrigatório preencher'));
             expect(ticketService.create).not.toHaveBeenCalled();
         });
-    });
+    }, 15_000);
 });

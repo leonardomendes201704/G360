@@ -49,7 +49,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 |----------|
 | `FRONTEND/src/pages/finance/BudgetDetailsPage.jsx` |
 | `FRONTEND/src/pages/finance/BudgetComparisonPage.jsx` |
-| `FRONTEND/src/pages/config/OrganizationPage.jsx` |
+| `FRONTEND/src/pages/config/OrganizationPage.jsx` (aba **Diretorias** migrada — `departmentListColumns` / `departmentListSort`; outras abas ainda em `<table>` onde aplicável) |
 | `FRONTEND/src/pages/servicedesk/ServiceDeskSettings.jsx` |
 | `FRONTEND/src/pages/projects/TeamProjectsStatusReport.jsx` |
 
