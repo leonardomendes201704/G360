@@ -1,28 +1,35 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
 import {
   TextField,
   Tooltip,
   Box,
   Typography,
   IconButton,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
   Chip,
   Avatar,
   keyframes,
+  Button,
+  InputAdornment,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
+import FilterAlt from '@mui/icons-material/FilterAlt';
+import Refresh from '@mui/icons-material/Refresh';
+import Search from '@mui/icons-material/Search';
 import ticketService from '../../services/ticket.service';
+import { getDepartments } from '../../services/department.service';
+import { getReferenceUsers, getReferenceCostCenters } from '../../services/reference.service';
 import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import DataListTable from '../../components/common/DataListTable';
+import FilterDrawer from '../../components/common/FilterDrawer';
+import usePersistedFilters from '../../hooks/usePersistedFilters';
 import { getTicketStatusSortIndex } from '../../constants/ticketStatus';
 
 const PRIORITY_RANK = { LOW: 1, MEDIUM: 2, HIGH: 3, URGENT: 4 };
@@ -93,6 +100,20 @@ const pulseAnim = keyframes`
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 `;
 
+const DRAWER_FILTER_DEFAULTS = {
+  status: '',
+  priority: '',
+  assigneeId: '',
+  departmentId: '',
+  costCenterId: '',
+  slaBreached: '',
+};
+
+const SERVICEDESK_FILTER_DEFAULTS = {
+  search: '',
+  ...DRAWER_FILTER_DEFAULTS,
+};
+
 /** Ordenação específica da fila Service Desk (mesma lógica que antes da extração para DataListTable). */
 export function sortServiceDeskTickets(list, orderBy, order) {
   const mult = order === 'asc' ? 1 : -1;
@@ -149,9 +170,23 @@ export function sortServiceDeskTickets(list, orderBy, order) {
 
 const ServiceDeskDashboard = () => {
   const { user } = useContext(AuthContext);
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === 'dark';
+  const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
+  const textMuted = isDark ? '#94a3b8' : '#64748b';
+  const borderSubtle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+  const cardBg = isDark ? 'rgba(22, 29, 38, 0.5)' : '#FFFFFF';
+  const cardBorder = isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(0, 0, 0, 0.08)';
+  const cardShadow = isDark ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.08)';
+
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState('ALL');
+  const [filters, setFilters, clearFilters] = usePersistedFilters('servicedesk', SERVICEDESK_FILTER_DEFAULTS);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [draftFilters, setDraftFilters] = useState(DRAWER_FILTER_DEFAULTS);
+  const [departments, setDepartments] = useState([]);
+  const [assigneeUsers, setAssigneeUsers] = useState([]);
+  const [costCenters, setCostCenters] = useState([]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -159,18 +194,62 @@ const ServiceDeskDashboard = () => {
   const [resolving, setResolving] = useState(false);
   const [metrics, setMetrics] = useState(null);
 
+  const apiQuery = useMemo(() => {
+    const q = {};
+    if (filters.status) q.status = filters.status;
+    if (filters.priority) q.priority = filters.priority;
+    if (filters.assigneeId) q.assigneeId = filters.assigneeId;
+    if (filters.departmentId) q.departmentId = filters.departmentId;
+    if (filters.costCenterId) q.costCenterId = filters.costCenterId;
+    return q;
+  }, [filters.status, filters.priority, filters.assigneeId, filters.departmentId, filters.costCenterId]);
+
+  const activeDrawerFilterCount = useMemo(
+    () =>
+      [filters.status, filters.priority, filters.assigneeId, filters.departmentId, filters.costCenterId, filters.slaBreached].filter(
+        Boolean
+      ).length,
+    [filters.status, filters.priority, filters.assigneeId, filters.departmentId, filters.costCenterId, filters.slaBreached]
+  );
+
+  const filteredTickets = useMemo(() => {
+    return tickets.filter((t) => {
+      if (filters.search) {
+        const q = filters.search.toLowerCase();
+        const hay = `${t.code || ''} ${t.title || ''} ${t.requester?.name || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (filters.slaBreached === 'true' && !t.slaBreached) return false;
+      if (filters.slaBreached === 'false' && t.slaBreached) return false;
+      return true;
+    });
+  }, [tickets, filters.search, filters.slaBreached]);
+
+  const resetPaginationKey = useMemo(
+    () =>
+      `${filters.search}|${filters.status}|${filters.priority}|${filters.assigneeId}|${filters.departmentId}|${filters.costCenterId}|${filters.slaBreached}`,
+    [
+      filters.search,
+      filters.status,
+      filters.priority,
+      filters.assigneeId,
+      filters.departmentId,
+      filters.costCenterId,
+      filters.slaBreached,
+    ]
+  );
+
   const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
-      const query = filterStatus !== 'ALL' ? { status: filterStatus } : {};
-      const data = await ticketService.getAll(query);
+      const data = await ticketService.getAll(apiQuery);
       setTickets(data);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [filterStatus]);
+  }, [apiQuery]);
 
   useEffect(() => {
     fetchTickets();
@@ -181,6 +260,25 @@ const ServiceDeskDashboard = () => {
       .getMetricsOverview({ days: 30 })
       .then(setMetrics)
       .catch(() => setMetrics(null));
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [deps, users, ccs] = await Promise.all([
+          getDepartments(),
+          getReferenceUsers(),
+          getReferenceCostCenters(),
+        ]);
+        setDepartments(Array.isArray(deps) ? deps : []);
+        setAssigneeUsers(Array.isArray(users) ? users : []);
+        setCostCenters(Array.isArray(ccs) ? ccs : []);
+      } catch {
+        setDepartments([]);
+        setAssigneeUsers([]);
+        setCostCenters([]);
+      }
+    })();
   }, []);
 
   const handleTakeTicket = useCallback(async (id) => {
@@ -206,12 +304,47 @@ const ServiceDeskDashboard = () => {
   const handleExportCsv = async () => {
     try {
       const params = { days: 90 };
-      if (filterStatus !== 'ALL') params.status = filterStatus;
+      if (filters.status) params.status = filters.status;
+      if (filters.priority) params.priority = filters.priority;
       await ticketService.downloadExport(params);
     } catch (err) {
       console.error(err);
       alert('Não foi possível gerar o CSV.');
     }
+  };
+
+  const openFilterDrawer = () => {
+    setDraftFilters({
+      status: filters.status,
+      priority: filters.priority,
+      assigneeId: filters.assigneeId,
+      departmentId: filters.departmentId,
+      costCenterId: filters.costCenterId,
+      slaBreached: filters.slaBreached,
+    });
+    setFilterDrawerOpen(true);
+  };
+
+  const handleApplyDrawerFilters = () => {
+    setFilters((prev) => ({ ...prev, ...draftFilters }));
+  };
+
+  const handleClearDrawerOnly = () => {
+    setDraftFilters({ ...DRAWER_FILTER_DEFAULTS });
+    setFilters((prev) => ({ ...prev, ...DRAWER_FILTER_DEFAULTS }));
+  };
+
+  const inputSx = {
+    '& .MuiOutlinedInput-root': {
+      bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+      borderRadius: '8px',
+      color: textPrimary,
+      '& fieldset': { borderColor: borderSubtle },
+      '&:hover fieldset': { borderColor: 'rgba(102, 126, 234, 0.5)' },
+      '&.Mui-focused fieldset': { borderColor: '#667eea' },
+    },
+    '& .MuiInputLabel-root': { color: textMuted },
+    '& .MuiSelect-icon': { color: textMuted },
   };
 
   const handleResolveTicket = async () => {
@@ -465,6 +598,25 @@ const ServiceDeskDashboard = () => {
     [handleTakeTicket, openResolveModal]
   );
 
+  const tableToolbar = (
+    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+      <TextField
+        placeholder="Buscar chamado..."
+        size="small"
+        value={filters.search}
+        onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search sx={{ color: textMuted }} />
+            </InputAdornment>
+          ),
+        }}
+        sx={{ width: 260, minWidth: 120, ...inputSx }}
+      />
+    </Box>
+  );
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -478,21 +630,9 @@ const ServiceDeskDashboard = () => {
             </IconButton>
           </Tooltip>
         </Box>
-
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Status</InputLabel>
-          <Select value={filterStatus} label="Status" onChange={(e) => setFilterStatus(e.target.value)}>
-            <MenuItem value="ALL">Todos os Chamados</MenuItem>
-            <MenuItem value="OPEN">Novos / Abertos</MenuItem>
-            <MenuItem value="IN_PROGRESS">Em Atendimento</MenuItem>
-            <MenuItem value="WAITING_USER">Aguardando Usuário</MenuItem>
-            <MenuItem value="RESOLVED">Resolvidos</MenuItem>
-            <MenuItem value="CLOSED">Fechados</MenuItem>
-          </Select>
-        </FormControl>
       </Box>
 
-      {filterStatus === 'ALL' && !loading && (
+      {!loading && (
         <Box sx={{ mb: 4 }}>
           {metrics && (
             <Typography variant="subtitle2" color="text.secondary" fontWeight={700} sx={{ mb: 1.5 }}>
@@ -546,24 +686,183 @@ const ServiceDeskDashboard = () => {
         </Box>
       )}
 
+      <Box
+        sx={{
+          mb: 3,
+          borderRadius: '8px',
+          background: cardBg,
+          backdropFilter: isDark ? 'blur(10px)' : 'none',
+          border: cardBorder,
+          boxShadow: cardShadow,
+          overflow: 'hidden',
+        }}
+      >
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
+            <Button
+              size="medium"
+              startIcon={<FilterAlt />}
+              onClick={openFilterDrawer}
+              sx={{
+                color: textPrimary,
+                textTransform: 'none',
+                fontWeight: 600,
+                '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)' },
+              }}
+            >
+              Filtros
+            </Button>
+            {activeDrawerFilterCount > 0 ? (
+              <Box
+                sx={{
+                  px: 1,
+                  py: 0.25,
+                  borderRadius: '8px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  bgcolor: 'rgba(37, 99, 235, 0.15)',
+                  color: '#2563eb',
+                }}
+              >
+                {activeDrawerFilterCount}
+              </Box>
+            ) : null}
+          </Box>
+          <Button
+            size="small"
+            startIcon={<Refresh />}
+            onClick={clearFilters}
+            sx={{
+              color: textMuted,
+              textTransform: 'none',
+              '&:hover': { bgcolor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)' },
+            }}
+          >
+            Limpar tudo
+          </Button>
+        </Box>
+      </Box>
+
+      <FilterDrawer
+        open={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        onApply={handleApplyDrawerFilters}
+        onClear={handleClearDrawerOnly}
+        title="Filtros de chamados"
+      >
+        <TextField
+          select
+          fullWidth
+          label="Status"
+          size="small"
+          value={draftFilters.status}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, status: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          <MenuItem value="OPEN">Novos / Abertos</MenuItem>
+          <MenuItem value="IN_PROGRESS">Em atendimento</MenuItem>
+          <MenuItem value="WAITING_USER">Aguardando usuário</MenuItem>
+          <MenuItem value="RESOLVED">Resolvidos</MenuItem>
+          <MenuItem value="CLOSED">Fechados</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Prioridade"
+          size="small"
+          value={draftFilters.priority}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, priority: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todas</MenuItem>
+          <MenuItem value="LOW">LOW</MenuItem>
+          <MenuItem value="MEDIUM">MEDIUM</MenuItem>
+          <MenuItem value="HIGH">HIGH</MenuItem>
+          <MenuItem value="URGENT">URGENT</MenuItem>
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Responsável"
+          size="small"
+          value={draftFilters.assigneeId}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, assigneeId: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {assigneeUsers.map((u) => (
+            <MenuItem key={u.id} value={u.id}>
+              {u.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Departamento"
+          size="small"
+          value={draftFilters.departmentId}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, departmentId: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {departments.map((d) => (
+            <MenuItem key={d.id} value={d.id}>
+              {d.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Centro de custo"
+          size="small"
+          value={draftFilters.costCenterId}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, costCenterId: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {costCenters.map((c) => (
+            <MenuItem key={c.id} value={c.id}>
+              {c.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          fullWidth
+          label="SLA estourado"
+          size="small"
+          value={draftFilters.slaBreached}
+          onChange={(e) => setDraftFilters((prev) => ({ ...prev, slaBreached: e.target.value }))}
+          sx={inputSx}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          <MenuItem value="true">Sim</MenuItem>
+          <MenuItem value="false">Não</MenuItem>
+        </TextField>
+      </FilterDrawer>
+
       <DataListTable
         shell={{
           title: 'Chamados',
           titleIcon: 'confirmation_number',
           accentColor: '#2563eb',
-          count: totalTickets,
+          count: filteredTickets.length,
+          toolbar: tableToolbar,
           sx: SD_TABLE_SHELL_SX,
           tableContainerSx: SD_TABLE_CONTAINER_SX,
         }}
         columns={columns}
-        rows={tickets}
+        rows={filteredTickets}
         loading={loading}
         emptyMessage="Fila Limpa! Nenhum chamado em aberto. 🎉"
         defaultOrderBy="createdAt"
         defaultOrder="desc"
         getDefaultOrderForColumn={(id) => (['createdAt', 'slaResolveDue'].includes(id) ? 'desc' : 'asc')}
         sortRows={sortServiceDeskTickets}
-        resetPaginationKey={filterStatus}
+        resetPaginationKey={resetPaginationKey}
       />
 
       <StandardModal

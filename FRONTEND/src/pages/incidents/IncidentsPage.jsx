@@ -353,7 +353,20 @@ const IncidentsPage = () => {
                 )}
             </Box>
 
-            {/* Filtros — barra compacta + drawer off-canvas */}
+            <KpiGrid maxColumns={5}>
+                {statCards.map((card) => (
+                    <StatsCard
+                        key={card.key}
+                        title={card.label}
+                        value={card.value}
+                        iconName={card.iconName}
+                        hexColor={card.color}
+                        onClick={() => handleKpiClick(card.key)}
+                    />
+                ))}
+            </KpiGrid>
+
+            {/* Filtros — barra compacta + drawer off-canvas (abaixo dos KPIs) */}
             <Box sx={{ mb: 3, borderRadius: '8px', background: cardBg, backdropFilter: isDark ? 'blur(10px)' : 'none', border: cardBorder, boxShadow: cardShadow, overflow: 'hidden' }}>
                 <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: textPrimary }}>
@@ -467,19 +480,6 @@ const IncidentsPage = () => {
                     <MenuItem value="false">No Prazo</MenuItem>
                 </TextField>
             </FilterDrawer>
-
-            <KpiGrid maxColumns={5}>
-                {statCards.map((card) => (
-                    <StatsCard
-                        key={card.key}
-                        title={card.label}
-                        value={card.value}
-                        iconName={card.iconName}
-                        hexColor={card.color}
-                        onClick={() => handleKpiClick(card.key)}
-                    />
-                ))}
-            </KpiGrid>
 
             {/* Table Section */}
             {loading ? (
