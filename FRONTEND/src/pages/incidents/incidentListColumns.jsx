@@ -12,10 +12,17 @@ import InlineStatusSelect from '../../components/common/InlineStatusSelect';
 import { formatRelative } from '../../utils/dateUtils';
 import {
   INCIDENT_STATUS_CONFIG,
-  INCIDENT_STATUS_OPTIONS,
   INCIDENT_PRIORITY_CONFIG,
   getIncidentSlaColor,
 } from './incidentListSort';
+
+/** Cabeçalho com ordenação centrado (MUI TableSortLabel é flex e tende para a esquerda). */
+const headerSxCenteredSort = {
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'center',
+    width: '100%',
+  },
+};
 
 /**
  * Colunas DataListTable — modo lista de incidentes.
@@ -32,7 +39,6 @@ export function getIncidentColumns({
   onStatusChange,
 }) {
   const statusConfig = INCIDENT_STATUS_CONFIG;
-  const statusOptions = INCIDENT_STATUS_OPTIONS;
   const priorityConfig = INCIDENT_PRIORITY_CONFIG;
 
   return [
@@ -41,8 +47,8 @@ export function getIncidentColumns({
       label: '',
       sortable: false,
       accessor: () => '',
-      width: 48,
-      minWidth: 48,
+      width: 36,
+      minWidth: 36,
       align: 'center',
       renderHeader: ({ paginatedRows }) => {
         const pageIds = paginatedRows.map((i) => i.id);
@@ -88,10 +94,10 @@ export function getIncidentColumns({
       id: 'code',
       label: 'Código',
       width: '10%',
-      minWidth: 100,
+      minWidth: 75,
       accessor: (r) => r.code || '',
       render: (inc) => (
-        <Typography sx={{ color: '#818cf8', fontWeight: 600, fontSize: 14 }}>{inc.code}</Typography>
+        <Typography sx={{ color: '#818cf8', fontWeight: 600, fontSize: '0.64rem', lineHeight: 1.3 }}>{inc.code}</Typography>
       ),
     },
     {
@@ -99,13 +105,13 @@ export function getIncidentColumns({
       label: 'Título',
       accessor: (r) => r.title || '',
       cellSx: () => ({
-        maxWidth: 260,
+        maxWidth: 195,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
       }),
       render: (inc) => (
-        <Typography sx={{ color: textPrimary, fontSize: 14 }}>{inc.title}</Typography>
+        <Typography sx={{ color: textPrimary, fontSize: '0.7rem', lineHeight: 1.3 }}>{inc.title}</Typography>
       ),
     },
     {
@@ -113,7 +119,7 @@ export function getIncidentColumns({
       label: 'Categoria',
       accessor: (r) => r.category?.name || '',
       render: (inc) => (
-        <Typography sx={{ color: textSecondary, fontSize: 13 }}>
+        <Typography sx={{ color: textSecondary, fontSize: '0.6rem' }}>
           {inc.category?.name || '—'}
         </Typography>
       ),
@@ -122,15 +128,25 @@ export function getIncidentColumns({
       id: 'priority',
       label: 'Prioridade',
       align: 'center',
+      headerSx: headerSxCenteredSort,
       accessor: (r) => r.priority || '',
       render: (inc) => {
         const priority = priorityConfig[inc.priority] || priorityConfig.P3;
         return (
-          <Chip
-            label={priority.label}
-            size="small"
-            sx={{ bgcolor: priority.bg, color: priority.color, fontWeight: 600, fontSize: 11 }}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Chip
+              label={priority.label}
+              size="small"
+              sx={{
+                height: 21,
+                bgcolor: priority.bg,
+                color: priority.color,
+                fontWeight: 600,
+                fontSize: '0.525rem',
+                '& .MuiChip-label': { px: 0.75, lineHeight: 1.2, whiteSpace: 'nowrap' },
+              }}
+            />
+          </Box>
         );
       },
     },
@@ -138,23 +154,34 @@ export function getIncidentColumns({
       id: 'status',
       label: 'Status',
       align: 'center',
+      headerSx: headerSxCenteredSort,
       accessor: (r) => r.status || '',
       render: (inc) => {
         const status = statusConfig[inc.status] || statusConfig.OPEN;
         return (
-          <Box onClick={(e) => e.stopPropagation()}>
+          <Box
+            onClick={(e) => e.stopPropagation()}
+            sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+          >
             {onStatusChange && canWrite ? (
               <InlineStatusSelect
                 status={inc.status}
                 statusConfig={statusConfig}
-                statusOptions={statusOptions}
+                dense
                 onStatusChange={(newStatus) => onStatusChange(inc.id, newStatus)}
               />
             ) : (
               <Chip
                 label={status.label}
                 size="small"
-                sx={{ bgcolor: status.bg, color: status.color, fontWeight: 500, fontSize: 11 }}
+                sx={{
+                  height: 21,
+                  bgcolor: status.bg,
+                  color: status.color,
+                  fontWeight: 500,
+                  fontSize: '0.525rem',
+                  '& .MuiChip-label': { px: 0.75, lineHeight: 1.2, whiteSpace: 'nowrap' },
+                }}
               />
             )}
           </Box>
@@ -165,20 +192,35 @@ export function getIncidentColumns({
       id: 'slaSort',
       label: 'SLA',
       align: 'center',
+      headerSx: headerSxCenteredSort,
       sortable: true,
       accessor: (r) => (r.slaBreached ? 1 : 0),
+      cellSx: () => ({
+        textAlign: 'center',
+        verticalAlign: 'middle',
+      }),
       render: (inc) => {
         const slaColor = getIncidentSlaColor(inc);
+        const icon = inc.slaBreached ? (
+          <Warning sx={{ color: '#ef4444', fontSize: '1.125rem', display: 'block' }} />
+        ) : (
+          <AccessTime sx={{ color: slaColor, fontSize: '1.125rem', display: 'block' }} />
+        );
         return (
-          <Tooltip title={inc.slaBreached ? 'SLA Estourado!' : 'Dentro do SLA'}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5 }}>
-              {inc.slaBreached ? (
-                <Warning sx={{ color: '#ef4444', fontSize: 18 }} />
-              ) : (
-                <AccessTime sx={{ color: slaColor, fontSize: 18 }} />
-              )}
-            </Box>
-          </Tooltip>
+          <Box
+            sx={{
+              display: 'grid',
+              placeItems: 'center',
+              width: '100%',
+              minWidth: 0,
+            }}
+          >
+            <Tooltip title={inc.slaBreached ? 'SLA Estourado!' : 'Dentro do SLA'}>
+              <Box component="span" sx={{ display: 'inline-flex', lineHeight: 0, mx: 'auto' }}>
+                {icon}
+              </Box>
+            </Tooltip>
+          </Box>
         );
       },
     },
@@ -188,14 +230,14 @@ export function getIncidentColumns({
       accessor: (r) => r.assignee?.name || '',
       render: (inc) =>
         inc.assignee ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Avatar sx={{ width: 24, height: 24, fontSize: 12, bgcolor: '#2563eb' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Avatar sx={{ width: 18, height: 18, fontSize: '0.5rem', bgcolor: '#2563eb' }}>
               {inc.assignee.name?.[0]}
             </Avatar>
-            <Typography sx={{ color: textPrimary, fontSize: 13 }}>{inc.assignee.name}</Typography>
+            <Typography sx={{ color: textPrimary, fontSize: '0.6rem' }}>{inc.assignee.name}</Typography>
           </Box>
         ) : (
-          <Typography sx={{ color: textMuted, fontSize: 13, fontStyle: 'italic' }}>
+          <Typography sx={{ color: textMuted, fontSize: '0.6rem', fontStyle: 'italic' }}>
             Não atribuído
           </Typography>
         ),
@@ -203,10 +245,12 @@ export function getIncidentColumns({
     {
       id: 'createdAt',
       label: 'Criado em',
+      align: 'center',
+      headerSx: headerSxCenteredSort,
       accessor: (r) => r.createdAt,
       render: (inc) => (
         <Tooltip title={new Date(inc.createdAt).toLocaleString('pt-BR')}>
-          <Typography sx={{ color: textSecondary, fontSize: 13 }}>
+          <Typography sx={{ color: textSecondary, fontSize: '0.6rem', display: 'block', textAlign: 'center' }}>
             {formatRelative(inc.createdAt)}
           </Typography>
         </Tooltip>
@@ -217,17 +261,17 @@ export function getIncidentColumns({
       label: 'Ações',
       align: 'center',
       sortable: false,
-      width: 120,
-      minWidth: 120,
+      width: 90,
+      minWidth: 90,
       render: (inc) => (
-        <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
+        <Box sx={{ display: 'flex', gap: 0.25, justifyContent: 'center' }} onClick={(e) => e.stopPropagation()}>
           <Tooltip title="Visualizar">
             <IconButton
               size="small"
               onClick={() => onView(inc)}
-              sx={{ color: '#818cf8', '&:hover': { bgcolor: 'rgba(129, 140, 248, 0.1)' } }}
+              sx={{ color: '#818cf8', padding: '4px', '&:hover': { bgcolor: 'rgba(129, 140, 248, 0.1)' } }}
             >
-              <Visibility fontSize="small" />
+              <Visibility sx={{ fontSize: '1.125rem' }} />
             </IconButton>
           </Tooltip>
           {canWrite && inc.status !== 'CLOSED' && (
@@ -235,9 +279,9 @@ export function getIncidentColumns({
               <IconButton
                 size="small"
                 onClick={() => onEdit(inc)}
-                sx={{ color: '#10b981', '&:hover': { bgcolor: 'rgba(16, 185, 129, 0.1)' } }}
+                sx={{ color: '#10b981', padding: '4px', '&:hover': { bgcolor: 'rgba(16, 185, 129, 0.1)' } }}
               >
-                <Edit fontSize="small" />
+                <Edit sx={{ fontSize: '1.125rem' }} />
               </IconButton>
             </Tooltip>
           )}

@@ -10,8 +10,9 @@ import { Box, Typography, Popover, MenuItem, Tooltip } from '@mui/material';
  *   statusConfig  – map of { key: { label, color } }
  *   onStatusChange – async fn(newStatus)
  *   disabled      – if true, acts as a plain display badge
+ *   dense         – pill menor (~75%) para grelhas compactas
  */
-const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disabled = false }) => {
+const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disabled = false, dense = false }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [loading, setLoading] = useState(false);
     const anchorRef = useRef(null);
@@ -42,16 +43,18 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
             sx={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 0.75,
-                px: 1.5,
-                py: 0.4,
-                borderRadius: '8px',
+                flexWrap: 'nowrap',
+                gap: dense ? 0.5 : 0.75,
+                px: dense ? 1.1 : 1.5,
+                py: dense ? 0.25 : 0.4,
+                borderRadius: dense ? '6px' : '8px',
                 bgcolor: `${current.color}18`,
                 border: `1px solid ${current.color}35`,
                 cursor: disabled ? 'default' : 'pointer',
                 userSelect: 'none',
                 transition: 'all 0.15s',
                 opacity: loading ? 0.6 : 1,
+                maxWidth: '100%',
                 ...(disabled ? {} : {
                     '&:hover': {
                         bgcolor: `${current.color}28`,
@@ -60,13 +63,23 @@ const InlineStatusSelect = ({ status, statusConfig = {}, onStatusChange, disable
                 })
             }}
         >
-            <Box sx={{ width: 7, height: 7, borderRadius: '8px', bgcolor: current.color, flexShrink: 0 }} />
-            <Typography sx={{ fontSize: '12px', fontWeight: 600, color: current.color, lineHeight: 1 }}>
+            <Box sx={{ width: dense ? 5 : 7, height: dense ? 5 : 7, borderRadius: '8px', bgcolor: current.color, flexShrink: 0 }} />
+            <Typography
+                component="span"
+                sx={{
+                    fontSize: dense ? '9px' : '12px',
+                    fontWeight: 600,
+                    color: current.color,
+                    lineHeight: 1.2,
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                }}
+            >
                 {current.label}
             </Typography>
             {!disabled && (
-                <Box sx={{ width: '10px', height: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.6 }}>
-                    <svg width="8" height="5" viewBox="0 0 8 5" fill={current.color}><path d="M0 0l4 5 4-5z" /></svg>
+                <Box sx={{ width: dense ? 8 : '10px', height: dense ? 8 : '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.6 }}>
+                    <svg width={dense ? 6 : 8} height={dense ? 4 : 5} viewBox="0 0 8 5" fill={current.color}><path d="M0 0l4 5 4-5z" /></svg>
                 </Box>
             )}
         </Box>

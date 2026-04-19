@@ -289,6 +289,52 @@ const IncidentsPage = () => {
         overflow: 'hidden',
     };
 
+    /** Escala ~75% — alinhado ao Service Desk (cabeçalho cartão + células + paginação). */
+    const INCIDENT_TABLE_SHELL_SX = {
+        '& > div:first-of-type': {
+            py: 2.25,
+            px: 2.25,
+        },
+        '& > div:first-of-type .material-icons-round': {
+            fontSize: '15px !important',
+        },
+        '& > div:first-of-type > .MuiTypography-root': {
+            fontSize: '13.5px !important',
+        },
+        '& > div:first-of-type > .MuiTypography-root .MuiTypography-root': {
+            fontSize: '10.5px !important',
+        },
+    };
+
+    const INCIDENT_TABLE_CONTAINER_SX = {
+        fontSize: '0.75rem',
+        '& .MuiTableHead .MuiTableCell-root': {
+            fontSize: '0.5625rem',
+            py: 0.5,
+            px: 1,
+            lineHeight: 1.25,
+        },
+        '& .MuiTableBody .MuiTableCell-root': {
+            py: 0.75,
+            px: 1,
+            fontSize: '0.65rem',
+        },
+        '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
+        '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
+        '& .MuiChip-root': {
+            height: 21,
+            '& .MuiChip-label': { px: 0.75, fontSize: '0.525rem', lineHeight: 1.2 },
+        },
+        '& .MuiIconButton-root': { padding: '4px' },
+        '& .MuiSvgIcon-root': { fontSize: '1.125rem' },
+        '& .MuiCheckbox-root': { padding: '4px' },
+        '& .MuiTablePagination-root': {
+            fontSize: '0.75rem',
+            '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
+            '& .MuiInputBase-root': { fontSize: '0.75rem' },
+        },
+    };
+
     const listSectionToolbar = (
         <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <ExportButton data={filteredIncidents} columns={EXPORT_COLUMNS.incidents} filename="incidentes" compact />
@@ -533,7 +579,8 @@ const IncidentsPage = () => {
                         accentColor: '#f59e0b',
                         count: filteredIncidents.length,
                         toolbar: listSectionToolbar,
-                        sx: listSectionShellSx,
+                        sx: { ...listSectionShellSx, ...INCIDENT_TABLE_SHELL_SX },
+                        tableContainerSx: INCIDENT_TABLE_CONTAINER_SX,
                     }}
                     columns={getIncidentColumns({
                         textPrimary,
