@@ -80,22 +80,6 @@ const getProgressClass = (progress) => {
     return 'low';
 };
 
-const getAvatarGradient = (name) => {
-    if (!name) return 'indigo';
-    const gradients = ['indigo', 'emerald', 'amber', 'cyan', 'rose'];
-    const index = name.charCodeAt(0) % gradients.length;
-    return gradients[index];
-};
-
-const getInitials = (name) => {
-    if (!name) return '??';
-    const parts = name.split(' ');
-    if (parts.length >= 2) {
-        return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-};
-
 const getDaysRemaining = (endDate, status) => {
     if (!endDate) return { text: '-', className: '' };
 
@@ -755,6 +739,7 @@ const ProjectsListPage = () => {
                 </FilterDrawer>
 
                 <DataListTable
+                    density="compact"
                     paginationMode="server"
                     serverTotalCount={totalProjects}
                     serverPage={page - 1}
@@ -776,6 +761,13 @@ const ProjectsListPage = () => {
                             bgcolor: 'transparent',
                             boxShadow: 'none',
                             border: '1px solid var(--pl-border-subtle)',
+                        },
+                        tableContainerSx: {
+                            // Sobrescreve o compact (minWidth:0 na tabela) — scroll horizontal em viewport estreito
+                            '& .MuiTable-root': {
+                                width: '100%',
+                                minWidth: 1020,
+                            },
                         },
                         toolbar: (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, justifyContent: 'flex-end', minWidth: 260 }}>
@@ -802,8 +794,6 @@ const ProjectsListPage = () => {
                         getPriorityConfig,
                         getProgressClass,
                         getDaysRemaining,
-                        getAvatarGradient,
-                        getInitials,
                         formatDate,
                         onResubmit: handleResubmit,
                         onOpenEdit: handleOpenEdit,

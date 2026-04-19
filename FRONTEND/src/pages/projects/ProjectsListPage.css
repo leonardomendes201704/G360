@@ -422,7 +422,7 @@ body.light-premium-theme .pl-page-header-card {
 .pl-status-badge {
     display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
     padding: 6px 14px;
     border-radius: 8px;
@@ -431,7 +431,7 @@ body.light-premium-theme .pl-page-header-card {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     max-width: 100%;
-    white-space: normal;
+    white-space: nowrap;
 }
 
 .pl-status-badge .material-icons-round {
@@ -466,7 +466,7 @@ body.light-premium-theme .pl-page-header-card {
 .pl-priority-badge {
     display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
     padding: 4px 10px;
     border-radius: 8px;
@@ -475,7 +475,7 @@ body.light-premium-theme .pl-page-header-card {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     max-width: 100%;
-    white-space: normal;
+    white-space: nowrap;
 }
 
 .pl-priority-low {
@@ -502,72 +502,22 @@ body.light-premium-theme .pl-page-header-card {
     border: 1px solid rgba(244, 63, 94, 0.2);
 }
 
-/* Manager Cell */
-.pl-manager-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-}
-
-.pl-manager-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 13px;
-    flex-shrink: 0;
-    color: white;
-}
-
-.pl-manager-avatar.indigo {
-    background: linear-gradient(135deg, var(--pl-accent-indigo) 0%, var(--pl-accent-violet) 100%);
-}
-
-.pl-manager-avatar.emerald {
-    background: linear-gradient(135deg, var(--pl-accent-emerald) 0%, var(--pl-accent-cyan) 100%);
-}
-
-.pl-manager-avatar.amber {
-    background: linear-gradient(135deg, var(--pl-accent-amber) 0%, var(--pl-accent-rose) 100%);
-}
-
-.pl-manager-avatar.cyan {
-    background: linear-gradient(135deg, var(--pl-accent-cyan) 0%, var(--pl-accent-indigo) 100%);
-}
-
-.pl-manager-avatar.rose {
-    background: linear-gradient(135deg, var(--pl-accent-rose) 0%, var(--pl-accent-violet) 100%);
-}
-
-.pl-manager-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--pl-text-primary);
-    min-width: 0;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-}
-
 /* Progress Cell */
 .pl-progress-cell {
     display: flex;
     align-items: center;
     gap: 8px;
     min-width: 0;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-end;
 }
 
 .pl-progress-bar-container {
     flex: 1 1 48px;
     min-width: 0;
-    height: 8px;
+    height: 6px;
     background: var(--pl-bg-tertiary);
-    border-radius: 8px;
+    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -594,10 +544,10 @@ body.light-premium-theme .pl-page-header-card {
 }
 
 .pl-progress-value {
-    font-size: 13px;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--pl-text-primary);
-    min-width: 40px;
+    min-width: 36px;
     text-align: right;
 }
 
@@ -610,21 +560,21 @@ body.light-premium-theme .pl-page-header-card {
 }
 
 .pl-timeline-dates {
-    font-size: 13px;
+    font-size: 0.65rem;
     color: var(--pl-text-primary);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
 }
 
 .pl-timeline-dates .material-icons-round {
-    font-size: 16px;
+    font-size: 0.875rem;
     color: var(--pl-text-muted);
 }
 
 .pl-timeline-remaining {
-    font-size: 11px;
+    font-size: 0.5625rem;
     color: var(--pl-text-muted);
 }
 
@@ -640,15 +590,15 @@ body.light-premium-theme .pl-page-header-card {
 .pl-actions-cell {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-end;
     gap: 8px;
 }
 
 .pl-action-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     background: var(--pl-bg-tertiary);
     border: 1px solid var(--pl-border-subtle);
     color: var(--pl-text-secondary);
@@ -681,7 +631,7 @@ body.light-premium-theme .pl-page-header-card {
 }
 
 .pl-action-btn .material-icons-round {
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 
 /* Empty State */
