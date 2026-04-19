@@ -42,6 +42,51 @@ const PRIORITY_COLORS = {
   URGENT: 'error',
 };
 
+/** Escala ~75% para grelha «Chamados» (fonte, células, paginação). */
+const SD_TABLE_SHELL_SX = {
+  '& > div:first-of-type': {
+    py: 2.25,
+    px: 2.25,
+  },
+  '& > div:first-of-type .material-icons-round': {
+    fontSize: '15px !important',
+  },
+  '& > div:first-of-type > .MuiTypography-root': {
+    fontSize: '13.5px !important',
+  },
+  '& > div:first-of-type > .MuiTypography-root .MuiTypography-root': {
+    fontSize: '10.5px !important',
+  },
+};
+
+const SD_TABLE_CONTAINER_SX = {
+  fontSize: '0.75rem',
+  '& .MuiTableHead .MuiTableCell-root': {
+    fontSize: '0.5625rem',
+    py: 0.5,
+    px: 1,
+    lineHeight: 1.25,
+  },
+  '& .MuiTableBody .MuiTableCell-root': {
+    py: 0.75,
+    px: 1,
+    fontSize: '0.65rem',
+  },
+  '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
+  '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
+  '& .MuiChip-root': {
+    height: 21,
+    '& .MuiChip-label': { px: 0.75, fontSize: '0.525rem', lineHeight: 1.2 },
+  },
+  '& .MuiIconButton-root': { padding: '4px' },
+  '& .MuiSvgIcon-root': { fontSize: '1.125rem' },
+  '& .MuiTablePagination-root': {
+    fontSize: '0.75rem',
+    '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
+    '& .MuiInputBase-root': { fontSize: '0.75rem' },
+  },
+};
+
 const pulseAnim = keyframes`
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
   70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
@@ -209,23 +254,25 @@ const ServiceDeskDashboard = () => {
         id: 'code',
         label: 'Cód.',
         width: '7%',
-        minWidth: 80,
+        minWidth: 60,
         render: (t) => (
-          <Typography sx={{ fontWeight: '700', fontSize: '0.85rem' }}>{t.code}</Typography>
+          <Typography sx={{ fontWeight: '700', fontSize: '0.64rem', lineHeight: 1.3 }}>{t.code}</Typography>
         ),
       },
       {
         id: 'title',
         label: 'Solicitação',
         width: '21%',
-        minWidth: 140,
+        minWidth: 105,
         render: (t) => (
           <>
             <Typography
               variant="body2"
               fontWeight="600"
               sx={{
-                mb: 0.5,
+                mb: 0.35,
+                fontSize: '0.7rem',
+                lineHeight: 1.3,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 display: '-webkit-box',
@@ -237,14 +284,20 @@ const ServiceDeskDashboard = () => {
             >
               {t.title}
             </Typography>
-            <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
-              <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', flexShrink: 0 }}>
+            <Box display="flex" alignItems="center" gap={0.75} sx={{ minWidth: 0 }}>
+              <Avatar sx={{ width: 15, height: 15, fontSize: '0.5rem', flexShrink: 0 }}>
                 {t.requester?.name?.charAt(0) || 'U'}
               </Avatar>
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}
+                sx={{
+                  fontSize: '0.6rem',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  minWidth: 0,
+                }}
                 title={t.requester?.name}
               >
                 {t.requester?.name}
@@ -257,9 +310,9 @@ const ServiceDeskDashboard = () => {
         id: 'createdAt',
         label: 'Abertura',
         width: '8%',
-        minWidth: 88,
+        minWidth: 66,
         render: (t) => (
-          <Typography sx={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+          <Typography sx={{ fontSize: '0.6rem', whiteSpace: 'nowrap' }}>
             {t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-BR') : '—'}
           </Typography>
         ),
@@ -268,14 +321,14 @@ const ServiceDeskDashboard = () => {
         id: 'department',
         label: 'Dept.',
         width: '11%',
-        minWidth: 92,
+        minWidth: 69,
         render: (t) => (
           <Typography
             variant="caption"
             component="span"
             display="block"
             title={t.department?.name || ''}
-            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+            sx={{ fontSize: '0.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
           >
             {t.department?.name || '—'}
           </Typography>
@@ -285,14 +338,14 @@ const ServiceDeskDashboard = () => {
         id: 'costCenter',
         label: 'C. custo',
         width: '11%',
-        minWidth: 92,
+        minWidth: 69,
         render: (t) => (
           <Typography
             variant="caption"
             component="span"
             display="block"
             title={t.costCenter?.name || ''}
-            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+            sx={{ fontSize: '0.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
           >
             {t.costCenter?.name || '—'}
           </Typography>
@@ -302,18 +355,19 @@ const ServiceDeskDashboard = () => {
         id: 'priority',
         label: 'Prioridade',
         width: '9%',
-        minWidth: 88,
+        minWidth: 66,
         render: (t) => (
           <Chip
             label={t.priority}
             color={PRIORITY_COLORS[t.priority] ?? 'default'}
             size="small"
             sx={{
-              borderRadius: '8px',
-              fontSize: '0.7rem',
+              borderRadius: '6px',
+              fontSize: '0.525rem',
               fontWeight: 700,
+              height: 21,
               maxWidth: '100%',
-              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' },
+              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
             }}
           />
         ),
@@ -322,7 +376,7 @@ const ServiceDeskDashboard = () => {
         id: 'slaResolveDue',
         label: 'Prazo SLA',
         width: '10%',
-        minWidth: 96,
+        minWidth: 72,
         render: (t) => {
           const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
           return (
@@ -330,6 +384,7 @@ const ServiceDeskDashboard = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  fontSize: '0.65rem',
                   fontWeight: 500,
                   color: isBreached ? '#ef4444' : 'inherit',
                   overflow: 'hidden',
@@ -343,13 +398,13 @@ const ServiceDeskDashboard = () => {
                 <Tooltip title="Atenção: Prazo de SLA Expirado!">
                   <Box
                     sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '8px',
+                      width: 6,
+                      height: 6,
+                      borderRadius: '6px',
                       bgcolor: '#ef4444',
                       animation: `${pulseAnim} 2s infinite`,
                       display: 'inline-block',
-                      ml: 1,
+                      ml: 0.75,
                       flexShrink: 0,
                     }}
                   />
@@ -363,7 +418,7 @@ const ServiceDeskDashboard = () => {
         id: 'status',
         label: 'Status',
         width: '10%',
-        minWidth: 96,
+        minWidth: 72,
         render: (t) => (
           <Chip
             label={t.status}
@@ -371,12 +426,13 @@ const ServiceDeskDashboard = () => {
             size="small"
             variant="outlined"
             sx={{
-              borderRadius: '8px',
-              fontSize: '0.7rem',
+              borderRadius: '6px',
+              fontSize: '0.525rem',
               fontWeight: 600,
-              borderWidth: 2,
+              height: 21,
+              borderWidth: 1.5,
               maxWidth: '100%',
-              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' },
+              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
             }}
           />
         ),
@@ -386,20 +442,20 @@ const ServiceDeskDashboard = () => {
         label: 'Operar',
         sortable: false,
         width: '8%',
-        minWidth: 80,
+        minWidth: 60,
         render: (t) => (
           <>
-            <IconButton component="a" href={`/portal/tickets/${t.id}`} target="_blank" title="Visualizar Detalhes">
-              <VisibilityIcon color="primary" />
+            <IconButton size="small" component="a" href={`/portal/tickets/${t.id}`} target="_blank" title="Visualizar Detalhes">
+              <VisibilityIcon color="primary" sx={{ fontSize: '1.125rem' }} />
             </IconButton>
             {t.status === 'OPEN' && (
-              <IconButton onClick={() => handleTakeTicket(t.id)} title="Iniciar Atendimento">
-                <PlayArrowIcon color="warning" />
+              <IconButton size="small" onClick={() => handleTakeTicket(t.id)} title="Iniciar Atendimento">
+                <PlayArrowIcon color="warning" sx={{ fontSize: '1.125rem' }} />
               </IconButton>
             )}
             {t.status === 'IN_PROGRESS' && (
-              <IconButton onClick={() => openResolveModal(t)} title="Resolver Chamado">
-                <CheckCircleIcon color="success" />
+              <IconButton size="small" onClick={() => openResolveModal(t)} title="Resolver Chamado">
+                <CheckCircleIcon color="success" sx={{ fontSize: '1.125rem' }} />
               </IconButton>
             )}
           </>
@@ -496,6 +552,8 @@ const ServiceDeskDashboard = () => {
           titleIcon: 'confirmation_number',
           accentColor: '#2563eb',
           count: totalTickets,
+          sx: SD_TABLE_SHELL_SX,
+          tableContainerSx: SD_TABLE_CONTAINER_SX,
         }}
         columns={columns}
         rows={tickets}
