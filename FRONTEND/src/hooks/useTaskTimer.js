@@ -23,9 +23,15 @@ const useTaskTimer = () => {
         }, 1000);
     }, [calcElapsed]);
 
-    // Restore active timer on mount
+    // Restore active timer on mount (apenas com a mesma sessão que o AuthContext recupera — evita GET /tasks/time/active na página de login)
     useEffect(() => {
         const restore = async () => {
+            const token = localStorage.getItem('g360_token');
+            const refreshToken = localStorage.getItem('g360_refresh_token');
+            const userJson = localStorage.getItem('g360_user');
+            if (!token || !refreshToken || !userJson) {
+                return;
+            }
             try {
                 const active = await getActiveTimer();
                 if (active) {
@@ -45,6 +51,8 @@ const useTaskTimer = () => {
                     setIsRunning(false);
                 }
             } catch (err) {
+                const status = err?.response?.status;
+                if (status === 401) return;
                 console.error('[useTaskTimer] restore error:', err);
             }
         };

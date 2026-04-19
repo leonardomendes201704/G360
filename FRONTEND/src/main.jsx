@@ -53,7 +53,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           style={{ zIndex: 12000 }}
         >
-          <BrowserRouter>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
             <App />
           </BrowserRouter>
         </SnackbarProvider>

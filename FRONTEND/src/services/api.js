@@ -99,10 +99,17 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       const refreshToken = localStorage.getItem('g360_refresh_token');
+      // 401 sem Authorization: utilizador não autenticado (ex.: página de login) — não spammar nem disparar logout
+      const hadBearer =
+        typeof originalRequest.headers?.Authorization === 'string' &&
+        originalRequest.headers.Authorization.startsWith('Bearer ');
 
       if (!refreshToken) {
         isRefreshing = false;
-        // Sem refresh token - notificar logout via evento
+        if (!hadBearer) {
+          return Promise.reject(error);
+        }
+        // Sem refresh token mas havia JWT enviado — sessão realmente inválida
         console.info('[Auth] Sessão expirada (sem refresh token). Redirecionando para login...');
         localStorage.removeItem('g360_token');
         localStorage.removeItem('g360_refresh_token');

@@ -130,7 +130,6 @@ export const AuthProvider = ({ children }) => {
   // Escutar evento de sessão expirada do interceptor
   useEffect(() => {
     const handleSessionExpired = () => {
-      console.info('[AuthContext] Recebido evento de sessão expirada');
       softLogout();
     };
 
