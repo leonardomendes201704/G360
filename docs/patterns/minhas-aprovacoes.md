@@ -61,7 +61,7 @@ Variáveis opcionais:
 - `SEED_APPROVALS_USER_EMAIL` — email do utilizador que deve ser **gestor do CC demo** e **aprovador** das pendências (default `admin@g360.com.br`).  
   Se esse email **não existir** no tenant, o script usa o **primeiro utilizador ativo** (com aviso no console).
 
-O script é **idempotente** por **códigos estáveis** (`DEPT-G360-APPROVAL-DEMO`, `CC-G360-APPROVAL-DEMO`, `PRJ-G360-PENDING-BASELINE`, `PRJ-G360-APPROVAL-CTX`, `GMUD-G360-APPROVAL-DEMO`) e textos neutros nas descrições. Bases antigas com prefixos legados podem ser normalizadas com `npm run db:sanitize-labels` no `BACKEND`.
+O script é **idempotente** por **códigos estáveis** (`DIRMAT`, `CCODIR`, `PRJ-G360-PENDING-BASELINE`, `PRJ-G360-APPROVAL-CTX`, `GMUD-G360-APPROVAL-DEMO`) e textos neutros nas descrições. Bases antigas com prefixos legados podem ser normalizadas com `npm run db:sanitize-labels` no `BACKEND`. Códigos curtos de departamento/CC (≤6 caracteres) podem ser aplicados com `npm run db:migrate-org-codes` no `BACKEND`.
 
 **Dependências:** se não houver fornecedor, conta contábil ou ano fiscal, o script cria registos mínimos automaticamente (`ensureSupplier` / `ensureAccountingAccount` / `ensureFiscalYear`).
 

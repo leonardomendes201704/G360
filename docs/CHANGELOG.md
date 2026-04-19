@@ -90,6 +90,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
   - `docs/patterns/data-grids-inventory.md`
 
 ### Docs
+- **Help Desk — código de chamado:** documentação alinhada ao formato compacto `HD` + ano (2 dígitos) + sequência (4 dígitos); referências em `DOCUMENTACAO.md` (IMAP), `DOCUMENTACAO-BANCO-DADOS.md`, `docs/patterns/portal-suporte-tickets.md`, `docs/inventario-email-notificacoes.md`, `docs/documentacao-modulos-itbm.html` (RN-HD-01). Migração de linhas legadas: `npm run db:migrate-ticket-codes` no `BACKEND`.
 - **`CLAUDE.md`:** Diretriz **Regras de Gestao** item 7 — apos `git push` bem-sucedido, reconstruir/subir servicos Docker afetados (`docker compose up -d --build` ou servico unico); excecao para alteracoes que nao entram na imagem (ex.: so `docs/`).
 
 ### Refactored

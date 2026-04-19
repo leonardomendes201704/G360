@@ -19,7 +19,7 @@ Na lista: **indicadores** (totais por estado, clicáveis para filtrar; cores ali
 2. Modal com título, descrição, ativo relacionado (opcional), grupo de suporte (opcional), campos dinâmicos (`formSchema` do `ServiceCatalog`).
 3. `POST` de criação com `categoryId`, `serviceId`, `customAnswers`, etc. (`ticket.service` / API tickets).
 
-O backend gera código **HD-AAAA-NNNN**, calcula SLA (política do serviço / grupo / fallback por prioridade) e pode atribuir analista (round-robin do grupo, conforme `HelpdeskConfig`).
+O backend gera código compacto **`HD` + 2 dígitos do ano + sequência de 4 dígitos** (ex.: `HD260359`, sem hífens), calcula SLA (política do serviço / grupo / fallback por prioridade) e pode atribuir analista (round-robin do grupo, conforme `HelpdeskConfig`).
 
 ## Estados e prioridades (Ticket)
 
@@ -51,6 +51,7 @@ Scripts: `BACKEND/src/scripts/seed-portal-tickets-showcase.js`, `seed-portal-tic
 ## API / backend (referência)
 
 - Criação e listagem: `BACKEND/src/services/ticket.service.js`, `BACKEND/src/controllers/ticket.controller.js`
+- **Código do chamado:** gerado na criação (sequência por ano civil); formato compacto **`HD` + 2 dígitos do ano + 4 dígitos** (ex.: `HD260359`). Se a base ainda tiver códigos antigos `HD-AAAA-NNNN`, migrar com `npm run db:migrate-ticket-codes` no `BACKEND` (script `migrate-ticket-codes-legacy-format.js`).
 - Atualização de estado: `TicketService.updateStatus` (e-mails/notificações conforme configuração)
 
 ## Relação com a fila interna

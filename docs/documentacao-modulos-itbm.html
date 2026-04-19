@@ -632,7 +632,7 @@
         <p>Módulos <code>HELPDESK</code> (ações CREATE, VIEW_QUEUE, UPDATE_STATUS, escalações, etc.) e <code>PROBLEM</code> (READ, DECLARE, MASS_RESOLUTION, LINK_ORPHANS).</p>
         <h3 class="sub-rn">Regras de negócio</h3>
         <div class="rn-box">
-          <p><span class="rn-id">RN-HD-01</span> Código do chamado: formato <code>HD-AAAA-NNNN</code>, sequência atómica por ano (PostgreSQL).</p>
+          <p><span class="rn-id">RN-HD-01</span> Código do chamado: formato compacto <code>HD</code> + dois dígitos do ano + sequência de 4 dígitos (ex.: <code>HD260359</code>), sem hífens; sequência atómica por ano civil (PostgreSQL). Respostas por e-mail com o código antigo <code>HD-AAAA-NNNN</code> no assunto continuam a ser associadas ao chamado.</p>
           <p><span class="rn-id">RN-HD-02</span> SLA: minutos de resposta/resolução vêm, por ordem, da política ligada ao <strong>serviço do catálogo</strong>, depois ao <strong>grupo de suporte</strong>, senão tabela fallback por prioridade (LOW/MEDIUM/HIGH/URGENT).</p>
           <p><span class="rn-id">RN-HD-03</span> Calendário de SLA: se a configuração do helpdesk activar calendário de negócio, os prazos usam horário útil; caso contrário, minutos de relógio.</p>
           <p><span class="rn-id">RN-HD-04</span> Ao criar com <code>supportGroupId</code>, se <code>autoAssignOnCreate</code> estiver activo (config), atribuição <strong>round-robin</strong> entre membros do grupo.</p>

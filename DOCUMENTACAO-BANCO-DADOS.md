@@ -142,7 +142,7 @@ Todas as tabelas abaixo existem **em cada schema de tenant** (cópia lógica do 
 
 | Modelo | Tabela física (`@@map`) | Descrição resumida |
 |--------|-------------------------|---------------------|
-| **Ticket** | — | Chamado: código único (ex. HD-AAAA-NNNN), categoria, serviço, grupo de suporte, solicitante/atribuído, SLA (pausa, minutos pausados), CSAT, vínculos projeto/mudança/problema, respostas JSON do formulário. |
+| **Ticket** | — | Chamado: código único compacto (ex. `HD260359`: `HD` + ano em 2 dígitos + sequência de 4 dígitos), categoria, serviço, grupo de suporte, solicitante/atribuído, SLA (pausa, minutos pausados), CSAT, vínculos projeto/mudança/problema, respostas JSON do formulário. |
 | **TicketCodeSequence** | — | Sequência anual por ano (`year` PK) para códigos HD. |
 | **HelpdeskConfig** | `helpdesk_config` | Configuração única: calendário de negócio, `auto_assign_on_create`, JSON de calendário. |
 | **SupportGroup** | `support_groups` | Grupos N1/N2; SLA opcional; cursor round-robin. |

@@ -259,7 +259,7 @@ Apenas **uma instância** (PM2 `NODE_APP_INSTANCE` 0 ou indefinido) agenda taref
 - **LDAP:** `Integration` tipo LDAP + `LdapService`; login `/auth/ldap`.
 - **Azure AD:** integração em BD + MSAL; login `/auth/azure`; `GET /auth/azure-config/:tenantSlug`.
 - **E-mail:** `MailService` / templates; notificações podem disparar envio.
-- **IMAP:** `InboundEmailService` + cron para respostas ligadas a tickets (quando configurado).
+- **IMAP:** `InboundEmailService` + cron para respostas ligadas a tickets (quando configurado). O **assunto** deve incluir o **código do chamado**: formato atual **`HD` + ano (2 dígitos) + sequência (4 dígitos)** (ex.: `HD260359`, sem hífens); o parser aceita ainda o formato legado `HD-AAAA-NNNN` em threads antigas. Ver `docs/inventario-email-notificacoes.md` e RN-HD-01 em `docs/documentacao-modulos-itbm.html`.
 - **`/integrations`:** atualização e teste de integrações por tipo (CONFIG).
 
 ---

@@ -308,16 +308,16 @@ const IncidentsPage = () => {
 
     const INCIDENT_TABLE_CONTAINER_SX = {
         fontSize: '0.75rem',
-        '& .MuiTableHead .MuiTableCell-root': {
-            fontSize: '0.5625rem',
+        '& thead .MuiTableCell-root': {
+            fontSize: '0.5625rem !important',
             py: 0.5,
             px: 1,
             lineHeight: 1.25,
         },
-        '& .MuiTableBody .MuiTableCell-root': {
+        '& tbody .MuiTableCell-root': {
             py: 0.75,
             px: 1,
-            fontSize: '0.65rem',
+            fontSize: '0.65rem !important',
         },
         '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
         '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },

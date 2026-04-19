@@ -130,10 +130,16 @@ describe('InboundEmailService', () => {
     });
 
     describe('extractTicketCodeFromSubject', () => {
-        it('should prefer bracketed code', () => {
+        it('should extract compact bracketed code (HDyynnnn)', () => {
+            expect(InboundEmailService.extractTicketCodeFromSubject('Re: [HD260359] test')).toBe('HD260359');
+        });
+        it('should extract compact code without brackets', () => {
+            expect(InboundEmailService.extractTicketCodeFromSubject('Re: Chamado HD261000')).toBe('HD261000');
+        });
+        it('should prefer bracketed legacy code', () => {
             expect(InboundEmailService.extractTicketCodeFromSubject('Re: [HD-2026-0001] test')).toBe('HD-2026-0001');
         });
-        it('should fallback to bare code', () => {
+        it('should fallback to bare legacy code', () => {
             expect(InboundEmailService.extractTicketCodeFromSubject('Re: Chamado HD-2026-0999')).toBe('HD-2026-0999');
         });
     });

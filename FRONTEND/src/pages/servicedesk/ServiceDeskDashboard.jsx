@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import {
@@ -30,7 +31,7 @@ import KpiGrid from '../../components/common/KpiGrid';
 import DataListTable from '../../components/common/DataListTable';
 import FilterDrawer from '../../components/common/FilterDrawer';
 import usePersistedFilters from '../../hooks/usePersistedFilters';
-import { getTicketStatusSortIndex } from '../../constants/ticketStatus';
+import { getTicketStatusSortIndex, splitTicketTitleEmDash } from '../../constants/ticketStatus';
 
 const PRIORITY_RANK = { LOW: 1, MEDIUM: 2, HIGH: 3, URGENT: 4 };
 
@@ -68,16 +69,16 @@ const SD_TABLE_SHELL_SX = {
 
 const SD_TABLE_CONTAINER_SX = {
   fontSize: '0.75rem',
-  '& .MuiTableHead .MuiTableCell-root': {
-    fontSize: '0.5625rem',
+  '& thead .MuiTableCell-root': {
+    fontSize: '0.5625rem !important',
     py: 0.5,
     px: 1,
     lineHeight: 1.25,
   },
-  '& .MuiTableBody .MuiTableCell-root': {
+  '& tbody .MuiTableCell-root': {
     py: 0.75,
     px: 1,
-    fontSize: '0.65rem',
+    fontSize: '0.65rem !important',
   },
   '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
   '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
@@ -91,6 +92,36 @@ const SD_TABLE_CONTAINER_SX = {
     fontSize: '0.75rem',
     '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
     '& .MuiInputBase-root': { fontSize: '0.75rem' },
+  },
+};
+
+const SD_SORT_HEADER_CENTER_SX = {
+  textAlign: 'center',
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'center',
+    width: '100%',
+  },
+};
+
+/** Cabeçalho alinhado à esquerda (coluna Solicitação). */
+const SD_SORT_HEADER_LEFT_SX = {
+  textAlign: 'left',
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+};
+
+/** Cabeçalho centrado + ordenação, sem quebra de linha (Cód., Abertura, …). */
+const SD_SORT_HEADER_CENTER_NOWRAP_SX = {
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  wordBreak: 'normal',
+  overflowWrap: 'normal',
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'center',
+    width: '100%',
+    whiteSpace: 'nowrap',
   },
 };
 
@@ -128,10 +159,16 @@ export function sortServiceDeskTickets(list, orderBy, order) {
         cmp = String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR', { sensitivity: 'base' });
         break;
       case 'department':
-        cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', { sensitivity: 'base' });
+        cmp = String(a.department?.code || '').localeCompare(String(b.department?.code || ''), 'pt-BR', {
+          numeric: true,
+          sensitivity: 'base',
+        });
         break;
       case 'costCenter':
-        cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', { sensitivity: 'base' });
+        cmp = String(a.costCenter?.code || '').localeCompare(String(b.costCenter?.code || ''), 'pt-BR', {
+          numeric: true,
+          sensitivity: 'base',
+        });
         break;
       case 'priority': {
         const ra = PRIORITY_RANK[a.priority] ?? 0;
@@ -386,24 +423,46 @@ const ServiceDeskDashboard = () => {
       {
         id: 'code',
         label: 'Cód.',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_NOWRAP_SX,
         width: '7%',
         minWidth: 60,
+        cellSx: () => ({
+          whiteSpace: 'nowrap',
+          wordBreak: 'normal',
+          overflowWrap: 'normal',
+        }),
         render: (t) => (
-          <Typography sx={{ fontWeight: '700', fontSize: '0.64rem', lineHeight: 1.3 }}>{t.code}</Typography>
+          <Typography
+            sx={{
+              fontWeight: '700',
+              fontSize: '0.64rem',
+              lineHeight: 1.3,
+              textAlign: 'center',
+              display: 'block',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {t.code}
+          </Typography>
         ),
       },
       {
         id: 'title',
         label: 'Solicitação',
+        align: 'left',
+        headerSx: SD_SORT_HEADER_LEFT_SX,
         width: '21%',
         minWidth: 105,
-        render: (t) => (
+        render: (t) => {
+          const { main: titleMain, rest: titleRest } = splitTicketTitleEmDash(t.title);
+          return (
           <>
             <Typography
               variant="body2"
               fontWeight="600"
               sx={{
-                mb: 0.35,
+                mb: titleRest ? 0.2 : 0.35,
                 fontSize: '0.7rem',
                 lineHeight: 1.3,
                 overflow: 'hidden',
@@ -415,8 +474,28 @@ const ServiceDeskDashboard = () => {
               }}
               title={t.title}
             >
-              {t.title}
+              {titleMain}
             </Typography>
+            {titleRest ? (
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{
+                  mb: 0.35,
+                  fontSize: '0.65rem',
+                  lineHeight: 1.3,
+                  fontWeight: 400,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {titleRest}
+              </Typography>
+            ) : null}
             <Box display="flex" alignItems="center" gap={0.75} sx={{ minWidth: 0 }}>
               <Avatar sx={{ width: 15, height: 15, fontSize: '0.5rem', flexShrink: 0 }}>
                 {t.requester?.name?.charAt(0) || 'U'}
@@ -437,15 +516,23 @@ const ServiceDeskDashboard = () => {
               </Typography>
             </Box>
           </>
-        ),
+          );
+        },
       },
       {
         id: 'createdAt',
         label: 'Abertura',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_NOWRAP_SX,
         width: '8%',
         minWidth: 66,
+        cellSx: () => ({
+          whiteSpace: 'nowrap',
+          wordBreak: 'normal',
+          overflowWrap: 'normal',
+        }),
         render: (t) => (
-          <Typography sx={{ fontSize: '0.6rem', whiteSpace: 'nowrap' }}>
+          <Typography sx={{ fontSize: '0.6rem', whiteSpace: 'nowrap', textAlign: 'center', display: 'block' }}>
             {t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-BR') : '—'}
           </Typography>
         ),
@@ -453,67 +540,114 @@ const ServiceDeskDashboard = () => {
       {
         id: 'department',
         label: 'Dept.',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_SX,
         width: '11%',
         minWidth: 69,
-        render: (t) => (
-          <Typography
-            variant="caption"
-            component="span"
-            display="block"
-            title={t.department?.name || ''}
-            sx={{ fontSize: '0.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-          >
-            {t.department?.name || '—'}
-          </Typography>
-        ),
+        render: (t) => {
+          const code = t.department?.code ?? '—';
+          const desc = t.department?.name?.trim();
+          const inner = (
+            <Box
+              component="span"
+              sx={{
+                display: 'block',
+                fontSize: '0.6rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'center',
+              }}
+            >
+              {code}
+            </Box>
+          );
+          if (desc && code !== '—') {
+            return (
+              <Tooltip title={desc} placement="top" enterDelay={400}>
+                {inner}
+              </Tooltip>
+            );
+          }
+          return inner;
+        },
       },
       {
         id: 'costCenter',
         label: 'C. custo',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_SX,
         width: '11%',
         minWidth: 69,
-        render: (t) => (
-          <Typography
-            variant="caption"
-            component="span"
-            display="block"
-            title={t.costCenter?.name || ''}
-            sx={{ fontSize: '0.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-          >
-            {t.costCenter?.name || '—'}
-          </Typography>
-        ),
+        render: (t) => {
+          const code = t.costCenter?.code ?? '—';
+          const desc = t.costCenter?.name?.trim();
+          const inner = (
+            <Box
+              component="span"
+              sx={{
+                display: 'block',
+                fontSize: '0.6rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'center',
+              }}
+            >
+              {code}
+            </Box>
+          );
+          if (desc && code !== '—') {
+            return (
+              <Tooltip title={desc} placement="top" enterDelay={400}>
+                {inner}
+              </Tooltip>
+            );
+          }
+          return inner;
+        },
       },
       {
         id: 'priority',
         label: 'Prioridade',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_SX,
         width: '9%',
         minWidth: 66,
         render: (t) => (
-          <Chip
-            label={t.priority}
-            color={PRIORITY_COLORS[t.priority] ?? 'default'}
-            size="small"
-            sx={{
-              borderRadius: '6px',
-              fontSize: '0.525rem',
-              fontWeight: 700,
-              height: 21,
-              maxWidth: '100%',
-              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
-            }}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Chip
+              label={t.priority}
+              color={PRIORITY_COLORS[t.priority] ?? 'default'}
+              size="small"
+              sx={{
+                borderRadius: '6px',
+                fontSize: '0.525rem',
+                fontWeight: 700,
+                height: 21,
+                maxWidth: '100%',
+                '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
+              }}
+            />
+          </Box>
         ),
       },
       {
         id: 'slaResolveDue',
         label: 'Prazo SLA',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_SX,
         width: '10%',
         minWidth: 72,
         render: (t) => {
           const isBreached = t.slaBreached && t.status !== 'RESOLVED' && t.status !== 'CLOSED';
           return (
-            <Box display="flex" alignItems="center" sx={{ minWidth: 0 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ minWidth: 0, width: '100%', gap: 0.75 }}
+            >
               <Typography
                 variant="body2"
                 sx={{
@@ -523,6 +657,7 @@ const ServiceDeskDashboard = () => {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  textAlign: 'center',
                 }}
               >
                 {t.slaResolveDue ? new Date(t.slaResolveDue).toLocaleDateString() : 'Sem SLA'}
@@ -537,7 +672,6 @@ const ServiceDeskDashboard = () => {
                       bgcolor: '#ef4444',
                       animation: `${pulseAnim} 2s infinite`,
                       display: 'inline-block',
-                      ml: 0.75,
                       flexShrink: 0,
                     }}
                   />
@@ -550,35 +684,46 @@ const ServiceDeskDashboard = () => {
       {
         id: 'status',
         label: 'Status',
+        align: 'center',
+        headerSx: SD_SORT_HEADER_CENTER_SX,
         width: '10%',
         minWidth: 72,
         render: (t) => (
-          <Chip
-            label={t.status}
-            color={STATUS_COLORS[t.status] ?? 'default'}
-            size="small"
-            variant="outlined"
-            sx={{
-              borderRadius: '6px',
-              fontSize: '0.525rem',
-              fontWeight: 600,
-              height: 21,
-              borderWidth: 1.5,
-              maxWidth: '100%',
-              '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
-            }}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Chip
+              label={t.status}
+              color={STATUS_COLORS[t.status] ?? 'default'}
+              size="small"
+              variant="outlined"
+              sx={{
+                borderRadius: '6px',
+                fontSize: '0.525rem',
+                fontWeight: 600,
+                height: 21,
+                borderWidth: 1.5,
+                maxWidth: '100%',
+                '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis', px: 0.75 },
+              }}
+            />
+          </Box>
         ),
       },
       {
         id: '_actions',
         label: 'Operar',
         sortable: false,
+        align: 'center',
+        headerSx: { textAlign: 'center' },
         width: '8%',
         minWidth: 60,
         render: (t) => (
-          <>
-            <IconButton size="small" component="a" href={`/portal/tickets/${t.id}`} target="_blank" title="Visualizar Detalhes">
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 0.25, flexWrap: 'wrap', width: '100%' }}>
+            <IconButton
+              size="small"
+              component={RouterLink}
+              to={`/portal/tickets/${t.id}`}
+              title="Visualizar Detalhes"
+            >
               <VisibilityIcon color="primary" sx={{ fontSize: '1.125rem' }} />
             </IconButton>
             {t.status === 'OPEN' && (
@@ -591,7 +736,7 @@ const ServiceDeskDashboard = () => {
                 <CheckCircleIcon color="success" sx={{ fontSize: '1.125rem' }} />
               </IconButton>
             )}
-          </>
+          </Box>
         ),
       },
     ],

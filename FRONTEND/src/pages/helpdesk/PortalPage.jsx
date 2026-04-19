@@ -21,7 +21,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Tooltip
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import ticketService from '../../services/ticket.service';
@@ -49,6 +50,7 @@ import {
   TicketStatus,
   getTicketStatusLabel,
   stripTicketTitleStatusSuffix,
+  getPortalTicketTitleColumnText,
   TICKET_STATUS_CHIP_COLOR,
   TICKET_STATUS_LABEL_PT,
   getTicketStatusSortIndex,
@@ -74,11 +76,9 @@ export function sortPortalTickets(list, orderBy, order) {
         cmp = String(a.code || '').localeCompare(String(b.code || ''), 'pt-BR', { numeric: true, sensitivity: 'base' });
         break;
       case 'title':
-        cmp = stripTicketTitleStatusSuffix(a.title || '').localeCompare(
-          stripTicketTitleStatusSuffix(b.title || ''),
-          'pt-BR',
-          { sensitivity: 'base' }
-        );
+        cmp = getPortalTicketTitleColumnText(a).localeCompare(getPortalTicketTitleColumnText(b), 'pt-BR', {
+          sensitivity: 'base'
+        });
         break;
       case 'service':
         cmp = String(a.service?.name || '').localeCompare(String(b.service?.name || ''), 'pt-BR', {
@@ -98,12 +98,14 @@ export function sortPortalTickets(list, orderBy, order) {
         break;
       }
       case 'department':
-        cmp = String(a.department?.name || '').localeCompare(String(b.department?.name || ''), 'pt-BR', {
+        cmp = String(a.department?.code || '').localeCompare(String(b.department?.code || ''), 'pt-BR', {
+          numeric: true,
           sensitivity: 'base'
         });
         break;
       case 'costCenter':
-        cmp = String(a.costCenter?.name || '').localeCompare(String(b.costCenter?.name || ''), 'pt-BR', {
+        cmp = String(a.costCenter?.code || '').localeCompare(String(b.costCenter?.code || ''), 'pt-BR', {
+          numeric: true,
           sensitivity: 'base'
         });
         break;
@@ -114,6 +116,83 @@ export function sortPortalTickets(list, orderBy, order) {
   });
   return sorted;
 }
+
+/** Escala ~75% — cabeçalho do cartão (via DataListShell `headerSx`, sobrepõe padding/fontSize fixos). */
+/** Cabeçalho de coluna ordenável centrado (TableSortLabel). */
+const PORTAL_SORT_HEADER_CENTER_SX = {
+  textAlign: 'center',
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'center',
+    width: '100%',
+  },
+};
+
+const PORTAL_SORT_HEADER_LEFT_SX = {
+  textAlign: 'left',
+  '& .MuiTableSortLabel-root': {
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+};
+
+const PORTAL_HEADER_DENSE_SX = {
+  py: 2.25,
+  px: 2.25,
+  gap: 1.5,
+  '& .material-icons-round': {
+    fontSize: '15px !important',
+  },
+  '& > .MuiTypography-root': {
+    fontSize: '13.5px !important',
+    lineHeight: 1.3,
+  },
+  '& > .MuiTypography-root .MuiTypography-root': {
+    fontSize: '10.5px !important',
+  },
+};
+
+/** Colunas «encolhem ao conteúdo» com `table-layout: auto` (ver `tableLayoutFixed={false}` no DataListTable). */
+const COL_WIDTH_SHRINK = '1%';
+
+const PORTAL_TABLE_CONTAINER_SX = {
+  fontSize: '0.75rem',
+  overflow: 'auto',
+  '& .MuiTable-root': {
+    width: '100%',
+    minWidth: 0,
+  },
+  /* thead/tbody — .MuiTableHead não é classe MUI (é MuiTableHead-root); antes as regras não batiam */
+  '& thead .MuiTableCell-root': {
+    fontSize: '0.5625rem !important',
+    py: 0.5,
+    px: 1,
+    lineHeight: 1.25,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  '& tbody .MuiTableCell-root': {
+    py: 0.75,
+    px: 1,
+    fontSize: '0.65rem !important',
+    overflow: 'hidden',
+    verticalAlign: 'middle',
+  },
+  '& .MuiTableSortLabel-root': { fontSize: 'inherit' },
+  '& .MuiTableSortLabel-icon': { fontSize: '0.875rem !important' },
+  '& .MuiChip-root': {
+    height: 21,
+    maxWidth: '100%',
+    '& .MuiChip-label': { px: 0.75, fontSize: '0.525rem', lineHeight: 1.2 },
+  },
+  '& .MuiIconButton-root': { padding: '4px' },
+  '& .MuiSvgIcon-root': { fontSize: '1.125rem' },
+  '& .MuiTablePagination-root': {
+    fontSize: '0.75rem',
+    '& .MuiTablePagination-toolbar': { minHeight: 42, pl: 1, pr: 0.5 },
+    '& .MuiInputBase-root': { fontSize: '0.75rem' },
+  },
+};
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -456,61 +535,159 @@ const PortalPage = () => {
       {
         id: 'code',
         label: 'Código',
-        width: '9%',
-        minWidth: 88,
-        cellSx: () => ({ whiteSpace: 'nowrap', fontWeight: 700 }),
+        align: 'center',
+        headerSx: PORTAL_SORT_HEADER_CENTER_SX,
+        width: COL_WIDTH_SHRINK,
+        cellSx: () => ({
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+          fontWeight: 700
+        }),
         render: (t) => t.code
       },
       {
         id: 'title',
         label: 'Título',
-        render: (t) => stripTicketTitleStatusSuffix(t.title),
+        align: 'left',
+        headerSx: PORTAL_SORT_HEADER_LEFT_SX,
+        /* Sem width: ocupa o espaço restante entre colunas de largura mínima */
         cellSx: () => ({
+          width: '100%',
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          textAlign: 'left'
+        }),
+        render: (t) => getPortalTicketTitleColumnText(t)
+      },
+      {
+        id: 'service',
+        label: 'Serviço',
+        align: 'left',
+        headerSx: PORTAL_SORT_HEADER_LEFT_SX,
+        width: COL_WIDTH_SHRINK,
+        render: (t) => t.service?.name || '-',
+        cellSx: () => ({
+          textAlign: 'left',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap'
         })
       },
       {
-        id: 'service',
-        label: 'Serviço',
-        render: (t) => t.service?.name || '-'
-      },
-      {
         id: 'department',
-        label: 'Departamento',
-        render: (t) => t.department?.name || '—'
+        label: 'Depto',
+        align: 'center',
+        headerSx: PORTAL_SORT_HEADER_CENTER_SX,
+        width: COL_WIDTH_SHRINK,
+        render: (t) => {
+          const code = t.department?.code ?? '—';
+          const desc = t.department?.name?.trim();
+          const inner = (
+            <Box
+              component="span"
+              sx={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'center',
+              }}
+            >
+              {code}
+            </Box>
+          );
+          if (desc && code !== '—') {
+            return (
+              <Tooltip title={desc} placement="top" enterDelay={400}>
+                {inner}
+              </Tooltip>
+            );
+          }
+          return inner;
+        },
+        cellSx: () => ({
+          textAlign: 'center',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }),
       },
       {
         id: 'costCenter',
-        label: 'Centro de custo',
-        render: (t) => t.costCenter?.name || '—'
+        label: 'C. custo',
+        align: 'center',
+        headerSx: PORTAL_SORT_HEADER_CENTER_SX,
+        width: COL_WIDTH_SHRINK,
+        render: (t) => {
+          const code = t.costCenter?.code ?? '—';
+          const desc = t.costCenter?.name?.trim();
+          const inner = (
+            <Box
+              component="span"
+              sx={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'center',
+              }}
+            >
+              {code}
+            </Box>
+          );
+          if (desc && code !== '—') {
+            return (
+              <Tooltip title={desc} placement="top" enterDelay={400}>
+                {inner}
+              </Tooltip>
+            );
+          }
+          return inner;
+        },
+        cellSx: () => ({
+          textAlign: 'center',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }),
       },
       {
         id: 'createdAt',
         label: 'Data',
-        render: (t) => new Date(t.createdAt).toLocaleDateString('pt-BR')
+        align: 'center',
+        headerSx: PORTAL_SORT_HEADER_CENTER_SX,
+        width: COL_WIDTH_SHRINK,
+        render: (t) => new Date(t.createdAt).toLocaleDateString('pt-BR'),
+        cellSx: () => ({ textAlign: 'center', whiteSpace: 'nowrap' }),
       },
       {
         id: 'status',
         label: 'Status',
+        align: 'center',
+        headerSx: PORTAL_SORT_HEADER_CENTER_SX,
+        width: COL_WIDTH_SHRINK,
         render: (t) => (
-          <Chip
-            label={getTicketStatusLabel(t.status)}
-            color={TICKET_STATUS_CHIP_COLOR[t.status] ?? 'default'}
-            size="small"
-          />
-        )
+          <Box display="flex" justifyContent="center" width="100%">
+            <Chip
+              label={getTicketStatusLabel(t.status)}
+              color={TICKET_STATUS_CHIP_COLOR[t.status] ?? 'default'}
+              size="small"
+            />
+          </Box>
+        ),
+        cellSx: () => ({ overflow: 'visible', whiteSpace: 'nowrap', textAlign: 'center' }),
       },
       {
         id: 'action',
         label: 'Ação',
         sortable: false,
         align: 'center',
-        width: 56,
-        minWidth: 56,
-        headerSx: { textAlign: 'center' },
-        cellSx: () => ({ width: 56, textAlign: 'center' }),
+        width: COL_WIDTH_SHRINK,
+        minWidth: 52,
+        headerSx: { textAlign: 'center', whiteSpace: 'nowrap' },
+        cellSx: () => ({ width: 52, minWidth: 52, maxWidth: 52, textAlign: 'center', overflow: 'visible' }),
         render: (t) => (
           <IconButton
             component={RouterLink}
@@ -736,11 +913,13 @@ const PortalPage = () => {
       </Paper>
 
       <DataListTable
+        tableLayoutFixed={false}
         shell={{
           title: 'Meus Chamados',
           titleIcon: 'confirmation_number',
           accentColor: '#2563eb',
           count: filteredTickets.length,
+          headerSx: PORTAL_HEADER_DENSE_SX,
           sx: { mb: 2 },
           toolbar:
             hasListRefinement && tickets.length !== filteredTickets.length ? (
@@ -748,7 +927,11 @@ const PortalPage = () => {
                 de {tickets.length} na conta
               </Typography>
             ) : null,
-          tableContainerSx: { borderRadius: '8px', boxShadow: theme.shadows[1] }
+          tableContainerSx: {
+            ...PORTAL_TABLE_CONTAINER_SX,
+            borderRadius: '8px',
+            boxShadow: theme.shadows[1],
+          },
         }}
         columns={portalTicketColumns}
         rows={filteredTickets}
@@ -760,7 +943,6 @@ const PortalPage = () => {
         emptyMessage={portalEmptyMessage}
         rowsPerPageDefault={10}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        size="medium"
       />
 
       <FilterDrawer

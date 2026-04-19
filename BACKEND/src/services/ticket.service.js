@@ -103,7 +103,16 @@ class TicketService {
   }
 
   /**
-   * Código HD-AAAA-NNNN com sequência atômica por ano (PostgreSQL).
+   * Formato compacto sem hífens: HD + YY (2 dígitos do ano) + NNNN (sequência no ano).
+   * Ex.: HD260001. A sequência atómica continua por ano civil em `TicketCodeSequence`.
+   */
+  static formatTicketCodeCompact(year, sequenceNumber) {
+    const yy = String(year).slice(-2);
+    return `HD${yy}${String(sequenceNumber).padStart(4, '0')}`;
+  }
+
+  /**
+   * Próximo código de chamado (PostgreSQL, sequência por ano).
    */
   static async getNextTicketCode(prismaClient) {
     const year = new Date().getFullYear();
@@ -114,7 +123,7 @@ class TicketService {
       RETURNING "lastNumber"
     `;
     const n = Number(rows[0].lastNumber);
-    return `HD-${year}-${String(n).padStart(4, '0')}`;
+    return this.formatTicketCodeCompact(year, n);
   }
 
   /**

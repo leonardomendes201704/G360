@@ -22,8 +22,8 @@ async function sanitizeTenantSchema(prisma) {
         `UPDATE "Ticket" SET title = TRIM(REPLACE(title, '[Seed Portal] ', '')) WHERE title LIKE '[Seed Portal]%'`,
         `UPDATE "Ticket" SET description = REPLACE(description, 'Demonstração Portal de Suporte (seed). ', 'Registado via portal de suporte. ') WHERE description LIKE '%Demonstração Portal de Suporte%'`,
         // Aprovações — departamento / CC / projetos (códigos estáveis do seed)
-        `UPDATE "Department" SET name = 'Direção de operações — matriz' WHERE code = 'DEPT-G360-APPROVAL-DEMO'`,
-        `UPDATE "CostCenter" SET name = 'Centro de custo — operações diretas' WHERE code = 'CC-G360-APPROVAL-DEMO'`,
+        `UPDATE "Department" SET name = 'Direção de operações — matriz' WHERE code = 'DIRMAT'`,
+        `UPDATE "CostCenter" SET name = 'Centro de custo — operações diretas' WHERE code = 'CCODIR'`,
         `UPDATE "Project" SET name = 'Projeto — baseline em aprovação', description = 'Planeamento inicial e aprovação de orçamento.' WHERE code = 'PRJ-G360-PENDING-BASELINE'`,
         `UPDATE "Project" SET name = 'Projeto — custos, atas e propostas', description = 'Acompanhamento operacional e documentação associada.' WHERE code = 'PRJ-G360-APPROVAL-CTX'`,
         `UPDATE "Expense" SET description = 'Despesa operacional — manutenção preventiva' WHERE description LIKE '[Seed Aprovações] Despesa operacional%' OR description = '[Seed Aprovações] Despesa operacional'`,

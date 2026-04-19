@@ -69,8 +69,8 @@ async function ensureFiscalYear(prisma) {
     });
 }
 
-const DEPT_CODE = 'DEPT-G360-APPROVAL-DEMO';
-const CC_CODE = 'CC-G360-APPROVAL-DEMO';
+const DEPT_CODE = 'DIRMAT';
+const CC_CODE = 'CCODIR';
 const PRJ_BASELINE_CODE = 'PRJ-G360-PENDING-BASELINE';
 const PRJ_CTX_CODE = 'PRJ-G360-APPROVAL-CTX';
 const GMUD_CODE = 'GMUD-G360-APPROVAL-DEMO';

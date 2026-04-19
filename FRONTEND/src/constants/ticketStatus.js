@@ -75,3 +75,36 @@ export function stripTicketTitleStatusSuffix(title) {
     .replace(/\s+—\s+(OPEN|IN_PROGRESS|WAITING_USER|RESOLVED|CLOSED)$/i, '')
     .trim();
 }
+
+/**
+ * Divide título do tipo «Serviço — requisição N» (travessão em U+2014) para duas linhas na grelha.
+ * @param {string | null | undefined} title
+ * @returns {{ main: string, rest: string }}
+ */
+export function splitTicketTitleEmDash(title) {
+  if (title == null || typeof title !== 'string') return { main: '', rest: '' };
+  const s = title.trim();
+  if (!s) return { main: '', rest: '' };
+  const idx = s.indexOf('—');
+  if (idx === -1) return { main: s, rest: '' };
+  const main = s.slice(0, idx).trim();
+  const rest = s.slice(idx + 1).trim();
+  return { main, rest };
+}
+
+/**
+ * Texto da coluna «Título» no portal: evita repetir o nome do serviço quando o título segue o padrão
+ * «Nome do serviço — …» (o serviço já aparece na coluna Serviço). Caso contrário mantém o título completo
+ * (após {@link stripTicketTitleStatusSuffix}).
+ * @param {{ title?: string | null, service?: { name?: string | null } | null }} ticket
+ */
+export function getPortalTicketTitleColumnText(ticket) {
+  const stripped = stripTicketTitleStatusSuffix(ticket?.title ?? '');
+  if (!stripped) return '';
+  const { main, rest } = splitTicketTitleEmDash(stripped);
+  const svc = (ticket?.service?.name || '').trim();
+  if (rest && svc && main.localeCompare(svc, 'pt-BR', { sensitivity: 'accent' }) === 0) {
+    return rest;
+  }
+  return stripped;
+}

@@ -12,6 +12,9 @@ describe('TicketService', () => {
     beforeEach(() => {
         mockPrisma = {
             $queryRaw: jest.fn().mockResolvedValue([{ lastNumber: 6 }]),
+            user: {
+                findUnique: jest.fn().mockResolvedValue({ departmentId: null, costCenterId: null }),
+            },
             helpdeskConfig: {
                 findUnique: jest.fn().mockResolvedValue({
                     id: 1,
@@ -63,9 +66,10 @@ describe('TicketService', () => {
         const data = { title: 'T', description: 'D', categoryId: 'C1', requesterId: 'U1' };
 
         it('should create a ticket with sequential code and SLA fields', async () => {
+            const yy = String(new Date().getFullYear()).slice(-2);
             mockPrisma.ticket.create.mockResolvedValue({
                 id: 't1',
-                code: `HD-${new Date().getFullYear()}-0006`,
+                code: `HD${yy}0006`,
                 title: 'T',
                 slaResponseDue: new Date(),
                 slaResolveDue: new Date()
@@ -77,7 +81,7 @@ describe('TicketService', () => {
             expect(mockPrisma.ticket.create).toHaveBeenCalledWith(
                 expect.objectContaining({
                     data: expect.objectContaining({
-                        code: expect.stringMatching(/HD-\d{4}-0006/),
+                        code: expect.stringMatching(new RegExp(`^HD${yy}0006$`)),
                         priority: 'MEDIUM',
                         slaResponseDue: expect.any(Date),
                         slaResolveDue: expect.any(Date)
@@ -125,10 +129,14 @@ describe('TicketService', () => {
             await TicketService.getAll(mockPrisma, { status: 'OPEN', priority: 'HIGH', assigneeId: 'a1' }, 'u1', 'REQUESTER');
 
             const calledWhere = mockPrisma.ticket.findMany.mock.calls[0][0].where;
-            expect(calledWhere.requesterId).toBe('u1');
-            expect(calledWhere.status).toBe('OPEN');
-            expect(calledWhere.priority).toBe('HIGH');
-            expect(calledWhere.assigneeId).toBe('a1');
+            expect(calledWhere.AND).toEqual(
+                expect.arrayContaining([
+                    { requesterId: 'u1' },
+                    { status: 'OPEN' },
+                    { priority: 'HIGH' },
+                    { assigneeId: 'a1' }
+                ])
+            );
         });
 
         it('should not filter by requester for ADMIN', async () => {
@@ -233,7 +241,7 @@ describe('TicketService', () => {
             assigneeId: null,
             status: 'OPEN',
             respondedAt: null,
-            code: 'HD-2026-0001'
+            code: `HD${String(new Date().getFullYear()).slice(-2)}0001`
         };
 
         beforeEach(() => {

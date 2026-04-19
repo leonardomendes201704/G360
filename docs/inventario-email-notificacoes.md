@@ -61,7 +61,7 @@
 
 ## Inbound (resposta por e-mail → ticket)
 
-Configuração **IMAP** por tenant. Ver `InboundEmailService` e `DOCUMENTACAO.md`. Assunto deve conter `[HD-AAAA-NNNN]` ou `HD-AAAA-NNNN`.
+Configuração **IMAP** por tenant. Ver `InboundEmailService` e `DOCUMENTACAO.md`. O assunto deve conter o código do chamado no formato atual (**`[HDyynnnn]`** ou **`HDyynnnn`**, ex.: `HD260359`) ou, para compatibilidade, o formato antigo **`[HD-AAAA-NNNN]`** / **`HD-AAAA-NNNN`**.
 
 ---
 

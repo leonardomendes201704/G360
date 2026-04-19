@@ -1181,7 +1181,7 @@ model LoginAttempt {
 
 model Ticket {
   id          String @id @default(uuid())
-  code        String @unique // Ex: HD-2026-0001
+  code        String @unique // Ex: HD260001 (HD + YY + NNNN, sem hífens)
   title       String
   description String
   status      String @default("OPEN") // OPEN, IN_PROGRESS, WAITING_USER, RESOLVED, CLOSED
@@ -1250,7 +1250,7 @@ model Ticket {
   @@index([costCenterId])
 }
 
-/// Sequência anual de códigos HD-AAAA-NNNN (evita colisão sob concorrência)
+/// Sequência anual de códigos HDyynnnn (evita colisão sob concorrência)
 model TicketCodeSequence {
   year       Int @id
   lastNumber Int @default(0)

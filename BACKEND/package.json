@@ -19,6 +19,8 @@
     "seed:portal-tickets:all": "node src/scripts/seed-portal-tickets-showcase-all-tenants.js",
     "seed:portal-tickets:reset": "node src/scripts/seed-portal-tickets-showcase-all-tenants.js --reset",
     "db:sanitize-labels": "node src/scripts/sanitize-production-like-labels.js",
+    "db:migrate-org-codes": "node src/scripts/migrate-short-org-codes.js",
+    "db:migrate-ticket-codes": "node src/scripts/migrate-ticket-codes-legacy-format.js",
     "deploy:tenants": "node src/scripts/migrate-all-tenants.js && node src/scripts/seed-catalog-all-tenants.js",
     "reset:admin-password": "node src/scripts/reset-admin-password-all-tenants.js",
     "test": "jest",

@@ -13,6 +13,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
  * @param {import('react').ReactNode} [toolbar] — Área à direita (busca, botões)
  * @param {import('react').ReactNode} children
  * @param {object} [sx] — Estilos do contentor exterior (ex.: mesmo `cardStyle` da página)
+ * @param {object} [headerSx] — Estilos da faixa do cabeçalho (título + toolbar); sobrepõe `p`/`fontSize` predefinidos (ex.: densidade ~75%)
  * @param {string} [className] — Classe CSS no contentor exterior (ex.: tema premium da página)
  */
 const DataListShell = ({
@@ -23,6 +24,7 @@ const DataListShell = ({
   toolbar,
   children,
   sx = {},
+  headerSx = {},
   className,
 }) => {
   const { mode } = useContext(ThemeContext);
@@ -30,6 +32,7 @@ const DataListShell = ({
   const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
   const textMuted = isDark ? '#94a3b8' : '#64748b';
   const borderColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(15, 23, 42, 0.08)';
+  const denseHeader = Boolean(headerSx && Object.keys(headerSx).length > 0);
 
   return (
     <Box
@@ -52,11 +55,12 @@ const DataListShell = ({
           borderBottom: `1px solid ${borderColor}`,
           flexWrap: 'wrap',
           gap: 2,
+          ...headerSx,
         }}
       >
         <Typography
           sx={{
-            fontSize: '18px',
+            fontSize: denseHeader ? '13.5px' : '18px',
             fontWeight: 600,
             color: textPrimary,
             display: 'flex',
@@ -65,12 +69,23 @@ const DataListShell = ({
             flexWrap: 'wrap',
           }}
         >
-          <span className="material-icons-round" style={{ fontSize: '20px', color: accentColor }}>
+          <Box
+            component="span"
+            className="material-icons-round"
+            sx={{
+              fontSize: denseHeader ? '15px' : '20px',
+              color: accentColor,
+              lineHeight: 1,
+            }}
+          >
             {titleIcon}
-          </span>
+          </Box>
           {title}
           {count != null && (
-            <Typography component="span" sx={{ fontSize: '14px', color: textMuted, fontWeight: 400 }}>
+            <Typography
+              component="span"
+              sx={{ fontSize: denseHeader ? '10.5px' : '14px', color: textMuted, fontWeight: 400 }}
+            >
               ({count})
             </Typography>
           )}

@@ -17,9 +17,9 @@ const IncidentService = require('../services/incident.service');
 const AREAS = [
   {
     key: 'TI',
-    deptCode: 'E2E-AREA-TI',
+    deptCode: 'TECNOL',
     deptName: 'Área Tecnologia (E2E)',
-    ccCode: 'CC-E2E-TI',
+    ccCode: 'CCTECN',
     ccName: 'Centro de Custo TI — E2E',
     mgrEmail: 'e2e-seed-ti-mgr@g360.com.br',
     colEmail: 'e2e-seed-ti-col@g360.com.br',
@@ -35,9 +35,9 @@ const AREAS = [
   },
   {
     key: 'FIN',
-    deptCode: 'E2E-AREA-FIN',
+    deptCode: 'FINANC',
     deptName: 'Área Financeiro (E2E)',
-    ccCode: 'CC-E2E-FIN',
+    ccCode: 'CCFINC',
     ccName: 'Centro de Custo Financeiro — E2E',
     mgrEmail: 'e2e-seed-fin-mgr@g360.com.br',
     colEmail: 'e2e-seed-fin-col@g360.com.br',
@@ -53,9 +53,9 @@ const AREAS = [
   },
   {
     key: 'OPS',
-    deptCode: 'E2E-AREA-OPS',
+    deptCode: 'OPERAC',
     deptName: 'Área Operações (E2E)',
-    ccCode: 'CC-E2E-OPS',
+    ccCode: 'CCOPER',
     ccName: 'Centro de Custo Operações — E2E',
     mgrEmail: 'e2e-seed-ops-mgr@g360.com.br',
     colEmail: 'e2e-seed-ops-col@g360.com.br',

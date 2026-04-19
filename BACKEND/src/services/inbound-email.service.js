@@ -50,14 +50,18 @@ class InboundEmailService {
     }
 
     /**
-     * Preferência: [HD-AAAA-NNNN] no assunto (preservado em "Responder").
-     * Fallback: qualquer ocorrência HD-AAAA-NNNN (e-mails antigos ou assuntos editados).
+     * Preferência: [HDyynnnn] no assunto (formato actual, sem hífens).
+     * Legado: [HD-AAAA-NNNN] (respostas a e-mails antigos).
      */
     static extractTicketCodeFromSubject(subject) {
         if (!subject || typeof subject !== 'string') return null;
-        const bracket = subject.match(/\[(HD-\d{4}-\d{4})\]/);
+        const bracketNew = subject.match(/\[(HD\d{6})\]/);
+        if (bracketNew) return bracketNew[1];
+        const looseNew = subject.match(/\b(HD\d{6})\b/);
+        if (looseNew) return looseNew[1];
+        const bracket = subject.match(/\[(HD-\d{4}-\d+)\]/);
         if (bracket) return bracket[1];
-        const loose = subject.match(/\b(HD-\d{4}-\d{4})\b/);
+        const loose = subject.match(/\b(HD-\d{4}-\d+)\b/);
         return loose ? loose[1] : null;
     }
 
@@ -67,7 +71,7 @@ class InboundEmailService {
 
             const ticketCode = this.extractTicketCodeFromSubject(subject);
             if (!ticketCode) {
-                logger.info('InboundEmail: Ignorado. Assunto não contém código de chamado (HD-AAAA-NNNN).');
+                logger.info('InboundEmail: Ignorado. Assunto não contém código de chamado (HDyynnnn ou legado HD-AAAA-NNNN).');
                 return;
             }
             
