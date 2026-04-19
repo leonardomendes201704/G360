@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { format, startOfDay } from 'date-fns';
-import { Menu, MenuItem, ListItemIcon, ListItemText, Box, Paper, Typography, Avatar, Tooltip } from '@mui/material';
+import { Menu, MenuItem, ListItemIcon, ListItemText, Box, Paper, Typography, Tooltip } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 /* ── Column config with reference-image–inspired colors ── */
@@ -20,6 +20,30 @@ const columnTheme = {
   IN_PROGRESS: { icon: 'autorenew', color: '#ec4899', headerIcon: '⚙️', bgTint: 'rgba(236, 72, 153, 0.08)' },
   DONE: { icon: 'check_circle', color: '#22c55e', headerIcon: '✅', bgTint: 'rgba(34, 197, 94, 0.08)' },
   CANCELLED: { icon: 'block', color: '#94a3b8', headerIcon: '🚫', bgTint: 'rgba(148, 163, 184, 0.08)' }
+};
+
+/** Densidade ~75% (equivalente visual a zoom 75% no browser) — padding e tipografia reduzidos */
+const K = {
+  boardGap: 1.5,
+  colMaxH: 'calc(100vh - 220px)',
+  headerPx: 1.5,
+  headerPy: 1.125,
+  iconBox: 22,
+  iconMat: 14,
+  titleFs: '0.6875rem',
+  badge: 18,
+  badgeFs: '0.6rem',
+  addBtn: 24,
+  dropPx: 1.25,
+  dropPy: 1,
+  cardMb: 1,
+  cardPad: '10px 12px',
+  cardTitleFs: '0.6875rem',
+  cardDescFs: '0.625rem',
+  chipFs: '0.5625rem',
+  chipIcon: 11,
+  openBtn: 22,
+  emptyIcon: 30,
 };
 
 const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeTimerTaskId, onTimerToggle, currentUserId }) => {
@@ -134,10 +158,10 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
       <DragDropContext onDragEnd={onDragEnd}>
         <Box sx={{
           display: 'flex',
-          gap: 2.5,
+          gap: K.boardGap,
           width: '100%',
           alignItems: 'flex-start',
-          minHeight: 'calc(100vh - 300px)'
+          minHeight: 'calc(100vh - 260px)'
         }}>
           {Object.entries(boardData).map(([columnId, column]) => {
             const isDoneColumn = columnId === 'DONE';
@@ -158,39 +182,39 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                   borderRadius: '8px',
                   display: 'flex',
                   flexDirection: 'column',
-                  maxHeight: 'calc(100vh - 250px)',
+                  maxHeight: K.colMaxH,
                   overflow: 'hidden',
                   transition: 'all 0.25s ease'
                 }}
               >
                 {/* ═══ COLUMN HEADER — inspired by reference image ═══ */}
                 <Box sx={{
-                  px: 2.5,
-                  py: 2,
+                  px: K.headerPx,
+                  py: K.headerPy,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   bgcolor: headerBg,
                   borderBottom: `1px solid ${headerBorder}`
                 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     {/* Status icon */}
                     <Box sx={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: '8px',
+                      width: K.iconBox,
+                      height: K.iconBox,
+                      borderRadius: '6px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       bgcolor: `${theme.color}18`,
                       color: theme.color
                     }}>
-                      <span className="material-icons-round" style={{ fontSize: 16 }}>
+                      <span className="material-icons-round" style={{ fontSize: K.iconMat }}>
                         {theme.icon}
                       </span>
                     </Box>
                     <Typography sx={{
-                      fontSize: '14px',
+                      fontSize: K.titleFs,
                       fontWeight: 700,
                       color: textPrimary,
                       letterSpacing: '0.2px'
@@ -199,17 +223,17 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                     </Typography>
                     {/* Count badge */}
                     <Box sx={{
-                      minWidth: 22,
-                      height: 22,
-                      borderRadius: '8px',
+                      minWidth: K.badge,
+                      height: K.badge,
+                      borderRadius: '6px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       bgcolor: `${theme.color}15`,
                       color: theme.color,
-                      fontSize: '0.72rem',
+                      fontSize: K.badgeFs,
                       fontWeight: 700,
-                      px: 0.75
+                      px: 0.5
                     }}>
                       {totalDone}
                     </Box>
@@ -220,8 +244,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                       component="button"
                       onClick={() => onTaskClick(null)}
                       sx={{
-                        width: 28,
-                        height: 28,
+                        width: K.addBtn,
+                        height: K.addBtn,
                         border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.12)' : '#d1d5db'}`,
                         borderRadius: '8px',
                         bgcolor: 'transparent',
@@ -239,7 +263,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         }
                       }}
                     >
-                      <span className="material-icons-round" style={{ fontSize: 16 }}>add</span>
+                      <span className="material-icons-round" style={{ fontSize: K.iconMat }}>add</span>
                     </Box>
                   </Tooltip>
                 </Box>
@@ -247,10 +271,10 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                 {/* ═══ DONE COLUMN FILTERS ═══ */}
                 {isDoneColumn && (
                   <Box sx={{
-                    mx: 2, mt: 1.5, mb: 0.5, p: 1.5,
+                    mx: 1.25, mt: 1, mb: 0.25, p: 1,
                     bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                    borderRadius: '8px',
-                    display: 'flex', flexDirection: 'column', gap: 0.75
+                    borderRadius: '6px',
+                    display: 'flex', flexDirection: 'column', gap: 0.5
                   }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                       <Box sx={{ display: 'flex', gap: 0.75 }}>
@@ -263,9 +287,9 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                               border: doneWindow === option.value ? `1.5px solid ${theme.color}` : `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'}`,
                               bgcolor: doneWindow === option.value ? `${theme.color}12` : 'transparent',
                               color: doneWindow === option.value ? theme.color : textSecondary,
-                              px: 1.25, py: 0.25,
-                              borderRadius: '8px',
-                              fontSize: '0.68rem', fontWeight: 700,
+                              px: 1, py: 0.125,
+                              borderRadius: '6px',
+                              fontSize: '0.6rem', fontWeight: 700,
                               cursor: 'pointer',
                               transition: 'all 0.2s'
                             }}
@@ -280,8 +304,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         sx={{
                           border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'}`,
                           bgcolor: 'transparent', color: textSecondary,
-                          px: 1.25, py: 0.25, borderRadius: '8px',
-                          fontSize: '0.68rem', fontWeight: 700,
+                          px: 1, py: 0.125, borderRadius: '6px',
+                          fontSize: '0.6rem', fontWeight: 700,
                           cursor: 'pointer', transition: 'all 0.2s',
                           '&:hover': { bgcolor: iconBtnHover }
                         }}
@@ -290,7 +314,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                       </Box>
                     </Box>
                     {!doneCollapsed && (
-                      <Typography variant="caption" sx={{ color: textMuted, fontSize: '0.68rem' }}>
+                      <Typography variant="caption" sx={{ color: textMuted, fontSize: '0.6rem' }}>
                         Mostrando {doneVisible.length} de {filteredDone}
                       </Typography>
                     )}
@@ -306,9 +330,9 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                       sx={{
                         flex: 1,
                         overflowY: 'auto',
-                        px: 2,
-                        py: 1.5,
-                        minHeight: 80,
+                        px: K.dropPx,
+                        py: K.dropPy,
+                        minHeight: 64,
                         bgcolor: droppableSnapshot.isDraggingOver
                           ? (isDark ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.04)')
                           : 'transparent',
@@ -324,14 +348,14 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                     >
                       {/* Empty State */}
                       {columnItems.length === 0 && !droppableSnapshot.isDraggingOver && (
-                        <Box sx={{ textAlign: 'center', py: 5, opacity: 0.45 }}>
-                          <span className="material-icons-round" style={{ fontSize: 40, color: textMuted }}>
+                        <Box sx={{ textAlign: 'center', py: 3, opacity: 0.45 }}>
+                          <span className="material-icons-round" style={{ fontSize: K.emptyIcon, color: textMuted }}>
                             {columnId === 'DONE' ? 'celebration' : 'inbox'}
                           </span>
-                          <Typography variant="body2" mt={1} fontWeight={500} color={textMuted}>
+                          <Typography variant="caption" display="block" mt={0.75} fontWeight={600} sx={{ fontSize: '0.65rem' }} color={textMuted}>
                             {columnId === 'DONE' ? 'Nenhuma concluída' : 'Nenhuma tarefa'}
                           </Typography>
-                          <Typography variant="caption" sx={{ color: textMuted, opacity: 0.7 }}>
+                          <Typography variant="caption" sx={{ color: textMuted, opacity: 0.7, fontSize: '0.6rem' }}>
                             Arraste tarefas para cá
                           </Typography>
                         </Box>
@@ -389,12 +413,12 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                 elevation={0}
                                 className="animate-card-enter"
                                 sx={{
-                                  mb: 1.5,
+                                  mb: K.cardMb,
                                   background: cardBg,
                                   border: `1px solid ${snapshot.isDragging ? '#2563eb' : cardBorder}`,
-                                  borderRadius: '8px',
-                                  borderLeft: `3px solid ${statusBg}`,
-                                  padding: '14px 16px',
+                                  borderRadius: '6px',
+                                  borderLeft: `2px solid ${statusBg}`,
+                                  padding: K.cardPad,
                                   cursor: snapshot.isDragging ? 'grabbing' : 'grab',
                                   transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                                   position: 'relative',
@@ -411,15 +435,15 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                 }}
                               >
                                 {/* Header: Title + Open Button */}
-                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1, mb: 0.75 }}>
-                                  <Typography sx={{ fontSize: '14px', fontWeight: 600, color: textPrimary, lineHeight: 1.4, flex: 1 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 0.75, mb: 0.5 }}>
+                                  <Typography sx={{ fontSize: K.cardTitleFs, fontWeight: 600, color: textPrimary, lineHeight: 1.35, flex: 1 }}>
                                     {item.title || item.name}
                                   </Typography>
                                   <Box
                                     className="card-open-btn"
                                     onClick={(e) => { e.stopPropagation(); onTaskClick(item); }}
                                     sx={{
-                                      width: '28px', height: '28px', borderRadius: '8px',
+                                      width: K.openBtn, height: K.openBtn, borderRadius: '6px',
                                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       cursor: 'pointer', transition: 'all 0.2s',
                                       opacity: 0, transform: 'scale(0.8)',
@@ -428,14 +452,14 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     }}
                                     title="Abrir tarefa"
                                   >
-                                    <span className="material-icons-round" style={{ fontSize: '16px', color: '#2563eb' }}>open_in_new</span>
+                                    <span className="material-icons-round" style={{ fontSize: K.iconMat, color: '#2563eb' }}>open_in_new</span>
                                   </Box>
                                 </Box>
 
                                 {/* Description */}
                                 {item.description && (
                                   <Typography sx={{
-                                    fontSize: '12px', color: textSecondary, mb: 1.25, lineHeight: 1.5,
+                                    fontSize: K.cardDescFs, color: textSecondary, mb: 0.75, lineHeight: 1.45,
                                     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                                   }}>
                                     {item.description}
@@ -443,15 +467,15 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                 )}
 
                                 {/* Badges: Priority + Tags */}
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1.25 }}>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.375, mb: 0.75 }}>
                                   {item.priority && (
                                     <Box sx={{
-                                      display: 'inline-flex', alignItems: 'center', gap: 0.5,
-                                      px: 1, py: 0.25, borderRadius: '8px',
+                                      display: 'inline-flex', alignItems: 'center', gap: 0.25,
+                                      px: 0.75, py: 0.125, borderRadius: '6px',
                                       background: `${priorityStyle.bg}18`, border: `1px solid ${priorityStyle.bg}35`,
                                     }}>
-                                      <span className="material-icons-round" style={{ fontSize: '12px', color: priorityStyle.bg }}>{priorityStyle.icon}</span>
-                                      <Typography sx={{ fontSize: '11px', fontWeight: 600, color: priorityStyle.bg }}>{priorityStyle.label}</Typography>
+                                      <span className="material-icons-round" style={{ fontSize: K.chipIcon, color: priorityStyle.bg }}>{priorityStyle.icon}</span>
+                                      <Typography sx={{ fontSize: K.chipFs, fontWeight: 600, color: priorityStyle.bg, lineHeight: 1.2 }}>{priorityStyle.label}</Typography>
                                     </Box>
                                   )}
                                   {item.tags && item.tags.length > 0 && item.tags.slice(0, 2).map((tag, idx) => {
@@ -459,9 +483,9 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                     return (
                                       <Box key={idx} sx={{
                                         display: 'inline-flex', alignItems: 'center',
-                                        px: 1, py: 0.25, borderRadius: '8px', background: tagStyle.bg,
+                                        px: 0.75, py: 0.125, borderRadius: '6px', background: tagStyle.bg,
                                       }}>
-                                        <Typography sx={{ fontSize: '11px', fontWeight: 600, color: tagStyle.color }}>{tag}</Typography>
+                                        <Typography sx={{ fontSize: K.chipFs, fontWeight: 600, color: tagStyle.color, lineHeight: 1.2 }}>{tag}</Typography>
                                       </Box>
                                     );
                                   })}
@@ -469,21 +493,21 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
 
                                 {/* Progress Bar */}
                                 {stats && (
-                                  <Box sx={{ mb: 1.25 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                        <span className="material-icons-round" style={{ fontSize: '13px', color: textSecondary }}>
+                                  <Box sx={{ mb: 0.75 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.25 }}>
+                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+                                        <span className="material-icons-round" style={{ fontSize: K.chipIcon, color: textSecondary }}>
                                           {stats.type === 'checklist' ? 'checklist' : 'trending_up'}
                                         </span>
-                                        <Typography sx={{ fontSize: '11px', color: textSecondary }}>
+                                        <Typography sx={{ fontSize: K.chipFs, color: textSecondary }}>
                                           {stats.type === 'checklist' ? `${stats.done}/${stats.total}` : 'Progresso'}
                                         </Typography>
                                       </Box>
-                                      <Typography sx={{ fontSize: '11px', fontWeight: 600, color: stats.percent === 100 ? '#22c55e' : '#2563eb' }}>
+                                      <Typography sx={{ fontSize: K.chipFs, fontWeight: 600, color: stats.percent === 100 ? '#22c55e' : '#2563eb' }}>
                                         {stats.percent}%
                                       </Typography>
                                     </Box>
-                                    <Box sx={{ height: '3px', borderRadius: '8px', bgcolor: progressBg, overflow: 'hidden' }}>
+                                    <Box sx={{ height: '2px', borderRadius: '4px', bgcolor: progressBg, overflow: 'hidden' }}>
                                       <Box sx={{
                                         width: `${stats.percent}%`, height: '100%',
                                         background: stats.percent === 100
@@ -498,20 +522,20 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                 {/* Footer: Assignee row */}
                                 <Box sx={{
                                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                  flexWrap: 'wrap', gap: 0.75,
-                                  pt: 1, borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+                                  flexWrap: 'wrap', gap: 0.5,
+                                  pt: 0.75, borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
                                 }}>
                                   {/* Assignee */}
                                   {assignee ? (
                                     <Box sx={{
-                                      display: 'flex', alignItems: 'center', gap: 0.5,
+                                      display: 'flex', alignItems: 'center', gap: 0.25,
                                       bgcolor: isDark ? 'rgba(37,99,235,0.1)' : '#eff6ff',
-                                      px: 0.75, py: 0.4, borderRadius: '8px',
+                                      px: 0.5, py: 0.125, borderRadius: '6px',
                                       border: `1px solid ${isDark ? 'rgba(37,99,235,0.2)' : '#bfdbfe'}`,
                                       minWidth: 0,
                                     }}>
-                                      <span className="material-icons-round" style={{ fontSize: '13px', color: '#3b82f6', flexShrink: 0 }}>person</span>
-                                      <Typography sx={{ fontSize: '11px', fontWeight: 600, color: isDark ? '#60a5fa' : '#2563eb', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '90px' }}>
+                                      <span className="material-icons-round" style={{ fontSize: K.chipIcon, color: '#3b82f6', flexShrink: 0 }}>person</span>
+                                      <Typography sx={{ fontSize: K.chipFs, fontWeight: 600, color: isDark ? '#60a5fa' : '#2563eb', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100px', lineHeight: 1.2 }}>
                                         {(() => {
                                           const name = assignee.name || assignee.email || 'N/A';
                                           const parts = name.trim().split(/\s+/);
@@ -520,7 +544,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                       </Typography>
                                     </Box>
                                   ) : (
-                                    <Typography sx={{ fontSize: '11px', color: textSecondary, fontStyle: 'italic' }}>Não atribuído</Typography>
+                                    <Typography sx={{ fontSize: K.chipFs, color: textSecondary, fontStyle: 'italic' }}>Não atribuído</Typography>
                                   )}
 
                                   {/* Right side: Timer + Due Date */}
@@ -547,7 +571,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                             }
                                           }}
                                         >
-                                          <span className="material-icons-round" style={{ fontSize: 15 }}>
+                                          <span className="material-icons-round" style={{ fontSize: K.chipIcon + 1 }}>
                                             {activeTimerTaskId === item.id ? 'stop' : 'play_arrow'}
                                           </span>
                                         </Box>
@@ -561,8 +585,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                         px: 0.6, py: 0.2, borderRadius: '8px',
                                         background: 'rgba(34, 197, 94, 0.15)',
                                       }}>
-                                        <span className="material-icons-round" style={{ fontSize: '13px', color: '#4ade80' }}>check_circle</span>
-                                        <Typography sx={{ fontSize: '10px', fontWeight: 600, color: '#4ade80', textTransform: 'uppercase' }}>Entregue</Typography>
+                                        <span className="material-icons-round" style={{ fontSize: K.chipIcon, color: '#4ade80' }}>check_circle</span>
+                                        <Typography sx={{ fontSize: '0.5625rem', fontWeight: 600, color: '#4ade80', textTransform: 'uppercase' }}>Entregue</Typography>
                                       </Box>
                                     ) : dueStatus && (
                                       <Box sx={{
@@ -570,8 +594,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                         px: 0.6, py: 0.2, borderRadius: '8px',
                                         background: `${dueStatus.color}15`,
                                       }}>
-                                        <span className="material-icons-round" style={{ fontSize: '12px', color: dueStatus.color }}>{dueStatus.icon}</span>
-                                        <Typography sx={{ fontSize: '10px', fontWeight: 500, color: dueStatus.color }}>{dueStatus.label}</Typography>
+                                        <span className="material-icons-round" style={{ fontSize: K.chipIcon, color: dueStatus.color }}>{dueStatus.icon}</span>
+                                        <Typography sx={{ fontSize: '0.5625rem', fontWeight: 500, color: dueStatus.color }}>{dueStatus.label}</Typography>
                                       </Box>
                                     )}
                                   </Box>
@@ -588,7 +612,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
 
                 {/* Load more for Done column */}
                 {isDoneColumn && !doneCollapsed && doneFiltered.length > doneVisible.length && (
-                  <Box sx={{ px: 2, pb: 2 }}>
+                  <Box sx={{ px: K.dropPx, pb: 1.25 }}>
                     <Box
                       component="button"
                       onClick={() => setDoneLimit(prev => prev + 10)}
@@ -597,8 +621,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         border: `1.5px dashed ${isDark ? 'rgba(255,255,255,0.12)' : '#cbd5e1'}`,
                         bgcolor: 'transparent',
                         color: textMuted,
-                        fontSize: '0.75rem', fontWeight: 700,
-                        borderRadius: '8px', py: 0.75,
+                        fontSize: '0.6875rem', fontWeight: 700,
+                        borderRadius: '6px', py: 0.5,
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         '&:hover': { color: theme.color, borderColor: theme.color }
