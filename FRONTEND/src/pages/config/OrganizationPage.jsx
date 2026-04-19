@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Box, Typography, Button, IconButton } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
 import DepartmentModal from '../../components/modals/DepartmentModal';
@@ -26,6 +26,8 @@ import './OrganizationPage.css';
 import { useOrgThemeStyles } from './useOrgThemeStyles';
 import { getDepartmentListColumns } from './departmentListColumns';
 import { sortDepartmentRows } from './departmentListSort';
+import { getCostCenterListColumns } from './costCenterListColumns';
+import { sortCostCenterRows } from './costCenterListSort';
 
 // Aba de Diretorias
 const DepartmentsTab = () => {
@@ -162,7 +164,7 @@ const DepartmentsTab = () => {
 
 // Aba de Centros de Custo
 const CostCentersTab = () => {
-  const { textPrimary, textMuted, cardStyle, tableHeaderStyle, tableCellStyle, actionBtnStyle, rowHoverBg } = useOrgThemeStyles();
+  const { textPrimary, textMuted, cardStyle, actionBtnStyle } = useOrgThemeStyles();
   const [ccs, setCcs] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -171,75 +173,128 @@ const CostCentersTab = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const loadData = async () => {
-    try { const data = await costCenterService.getAll(); setCcs(data); }
-    catch (error) { enqueueSnackbar(getErrorMessage(error, 'Erro ao carregar centros de custo.'), { variant: 'error' }); }
+    try {
+      const data = await costCenterService.getAll();
+      setCcs(data);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, 'Erro ao carregar centros de custo.'), { variant: 'error' });
+    }
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const handleEdit = (item) => { setEditData(item); setModalOpen(true); };
-  const handleAdd = () => { setEditData(null); setModalOpen(true); };
-  const handleDeleteClick = (id) => { setDeleteId(id); setConfirmOpen(true); };
+  const handleEdit = useCallback((item) => {
+    setEditData(item);
+    setModalOpen(true);
+  }, []);
+  const handleAdd = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+  const handleDeleteClick = useCallback((id) => {
+    setDeleteId(id);
+    setConfirmOpen(true);
+  }, []);
 
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
-    try { await costCenterService.delete(deleteId); loadData(); enqueueSnackbar('Centro de Custo excluido.', { variant: 'success' }); setConfirmOpen(false); setDeleteId(null); }
-    catch (error) { enqueueSnackbar(getErrorMessage(error, 'Erro ao excluir.'), { variant: 'error' }); }
+    try {
+      await costCenterService.delete(deleteId);
+      loadData();
+      enqueueSnackbar('Centro de Custo excluido.', { variant: 'success' });
+      setConfirmOpen(false);
+      setDeleteId(null);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, 'Erro ao excluir.'), { variant: 'error' });
+    }
   };
 
-  const formatCurrency = (v) => v ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v) : '-';
+  const costCenterColumns = useMemo(
+    () =>
+      getCostCenterListColumns({
+        textPrimary,
+        actionBtnStyle,
+        onEdit: handleEdit,
+        onDelete: handleDeleteClick,
+      }),
+    [textPrimary, actionBtnStyle, handleEdit, handleDeleteClick]
+  );
+
+  const costCenterEmptyContent = useMemo(
+    () => (
+      <Box sx={{ textAlign: 'center', py: 4, px: 2 }}>
+        <span
+          className="material-icons-round"
+          style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}
+        >
+          account_balance
+        </span>
+        <Typography sx={{ color: textMuted, fontSize: '16px', mb: 1 }}>Nenhum centro de custo cadastrado</Typography>
+        <Typography sx={{ color: textMuted, fontSize: '14px' }}>Clique em &quot;Novo Centro de Custo&quot; para começar</Typography>
+      </Box>
+    ),
+    [textMuted]
+  );
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography sx={{ fontSize: '24px', fontWeight: 600, color: textPrimary }}>Centros de Custo</Typography>
-        <Button onClick={handleAdd} sx={{ padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
-          Novo Centro de Custo
-        </Button>
-      </Box>
-
-      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <Box sx={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead><tr>
-              <th style={tableHeaderStyle}>Codigo</th>
-              <th style={tableHeaderStyle}>Nome</th>
-              <th style={tableHeaderStyle}>Diretoria</th>
-              <th style={tableHeaderStyle}>Gestor Responsavel</th>
-              <th style={tableHeaderStyle}>Orcamento Anual</th>
-              <th style={tableHeaderStyle}>Status</th>
-              <th style={{ ...tableHeaderStyle, textAlign: 'right' }}>Acoes</th>
-            </tr></thead>
-            <tbody>
-              {ccs.length === 0 ? (
-                <tr><td colSpan={7} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px' }}>
-                  <span className="material-icons-round" style={{ fontSize: '64px', color: textMuted, opacity: 0.5, display: 'block', marginBottom: '16px' }}>account_balance</span>
-                  <Typography sx={{ color: textMuted, fontSize: '16px' }}>Nenhum centro de custo cadastrado</Typography>
-                </td></tr>
-              ) : ccs.map((cc) => (
-                <tr key={cc.id} style={{ transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = rowHoverBg} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                  <td style={tableCellStyle}><strong style={{ color: textPrimary }}>{cc.code}</strong></td>
-                  <td style={tableCellStyle}>{cc.name}</td>
-                  <td style={tableCellStyle}>{cc.department?.name || '-'}</td>
-                  <td style={tableCellStyle}>{cc.manager?.name || <span style={{ color: textMuted }}>Nao definido</span>}</td>
-                  <td style={tableCellStyle}>{formatCurrency(cc.annualBudget)}</td>
-                  <td style={tableCellStyle}>
-                    <span style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: cc.isActive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)', color: cc.isActive ? '#10b981' : '#64748b' }}>{cc.isActive ? 'Ativo' : 'Inativo'}</span>
-                  </td>
-                  <td style={{ ...tableCellStyle, textAlign: 'right' }}>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                      <IconButton onClick={() => handleEdit(cc)} sx={actionBtnStyle('edit')}><span className="material-icons-round" style={{ fontSize: '18px' }}>edit</span></IconButton>
-                      <IconButton onClick={() => handleDeleteClick(cc.id)} sx={actionBtnStyle('delete')}><span className="material-icons-round" style={{ fontSize: '18px' }}>delete</span></IconButton>
-                    </Box>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Box>
-      </Box>
+      <DataListTable
+        density="compact"
+        shell={{
+          title: 'Centros de Custo',
+          titleIcon: 'account_balance',
+          accentColor: '#2563eb',
+          count: ccs.length,
+          sx: { ...cardStyle, mb: 2 },
+          toolbar: (
+            <Button
+              onClick={handleAdd}
+              sx={{
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                color: 'white',
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                flexShrink: 0,
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)',
+                },
+              }}
+              startIcon={<span className="material-icons-round" style={{ fontSize: '16px' }}>add</span>}
+            >
+              Novo Centro de Custo
+            </Button>
+          ),
+          tableContainerSx: {
+            borderRadius: 0,
+            boxShadow: 'none',
+          },
+        }}
+        columns={costCenterColumns}
+        rows={ccs}
+        sortRows={sortCostCenterRows}
+        defaultOrderBy="name"
+        defaultOrder="asc"
+        emptyMessage="Nenhum centro de custo cadastrado."
+        emptyContent={costCenterEmptyContent}
+        dataTestidTable="tabela-organizacao-centros-custo"
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        rowsPerPageDefault={10}
+      />
       <CostCenterModal open={modalOpen} onClose={() => setModalOpen(false)} onSuccess={loadData} editData={editData} />
-      <ConfirmDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleConfirmDelete} title="Excluir Centro de Custo" content="Tem certeza que deseja excluir este centro de custo?" />
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Excluir Centro de Custo"
+        content="Tem certeza que deseja excluir este centro de custo?"
+      />
     </>
   );
 };

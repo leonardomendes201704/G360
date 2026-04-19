@@ -49,7 +49,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 |----------|
 | `FRONTEND/src/pages/finance/BudgetDetailsPage.jsx` |
 | `FRONTEND/src/pages/finance/BudgetComparisonPage.jsx` |
-| `FRONTEND/src/pages/config/OrganizationPage.jsx` (aba **Diretorias** migrada — `departmentListColumns` / `departmentListSort`; outras abas ainda em `<table>` onde aplicável) |
+| `FRONTEND/src/pages/config/OrganizationPage.jsx` (abas **Diretorias** e **Centros de Custo** em `DataListTable` + `*ListColumns` / `*ListSort`; demais abas da mesma rota em componentes com `DataListTable` — ver `UsersTab`, `RolesTab`, `FiscalYearTab`, `FreezeWindowsTab`, `CabMembersTab`, `ApprovalTiersTab`) |
 | `FRONTEND/src/pages/servicedesk/ServiceDeskSettings.jsx` |
 | `FRONTEND/src/pages/projects/TeamProjectsStatusReport.jsx` |
 
@@ -67,7 +67,7 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 
 ## Grupo E — Componentes (tabs de projeto, modais, config)
 
-Inclui (entre outros): `ProjectTasksList.jsx`, `ProjectRisks.jsx`, `ProjectCosts.jsx`, `ProjectProposals.jsx`, `UsersTab.jsx`, `TenantsTab.jsx`, `RolesTab.jsx`, `FreezeWindowsTab.jsx`, `ContractModal.jsx`, `AzureConfigModal.jsx`, `UserImportModal.jsx`, `AssetModal.jsx`, `AssetViewModal.jsx`.
+Inclui (entre outros): `ProjectTasksList.jsx`, `ProjectRisks.jsx`, `ProjectCosts.jsx`, `ProjectProposals.jsx`, `TenantsTab.jsx`, `ContractModal.jsx`, `AzureConfigModal.jsx`, `UserImportModal.jsx`, `AssetModal.jsx`, `AssetViewModal.jsx`. *(Listas em `UsersTab`, `RolesTab`, `FreezeWindowsTab` e tabs relacionadas em Config/Organização passaram a `DataListTable` — ver Grupo C / nota em `OrganizationPage`.)*
 
 **DataGrid (`@mui/x-data-grid`):** não usado no inventário atual; o projeto usa sobretudo MUI `Table` ou HTML `<table>`.
 

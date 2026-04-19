@@ -30,7 +30,7 @@
 
 | # | Rota / ecrã | Ficheiro principal | Notas |
 |---|-------------|--------------------|--------|
-| 4 | Organização (config) — aba **Diretorias** | `FRONTEND/src/pages/config/OrganizationPage.jsx` | **Feito:** `DataListTable` + `departmentListColumns.jsx` + `departmentListSort.js`; `data-testid` **`tabela-organizacao-diretorias`**. Outras abas da página fora deste item. |
+| 4 | Organização (config) — **Diretorias**, **Centros de Custo**, **Usuários**, **Perfis**, **Ano fiscal**, **Freeze**, **CAB**, **Alçadas** | `FRONTEND/src/pages/config/OrganizationPage.jsx` + tabs em `FRONTEND/src/components/config/` e `admin/` | **Feito:** `DataListTable` + ficheiros `*ListColumns.jsx` / `*ListSort.js` (ex.: `costCenterList*`, `userList*`, `roleList*`, `fiscalYearList*`, `freezeWindowList*`, `cabMemberList*`, `approvalTierList*`); `data-testid` **`tabela-organizacao-*`**. |
 | 5 | Definições Service Desk | `FRONTEND/src/pages/servicedesk/ServiceDeskSettings.jsx` | Várias tabelas; pode dividir-se em mais de um PR se for grande. |
 | 6 | Relatório equipas / projetos | `FRONTEND/src/pages/projects/TeamProjectsStatusReport.jsx` | |
 | 7 | Detalhe de orçamento | `FRONTEND/src/pages/finance/BudgetDetailsPage.jsx` | Validar se há hierarquia/agrupamento que não caiba numa única `DataListTable` sem refactor. |
@@ -58,4 +58,4 @@
 - Inventário atual: [data-grids-inventory.md](./data-grids-inventory.md)
 - Padrão do componente: [data-list-table.md](./data-list-table.md) (se existir) ou JSDoc em `FRONTEND/src/components/common/DataListTable.jsx`
 
-**Última atualização do plano:** 2026-04-16
+**Última atualização do plano:** 2026-04-19

@@ -5,6 +5,17 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-04-19]
+
+### Refactored
+- **Configuração — Organização (`/config/organization`):** abas **Centros de Custo**, **Usuários**, **Perfis de acesso**, **Ano fiscal**, **Freeze windows**, **Membros CAB** e **Alçadas de aprovação** passam a **`DataListTable`** com `density="compact"`, colunas e ordenação em `*ListColumns.jsx` / `*ListSort.js` (e `approvalTierConstants.js` para opções de entidade). **Centros de Custo** em `OrganizationPage` com `costCenterList*`; restantes nas respetivas tabs. `data-testid`: `tabela-organizacao-centros-custo`, `tabela-organizacao-usuarios`, `tabela-organizacao-perfis`, `tabela-organizacao-ano-fiscal`, `tabela-organizacao-freeze-windows`, `tabela-organizacao-cab`, `tabela-organizacao-alcadas`.
+  - `FRONTEND/src/pages/config/OrganizationPage.jsx`, `FRONTEND/src/pages/config/costCenterListColumns.jsx`, `FRONTEND/src/pages/config/costCenterListSort.js`
+  - `FRONTEND/src/components/config/UsersTab.jsx`, `userListColumns.jsx`, `userListSort.js`, `RolesTab.jsx`, `roleListColumns.jsx`, `roleListSort.js`, `FiscalYearTab.jsx`, `fiscalYearListColumns.jsx`, `fiscalYearListSort.js`, `ApprovalTiersTab.jsx`, `approvalTierListColumns.jsx`, `approvalTierListSort.js`, `approvalTierConstants.js`
+  - `FRONTEND/src/components/admin/FreezeWindowsTab.jsx`, `freezeWindowListColumns.jsx`, `freezeWindowListSort.js`, `CabMembersTab.jsx`, `cabMemberListColumns.jsx`, `cabMemberListSort.js`
+  - `docs/patterns/data-grids-inventory.md`, `docs/patterns/data-list-table-migration-plan.md`
+
+---
+
 ## [2026-04-20]
 
 ### Refactored

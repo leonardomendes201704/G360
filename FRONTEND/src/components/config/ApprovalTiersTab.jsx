@@ -1,31 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  IconButton,
-  TextField,
-  MenuItem,
-  FormControlLabel,
-  Switch,
-} from '@mui/material';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Box, Typography, Button, TextField, MenuItem, FormControlLabel, Switch } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
 import approvalTierService from '../../services/approval-tier.service';
 import roleService from '../../services/role.service';
 import ConfirmDialog from '../common/ConfirmDialog';
 import StandardModal from '../common/StandardModal';
+import DataListTable from '../common/DataListTable';
 import { getErrorMessage } from '../../utils/errorUtils';
-import { ThemeContext } from '../../contexts/ThemeContext';
-
-const ENTITY_OPTIONS = [
-  { value: 'EXPENSE', label: 'Despesas (financeiro)' },
-  { value: 'PROJECT_COST', label: 'Custos de projeto' },
-  { value: 'PROJECT', label: 'Projeto (baseline / execução)' },
-  { value: 'MEETING_MINUTE', label: 'Atas de reunião' },
-  { value: 'PROPOSAL', label: 'Propostas comerciais' },
-  { value: 'BUDGET', label: 'Orçamento anual' },
-];
+import { useOrgThemeStyles } from '../../pages/config/useOrgThemeStyles';
+import { APPROVAL_TIER_ENTITY_OPTIONS } from './approvalTierConstants';
+import { getApprovalTierListColumns } from './approvalTierListColumns';
+import { sortApprovalTierRows } from './approvalTierListSort';
 
 const emptyForm = () => ({
   name: '',
@@ -39,54 +25,7 @@ const emptyForm = () => ({
 });
 
 const ApprovalTiersTab = () => {
-  const { mode } = useContext(ThemeContext);
-  const isDark = mode === 'dark';
-  const textPrimary = isDark ? '#f1f5f9' : '#0f172a';
-  const textSecondary = isDark ? '#94a3b8' : '#475569';
-  const textMuted = isDark ? '#64748b' : '#64748b';
-  const cardBg = isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#ffffff';
-  const cardBorder = isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(15, 23, 42, 0.08)';
-  const surfaceBg = isDark ? '#1c2632' : '#f1f5f9';
-  const rowHoverBg = isDark ? '#1c2632' : '#f1f5f9';
-
-  const cardStyle = {
-    background: cardBg,
-    border: cardBorder,
-    borderRadius: '8px',
-  };
-
-  const tableHeaderStyle = {
-    background: surfaceBg,
-    color: textMuted,
-    fontSize: '12px',
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    padding: '16px 24px',
-    borderBottom: cardBorder,
-    textAlign: 'left',
-  };
-
-  const tableCellStyle = {
-    color: textSecondary,
-    fontSize: '14px',
-    padding: '20px 24px',
-    borderBottom: cardBorder,
-  };
-
-  const actionBtnStyle = (type = 'edit') => ({
-    width: 32,
-    height: 32,
-    borderRadius: '8px',
-    background: type === 'delete' ? 'rgba(244, 63, 94, 0.1)' : surfaceBg,
-    border: cardBorder,
-    color: type === 'delete' ? '#f43f5e' : textSecondary,
-    '&:hover': {
-      background: type === 'delete' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(37, 99, 235, 0.12)',
-      color: type === 'delete' ? '#f43f5e' : '#2563eb',
-      borderColor: type === 'delete' ? '#f43f5e' : '#2563eb',
-    },
-  });
+  const { textPrimary, textSecondary, textMuted, cardStyle, actionBtnStyle } = useOrgThemeStyles();
 
   const [tiers, setTiers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -99,10 +38,7 @@ const ApprovalTiersTab = () => {
 
   const loadData = async () => {
     try {
-      const [t, r] = await Promise.all([
-        approvalTierService.getAll(),
-        roleService.getAll(),
-      ]);
+      const [t, r] = await Promise.all([approvalTierService.getAll(), roleService.getAll()]);
       setTiers(Array.isArray(t) ? t : []);
       setRoles(Array.isArray(r) ? r : []);
     } catch (error) {
@@ -120,7 +56,7 @@ const ApprovalTiersTab = () => {
     setModalOpen(true);
   };
 
-  const openEdit = (row) => {
+  const openEdit = useCallback((row) => {
     setEditingId(row.id);
     setForm({
       name: row.name || '',
@@ -133,7 +69,7 @@ const ApprovalTiersTab = () => {
       sortOrder: row.sortOrder ?? 0,
     });
     setModalOpen(true);
-  };
+  }, []);
 
   const parsePayload = () => {
     const minAmount = form.minAmount === '' ? null : Number(form.minAmount);
@@ -190,10 +126,10 @@ const ApprovalTiersTab = () => {
     }
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = useCallback((id) => {
     setDeleteId(id);
     setConfirmOpen(true);
-  };
+  }, []);
 
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
@@ -208,18 +144,29 @@ const ApprovalTiersTab = () => {
     }
   };
 
-  const formatMoney = (v) => {
-    if (v == null || v === '') return '—';
-    const n = Number(v);
-    if (Number.isNaN(n)) return '—';
-    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
+  const tierColumns = useMemo(
+    () =>
+      getApprovalTierListColumns({
+        textPrimary,
+        actionBtnStyle,
+        onEdit: openEdit,
+        onDelete: handleDeleteClick,
+      }),
+    [textPrimary, actionBtnStyle, openEdit, handleDeleteClick]
+  );
 
-  const entityLabel = (v) => ENTITY_OPTIONS.find((o) => o.value === v)?.label || v;
+  const emptyContent = useMemo(
+    () => (
+      <span style={{ color: textMuted }}>
+        Nenhuma alçada cadastrada. A aprovação segue apenas gestores de CC/projeto.
+      </span>
+    ),
+    [textMuted]
+  );
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
+      <Box sx={{ mb: 2, flexWrap: 'wrap', gap: 2 }}>
         <Box>
           <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Alçadas de aprovação</Typography>
           <Typography sx={{ fontSize: '13px', color: textMuted, mt: 0.5, maxWidth: 720 }}>
@@ -228,68 +175,49 @@ const ApprovalTiersTab = () => {
             financeira). Sem alçadas cadastradas, vale apenas a regra atual (gestor de CC / gestor de projeto).
           </Typography>
         </Box>
-        <Button
-          onClick={openCreate}
-          sx={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontWeight: 600,
-            textTransform: 'none',
-            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-            color: 'white',
-            '&:hover': { opacity: 0.92 },
-          }}
-        >
-          Nova alçada
-        </Button>
       </Box>
 
-      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={tableHeaderStyle}>Nome</th>
-              <th style={tableHeaderStyle}>Tipo</th>
-              <th style={tableHeaderStyle}>Perfil</th>
-              <th style={tableHeaderStyle}>Faixa (R$)</th>
-              <th style={tableHeaderStyle}>Escopo</th>
-              <th style={tableHeaderStyle}>Ativa</th>
-              <th style={{ ...tableHeaderStyle, width: 100 }}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tiers.length === 0 ? (
-              <tr>
-                <td colSpan={7} style={{ ...tableCellStyle, textAlign: 'center', color: textMuted }}>
-                  Nenhuma alçada cadastrada. A aprovação segue apenas gestores de CC/projeto.
-                </td>
-              </tr>
-            ) : (
-              tiers.map((row) => (
-                <tr key={row.id} style={{ transition: 'background 0.15s' }} onMouseEnter={(e) => { e.currentTarget.style.background = rowHoverBg; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
-                  <td style={{ ...tableCellStyle, color: textPrimary, fontWeight: 500 }}>{row.name}</td>
-                  <td style={tableCellStyle}>{entityLabel(row.entityType)}</td>
-                  <td style={tableCellStyle}>{row.role?.name || '—'}</td>
-                  <td style={tableCellStyle}>
-                    {formatMoney(row.minAmount)} → {formatMoney(row.maxAmount)}
-                  </td>
-                  <td style={tableCellStyle}>{row.globalScope ? 'Global (empresa)' : 'Só recursos geridos'}</td>
-                  <td style={tableCellStyle}>{row.isActive ? 'Sim' : 'Não'}</td>
-                  <td style={tableCellStyle}>
-                    <IconButton size="small" onClick={() => openEdit(row)} sx={actionBtnStyle('edit')}>
-                      <span className="material-icons-round" style={{ fontSize: '16px' }}>edit</span>
-                    </IconButton>
-                    <IconButton size="small" onClick={() => handleDeleteClick(row.id)} sx={{ ...actionBtnStyle('delete'), ml: 0.5 }}>
-                      <span className="material-icons-round" style={{ fontSize: '16px' }}>delete</span>
-                    </IconButton>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </Box>
+      <DataListTable
+        density="compact"
+        shell={{
+          title: 'Regras cadastradas',
+          titleIcon: 'rule',
+          accentColor: '#2563eb',
+          count: tiers.length,
+          sx: { ...cardStyle, mb: 2 },
+          toolbar: (
+            <Button
+              onClick={openCreate}
+              sx={{
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                color: 'white',
+                '&:hover': { opacity: 0.92 },
+              }}
+            >
+              Nova alçada
+            </Button>
+          ),
+          tableContainerSx: {
+            borderRadius: 0,
+            boxShadow: 'none',
+          },
+        }}
+        columns={tierColumns}
+        rows={tiers}
+        sortRows={sortApprovalTierRows}
+        defaultOrderBy="name"
+        defaultOrder="asc"
+        emptyMessage="Nenhuma alçada cadastrada."
+        emptyContent={emptyContent}
+        dataTestidTable="tabela-organizacao-alcadas"
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        rowsPerPageDefault={10}
+      />
 
       <StandardModal
         open={modalOpen}
@@ -306,7 +234,7 @@ const ApprovalTiersTab = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField label="Nome" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} fullWidth size="small" InputLabelProps={{ shrink: true }} />
           <TextField select label="Tipo de item" value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} fullWidth size="small">
-            {ENTITY_OPTIONS.map((o) => (
+            {APPROVAL_TIER_ENTITY_OPTIONS.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
               </MenuItem>

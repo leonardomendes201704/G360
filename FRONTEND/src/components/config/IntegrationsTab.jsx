@@ -78,7 +78,7 @@ const IntegrationsTab = () => {
                     const isActive = configured?.isEnabled;
 
                     return (
-                        <Grid item xs={12} md={6} key={item.type}>
+                        <Grid size={{ xs: 12, sm: 4 }} key={item.type}>
                             <Card sx={{
                                 height: '100%', display: 'flex', flexDirection: 'column',
                                 background: cardBg,
