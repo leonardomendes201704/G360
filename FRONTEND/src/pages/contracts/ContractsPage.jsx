@@ -21,6 +21,7 @@ import { getErrorMessage } from '../../utils/errorUtils';
 import { AuthContext } from '../../contexts/AuthContext';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 const CONTRACT_FILTER_DEFAULTS = {
   status: '',
@@ -234,52 +235,14 @@ const ContractsPage = () => {
 
   return (
     <Box>
-      {/* Header */}
-      <Box
-        sx={{
-          mb: 3,
-          p: 3,
-          borderRadius: '8px',
-          background: cardBg,
-          backdropFilter: mode === 'dark' ? 'blur(10px)' : 'none',
-          border: `1px solid ${borderColor}`,
-          boxShadow: cardShadow,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', md: 'center' },
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: { xs: 2, md: 0 }
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box
-            sx={{
-              width: 48,
-              height: 48,
-              borderRadius: '8px',
-              background: 'rgba(37, 99, 235, 0.15)',
-              border: '1px solid rgba(37, 99, 235, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#2563eb'
-            }}
-          >
-            <span className="material-icons-round" style={{ fontSize: '24px' }}>description</span>
-          </Box>
-          <Box>
-            <Typography sx={{
-              fontSize: '20px',
-              fontWeight: 600,
-              color: textPrimary,
-            }}
-            >
-              Gestão de Contratos
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', width: { xs: '100%', md: 'auto' } }}>
-          {canWrite && (
+      <PageTitleCard
+        iconName="description"
+        title="Gestão de Contratos"
+        subtitle="Contratos, aditivos e vigências"
+        pushActionsToEnd
+        mb={3}
+        actions={
+          canWrite ? (
             <Button
               data-testid="btn-novo-contrato"
               onClick={handleOpenNew}
@@ -304,9 +267,9 @@ const ContractsPage = () => {
             >
               Novo Contrato
             </Button>
-          )}
-        </Box>
-      </Box>
+          ) : null
+        }
+      />
 
       {/* Filtros — barra compacta + drawer (padrão incidentes / projetos) */}
       <Box

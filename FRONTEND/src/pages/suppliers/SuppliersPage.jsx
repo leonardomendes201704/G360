@@ -5,6 +5,7 @@ import { FilterAlt, Refresh } from '@mui/icons-material';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import FilterDrawer from '../../components/common/FilterDrawer';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
@@ -226,25 +227,15 @@ const SuppliersPage = () => {
 
   return (
     <Box className="suppliers-page">
-      {/* Header */}
-      <Box sx={{ ...cardStyle, mb: 3, p: { xs: 2, md: 3 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, gap: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{
-            width: 48, height: 48, borderRadius: '8px',
-            background: 'rgba(6, 182, 212, 0.15)',
-            border: '1px solid rgba(6, 182, 212, 0.2)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06b6d4'
-          }}>
-            <span className="material-icons-round" style={{ fontSize: '24px' }}>store</span>
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-              Gestão de Fornecedores
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', width: { xs: '100%', md: 'auto' } }}>
-          {canWrite && (
+      <PageTitleCard
+        iconName="store"
+        iconColor="#06b6d4"
+        title="Gestão de Fornecedores"
+        subtitle="Cadastro e avaliação de fornecedores"
+        pushActionsToEnd
+        mb={3}
+        actions={
+          canWrite ? (
             <Button onClick={handleOpenNew} sx={{
               padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none',
               background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', color: 'white',
@@ -253,9 +244,9 @@ const SuppliersPage = () => {
             }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>add</span>}>
               Novo Fornecedor
             </Button>
-          )}
-        </Box>
-      </Box>
+          ) : null
+        }
+      />
 
       {/* Filtros — barra compacta + drawer */}
       <Box

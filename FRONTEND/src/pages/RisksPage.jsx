@@ -17,6 +17,7 @@ import EmptyState from '../components/common/EmptyState';
 import DataListTable from '../components/common/DataListTable';
 import { getRiskListColumns } from './risks/riskListColumns';
 import { sortRiskRows } from './risks/riskListSort';
+import PageTitleCard from '../components/common/PageTitleCard';
 import usePersistedFilters from '../hooks/usePersistedFilters';
 import { useUndoToast } from '../hooks/useUndoToast';
 import { AuthContext } from '../contexts/AuthContext';
@@ -124,37 +125,36 @@ const RisksPage = () => {
 
     return (
         <Box>
-            {/* Header */}
-            <Box sx={{ mb: 3, p: 3, borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(37, 99, 235, 0.2)' }}>
-                        <Shield sx={{ color: '#fff', fontSize: 28 }} />
+            <PageTitleCard
+                iconName="shield"
+                iconColor="#2563eb"
+                title="Gestão de Riscos Corporativos"
+                subtitle="Matriz de riscos, heatmap e controles"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: 1, bgcolor: isDark ? 'rgba(0,0,0,0.2)' : '#f1f5f9', p: 0.5, borderRadius: '8px' }}>
+                            <IconButton size="small" onClick={() => setViewMode('DASHBOARD')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'DASHBOARD' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'DASHBOARD' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
+                                <Dashboard fontSize="small" />
+                            </IconButton>
+                            <IconButton data-testid="risks-view-list" size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
+                                <ListIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                        {canWrite && (
+                            <Button
+                                variant="contained"
+                                startIcon={<Add />}
+                                onClick={() => { setRiskToEdit(null); setModalOpen(true); }}
+                                sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', borderRadius: '8px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' } }}
+                            >
+                                Novo Risco
+                            </Button>
+                        )}
                     </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 700, color: textPrimary }}>Gestão de Riscos Corporativos</Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Box sx={{ display: 'flex', gap: 1, bgcolor: isDark ? 'rgba(0,0,0,0.2)' : '#f1f5f9', p: 0.5, borderRadius: '8px'}}>
-                        <IconButton size="small" onClick={() => setViewMode('DASHBOARD')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'DASHBOARD' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'DASHBOARD' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
-                            <Dashboard fontSize="small" />
-                        </IconButton>
-                        <IconButton data-testid="risks-view-list" size="small" onClick={() => setViewMode('LIST')} sx={{ borderRadius: '8px', bgcolor: viewMode === 'LIST' ? (isDark ? 'rgba(255,255,255,0.1)' : '#fff') : 'transparent', boxShadow: viewMode === 'LIST' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>
-                            <ListIcon fontSize="small" />
-                        </IconButton>
-                    </Box>
-                    {canWrite && (
-                        <Button
-                            variant="contained"
-                            startIcon={<Add />}
-                            onClick={() => { setRiskToEdit(null); setModalOpen(true); }}
-                            sx={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', borderRadius: '8px', textTransform: 'none', fontWeight: 600, boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)', '&:hover': { boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' } }}
-                        >
-                            Novo Risco
-                        </Button>
-                    )}
-                </Box>
-            </Box>
+                }
+            />
 
             {/* Filters */}
             <Box sx={{ mb: 3, p: 2, borderRadius: '8px', background: cardBg, border: `1px solid ${borderColor}` }}>

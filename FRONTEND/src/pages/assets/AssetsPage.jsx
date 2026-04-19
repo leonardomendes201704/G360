@@ -30,6 +30,7 @@ import { useUndoToast } from '../../hooks/useUndoToast';
 
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import './AssetsPage.css';
 
 const ASSET_LIST_DRAWER_DEFAULTS = { status: '', category: '', search: '' };
@@ -417,23 +418,13 @@ const AssetsPage = () => {
 
   return (
     <Box className="assets-page">
-      {/* Header */}
-      <Box sx={{ ...cardStyle, mb: 3, p: { xs: 2, md: 3 }, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, gap: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{
-            width: 48, height: 48, borderRadius: '8px',
-            background: 'rgba(37, 99, 235, 0.15)',
-            border: '1px solid rgba(37, 99, 235, 0.2)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb'
-          }}>
-            <span className="material-icons-round" style={{ fontSize: '24px' }}>inventory_2</span>
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-              Gestão de Ativos
-            </Typography>
-          </Box>
-        </Box>
+      <PageTitleCard
+        iconName="inventory_2"
+        title="Gestão de Ativos"
+        subtitle="Hardware, licenças e patrimônio"
+        pushActionsToEnd
+        mb={3}
+        actions={
         <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* View Toggle */}
           <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '8px', border: softBorder, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
@@ -506,7 +497,8 @@ const AssetsPage = () => {
             </>
           )}
         </Box>
-      </Box>
+        }
+      />
 
       {/* Dashboard View */}
       {viewMode === 'dashboard' && (

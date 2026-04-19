@@ -28,6 +28,7 @@ import {
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import StatsCard from '../components/common/StatsCard';
 import KpiGrid from '../components/common/KpiGrid';
+import PageTitleCard from '../components/common/PageTitleCard';
 
 import KnowledgeBaseService from '../services/knowledge-base.service';
 import KnowledgeBaseModal from '../components/modals/KnowledgeBaseModal.jsx';
@@ -446,55 +447,38 @@ export default function KnowledgeBasePage() {
             minHeight: '100%',
             color: textPrimary
         }}>
-            {/* ... Header and Stats Grid (Keep same logic) ... */}
-            <Box
-                sx={{
-                    mb: 3,
-                    p: 3,
-                    borderRadius: '8px',
-                    background: panelBg,
-                    backdropFilter: 'blur(10px)',
-                    border: cardBorder,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}
-            >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <span className="material-icons-round" style={{ fontSize: '36px', color: '#2563eb' }}>menu_book</span>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-                            Base de Conhecimento
-                        </Typography>
-                        <Typography sx={{ color: textMuted, fontSize: '15px' }}>
-                            Central de Documentos, Manuais e Procedimentos
-                        </Typography>
-                    </Box>
-                </Box>
-                {canCreate && (
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={() => { setEditData(null); setIsModalOpen(true); }}
-                        sx={{
-                            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '8px',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                            '&:hover': {
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)'
-                            }
-                        }}
-                    >
-                        Novo Artigo
-                    </Button>
-                )}
-            </Box>
+            <PageTitleCard
+                iconName="menu_book"
+                title="Base de Conhecimento"
+                subtitle="Central de documentos, manuais e procedimentos"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    canCreate ? (
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={() => { setEditData(null); setIsModalOpen(true); }}
+                            sx={{
+                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                                color: 'white',
+                                padding: '12px 20px',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                '&:hover': {
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)'
+                                }
+                            }}
+                        >
+                            Novo Artigo
+                        </Button>
+                    ) : null
+                }
+            />
 
             <KpiGrid maxColumns={4}>
                 <StatsCard

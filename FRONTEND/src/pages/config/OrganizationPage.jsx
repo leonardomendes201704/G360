@@ -16,6 +16,7 @@ import ApprovalTiersTab from '../../components/config/ApprovalTiersTab';
 import ServiceDeskConfigSection from '../../components/config/ServiceDeskConfigSection';
 
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import PageTitleCard from '../../components/common/PageTitleCard';
 import DataListTable from '../../components/common/DataListTable';
 
 import departmentService from '../../services/department.service';
@@ -302,7 +303,6 @@ const CostCentersTab = () => {
 // Pagina Principal
 const OrganizationPage = () => {
   const { user } = useContext(AuthContext);
-  const { textPrimary, textMuted } = useOrgThemeStyles();
   const [searchParams, setSearchParams] = useSearchParams();
   
   const roles = user?.roles || (user?.role ? [user.role] : []);
@@ -366,23 +366,13 @@ const OrganizationPage = () => {
 
   return (
     <div className="org-page-container">
-      {/* Page Header */}
-      <div className="org-page-header">
-        <span className="material-icons-round header-icon" style={{ fontSize: '36px', color: '#3b82f6' }}>settings</span>
-        <Box>
-          <Typography sx={{
-            fontSize: '20px',
-            fontWeight: 600,
-            color: textPrimary,
-            mb: 0.5
-          }}>
-            Estrutura Organizacional & Configuracoes
-          </Typography>
-          <Typography sx={{ color: textMuted, fontSize: '15px' }}>
-            Departamentos, custos, usuários, integrações e configurações do Service Desk
-          </Typography>
-        </Box>
-      </div>
+      <PageTitleCard
+        iconName="settings"
+        iconColor="#3b82f6"
+        title="Estrutura Organizacional & Configurações"
+        subtitle="Departamentos, custos, usuários, integrações e Service Desk"
+        mb={3}
+      />
 
       {/* Tabs Container */}
       <div className="org-tabs-container">

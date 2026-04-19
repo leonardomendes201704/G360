@@ -7,6 +7,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import StandardModal from '../../components/common/StandardModal';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 const ActivityLogPage = () => {
     const [viewMode, setViewMode] = useState('dashboard');
@@ -309,31 +310,29 @@ const ActivityLogPage = () => {
 
     return (
         <Box>
-            {/* Header */}
-            <Box sx={{ ...cardStyle, mb: 3, p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ width: 48, height: 48, borderRadius: '8px', background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                        <span className="material-icons-round" style={{ fontSize: '24px' }}>history</span>
+            <PageTitleCard
+                iconName="history"
+                iconColor="#3b82f6"
+                title="Auditoria e Atividades"
+                subtitle="Monitoramento de ações e segurança do sistema"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '8px', border: cardBorder }}>
+                            <button type="button" onClick={() => setViewMode('dashboard')} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: viewMode === 'dashboard' ? '#3b82f6' : 'transparent', color: viewMode === 'dashboard' ? 'white' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>
+                                <span className="material-icons-round" style={{ fontSize: '18px' }}>analytics</span>Dashboard
+                            </button>
+                            <button type="button" onClick={() => setViewMode('list')} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: viewMode === 'list' ? '#3b82f6' : 'transparent', color: viewMode === 'list' ? 'white' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>
+                                <span className="material-icons-round" style={{ fontSize: '18px' }}>list</span>Atividades
+                            </button>
+                        </Box>
+                        <Button onClick={fetchLogs} sx={{ padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(59, 130, 246, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>refresh</span>}>
+                            Atualizar
+                        </Button>
                     </Box>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Auditoria e Atividades</Typography>
-                        <Typography sx={{ color: textMuted, fontSize: '14px' }}>Monitore todas as acoes e seguranca do sistema</Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', gap: 1, background: surfaceBg, padding: '4px', borderRadius: '8px', border: cardBorder }}>
-                        <button onClick={() => setViewMode('dashboard')} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: viewMode === 'dashboard' ? '#3b82f6' : 'transparent', color: viewMode === 'dashboard' ? 'white' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>
-                            <span className="material-icons-round" style={{ fontSize: '18px' }}>analytics</span>Dashboard
-                        </button>
-                        <button onClick={() => setViewMode('list')} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: viewMode === 'list' ? '#3b82f6' : 'transparent', color: viewMode === 'list' ? 'white' : '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500 }}>
-                            <span className="material-icons-round" style={{ fontSize: '18px' }}>list</span>Atividades
-                        </button>
-                    </Box>
-                    <Button onClick={fetchLogs} sx={{ padding: '12px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, textTransform: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', color: 'white', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)', '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 16px rgba(59, 130, 246, 0.4)' } }} startIcon={<span className="material-icons-round" style={{ fontSize: '18px' }}>refresh</span>}>
-                        Atualizar
-                    </Button>
-                </Box>
-            </Box>
+                }
+            />
 
             {/* Dashboard View */}
             {viewMode === 'dashboard' && (

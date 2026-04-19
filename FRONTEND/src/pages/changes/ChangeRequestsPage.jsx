@@ -30,6 +30,7 @@ import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import ChangeModal from '../../components/modals/ChangeModal';
 import ChangeViewModal from '../../components/modals/ChangeViewModal';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 const GMUD_DRAWER_FILTER_DEFAULTS = {
     status: '',
@@ -63,8 +64,6 @@ const ChangeRequestsPage = () => {
     const cardBg = isDark ? 'rgba(22, 29, 38, 0.5)' : '#ffffff';
     const borderColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)';
     const cardShadow = isDark ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)';
-    const headerBg = cardBg;
-    const headerBorder = borderColor;
     const toggleGroupBg = isDark ? 'rgba(0, 0, 0, 0.2)' : '#f1f5f9';
     const toggleActiveBg = isDark ? 'rgba(37, 99, 235, 0.3)' : 'rgba(37, 99, 235, 0.15)';
     const toggleActiveText = isDark ? '#a5b4fc' : '#2563eb';
@@ -501,99 +500,83 @@ const ChangeRequestsPage = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box
-                sx={{
-                    mb: 3,
-                    p: 3,
-                    borderRadius: '8px',
-                    background: headerBg,
-                    backdropFilter: isDark ? 'blur(10px)' : 'none',
-                    border: `1px solid ${headerBorder}`,
-                    boxShadow: cardShadow,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}
-            >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <span className="material-icons-round" style={{ fontSize: '36px', color: '#2563eb' }}>sync_alt</span>
-                    <Box>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>
-                            Gestão de Mudança (GMUD)
-                        </Typography>
+            <PageTitleCard
+                iconName="sync_alt"
+                title="Gestão de Mudança (GMUD)"
+                subtitle="Planejamento, aprovação e execução de mudanças"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: 1, bgcolor: toggleGroupBg, borderRadius: '8px', p: 0.5 }}>
+                            <Tooltip title="Dashboard">
+                                <IconButton
+                                    onClick={() => setViewMode('DASHBOARD')}
+                                    sx={{
+                                        borderRadius: '8px',
+                                        bgcolor: viewMode === 'DASHBOARD' ? toggleActiveBg : 'transparent',
+                                        color: viewMode === 'DASHBOARD' ? toggleActiveText : toggleText,
+                                        '&:hover': { bgcolor: toggleActiveBg }
+                                    }}
+                                >
+                                    <span className="material-icons-round" style={{ fontSize: 20 }}>dashboard</span>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Lista">
+                                <IconButton
+                                    onClick={() => setViewMode('LIST')}
+                                    sx={{
+                                        borderRadius: '8px',
+                                        bgcolor: viewMode === 'LIST' ? toggleActiveBg : 'transparent',
+                                        color: viewMode === 'LIST' ? toggleActiveText : toggleText,
+                                        '&:hover': { bgcolor: toggleActiveBg }
+                                    }}
+                                >
+                                    <span className="material-icons-round" style={{ fontSize: 20 }}>list</span>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Calendário">
+                                <IconButton
+                                    onClick={() => setViewMode('CALENDAR')}
+                                    sx={{
+                                        borderRadius: '8px',
+                                        bgcolor: viewMode === 'CALENDAR' ? toggleActiveBg : 'transparent',
+                                        color: viewMode === 'CALENDAR' ? toggleActiveText : toggleText,
+                                        '&:hover': { bgcolor: toggleActiveBg }
+                                    }}
+                                >
+                                    <span className="material-icons-round" style={{ fontSize: 20 }}>calendar_today</span>
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        {canWrite && (
+                            <Button
+                                onClick={handleOpenCreate}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    padding: '12px 20px',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    textTransform: 'none',
+                                    background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                                    color: 'white',
+                                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
+                                    },
+                                }}
+                                startIcon={<span className="material-icons-round">add</span>}
+                            >
+                                Nova GMUD
+                            </Button>
+                        )}
                     </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    {/* View Toggle Buttons */}
-                    <Box sx={{ display: 'flex', gap: 1, bgcolor: toggleGroupBg, borderRadius: '8px', p: 0.5 }}>
-                        <Tooltip title="Dashboard">
-                            <IconButton
-                                onClick={() => setViewMode('DASHBOARD')}
-                                sx={{
-                                    borderRadius: '8px',
-                                    bgcolor: viewMode === 'DASHBOARD' ? toggleActiveBg : 'transparent',
-                                    color: viewMode === 'DASHBOARD' ? toggleActiveText : toggleText,
-                                    '&:hover': { bgcolor: toggleActiveBg }
-                                }}
-                            >
-                                <span className="material-icons-round" style={{ fontSize: 20 }}>dashboard</span>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Lista">
-                            <IconButton
-                                onClick={() => setViewMode('LIST')}
-                                sx={{
-                                    borderRadius: '8px',
-                                    bgcolor: viewMode === 'LIST' ? toggleActiveBg : 'transparent',
-                                    color: viewMode === 'LIST' ? toggleActiveText : toggleText,
-                                    '&:hover': { bgcolor: toggleActiveBg }
-                                }}
-                            >
-                                <span className="material-icons-round" style={{ fontSize: 20 }}>list</span>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Calendário">
-                            <IconButton
-                                onClick={() => setViewMode('CALENDAR')}
-                                sx={{
-                                    borderRadius: '8px',
-                                    bgcolor: viewMode === 'CALENDAR' ? toggleActiveBg : 'transparent',
-                                    color: viewMode === 'CALENDAR' ? toggleActiveText : toggleText,
-                                    '&:hover': { bgcolor: toggleActiveBg }
-                                }}
-                            >
-                                <span className="material-icons-round" style={{ fontSize: 20 }}>calendar_today</span>
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                    {canWrite && (
-                        <Button
-                            onClick={handleOpenCreate}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1,
-                                padding: '12px 20px',
-                                borderRadius: '8px',
-                                fontSize: '14px',
-                                fontWeight: 600,
-                                textTransform: 'none',
-                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                color: 'white',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                                '&:hover': {
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
-                                },
-                            }}
-                            startIcon={<span className="material-icons-round">add</span>}
-                        >
-                            Nova GMUD
-                        </Button>
-                    )}
-                </Box>
-            </Box>
+                }
+            />
 
             {/* Filtros — barra compacta + drawer (padrão incidentes) */}
             <Box

@@ -18,6 +18,7 @@ import DataListTable from '../../components/common/DataListTable';
 import { getProjectListColumns } from './projectListColumns';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 import { getProjects, createProject, updateProject, deleteProject, submitForApproval } from '../../services/project.service';
 import { getReferenceUsers } from '../../services/reference.service';
@@ -587,43 +588,54 @@ const ProjectsListPage = () => {
     return (
         <div className="projects-list-page" >
             <div className="projects-list-content">
-                {/* Page Header */}
-                <div className="pl-page-header-card">
-                    <div className="pl-page-title-section">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                            <span className="material-icons-round" style={{ fontSize: '36px', color: '#2563eb' }}>folder_copy</span>
-                            <div>
-                                <h1 className="pl-page-title">Projetos</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                        <button
-                            className="pl-btn"
-                            style={{
-                                background: 'transparent',
-                                color: '#64748b',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                border: '1px solid #e2e8f0',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onClick={handleExportPDF}
-                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.color = '#2563eb'; e.currentTarget.style.background = 'rgba(37, 99, 235, 0.05)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent'; }}
-                        >
-                            <span className="material-icons-round" style={{ color: 'inherit' }}>picture_as_pdf</span>
-                            Exportar PDF
-                        </button>
-                        {canWrite && (
-                            <button data-testid="btn-novo-projeto" className="pl-btn pl-btn-primary" onClick={handleOpenNew}>
-                                <span className="material-icons-round">add</span>
-                                Novo Projeto
-                            </button>
-                        )}
-                    </div>
-                </div>
+                <PageTitleCard
+                    iconName="folder_copy"
+                    title="Projetos"
+                    subtitle="Portfólio e acompanhamento de projetos"
+                    pushActionsToEnd
+                    mb={3}
+                    actions={
+                        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
+                            <Button
+                                variant="outlined"
+                                onClick={handleExportPDF}
+                                sx={{
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    borderRadius: '8px',
+                                    px: 2.5,
+                                    py: 1.5,
+                                    borderColor: isDark ? 'rgba(255,255,255,0.12)' : '#e2e8f0',
+                                    color: isDark ? '#94a3b8' : '#64748b',
+                                    '&:hover': { borderColor: '#2563eb', color: '#2563eb', bgcolor: 'rgba(37, 99, 235, 0.05)' },
+                                }}
+                                startIcon={<span className="material-icons-round">picture_as_pdf</span>}
+                            >
+                                Exportar PDF
+                            </Button>
+                            {canWrite && (
+                                <Button
+                                    data-testid="btn-novo-projeto"
+                                    onClick={handleOpenNew}
+                                    sx={{
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        borderRadius: '8px',
+                                        px: 2.5,
+                                        py: 1.5,
+                                        background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                                        color: 'white',
+                                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                        '&:hover': { boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)' },
+                                    }}
+                                    startIcon={<span className="material-icons-round">add</span>}
+                                >
+                                    Novo Projeto
+                                </Button>
+                            )}
+                        </Box>
+                    }
+                />
 
                 <KpiGrid maxColumns={4}>
                     <StatsCard title="Total de Projetos" value={kpis.total} iconName="folder_copy" hexColor="#2563eb" />

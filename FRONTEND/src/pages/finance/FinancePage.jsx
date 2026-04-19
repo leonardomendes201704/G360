@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Button, Typography, Paper, useTheme, TextField } from '@mui/material';
+import { Box, Button, Typography, useTheme, TextField } from '@mui/material';
 
 import FinanceDashboard from './FinanceDashboard';
 import ExpensesPage from './ExpensesPage';
@@ -19,6 +19,7 @@ import { sortBudgetRows } from './budgetListSort';
 import { getAccountListColumns } from './accountListColumns';
 import { sortAccountRows } from './accountListSort';
 import { AuthContext } from '../../contexts/AuthContext';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 import budgetService, { duplicateBudget } from '../../services/budget.service';
 import { getAccounts, createAccount, updateAccount, deleteAccount } from '../../services/account.service';
@@ -213,31 +214,13 @@ const FinancePage = () => {
 
   return (
     <Box>
-      {/* Page Header */}
-      <Paper sx={{
-        mb: 3,
-        p: 3,
-        ...commonPaperStyle,
-        background: mode === 'dark' ? 'rgba(22, 29, 38, 0.5)' : 'rgba(255, 255, 255, 0.8)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid',
-        borderColor: 'divider',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2
-      }}>
-        <span className="material-icons-round" style={{ fontSize: '36px', color: '#10b981' }}>account_balance</span>
-        <Box>
-          <Typography sx={{
-            fontSize: '20px',
-            fontWeight: 600,
-            color: 'text.primary',
-            mb: 0.5
-          }}>
-            Gestão Financeira
-          </Typography>
-        </Box>
-      </Paper>
+      <PageTitleCard
+        iconName="account_balance"
+        iconColor="#10b981"
+        title="Gestão Financeira"
+        subtitle="Despesas, orçamentos, plano de contas e DRE"
+        mb={3}
+      />
 
       {/* Tab Navigation */}
       <Box sx={{

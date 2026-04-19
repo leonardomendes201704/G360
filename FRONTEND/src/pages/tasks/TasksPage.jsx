@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useContext } from 'react';
 import FilterDrawer from '../../components/common/FilterDrawer';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Typography, Paper, Button, TextField, MenuItem, CircularProgress, useTheme, Chip, Checkbox, ListItemText, InputAdornment } from '@mui/material';
+import { Box, Typography, Button, TextField, MenuItem, CircularProgress, useTheme, Chip, Checkbox, ListItemText, InputAdornment } from '@mui/material';
 import { FilterAlt, Refresh, Add, Search } from '@mui/icons-material';
 
 import { ThemeContext } from '../../contexts/ThemeContext';
@@ -23,6 +23,7 @@ import { getGeneralTaskListColumns } from './taskListColumns';
 import { sortGeneralTaskRows, isTaskOverdueForList } from './taskListSort';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
+import PageTitleCard from '../../components/common/PageTitleCard';
 
 import './TasksPage.css';
 import jsPDF from 'jspdf';
@@ -542,72 +543,62 @@ const TasksPage = () => {
 
     return (
         <Box className="tasks-page">
-            {/* Page Header */}
-            <Paper sx={{
-                mb: 3,
-                p: 3,
-                borderRadius: '8px',
-                bgcolor: cardBg,
-                border: `1px solid ${borderColor}`,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: cardShadow
-            }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <span className="material-icons-round" style={{ fontSize: '28px', color: '#2563eb' }}>assignment</span>
-                    <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary, fontFamily: theme.typography.fontFamily }}>
-                        Tarefas Gerais
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                        onClick={handleExportPDF}
-                        variant="outlined"
-                        sx={{
-                            background: 'transparent',
-                            color: isDark ? '#94a3b8' : '#64748b',
-                            border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : '#e2e8f0'}`,
-                            borderRadius: '8px',
-                            padding: '12px 20px',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            '&:hover': {
-                                borderColor: '#2563eb',
-                                color: '#2563eb',
-                                background: 'rgba(37, 99, 235, 0.05)',
-                            },
-                        }}
-                        startIcon={<span className="material-icons-round">picture_as_pdf</span>}
-                    >
-                        Exportar PDF
-                    </Button>
-                    {canWrite && (
+            <PageTitleCard
+                iconName="assignment"
+                title="Tarefas Gerais"
+                subtitle="Tarefas avulsas e acompanhamento"
+                pushActionsToEnd
+                mb={3}
+                actions={
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Button
-                            data-testid="btn-nova-tarefa"
-                            onClick={handleOpenCreate}
+                            onClick={handleExportPDF}
+                            variant="outlined"
                             sx={{
-                                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                                color: 'white',
+                                background: 'transparent',
+                                color: isDark ? '#94a3b8' : '#64748b',
+                                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : '#e2e8f0'}`,
                                 borderRadius: '8px',
                                 padding: '12px 20px',
                                 fontSize: '14px',
                                 fontWeight: 600,
                                 textTransform: 'none',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                                 '&:hover': {
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
+                                    borderColor: '#2563eb',
+                                    color: '#2563eb',
+                                    background: 'rgba(37, 99, 235, 0.05)',
                                 },
                             }}
-                            startIcon={<span className="material-icons-round">add</span>}
+                            startIcon={<span className="material-icons-round">picture_as_pdf</span>}
                         >
-                            Nova Tarefa
+                            Exportar PDF
                         </Button>
-                    )}
-                </Box>
-            </Paper>
+                        {canWrite && (
+                            <Button
+                                data-testid="btn-nova-tarefa"
+                                onClick={handleOpenCreate}
+                                sx={{
+                                    background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                                    color: 'white',
+                                    borderRadius: '8px',
+                                    padding: '12px 20px',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    textTransform: 'none',
+                                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
+                                    },
+                                }}
+                                startIcon={<span className="material-icons-round">add</span>}
+                            >
+                                Nova Tarefa
+                            </Button>
+                        )}
+                    </Box>
+                }
+            />
 
             <KpiGrid maxColumns={7} mb={4}>
                 {kpiConfig.map((item) => (
