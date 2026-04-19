@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ThemeContext } from '../../../contexts/ThemeContext';
-import StandardModal from '../StandardModal';
+import StandardModal, { resolveDialogContentPaddingTop } from '../StandardModal';
 
 const muiTheme = createTheme();
 const wrap = (ui, mode = 'light') => (
@@ -11,6 +11,18 @@ const wrap = (ui, mode = 'light') => (
         <ThemeProvider theme={muiTheme}>{ui}</ThemeProvider>
     </ThemeContext.Provider>
 );
+
+describe('resolveDialogContentPaddingTop', () => {
+    it('defaults to spacing(3) with important', () => {
+        expect(resolveDialogContentPaddingTop(muiTheme, undefined)).toBe(`${muiTheme.spacing(3)} !important`);
+    });
+    it('keeps pt:2 as important so MUI cannot zero the top', () => {
+        expect(resolveDialogContentPaddingTop(muiTheme, { pt: 2 })).toBe(`${muiTheme.spacing(2)} !important`);
+    });
+    it('allows full-bleed when p is 0', () => {
+        expect(resolveDialogContentPaddingTop(muiTheme, { p: 0 })).toBe('0 !important');
+    });
+});
 
 describe('StandardModal', () => {
     it('renders title and children when open', () => {

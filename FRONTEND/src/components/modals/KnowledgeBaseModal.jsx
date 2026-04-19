@@ -77,7 +77,6 @@ function NewCategoryDialog({ open, onClose, onCreated }) {
                     </Button>
                 </>
             }
-            contentSx={{ pt: 2 }}
         >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField
@@ -199,7 +198,6 @@ export default function KnowledgeBaseModal({ open, onClose, onSubmit, initialDat
                         </Button>
                     </>
                 }
-                contentSx={{ pt: 2 }}
             >
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

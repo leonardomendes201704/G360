@@ -188,7 +188,7 @@ const MyApprovalsPage = () => {
             </Paper>
 
             {/* Summary Cards — usando StatsCard + KpiGrid padrao */}
-            <KpiGrid minWidth="150px">
+            <KpiGrid maxColumns={7} maxColumnsMd={7}>
                 {[
                     { key: 'expenses', label: 'Despesas', iconName: 'payments', hexColor: '#2563eb' },
                     { key: 'projectCosts', label: 'Custos Projeto', iconName: 'folder', hexColor: '#3b82f6' },
@@ -210,28 +210,60 @@ const MyApprovalsPage = () => {
                 ))}
             </KpiGrid>
 
-            {/* Tabs */}
-            <Box sx={{ display: 'flex', gap: 1, mb: 3, borderBottom: `1px solid ${borderColor}`, pb: 2, flexWrap: 'wrap' }}>
+            {/* Tabs — escala ~75% (fonte/ícone/chip) para caber as 8 abas numa linha */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: 0.5,
+                    mb: 3,
+                    borderBottom: `1px solid ${borderColor}`,
+                    pb: 1.5,
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    '&::-webkit-scrollbar': { height: 4 },
+                    '&::-webkit-scrollbar-thumb': { borderRadius: 2, bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)' },
+                }}
+            >
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
+                        type="button"
                         onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
                         style={{
-                            padding: '10px 16px', borderRadius: '8px', border: 'none',
+                            flexShrink: 0,
+                            padding: '6px 10px',
+                            borderRadius: '6px',
+                            border: 'none',
                             background: activeTab === tab.id ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
                             color: activeTab === tab.id ? '#2563eb' : textMuted,
-                            fontSize: '13px', fontWeight: 500, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px'
+                            fontSize: '10px',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            lineHeight: 1.2,
                         }}
                     >
-                        <span className="material-icons-round" style={{ fontSize: 16 }}>{tab.icon}</span>
+                        <span className="material-icons-round" style={{ fontSize: 12 }}>{tab.icon}</span>
                         {tab.label}
                         {tab.count > 0 && (
-                            <span style={{
-                                background: activeTab === tab.id ? '#2563eb' : (mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
-                                color: activeTab === tab.id ? 'white' : textMuted,
-                                padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: 600
-                            }}>{tab.count}</span>
+                            <span
+                                style={{
+                                    background: activeTab === tab.id ? '#2563eb' : (mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
+                                    color: activeTab === tab.id ? 'white' : textMuted,
+                                    padding: '1px 5px',
+                                    borderRadius: '6px',
+                                    fontSize: '8px',
+                                    fontWeight: 600,
+                                    minWidth: 14,
+                                    textAlign: 'center',
+                                    lineHeight: 1.35,
+                                }}
+                            >
+                                {tab.count}
+                            </span>
                         )}
                     </button>
                 ))}

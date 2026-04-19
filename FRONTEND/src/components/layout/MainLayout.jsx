@@ -182,7 +182,7 @@ const MainLayout = ({ children }) => {
   const sidebarWidth = isMobile ? 0 : (sidebarCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', width: '100%', maxWidth: '100%', minWidth: 0 }}>
       <DarkSidebar
         isCollapsed={sidebarCollapsed}
         toggleSidebar={toggleSidebar}
@@ -191,7 +191,21 @@ const MainLayout = ({ children }) => {
         toggleMobile={handleDrawerToggle}
       />
 
-      <div style={{ marginLeft: `${sidebarWidth}px`, flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', transition: 'margin-left 0.3s ease', overflowX: 'hidden', maxWidth: '100vw', width: '100%', backgroundColor: mode === 'dark' ? '#0F172A' : '#F8FAFC' }}>
+      <div
+        style={{
+          marginLeft: `${sidebarWidth}px`,
+          flex: '1 1 0%',
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          transition: 'margin-left 0.3s ease',
+          overflowX: 'hidden',
+          maxWidth: '100%',
+          width: '100%',
+          backgroundColor: mode === 'dark' ? '#0F172A' : '#F8FAFC',
+        }}
+      >
         <Box
           component="header"
           className="top-bar"
@@ -211,14 +225,16 @@ const MainLayout = ({ children }) => {
             top: 24, // Sticks with gap from top
             zIndex: 1100,
             gap: { xs: 1, md: 2 },
-            overflow: 'hidden',
+            // hidden corta busca/breadcrumbs em zoom alto; X permite scroll raro se faltar espaço
+            overflowX: 'auto',
+            overflowY: 'hidden',
             // Removed maxWidth: 100% to allow margins to work properly relative to flex container
             boxSizing: 'border-box',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' // Subtle shadow
           }}
         >
           {/* Left: Hamburger + Breadcrumbs */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: '1 1 0%', minWidth: 0, overflow: 'hidden' }}>
             {isMobile && (
               <IconButton
                 onClick={handleDrawerToggle}
@@ -228,7 +244,7 @@ const MainLayout = ({ children }) => {
               </IconButton>
             )}
 
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', color: 'text.secondary', fontSize: '0.875rem', fontWeight: 500 }}>
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', color: 'text.secondary', fontSize: '0.875rem', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               <span style={{ opacity: 0.7 }}>
                 {(() => {
                   const path = location.pathname.split('/').filter(Boolean)[0] || '';
@@ -275,7 +291,8 @@ const MainLayout = ({ children }) => {
             <Box
               onClick={() => setCommandPaletteOpen(true)}
               sx={{
-                flex: 2,
+                flex: '2 1 0%',
+                minWidth: 0,
                 maxWidth: 400,
                 mx: 2,
                 display: 'flex',
@@ -297,8 +314,8 @@ const MainLayout = ({ children }) => {
             </Box>
           )}
 
-          {/* Right Side Actions Wrapper */}
-          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', justifyContent: 'flex-end', flex: 1, ml: isMobile ? 'auto' : 4 }}>
+          {/* Right Side Actions Wrapper — não compete com flex:1 (evita esmagar centro em zoom 100%) */}
+          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', justifyContent: 'flex-end', flex: '0 0 auto', flexShrink: 0, ml: isMobile ? 'auto' : { xs: 1, md: 2 } }}>
             {/* Theme Toggle */}
             <Tooltip title={mode === 'dark' ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}>
               <IconButton onClick={toggleTheme} className="top-bar-icon">

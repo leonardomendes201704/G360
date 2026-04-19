@@ -22,6 +22,38 @@ const SIZE_PRESET_TO_MAX_WIDTH = {
 };
 
 /**
+ * Com DialogTitle, o MUI zera padding-top no DialogContent; sem `!important` os labels dos TextField
+ * encostam no divisor. `contentSx` com `pt`/`py`/`p` não pode vir depois de um paddingTop fixo sem
+ * reaplicar o `!important` — senão a regra do MUI volta a ganhar.
+ */
+function resolveDialogContentPaddingTop(theme, contentSx) {
+    if (!contentSx || typeof contentSx !== 'object') {
+        return `${theme.spacing(3)} !important`;
+    }
+    const { p, pt, py, padding, paddingTop } = contentSx;
+    if (p === 0 || padding === 0 || pt === 0 || py === 0 || paddingTop === 0) {
+        return '0 !important';
+    }
+    if (typeof pt === 'number' && pt > 0) {
+        return `${theme.spacing(pt)} !important`;
+    }
+    if (typeof py === 'number' && py > 0) {
+        return `${theme.spacing(py)} !important`;
+    }
+    if (typeof p === 'number' && p > 0) {
+        return `${theme.spacing(p)} !important`;
+    }
+    if (paddingTop != null && paddingTop !== 0) {
+        if (typeof paddingTop === 'number') {
+            return `${theme.spacing(paddingTop)} !important`;
+        }
+        const s = String(paddingTop);
+        return s.includes('important') ? paddingTop : `${paddingTop} !important`;
+    }
+    return `${theme.spacing(3)} !important`;
+}
+
+/**
  * StandardModal — casca padronizada do MUI Dialog (header + corpo com scroll + footer fixo).
  *
  * @param {boolean}   open
@@ -154,9 +186,9 @@ const StandardModal = ({
                     px: 2.5,
                     // spacing(2) + 5px — respiro extra antes do footer (alinhado ao espaço visual do label no topo)
                     paddingBottom: `calc(${theme.spacing(2)} + 5px) !important`,
-                    // MUI aplica padding-top: 0 em DialogContent logo após DialogTitle — isso corta labels de TextField.
-                    paddingTop: `${theme.spacing(3)} !important`,
                     ...contentSx,
+                    // Por último: sempre com !important (ver resolveDialogContentPaddingTop)
+                    paddingTop: resolveDialogContentPaddingTop(theme, contentSx),
                 }}
             >
                 {children}
@@ -218,4 +250,4 @@ const StandardModal = ({
 };
 
 export default StandardModal;
-export { SIZE_PRESET_TO_MAX_WIDTH };
+export { SIZE_PRESET_TO_MAX_WIDTH, resolveDialogContentPaddingTop };
