@@ -1,23 +1,22 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import {
-  Box, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Chip, Typography, IconButton, Tooltip, Avatar, TextField, InputAdornment
+  Box, Button, Paper, Chip, Typography, TextField
 } from '@mui/material';
 import {
-  Add, Edit, Delete,
-  PendingActions, Visibility,
-  Search, FilterList, AccountBalanceWallet, Analytics, PieChart, ReceiptLong,
+  Add,
+  Search, FilterList, AccountBalanceWallet, Analytics, PieChart,
 } from '@mui/icons-material';
-import { format } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { getProjectCosts, deleteProjectCost, createProjectCost, updateProjectCost } from '../../../services/project-details.service';
 import { submitCostForApproval } from '../../../services/project.service';
 import ExpenseModal from '../../modals/ExpenseModal';
 import ConfirmDialog from '../../common/ConfirmDialog';
-import { getFileURL } from '../../../utils/urlUtils';
 import StatsCard from '../../common/StatsCard';
 import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
+import DataListTable from '../../common/DataListTable';
+import { getProjectCostListColumns, renderProjectCostEmptyContent } from '../projectDetailLists/projectCostListColumns';
+import { sortProjectCostRows } from '../projectDetailLists/projectCostListSort';
 
 const COST_KPI_VALUE_SX = {
   whiteSpace: 'nowrap',
@@ -861,311 +860,117 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
         isDark={isDark}
       />
 
-      {/* Costs Table */}
-      <Paper
-        elevation={0}
-        sx={{
-          background: colors.bgCard,
-          border: `1px solid ${colors.borderSubtle}`,
-          borderRadius: '8px',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Header */}
-        <Box
-          sx={{
-            p: 3,
-            borderBottom: `1px solid ${colors.borderSubtle}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <ReceiptLong sx={{ color: colors.accentIndigo }} />
-            <Typography sx={{ fontSize: 18, fontWeight: 600, color: colors.textPrimary }}>
-              Lançamentos de Custos
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Toolbar */}
-        <Box
-          sx={{
-            p: 2.5,
-            borderBottom: `1px solid ${colors.borderSubtle}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                px: 2,
-                py: 1.25,
-                background: colors.bgTertiary,
-                border: `1px solid ${colors.borderSubtle}`,
-                borderRadius: '8px',
-                width: 280,
-              }}
-            >
-              <Search sx={{ color: colors.textMuted, fontSize: 20 }} />
-              <TextField
-                variant="standard"
-                placeholder="Buscar custo..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{ disableUnderline: true }}
+      <DataListTable
+        density="compact"
+        dataTestidTable="tabela-projeto-custos"
+        shell={{
+          title: 'Lançamentos de Custos',
+          titleIcon: 'receipt_long',
+          accentColor: colors.accentIndigo,
+          count: filteredExpenses.length,
+          toolbar: (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <Box
                 sx={{
-                  flex: 1,
-                  '& .MuiInputBase-input': {
-                    color: colors.textPrimary,
-                    fontSize: 14,
-                    '&::placeholder': { color: colors.textMuted, opacity: 1 },
-                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 1.25,
+                  background: colors.bgTertiary,
+                  border: `1px solid ${colors.borderSubtle}`,
+                  borderRadius: '8px',
+                  width: 280,
                 }}
-              />
-            </Box>
-            <Button
-              variant="outlined"
-              startIcon={<FilterList />}
-              sx={{
-                background: colors.bgTertiary,
-                border: `1px solid ${colors.borderSubtle}`,
-                borderRadius: '8px',
-                color: colors.textSecondary,
-                textTransform: 'none',
-                px: 2,
-                py: 1.25,
-                '&:hover': {
-                  background: 'linear-gradient(145deg, #1e2835 0%, #19212b 100%)',
-                  color: colors.textPrimary,
-                  borderColor: colors.borderSubtle,
-                },
-              }}
-            >
-              Filtros
-            </Button>
-          </Box>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={handleOpenCreate}
-            sx={{
-              background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 600,
-              px: 2.5,
-              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-              '&:hover': {
-                boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)',
-              },
-            }}
-          >
-            Novo Custo
-          </Button>
-        </Box>
-
-        {/* Table */}
-        <TableContainer sx={{ maxHeight: 600 }}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow
+              >
+                <Search sx={{ color: colors.textMuted, fontSize: 20 }} />
+                <TextField
+                  variant="standard"
+                  placeholder="Buscar custo..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{ disableUnderline: true }}
+                  sx={{
+                    flex: 1,
+                    '& .MuiInputBase-input': {
+                      color: colors.textPrimary,
+                      fontSize: 14,
+                      '&::placeholder': { color: colors.textMuted, opacity: 1 },
+                    },
+                  }}
+                />
+              </Box>
+              <Button
+                variant="outlined"
+                startIcon={<FilterList />}
                 sx={{
                   background: colors.bgTertiary,
-                  '& th': {
-                    fontWeight: 600,
-                    fontSize: 11,
-                    textTransform: 'uppercase',
-                    letterSpacing: 1,
-                    color: colors.textMuted,
-                    py: 1.75,
-                    borderBottom: `1px solid ${colors.borderSubtle}`,
+                  border: `1px solid ${colors.borderSubtle}`,
+                  borderRadius: '8px',
+                  color: colors.textSecondary,
+                  textTransform: 'none',
+                  px: 2,
+                  py: 1.25,
+                  '&:hover': {
+                    background: 'linear-gradient(145deg, #1e2835 0%, #19212b 100%)',
+                    color: colors.textPrimary,
+                    borderColor: colors.borderSubtle,
                   },
                 }}
               >
-                <TableCell>ID</TableCell>
-                <TableCell>Descrição</TableCell>
-                <TableCell>Categoria</TableCell>
-                <TableCell>Data</TableCell>
-                <TableCell align="right">Valor</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell align="right">Ações</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredExpenses.map((exp, index) => {
-                const statusConfig = getStatusConfig(exp.status);
-                const catConfig = getCategoryConfig(exp.type);
-                const costId = `#CST-${String(index + 1).padStart(3, '0')}`;
-
-                return (
-                  <TableRow
-                    key={exp.id}
-                    sx={{
-                      '&:hover': { background: 'rgba(37, 99, 235, 0.05)' },
-                      '& td': {
-                        py: 2,
-                        fontSize: 14,
-                        borderBottom: `1px solid ${colors.borderSubtle}`,
-                        color: colors.textSecondary,
-                      },
-                    }}
-                  >
-                    <TableCell>
-                      <Typography sx={{ fontFamily: 'monospace', fontSize: 12, color: colors.textMuted }}>
-                        {costId}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: 500, color: colors.textPrimary }}>{exp.description}</Typography>
-                      {exp.invoiceNumber && (
-                        <Typography sx={{ fontSize: 12, color: colors.textMuted, fontFamily: 'monospace' }}>
-                          NF: {exp.invoiceNumber}
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={catConfig.label}
-                        size="small"
-                        sx={{
-                          background: catConfig.bgColor,
-                          color: catConfig.color,
-                          border: `1px solid ${catConfig.borderColor}`,
-                          fontWeight: 500,
-                          fontSize: 12,
-                          borderRadius: '8px',
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ color: colors.textPrimary }}>
-                      {format(new Date(exp.date), 'dd/MM/yyyy')}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography sx={{ fontWeight: 600, fontFamily: 'monospace', color: colors.textPrimary }}>
-                        {formatCurrency(exp.amount)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={statusConfig.label}
-                        size="small"
-                        sx={{
-                          background: statusConfig.bgColor,
-                          color: statusConfig.color,
-                          border: `1px solid ${statusConfig.borderColor}`,
-                          fontWeight: 600,
-                          fontSize: 11,
-                          textTransform: 'uppercase',
-                          borderRadius: '8px',
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-                        {exp.fileUrl && (
-                          <Tooltip title="Ver Anexo">
-                            <IconButton
-                              size="small"
-                              href={getFileURL(exp.fileUrl)}
-                              target="_blank"
-                              sx={{ color: colors.textMuted, '&:hover': { background: colors.bgTertiary, color: colors.textPrimary } }}
-                            >
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {(exp.status === 'PREVISTO' || exp.status === 'NAO_PREVISTO' || exp.status === 'RETURNED') && (
-                          <Tooltip title={exp.status === 'RETURNED' ? 'Reenviar para Aprovação' : 'Submeter para Aprovação'}>
-                            <IconButton
-                              size="small"
-                              onClick={() => handleSubmitForApproval(exp.id)}
-                              sx={{ color: colors.textMuted, '&:hover': { background: colors.bgTertiary, color: colors.accentAmber } }}
-                            >
-                              <PendingActions fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {/* Bloquear edição/exclusão para custos aprovados */}
-                        {!['APROVADO', 'REALIZADO', 'PAGO'].includes(exp.status) && (
-                          <>
-                            <Tooltip title="Editar">
-                              <IconButton
-                                size="small"
-                                onClick={() => handleOpenEdit(exp)}
-                                sx={{ color: colors.textMuted, '&:hover': { background: colors.bgTertiary, color: colors.textPrimary } }}
-                              >
-                                <Edit fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Excluir">
-                              <IconButton
-                                size="small"
-                                onClick={() => handleDelete(exp)}
-                                sx={{ color: colors.textMuted, '&:hover': { background: colors.bgTertiary, color: colors.accentRose } }}
-                              >
-                                <Delete fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        )}
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {filteredExpenses.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Box
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: '8px',
-                          background: colors.accentIndigoSoft,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          mb: 3,
-                        }}
-                      >
-                        <ReceiptLong sx={{ fontSize: 40, color: colors.accentIndigo }} />
-                      </Box>
-                      <Typography sx={{ fontSize: 18, fontWeight: 600, color: colors.textPrimary, mb: 1 }}>
-                        Nenhum custo cadastrado
-                      </Typography>
-                      <Typography sx={{ fontSize: 14, color: colors.textMuted, maxWidth: 360, textAlign: 'center', mb: 3 }}>
-                        Comece adicionando os custos do projeto para acompanhar o orçamento e as despesas.
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        startIcon={<Add />}
-                        onClick={handleOpenCreate}
-                        sx={{
-                          background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-                          borderRadius: '8px',
-                          textTransform: 'none',
-                          fontWeight: 600,
-                          px: 3,
-                        }}
-                      >
-                        Lançar Primeiro Custo
-                      </Button>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+                Filtros
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={handleOpenCreate}
+                sx={{
+                  background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  px: 2.5,
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                  '&:hover': {
+                    boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)',
+                  },
+                }}
+              >
+                Novo Custo
+              </Button>
+            </Box>
+          ),
+          sx: { background: colors.bgCard, border: `1px solid ${colors.borderSubtle}`, borderRadius: '8px', overflow: 'hidden' },
+          tableContainerSx: { maxHeight: 560 },
+        }}
+        columns={getProjectCostListColumns({
+          colors,
+          getCategoryConfig,
+          getStatusConfig,
+          formatCurrency,
+          getDisplayRowNumber: (exp) => expenses.findIndex((e) => e.id === exp.id) + 1,
+          onSubmitForApproval: handleSubmitForApproval,
+          onOpenEdit: handleOpenEdit,
+          onDelete: handleDelete,
+        })}
+        rows={filteredExpenses}
+        sortRows={sortProjectCostRows}
+        defaultOrderBy="date"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (id === 'date' || id === 'amount' ? 'desc' : 'asc')}
+        resetPaginationKey={`${searchTerm}|${expenses.length}`}
+        rowsPerPageDefault={10}
+        emptyContent={
+          filteredExpenses.length === 0
+            ? renderProjectCostEmptyContent({
+                colors,
+                hasAnyExpenses: expenses.length > 0,
+                onCreate: handleOpenCreate,
+              })
+            : null
+        }
+        emptyMessage="Nenhum custo."
+      />
 
       {/* Distribution Card */}
       <DistributionCard expenses={expenses} formatCurrency={formatCurrency} colors={colors} isDark={isDark} />

@@ -67,7 +67,9 @@ Migrado com **`DataListShell`** (**EP-010** / US-025, US-026).
 
 ## Grupo E — Componentes (tabs de projeto, modais, config)
 
-Inclui (entre outros): `ProjectTasksList.jsx`, `ProjectRisks.jsx`, `ProjectCosts.jsx`, `ProjectProposals.jsx`, `TenantsTab.jsx`, `ContractModal.jsx`, `AzureConfigModal.jsx`, `UserImportModal.jsx`, `AssetModal.jsx`, `AssetViewModal.jsx`. *(Listas em `UsersTab`, `RolesTab`, `FreezeWindowsTab` e tabs relacionadas em Config/Organização passaram a `DataListTable` — ver Grupo C / nota em `OrganizationPage`.)*
+**Detalhe do projeto (`projectDetailLists/` + tabs):** listas principais em **`DataListTable`** com `density="compact"`, colunas e `sort` em ficheiros dedicados; `data-testid`: `tabela-projeto-tarefas`, `tabela-projeto-riscos`, `tabela-projeto-atas`, `tabela-projeto-custos`, `tabela-projeto-propostas`, `tabela-projeto-membros`. Ficheiros: `projectTaskList*`, `ProjectTaskListTable.jsx`, `projectRiskList*`, `projectMinuteList*`, `projectCostList*`, `projectProposalList*`, `projectMemberList*`, `ProjectMembersTable.jsx`.
+
+Outros neste grupo (modais, config): `TenantsTab.jsx`, `ContractModal.jsx`, `AzureConfigModal.jsx`, `UserImportModal.jsx`, `AssetModal.jsx`, `AssetViewModal.jsx`. *(Listas em `UsersTab`, `RolesTab`, `FreezeWindowsTab` e tabs relacionadas em Config/Organização passaram a `DataListTable` — ver Grupo C / nota em `OrganizationPage`.)*
 
 **DataGrid (`@mui/x-data-grid`):** não usado no inventário atual; o projeto usa sobretudo MUI `Table` ou HTML `<table>`.
 

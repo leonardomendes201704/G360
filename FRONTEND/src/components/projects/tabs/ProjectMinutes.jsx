@@ -1,21 +1,20 @@
 import { useState, useEffect, useContext } from 'react';
 import {
-  Box, Button, IconButton, Typography, Select, MenuItem, Chip, TextField, InputAdornment, FormControl
+  Box, Button, Typography, Select, MenuItem, TextField, InputAdornment, FormControl
 } from '@mui/material';
 import {
-  Add, Summarize, CalendarMonth, PendingActions, People,
-  Visibility, Edit, Delete, Search, CheckCircle, Pending, Description, Send, Person, Download
+  Add, Summarize, Search, CheckCircle, Pending, Edit, Delete
 } from '@mui/icons-material';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { useSnackbar } from 'notistack';
 import useAuth from '../../../hooks/useAuth';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { getMinutes, deleteMinute, submitMinute } from '../../../services/project-details.service';
 import MinuteModal from '../../modals/MinuteModal';
-import { getFileURL } from '../../../utils/urlUtils';
 import StatsCard from '../../common/StatsCard';
 import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
+import DataListTable from '../../common/DataListTable';
+import { getProjectMinuteListColumns } from '../projectDetailLists/projectMinuteListColumns';
+import { sortProjectMinuteRows } from '../projectDetailLists/projectMinuteListSort';
 
 const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenClose }) => {
   const { mode } = useContext(ThemeContext);
@@ -115,8 +114,24 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
   };
 
   // Filtros
-  const filteredMinutes = minutes.filter(m => {
+  const filteredMinutes = minutes.filter((m) => {
     if (searchQuery && !m.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (statusFilter === 'approved' && m.status !== 'APPROVED') return false;
+    if (statusFilter === 'pending' && m.status !== 'PENDING') return false;
+    if (statusFilter === 'draft' && m.status !== 'DRAFT') return false;
+    const date = new Date(m.date);
+    const now = new Date();
+    if (periodFilter === 'thisMonth') {
+      if (date.getMonth() !== now.getMonth() || date.getFullYear() !== now.getFullYear()) return false;
+    }
+    if (periodFilter === 'last3Months') {
+      const cutoff = new Date(now);
+      cutoff.setMonth(cutoff.getMonth() - 3);
+      if (date < cutoff) return false;
+    }
+    if (periodFilter === 'thisYear') {
+      if (date.getFullYear() !== now.getFullYear()) return false;
+    }
     return true;
   });
 
@@ -236,246 +251,37 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
         />
       </Box>
 
-      {/* Atas List */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {filteredMinutes.map((minute) => {
-          const minuteDate = new Date(minute.date);
-          const day = format(minuteDate, 'dd');
-          const month = format(minuteDate, 'MMM', { locale: ptBR });
-          const status = getStatusConfig(minute.status);
-
-          return (
-            <Box key={minute.id} sx={{ ...cardStyle, overflow: 'hidden' }}>
-              {/* Card Header */}
-              <Box sx={{ p: 2.5, borderBottom: `1px solid ${borderSubtle}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                  <Box sx={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '8px',
-                    background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    <Typography sx={{ fontSize: '20px', fontWeight: 700, color: 'white', lineHeight: 1 }}>{day}</Typography>
-                    <Typography sx={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase' }}>{month}</Typography>
-                  </Box>
-                  <Box>
-                    <Typography sx={{ fontSize: '11px', color: '#2563eb', fontWeight: 600, mb: 0.5 }}>
-                      ATA-{String(minute.id).slice(-3).padStart(3, '0')}
-                    </Typography>
-                    <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary, mb: 1 }}>{minute.title}</Typography>
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                      {minute.duration && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: textSecondary, fontSize: '12px' }}>
-                          <CalendarMonth sx={{ fontSize: 14 }} />
-                          {minute.duration}
-                        </Box>
-                      )}
-                      {minute.location && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: textSecondary, fontSize: '12px' }}>
-                          <Description sx={{ fontSize: 14 }} />
-                          {minute.location}
-                        </Box>
-                      )}
-                      {minute.participants && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: textSecondary, fontSize: '12px' }}>
-                          <People sx={{ fontSize: 14 }} />
-                          {typeof minute.participants === 'string' ? minute.participants : `${minute.participants.length} participantes`}
-                        </Box>
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-                <Chip
-                  label={status.label}
-                  icon={status.icon}
-                  size="small"
-                  sx={{
-                    bgcolor: status.bg,
-                    color: status.color,
-                    fontWeight: 500,
-                    '& .MuiChip-icon': { color: status.color }
-                  }}
-                />
-              </Box>
-
-              {/* Card Body */}
-              <Box sx={{ p: 2.5 }}>
-                {/* Pautas */}
-                {minute.topics && minute.topics.length > 0 && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography sx={{ fontSize: '11px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Description sx={{ fontSize: 14 }} /> Pautas Discutidas
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      {minute.topics.map((topic, idx) => (
-                        <Chip
-                          key={idx}
-                          icon={<CheckCircle sx={{ fontSize: 14 }} />}
-                          label={topic}
-                          size="small"
-                          sx={{
-                            background: surfaceBg,
-                            border: `1px solid ${borderSubtle}`,
-                            color: textMuted,
-                            '& .MuiChip-icon': { color: '#2563eb' }
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  </Box>
-                )}
-
-                {/* Ações Definidas */}
-                {minute.actions && Array.isArray(minute.actions) && minute.actions.length > 0 && (
-                  <Box>
-                    <Typography sx={{ fontSize: '11px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px', mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <CheckCircle sx={{ fontSize: 14 }} /> Ações Definidas
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {minute.actions.map((action, idx) => (
-                        <Box key={idx} sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1.5,
-                          p: 1.5,
-                          background: surfaceBg,
-                          borderRadius: '8px',
-                          border: `1px solid ${borderSubtle}`
-                        }}>
-                          <Box sx={{
-                            width: 18,
-                            height: 18,
-                            borderRadius: '8px',
-                            border: action.completed ? 'none' : '2px solid #64748b',
-                            background: action.completed ? '#10b981' : 'transparent',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0
-                          }}>
-                            {action.completed && <CheckCircle sx={{ fontSize: 14, color: 'white' }} />}
-                          </Box>
-                          <Typography sx={{
-                            flex: 1,
-                            fontSize: '13px',
-                            color: textMuted,
-                            textDecoration: action.completed ? 'line-through' : 'none',
-                            opacity: action.completed ? 0.6 : 1
-                          }}>
-                            {action.title}
-                          </Typography>
-                          {action.assignee && (
-                            <Typography sx={{ fontSize: '11px', color: textSecondary, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Person sx={{ fontSize: 14 }} />
-                              {action.assignee}
-                            </Typography>
-                          )}
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-
-              {/* Card Footer */}
-              <Box sx={{ p: 2, borderTop: `1px solid ${borderSubtle}`, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {minute.fileUrl && (
-                  <>
-                    <Button
-                      onClick={() => window.open(getFileURL(minute.fileUrl), '_blank', 'noopener,noreferrer')}
-                      startIcon={<Visibility />}
-                      size="small"
-                      sx={{
-                        color: textMuted,
-                        textTransform: 'none',
-                        fontSize: '13px',
-                        '&:hover': { color: '#2563eb', background: 'rgba(37, 99, 235, 0.1)' }
-                      }}
-                    >
-                      Visualizar
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        const a = document.createElement('a');
-                        a.href = getFileURL(minute.fileUrl);
-                        a.download = minute.fileName || 'ata.pdf';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                      }}
-                      startIcon={<Download />}
-                      size="small"
-                      sx={{
-                        color: textMuted,
-                        textTransform: 'none',
-                        fontSize: '13px',
-                        '&:hover': { color: '#10b981', background: 'rgba(16, 185, 129, 0.1)' }
-                      }}
-                    >
-                      Baixar
-                    </Button>
-                  </>
-                )}
-                <Button
-                  onClick={() => handleOpenEdit(minute)}
-                  startIcon={<Edit />}
-                  size="small"
-                  disabled={minute.status === 'APPROVED'}
-                  sx={{
-                    color: textMuted,
-                    textTransform: 'none',
-                    fontSize: '13px',
-                    '&:hover': { color: '#2563eb', background: 'rgba(37, 99, 235, 0.1)' }
-                  }}
-                >
-                  Editar
-                </Button>
-                {(minute.status === 'DRAFT' || minute.status === 'RETURNED') && (
-                  <Button
-                    onClick={() => handleSubmit(minute.id)}
-                    startIcon={<Send />}
-                    size="small"
-                    sx={{
-                      color: '#10b981',
-                      textTransform: 'none',
-                      fontSize: '13px',
-                      '&:hover': { background: 'rgba(16, 185, 129, 0.1)' }
-                    }}
-                  >
-                    {minute.status === 'RETURNED' ? 'Reenviar' : 'Submeter'}
-                  </Button>
-                )}
-                {minute.status !== 'APPROVED' && (
-                  <Button
-                    onClick={() => handleDelete(minute.id)}
-                    startIcon={<Delete />}
-                    size="small"
-                    sx={{
-                      color: '#f43f5e',
-                      textTransform: 'none',
-                      fontSize: '13px',
-                      '&:hover': { background: 'rgba(244, 63, 94, 0.1)' }
-                    }}
-                  >
-                    Excluir
-                  </Button>
-                )}
-              </Box>
-            </Box>
-          );
+      <DataListTable
+        density="compact"
+        dataTestidTable="tabela-projeto-atas"
+        shell={{
+          title: 'Lista de atas',
+          titleIcon: 'summarize',
+          accentColor: '#14b8a6',
+          count: filteredMinutes.length,
+          sx: { ...cardStyle, overflow: 'hidden' },
+          tableContainerSx: { maxHeight: 520 },
+        }}
+        columns={getProjectMinuteListColumns({
+          colors: {
+            textPrimary,
+            textSecondary,
+            textMuted,
+          },
+          getStatusConfig,
+          handleOpenEdit,
+          handleSubmit,
+          handleDelete,
         })}
-
-        {filteredMinutes.length === 0 && (
-          <Typography align="center" sx={{ py: 8, color: textSecondary, fontStyle: 'italic' }}>
-            Nenhuma ata registrada.
-          </Typography>
-        )}
-      </Box>
+        rows={filteredMinutes}
+        sortRows={sortProjectMinuteRows}
+        defaultOrderBy="date"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (id === 'date' ? 'desc' : 'asc')}
+        resetPaginationKey={`${statusFilter}-${periodFilter}-${searchQuery}-${filteredMinutes.length}`}
+        rowsPerPageDefault={10}
+        emptyMessage="Nenhuma ata registrada."
+      />
 
       <MinuteModal
         open={open}

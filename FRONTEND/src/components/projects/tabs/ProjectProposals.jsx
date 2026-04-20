@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import {
-  Box, Button, Chip, Typography, Avatar, Paper, Table, TableBody,
+  Box, Button, Typography, Avatar, Paper, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import {
-  Add, Article, Visibility, Download, CompareArrows, CheckCircle,
-  Pending, Cancel, Payments, Event, Business, Delete, Edit,
-  Star, StarHalf, StarOutline, EmojiEvents, Send
+  Add, Article, CompareArrows,
+  Star, StarHalf, StarOutline
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { AuthContext } from '../../../contexts/AuthContext';
@@ -19,6 +18,9 @@ import ProposalModal from '../../modals/ProposalModal';
 import PaymentConditionModal from '../../modals/PaymentConditionModal';
 import StatsCard from '../../common/StatsCard';
 import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
+import DataListTable from '../../common/DataListTable';
+import { getProjectProposalListColumns } from '../projectDetailLists/projectProposalListColumns';
+import { sortProjectProposalRows } from '../projectDetailLists/projectProposalListSort';
 
 const ProjectProposals = ({ projectId, projectName }) => {
   const [proposals, setProposals] = useState([]);
@@ -324,334 +326,47 @@ const ProjectProposals = ({ projectId, projectName }) => {
           </Button>
         </Box>
 
-        {/* Proposals Grid */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3 }}>
-          {proposals.map((proposal) => {
-            const statusConfig = getStatusConfig(proposal);
-            const supplier = suppliers.find((s) => s.id === proposal.supplierId);
-            const supplierName = supplier?.name || 'Fornecedor não especificado';
-            const supplierInitials = supplierName.substring(0, 2).toUpperCase();
-
-            return (
-              <Box
-                key={proposal.id}
-                sx={{
-                  background: surfaceBg,
-                  border: `1px solid ${borderSubtle}`,
-                  borderRadius: '8px',
-                  p: 3,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '4px',
-                    height: '100%',
-                    background: statusConfig.color
-                  },
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    borderColor: 'rgba(37, 99, 235, 0.3)'
-                  }
-                }}
-              >
-                {/* Header */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 600, color: textPrimary, mb: 0.5 }}>
-                      {proposal.description || 'Proposta sem descrição'}
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: 12, color: textMuted, fontFamily: 'monospace' }}
-                    >
-                      #{proposal.id}
-                    </Typography>
-                  </Box>
-                  <Chip
-                    icon={
-                      proposal.isWinner ? (
-                        <CheckCircle sx={{ fontSize: 14 }} />
-                      ) : proposal.status === 'REJEITADA' ? (
-                        <Cancel sx={{ fontSize: 14 }} />
-                      ) : (
-                        <Pending sx={{ fontSize: 14 }} />
-                      )
-                    }
-                    label={statusConfig.label}
-                    size="small"
-                    sx={{
-                      background: statusConfig.bgColor,
-                      color: statusConfig.color,
-                      border: `1px solid ${statusConfig.borderColor}`,
-                      fontWeight: 600,
-                      fontSize: 11,
-                      textTransform: 'uppercase',
-                      height: 28,
-                      '& .MuiChip-icon': { color: statusConfig.color }
-                    }}
-                  />
-                </Box>
-
-                {/* Supplier Info */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                  <Avatar
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      background: 'linear-gradient(135deg, #06b6d4, #2563eb)',
-                      fontSize: 14,
-                      fontWeight: 600
-                    }}
-                  >
-                    {supplierInitials}
-                  </Avatar>
-                  <Box>
-                    <Typography sx={{ fontSize: 14, fontWeight: 500, color: textPrimary }}>
-                      {supplierName}
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: 12, color: textMuted, fontFamily: 'monospace' }}
-                    >
-                      {supplier?.cnpj || 'CNPJ não cadastrado'}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {/* Description */}
-                <Typography
-                  sx={{
-                    fontSize: 14,
-                    color: textSecondary,
-                    mb: 2.5,
-                    lineHeight: 1.5,
-                    minHeight: 60
-                  }}
-                >
-                  {proposal.notes || 'Detalhes da proposta comercial...'}
-                </Typography>
-
-                {/* Meta Info */}
-                <Box
-                  sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: 2,
-                    pt: 2,
-                    borderTop: `1px solid ${borderSubtle}`,
-                    mb: 2
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Payments sx={{ fontSize: 18, color: textMuted }} />
-                    <Box>
-                      <Typography
-                        sx={{
-                          fontSize: 11,
-                          color: textMuted,
-                          textTransform: 'uppercase',
-                          mb: 0.25
-                        }}
-                      >
-                        Valor
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 500,
-                          color: proposal.status === 'REJEITADA' ? '#64748b' : '#10b981',
-                          fontFamily: 'monospace',
-                          textDecoration: proposal.status === 'REJEITADA' ? 'line-through' : 'none'
-                        }}
-                      >
-                        {formatCurrency(proposal.value)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {proposal.fileUrl ? (
-                      <>
-                        <Business sx={{ fontSize: 18, color: textMuted }} />
-                        <Box>
-                          <Typography
-                            sx={{
-                              fontSize: 11,
-                              color: textMuted,
-                              textTransform: 'uppercase',
-                              mb: 0.25
-                            }}
-                          >
-                            Anexo
-                          </Typography>
-                          <Typography sx={{ fontSize: 14, fontWeight: 500, color: '#2563eb' }}>
-                            Disponível
-                          </Typography>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Event sx={{ fontSize: 18, color: textMuted }} />
-                        <Box>
-                          <Typography
-                            sx={{
-                              fontSize: 11,
-                              color: textMuted,
-                              textTransform: 'uppercase',
-                              mb: 0.25
-                            }}
-                          >
-                            Status
-                          </Typography>
-                          <Typography sx={{ fontSize: 14, fontWeight: 500, color: textPrimary }}>
-                            {proposal.isWinner ? 'Vencedora' : 'Análise'}
-                          </Typography>
-                        </Box>
-                      </>
-                    )}
-                  </Box>
-                </Box>
-
-                {/* Actions */}
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  {/* Botão Submeter - Para propostas em rascunho ou devolvidas */}
-                  {(proposal.status === 'RASCUNHO' || proposal.status === 'DEVOLVIDA') && (
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<Send sx={{ fontSize: 16 }} />}
-                      onClick={() => handleSubmitForApproval(proposal.id)}
-                      sx={{
-                        background: proposal.status === 'DEVOLVIDA' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(59, 130, 246, 0.15)',
-                        color: proposal.status === 'DEVOLVIDA' ? '#f59e0b' : '#3b82f6',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: 13,
-                        py: 1.25,
-                        borderRadius: '8px',
-                        boxShadow: 'none',
-                        '&:hover': {
-                          background: proposal.status === 'DEVOLVIDA' ? '#f59e0b' : '#3b82f6',
-                          color: 'white',
-                          boxShadow: 'none'
-                        }
-                      }}
-                    >
-                      {proposal.status === 'DEVOLVIDA' ? 'Reenviar para Aprovação' : 'Submeter para Aprovação'}
-                    </Button>
-                  )}
-                  {/* Aguardando aprovação do gestor */}
-                  {proposal.status === 'AGUARDANDO_APROVACAO' && (
-                    <Box
-                      sx={{
-                        flex: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'rgba(59, 130, 246, 0.1)',
-                        border: '1px solid rgba(59, 130, 246, 0.2)',
-                        borderRadius: '8px',
-                        p: 1.25,
-                      }}
-                    >
-                      <Typography sx={{ fontSize: 12, color: '#3b82f6', textAlign: 'center' }}>
-                        Aguardando aprovação do gestor
-                      </Typography>
-                    </Box>
-                  )}
-                  {proposal.isWinner && (
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      startIcon={<Payments sx={{ fontSize: 16 }} />}
-                      onClick={() => handleOpenConditionModal(proposal)}
-                      sx={{
-                        background: proposal.paymentCondition
-                          ? 'rgba(37, 99, 235, 0.15)'
-                          : 'rgba(245, 158, 11, 0.15)',
-                        color: proposal.paymentCondition ? '#2563eb' : '#f59e0b',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: 13,
-                        py: 1.25,
-                        borderRadius: '8px',
-                        boxShadow: 'none',
-                        '&:hover': {
-                          background: proposal.paymentCondition ? '#2563eb' : '#f59e0b',
-                          color: 'white',
-                          boxShadow: 'none'
-                        }
-                      }}
-                    >
-                      {proposal.paymentCondition ? 'Ver Condição' : 'Definir Condição'}
-                    </Button>
-                  )}
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    startIcon={<Edit sx={{ fontSize: 16 }} />}
-                    onClick={() => handleOpenEdit(proposal)}
-                    sx={{
-                      background: actionBg,
-                      color: textSecondary,
-                      borderColor: borderSubtle,
-                      textTransform: 'none',
-                      fontWeight: 500,
-                      fontSize: 13,
-                      py: 1.25,
-                      borderRadius: '8px',
-                      '&:hover': {
-                        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.15)',
-                        background: hoverBg
-                      }
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  {(!(proposal.isWinner || proposal.status === 'APROVADA') || canApprove) && (
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      startIcon={<Delete sx={{ fontSize: 16 }} />}
-                      onClick={() => handleDelete(proposal.id)}
-                      sx={{
-                        background: actionBg,
-                        color: '#f43f5e',
-                        borderColor: 'rgba(244, 63, 94, 0.2)',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        fontSize: 13,
-                        py: 1.25,
-                        borderRadius: '8px',
-                        '&:hover': {
-                          borderColor: 'rgba(244, 63, 94, 0.3)',
-                          background: 'rgba(244, 63, 94, 0.1)'
-                        }
-                      }}
-                    >
-                      {(proposal.isWinner || proposal.status === 'APROVADA') ? 'Inativar' : 'Excluir'}
-                    </Button>
-                  )}
-                </Box>
-              </Box>
-            );
+        <DataListTable
+          density="compact"
+          dataTestidTable="tabela-projeto-propostas"
+          shell={{
+            hideHeader: true,
+            sx: {
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              p: 0,
+            },
+            tableContainerSx: { maxHeight: 560 },
+          }}
+          columns={getProjectProposalListColumns({
+            colors: {
+              textPrimary,
+              textSecondary,
+              textMuted,
+              borderSubtle,
+              actionBg,
+              hoverBg,
+              isDark,
+            },
+            suppliers,
+            getStatusConfig,
+            formatCurrency,
+            canApprove,
+            handleSubmitForApproval,
+            handleOpenConditionModal,
+            handleOpenEdit,
+            handleDelete,
           })}
-
-          {proposals.length === 0 && (
-            <Box
-              sx={{
-                gridColumn: '1 / -1',
-                textAlign: 'center',
-                py: 8,
-                color: textMuted,
-                fontStyle: 'italic'
-              }}
-            >
-              Nenhuma proposta cadastrada. Clique em "Nova Proposta" para começar.
-            </Box>
-          )}
-        </Box>
+          rows={proposals}
+          sortRows={(rows, orderBy, order) => sortProjectProposalRows(rows, orderBy, order, suppliers)}
+          defaultOrderBy="value"
+          defaultOrder="desc"
+          getDefaultOrderForColumn={(id) => (id === 'value' ? 'desc' : 'asc')}
+          resetPaginationKey={proposals.length}
+          rowsPerPageDefault={10}
+          emptyMessage='Nenhuma proposta cadastrada. Clique em "Nova Proposta" para começar.'
+        />
       </Paper>
 
       {/* Comparativo de Fornecedores */}

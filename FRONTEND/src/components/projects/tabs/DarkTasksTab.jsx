@@ -4,7 +4,7 @@ import { Add, Search } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import DarkTaskKanban from '../../tasks/DarkTaskKanban';
-import DarkTaskList from '../../tasks/DarkTaskList';
+import ProjectTaskListTable from '../projectDetailLists/ProjectTaskListTable';
 import { getProjectTasks, updateProjectTask, createProjectTask, deleteProjectTask } from '../../../services/project-details.service';
 import ProjectTaskModal from '../../modals/ProjectTaskModal';
 import StatsCard from '../../common/StatsCard';
@@ -395,11 +395,25 @@ const DarkTasksTab = ({ project }) => {
 
             {/* Content based on viewMode */}
             {viewMode === 'LIST' ? (
-                <DarkTaskList
+                <ProjectTaskListTable
                     tasks={filteredTasks}
                     onTaskClick={handleTaskClick}
                     onTaskDelete={handleTaskDelete}
                     onTaskToggle={handleTaskToggle}
+                    theme={{
+                        isDark,
+                        containerBg: cardBg,
+                        containerBorder: cardBorder,
+                        cardShadow,
+                        textPrimary,
+                        textSecondary,
+                        textMuted,
+                        surfaceBg,
+                        checkboxBorder: isDark ? '2px solid rgba(255, 255, 255, 0.06)' : '2px solid rgba(0, 0, 0, 0.12)',
+                        menuBg: isDark ? '#1c2632' : '#ffffff',
+                        menuBorder: isDark ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid rgba(0, 0, 0, 0.08)',
+                        menuText: isDark ? '#f1f5f9' : '#0f172a',
+                    }}
                 />
             ) : (
                 <DarkTaskKanban

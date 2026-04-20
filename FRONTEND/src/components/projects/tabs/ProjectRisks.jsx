@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import {
-  Box, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, IconButton, Typography, Select, MenuItem, Chip, FormControl
+  Box, Button, Typography, Select, MenuItem, FormControl
 } from '@mui/material';
-import { Add, Visibility, Edit, Delete, Shield, GridOn, Category, ListAlt } from '@mui/icons-material';
+import { Add, Shield, GridOn, Category } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { getRisks, deleteRisk } from '../../../services/project-details.service';
@@ -12,6 +11,9 @@ import RiskViewModal from '../../modals/RiskViewModal';
 import ConfirmDialog from '../../common/ConfirmDialog';
 import StatsCard from '../../common/StatsCard';
 import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
+import DataListTable from '../../common/DataListTable';
+import { getProjectRiskListColumns } from '../projectDetailLists/projectRiskListColumns';
+import { sortProjectRiskRows } from '../projectDetailLists/projectRiskListSort';
 
 const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
   const { mode } = useContext(ThemeContext);
@@ -360,112 +362,59 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
         </Box>
       </Box>
 
-      {/* Risk Table */}
-      <Box sx={{ ...cardStyle, overflow: 'hidden' }}>
-        <Box sx={{
-          p: 2.5,
-          borderBottom: `1px solid ${borderSubtle}`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <ListAlt sx={{ color: '#2563eb', fontSize: 22 }} />
-            <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary }}>Lista de Riscos</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <FormControl size="small">
-              <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} sx={selectSx}>
-                <MenuItem value="all">Todas as Categorias</MenuItem>
-                {categories.map(cat => <MenuItem key={cat.key} value={cat.key}>{cat.name}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <FormControl size="small">
-              <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} sx={selectSx}>
-                <MenuItem value="all">Todos os Status</MenuItem>
-                <MenuItem value="OPEN">Ativo</MenuItem>
-                <MenuItem value="MONITORING">Monitorando</MenuItem>
-                <MenuItem value="MITIGATED">Mitigado</MenuItem>
-                <MenuItem value="CLOSED">Fechado</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ background: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)' }}>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>ID</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>Descrição</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>Categoria</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>Impacto</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: textMuted, borderBottom: `1px solid ${borderSubtle}` }}>Ações</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRisks.map((risk, idx) => (
-                <TableRow key={risk.id} sx={{ '&:hover': { background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)' } }}>
-                  <TableCell sx={{ color: '#2563eb', fontWeight: 600, borderBottom: `1px solid ${borderSubtle}` }}>
-                    RSK-{String(idx + 1).padStart(3, '0')}
-                  </TableCell>
-                  <TableCell sx={{ color: textPrimary, borderBottom: `1px solid ${borderSubtle}`, maxWidth: 300 }}>
-                    {risk.description}
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${borderSubtle}` }}>
-                    <Chip
-                      label={getCategoryTag(risk.category)}
-                      size="small"
-                      sx={{
-                        bgcolor: `${categories.find(c => c.key === risk.category)?.color || '#64748b'}20`,
-                        color: categories.find(c => c.key === risk.category)?.color || '#64748b',
-                        fontWeight: 500
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${borderSubtle}` }}>
-                    <Chip
-                      label={getImpactText(risk.impact)}
-                      size="small"
-                      sx={{
-                        bgcolor: `${getImpactColor(risk.impact)}20`,
-                        color: getImpactColor(risk.impact),
-                        fontWeight: 600
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${borderSubtle}` }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box sx={{ width: 8, height: 8, borderRadius: '8px', background: getStatusColor(risk.status) }} />
-                      <Typography sx={{ fontSize: '13px', color: textMuted }}>{getStatusText(risk.status)}</Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ borderBottom: `1px solid ${borderSubtle}` }}>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      <IconButton size="small" onClick={() => handleView(risk)} sx={{ color: textMuted, '&:hover': { color: '#2563eb', background: 'rgba(37, 99, 235, 0.1)' } }}>
-                        <Visibility fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => handleOpen(risk)} sx={{ color: textMuted, '&:hover': { color: '#2563eb', background: 'rgba(37, 99, 235, 0.1)' } }}>
-                        <Edit fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => handleDeleteClick(risk.id)} sx={{ color: textMuted, '&:hover': { color: '#f43f5e', background: 'rgba(244, 63, 94, 0.1)' } }}>
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredRisks.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6, color: textSecondary, fontStyle: 'italic', borderBottom: 'none' }}>
-                    Nenhum risco registrado.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+      <DataListTable
+        density="compact"
+        dataTestidTable="tabela-projeto-riscos"
+        shell={{
+          title: 'Lista de Riscos',
+          titleIcon: 'list_alt',
+          accentColor: '#2563eb',
+          count: filteredRisks.length,
+          toolbar: (
+            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <FormControl size="small">
+                <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} sx={selectSx}>
+                  <MenuItem value="all">Todas as Categorias</MenuItem>
+                  {categories.map(cat => <MenuItem key={cat.key} value={cat.key}>{cat.name}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <FormControl size="small">
+                <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} sx={selectSx}>
+                  <MenuItem value="all">Todos os Status</MenuItem>
+                  <MenuItem value="OPEN">Ativo</MenuItem>
+                  <MenuItem value="MONITORING">Monitorando</MenuItem>
+                  <MenuItem value="MITIGATED">Mitigado</MenuItem>
+                  <MenuItem value="CLOSED">Fechado</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          ),
+          sx: { ...cardStyle, overflow: 'hidden' },
+          tableContainerSx: { maxHeight: 520 },
+        }}
+        columns={getProjectRiskListColumns({
+          textPrimary,
+          textMuted,
+          categories,
+          getCategoryTag,
+          getImpactText,
+          getImpactColor,
+          getStatusText,
+          getStatusColor,
+          getDisplayRowNumber: (risk) => filteredRisks.findIndex((x) => x.id === risk.id) + 1,
+          onView: handleView,
+          onEdit: handleOpen,
+          onDelete: handleDeleteClick,
+        })}
+        rows={filteredRisks}
+        sortRows={sortProjectRiskRows}
+        defaultOrderBy="impact"
+        defaultOrder="desc"
+        getDefaultOrderForColumn={(id) => (id === 'impact' || id === 'id' ? 'desc' : 'asc')}
+        resetPaginationKey={`${categoryFilter}|${statusFilter}|${risks.length}`}
+        rowsPerPageDefault={10}
+        emptyMessage="Nenhum risco registrado."
+      />
 
       <RiskModal
         open={open}
