@@ -14,6 +14,7 @@ import FreezeWindowsTab from '../../components/admin/FreezeWindowsTab';
 import CabMembersTab from '../../components/admin/CabMembersTab';
 import ApprovalTiersTab from '../../components/config/ApprovalTiersTab';
 import ServiceDeskConfigSection from '../../components/config/ServiceDeskConfigSection';
+import ChangelogTab from '../../components/config/ChangelogTab';
 
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import PageTitleCard from '../../components/common/PageTitleCard';
@@ -311,7 +312,8 @@ const OrganizationPage = () => {
   const [activeTab, setActiveTab] = useState(isGlobalSuperAdmin ? 'tenants' : 'diretorias');
 
   const tabs = isGlobalSuperAdmin ? [
-    { id: 'tenants', label: 'Gestao de Empresas', icon: 'domain' }
+    { id: 'tenants', label: 'Gestao de Empresas', icon: 'domain' },
+    { id: 'changelog', label: 'Notas de versão', icon: 'history' },
   ] : [
     { id: 'diretorias', label: 'Diretorias', icon: 'corporate_fare' },
     { id: 'centros-custo', label: 'Centros de Custo', icon: 'account_balance' },
@@ -323,17 +325,29 @@ const OrganizationPage = () => {
     { id: 'cab', label: 'Membros CAB', icon: 'groups' },
     { id: 'alcadas', label: 'Alçadas de aprovação', icon: 'rule' },
     { id: 'servicedesk', label: 'Service Desk', icon: 'support_agent' },
+    { id: 'changelog', label: 'Notas de versão', icon: 'history' },
   ];
 
   useEffect(() => {
-    if (isGlobalSuperAdmin) return;
     const t = searchParams.get('tab');
+    if (t === 'changelog') {
+      setActiveTab('changelog');
+      return;
+    }
+    if (isGlobalSuperAdmin) return;
     if (t === 'servicedesk') setActiveTab('servicedesk');
   }, [searchParams, isGlobalSuperAdmin]);
 
   const handleOrgTabClick = useCallback((id) => {
     setActiveTab(id);
-    if (isGlobalSuperAdmin) return;
+    if (id === 'changelog') {
+      setSearchParams({ tab: 'changelog' }, { replace: true });
+      return;
+    }
+    if (isGlobalSuperAdmin) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
     if (id === 'servicedesk') {
       setSearchParams((prev) => {
         const n = new URLSearchParams(prev);
@@ -348,6 +362,7 @@ const OrganizationPage = () => {
 
   const renderContent = () => {
     if (isGlobalSuperAdmin && activeTab === 'tenants') return <TenantsTab />;
+    if (isGlobalSuperAdmin && activeTab === 'changelog') return <ChangelogTab />;
     switch (activeTab) {
       case 'diretorias': return <DepartmentsTab />;
       case 'centros-custo': return <CostCentersTab />;
@@ -359,6 +374,7 @@ const OrganizationPage = () => {
       case 'cab': return <CabMembersTab />;
       case 'alcadas': return <ApprovalTiersTab />;
       case 'servicedesk': return <ServiceDeskConfigSection />;
+      case 'changelog': return <ChangelogTab />;
 
       default: return <DepartmentsTab />;
     }

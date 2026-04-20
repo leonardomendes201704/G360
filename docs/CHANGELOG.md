@@ -21,6 +21,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-20]
 
+### Added
+- **Configuração — Organização (`/config/organization`):** aba **Notas de versão** para leitura do ficheiro **`docs/CHANGELOG.md`** (fonte única no repositório): lista por data com **`DataListTable`** (`data-testid` **`tabela-organizacao-changelog`**), pré-visualização e **Ver detalhes** / clique na linha abre **modal** com conteúdo em markdown (`react-markdown`). Disponível para **Super Admin** e para utilizadores com as restantes abas organizacionais; URL **`?tab=changelog`**. `FRONTEND/vite.config.js`: `server.fs.allow` na raiz do monorepo para importar `docs/CHANGELOG.md?raw`; `parseChangelog.js` / `parseChangelog.test.js`; componente `ChangelogTab.jsx`.
+  - `FRONTEND/src/pages/config/OrganizationPage.jsx`
+
 ### Refactored
 - **Configuração — Organização (`/config/organization`), aba Diretorias:** lista em `<table>` HTML substituída por **`DataListTable`** com `departmentListColumns.jsx` e `departmentListSort.js` (ordenação por código, nome, diretor, CCs vinculados); paginação no cliente; estado vazio com ícone; `data-testid` **`tabela-organizacao-diretorias`**. Modais e demais abas da página inalterados.
   - `FRONTEND/src/pages/config/OrganizationPage.jsx`, `FRONTEND/src/pages/config/departmentListColumns.jsx`, `FRONTEND/src/pages/config/departmentListSort.js`

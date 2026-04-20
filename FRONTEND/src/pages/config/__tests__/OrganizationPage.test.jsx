@@ -26,6 +26,7 @@ vi.mock('../../../components/config/FiscalYearTab', () => ({ default: () => <div
 vi.mock('../../../components/admin/FreezeWindowsTab', () => ({ default: () => <div>Freeze Windows Tab</div> }));
 vi.mock('../../../components/admin/CabMembersTab', () => ({ default: () => <div>Cab Members Tab</div> }));
 vi.mock('../../../components/config/KnowledgeCategoriesTab', () => ({ default: () => <div>KB Categories Tab</div> }));
+vi.mock('../../../components/config/ChangelogTab', () => ({ default: () => <div>Changelog Tab</div> }));
 vi.mock('../../../components/modals/DepartmentModal', () => ({ default: () => <div>Dept Modal</div> }));
 vi.mock('../../../components/modals/CostCenterModal', () => ({ default: () => <div>CC Modal</div> }));
 vi.mock('../../../components/common/ConfirmDialog', () => ({ default: () => <div>Confirm Dialog</div> }));
@@ -75,18 +76,11 @@ describe('OrganizationPage', () => {
         expect(await screen.findByText('CC-101')).toBeInTheDocument();
     });
 
-    it('should show Tenants tab only for Super Admin', async () => {
+    it('should show Tenants and Notas de versão tabs for Super Admin', async () => {
         renderWithProviders(<OrganizationPage />, 'Super Admin');
 
-        // Super Admin sees Tenants Tab
         expect(screen.getByText('Gestao de Empresas')).toBeInTheDocument();
-        // And content is rendered directly? Or via tab switch?
-        // Code: if (isSuperAdmin) return <TenantsTab />;
-        // Wait, if isSuperAdmin, renderContent returns TenantsTab immediately without tabs logic?
-        // Let's check code:
-        // const renderContent = () => { if (isSuperAdmin) return <TenantsTab />; ... }
-        // Yes, it overrides everything.
-
+        expect(screen.getByTestId('org-tab-changelog')).toBeInTheDocument();
         expect(screen.getByText('Tenants Tab')).toBeInTheDocument();
     });
 });

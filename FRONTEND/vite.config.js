@@ -14,6 +14,9 @@ const devHttps =
       }
     : undefined
 
+/** Raiz do monorepo (G360): `import … from '../../../../docs/…?raw'` fora de `FRONTEND/`. */
+const repoRoot = path.resolve(__dirname, '..')
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -33,6 +36,9 @@ export default defineConfig({
     // Predefinido 5176 para nao colidir com outro Vite comum na 5173; override: VITE_DEV_PORT
     port: Number(process.env.VITE_DEV_PORT || 5176),
     strictPort: true,
+    fs: {
+      allow: [repoRoot],
+    },
     ...(devHttps ? { https: devHttps } : {}),
   },
 })
