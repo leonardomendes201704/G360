@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import {
   Add, Article, Visibility, Download, CompareArrows, CheckCircle,
-  Pending, Cancel, FolderOpen, Payments, Event, Business, Delete, Edit,
+  Pending, Cancel, Payments, Event, Business, Delete, Edit,
   Star, StarHalf, StarOutline, EmojiEvents, Send
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
@@ -17,6 +17,8 @@ import { getSuppliers } from '../../../services/supplier.service';
 import { getProjectById } from '../../../services/project.service';
 import ProposalModal from '../../modals/ProposalModal';
 import PaymentConditionModal from '../../modals/PaymentConditionModal';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const ProjectProposals = ({ projectId, projectName }) => {
   const [proposals, setProposals] = useState([]);
@@ -239,247 +241,44 @@ const ProjectProposals = ({ projectId, projectName }) => {
     return stars;
   };
 
+  const dense = true;
+
   return (
     <Box sx={{ animation: 'fadeInUp 0.5s ease' }}>
-      {/* KPI Grid */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 2.5,
-          mb: 4,
-          '@keyframes fadeInUp': {
-            from: { opacity: 0, transform: 'translateY(20px)' },
-            to: { opacity: 1, transform: 'translateY(0)' }
-          }
-        }}
-      >
-        {/* Total de Propostas */}
-        <Box
-          sx={{
-            background: cardBg,
-            border: `1px solid ${cardBorder}`,
-            borderRadius: '8px',
-            p: 3,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2.5,
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'all 0.3s',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            },
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              borderColor: 'rgba(37, 99, 235, 0.3)',
-              '&::before': { opacity: 1 }
-            }
-          }}
-        >
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: '8px',
-              background: 'rgba(37, 99, 235, 0.15)',
-              color: '#2563eb',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <FolderOpen />
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: 13, color: textSecondary, mb: 0.5 }}>
-              Total de Propostas
-            </Typography>
-            <Typography sx={{ fontSize: 26, fontWeight: 700, color: textPrimary }}>
-              {totalProposals}
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: textMuted, mt: 0.5 }}>
-              de {supplierCount} fornecedores
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Aprovadas */}
-        <Box
-          sx={{
-            background: cardBg,
-            border: `1px solid ${cardBorder}`,
-            borderRadius: '8px',
-            p: 3,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2.5,
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'all 0.3s',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: 'linear-gradient(90deg, #10b981, #06b6d4)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            },
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              borderColor: 'rgba(16, 185, 129, 0.3)',
-              '&::before': { opacity: 1 }
-            }
-          }}
-        >
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: '8px',
-              background: 'rgba(16, 185, 129, 0.15)',
-              color: '#10b981',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <CheckCircle />
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: 13, color: textSecondary, mb: 0.5 }}>Aprovadas</Typography>
-            <Typography sx={{ fontSize: 26, fontWeight: 700, color: textPrimary }}>
-              {approvedProposals}
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: textMuted, mt: 0.5 }}>
-              {formatCurrency(approvedTotal)} total
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Em Análise */}
-        <Box
-          sx={{
-            background: cardBg,
-            border: `1px solid ${cardBorder}`,
-            borderRadius: '8px',
-            p: 3,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2.5,
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'all 0.3s',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: 'linear-gradient(90deg, #f59e0b, #f43f5e)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            },
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              borderColor: 'rgba(245, 158, 11, 0.3)',
-              '&::before': { opacity: 1 }
-            }
-          }}
-        >
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: '8px',
-              background: 'rgba(245, 158, 11, 0.15)',
-              color: '#f59e0b',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Pending />
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: 13, color: textSecondary, mb: 0.5 }}>Em Análise</Typography>
-            <Typography sx={{ fontSize: 26, fontWeight: 700, color: textPrimary }}>
-              {pendingProposals}
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: textMuted, mt: 0.5 }}>
-              aguardando decisão
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Rejeitadas */}
-        <Box
-          sx={{
-            background: cardBg,
-            border: `1px solid ${cardBorder}`,
-            borderRadius: '8px',
-            p: 3,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2.5,
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'all 0.3s',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: 'linear-gradient(90deg, #f43f5e, #3b82f6)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            },
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              borderColor: 'rgba(244, 63, 94, 0.3)',
-              '&::before': { opacity: 1 }
-            }
-          }}
-        >
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: '8px',
-              background: 'rgba(244, 63, 94, 0.15)',
-              color: '#f43f5e',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Cancel />
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: 13, color: textSecondary, mb: 0.5 }}>Rejeitadas</Typography>
-            <Typography sx={{ fontSize: 26, fontWeight: 700, color: textPrimary }}>
-              {rejectedProposals}
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: textMuted, mt: 0.5 }}>
-              fora do escopo
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+      <ProjectTabKpiStrip columnCount={4}>
+        <StatsCard
+          dense={dense}
+          title="Total"
+          value={totalProposals}
+          subtitle={`de ${supplierCount} fornecedores`}
+          iconName="folder_open"
+          hexColor="#2563eb"
+        />
+        <StatsCard
+          dense={dense}
+          title="Aprovadas"
+          value={approvedProposals}
+          subtitle={formatCurrency(approvedTotal)}
+          iconName="check_circle"
+          hexColor="#10b981"
+        />
+        <StatsCard
+          dense={dense}
+          title="Em análise"
+          value={pendingProposals}
+          subtitle="aguardando decisão"
+          iconName="pending_actions"
+          hexColor="#f59e0b"
+        />
+        <StatsCard
+          dense={dense}
+          title="Rejeitadas"
+          value={rejectedProposals}
+          subtitle="fora do escopo"
+          iconName="cancel"
+          hexColor="#f43f5e"
+        />
+      </ProjectTabKpiStrip>
 
       {/* Propostas Recebidas Card */}
       <Paper

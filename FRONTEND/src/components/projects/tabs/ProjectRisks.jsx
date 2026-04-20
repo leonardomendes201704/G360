@@ -10,6 +10,8 @@ import { getRisks, deleteRisk } from '../../../services/project-details.service'
 import RiskModal from '../../modals/RiskModal';
 import RiskViewModal from '../../modals/RiskViewModal';
 import ConfirmDialog from '../../common/ConfirmDialog';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
   const { mode } = useContext(ThemeContext);
@@ -199,28 +201,7 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
     return true;
   });
 
-  // Stat Card Component
-  const StatCard = ({ value, label, color }) => (
-    <Box sx={{
-      ...cardStyle,
-      p: 2.5,
-      textAlign: 'center',
-      position: 'relative',
-      overflow: 'hidden',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '3px',
-        background: color
-      }
-    }}>
-      <Typography sx={{ fontSize: '28px', fontWeight: 700, color: textPrimary }}>{value}</Typography>
-      <Typography sx={{ fontSize: '12px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</Typography>
-    </Box>
-  );
+  const dense = true;
 
   return (
     <Box>
@@ -260,14 +241,13 @@ const ProjectRisks = ({ projectId, autoOpen, onAutoOpenClose }) => {
         </Button>
       </Box>
 
-      {/* Risk Stats */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 2, mb: 3 }}>
-        <StatCard value={stats.total} label="Total" color="#2563eb" />
-        <StatCard value={stats.critical} label="Crítico" color="#dc2626" />
-        <StatCard value={stats.high} label="Alto" color="#f43f5e" />
-        <StatCard value={stats.medium} label="Médio" color="#f59e0b" />
-        <StatCard value={stats.low} label="Baixo" color="#10b981" />
-      </Box>
+      <ProjectTabKpiStrip columnCount={5}>
+        <StatsCard dense={dense} title="Total" value={stats.total} iconName="shield" hexColor="#2563eb" />
+        <StatsCard dense={dense} title="Crítico" value={stats.critical} iconName="priority_high" hexColor="#dc2626" />
+        <StatsCard dense={dense} title="Alto" value={stats.high} iconName="trending_up" hexColor="#f43f5e" />
+        <StatsCard dense={dense} title="Médio" value={stats.medium} iconName="remove_circle_outline" hexColor="#f59e0b" />
+        <StatsCard dense={dense} title="Baixo" value={stats.low} iconName="check_circle_outline" hexColor="#10b981" />
+      </ProjectTabKpiStrip>
 
       {/* Risk Overview Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, mb: 3 }}>

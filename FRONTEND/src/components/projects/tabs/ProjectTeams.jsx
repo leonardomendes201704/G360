@@ -1,8 +1,10 @@
 import { useState, useMemo, useContext } from 'react';
 import { Box, Typography, Menu, MenuItem } from '@mui/material';
-import { People, Circle, Badge, TrendingUp, Groups, Analytics, Task, Code, Palette, BugReport, RocketLaunch, Edit, MoreVert, Visibility, Search, Person, Delete, PersonAdd } from '@mui/icons-material';
+import { People, Groups, Analytics, Task, Code, Palette, BugReport, RocketLaunch, Edit, MoreVert, Visibility, Search, Person, Delete, PersonAdd } from '@mui/icons-material';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import './ProjectTeams.css';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const ProjectTeams = ({
     projectId,
@@ -235,19 +237,19 @@ const ProjectTeams = ({
                 </Box>
             </Box>
 
-            {/* Stats Cards */}
-            <Box sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: 2,
-                mb: 3,
-                animation: 'fadeInUp 0.5s ease 0.2s both'
-            }}>
-                <StatCard icon={<People />} value={stats.totalMembers} label="Total de Membros" color="sky" themeColors={themeColors} />
-                <StatCard icon={<Circle />} value={stats.activeMembers} label="Ativos Agora" color="emerald" themeColors={themeColors} />
-                <StatCard icon={<Badge />} value={stats.totalTeams} label="Equipes Criadas" color="violet" themeColors={themeColors} />
-                <StatCard icon={<TrendingUp />} value={`${stats.avgWorkload}% `} label="Carga Média" color="amber" themeColors={themeColors} />
-            </Box>
+            <ProjectTabKpiStrip columnCount={4}>
+                <StatsCard dense title="Membros" value={stats.totalMembers} iconName="people" hexColor="#0ea5e9" />
+                <StatsCard dense title="Ativos" value={stats.activeMembers} iconName="person_pin_circle" hexColor="#10b981" />
+                <StatsCard dense title="Equipes" value={stats.totalTeams} iconName="groups" hexColor="#3b82f6" />
+                <StatsCard
+                    dense
+                    title="Carga média"
+                    value={stats.avgWorkload}
+                    subtitle="tarefas / membro"
+                    iconName="trending_up"
+                    hexColor="#f59e0b"
+                />
+            </ProjectTabKpiStrip>
 
             {/* Filters Bar */}
             <Box sx={{
@@ -381,53 +383,6 @@ const ProjectTeams = ({
 };
 
 // Helper Components
-const StatCard = ({ icon, value, label, color, themeColors }) => {
-    const colorMap = {
-        sky: { bg: 'rgba(14, 165, 233, 0.15)', color: '#0ea5e9' },
-        emerald: { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' },
-        violet: { bg: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6' },
-        amber: { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' }
-    };
-
-    const { bg, color: iconColor } = colorMap[color];
-
-    return (
-        <Box sx={{
-            background: themeColors.cardBg,
-            border: `1px solid ${themeColors.cardBorder}`,
-            borderRadius: '8px',
-            p: 2.5,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            transition: 'all 0.3s',
-            '&:hover': {
-                borderColor: 'rgba(37, 99, 235, 0.3)',
-                transform: 'translateY(-2px)'
-            }
-        }}>
-            <Box sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '8px',
-                background: bg,
-                color: iconColor,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {icon}
-            </Box>
-            <Box>
-                <Typography variant="h4" sx={{ fontWeight: 700, fontSize: 28, color: themeColors.textPrimary }}>{value}</Typography>
-                <Typography variant="caption" sx={{ fontSize: 12, color: themeColors.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    {label}
-                </Typography>
-            </Box>
-        </Box>
-    );
-};
-
 const TeamCard = ({ team, themeColors, onEdit, onDelete }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const menuOpen = Boolean(anchorEl);

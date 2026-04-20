@@ -4,9 +4,9 @@ import {
   TableHead, TableRow, Paper, Chip, Typography, IconButton, Tooltip, Avatar, TextField, InputAdornment
 } from '@mui/material';
 import {
-  Add, Description, Edit, Delete, CheckCircle, AttachMoney,
-  TrendingUp, TrendingDown, PendingActions, Savings, Visibility,
-  Search, FilterList, AccountBalanceWallet, Analytics, PieChart, ReceiptLong, HourglassEmpty
+  Add, Edit, Delete,
+  PendingActions, Visibility,
+  Search, FilterList, AccountBalanceWallet, Analytics, PieChart, ReceiptLong,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useSnackbar } from 'notistack';
@@ -16,6 +16,14 @@ import { submitCostForApproval } from '../../../services/project.service';
 import ExpenseModal from '../../modals/ExpenseModal';
 import ConfirmDialog from '../../common/ConfirmDialog';
 import { getFileURL } from '../../../utils/urlUtils';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
+
+const COST_KPI_VALUE_SX = {
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
 
 // =====================================================
 // DESIGN SYSTEM - DYNAMIC THEME COLORS
@@ -157,113 +165,6 @@ const getStatusConfigFn = (colors, status) => {
     },
   };
   return configs[status] || configs.PREVISTO;
-};
-
-// =====================================================
-// KPI CARD COMPONENT (receives colors as prop)
-// =====================================================
-const KPICard = ({ icon: Icon, label, value, subtitle, colorType = 'indigo', changeText, changePositive, colors }) => {
-  const colorMap = {
-    indigo: {
-      gradient: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-      soft: colors.accentIndigoSoft,
-      main: colors.accentIndigo,
-      hoverBorder: 'rgba(37, 99, 235, 0.3)',
-    },
-    rose: {
-      gradient: 'linear-gradient(90deg, #3b82f6, #f43f5e)',
-      soft: colors.accentRoseSoft,
-      main: colors.accentRose,
-      hoverBorder: 'rgba(244, 63, 94, 0.3)',
-    },
-    emerald: {
-      gradient: 'linear-gradient(90deg, #10b981, #06b6d4)',
-      soft: colors.accentEmeraldSoft,
-      main: colors.accentEmerald,
-      hoverBorder: 'rgba(16, 185, 129, 0.3)',
-    },
-    amber: {
-      gradient: 'linear-gradient(90deg, #f59e0b, #f43f5e)',
-      soft: colors.accentAmberSoft,
-      main: colors.accentAmber,
-      hoverBorder: 'rgba(245, 158, 11, 0.3)',
-    },
-  };
-
-  const c = colorMap[colorType];
-
-  return (
-    <Box
-      sx={{
-        background: colors.bgCard,
-        border: `1px solid ${colors.borderSubtle}`,
-        borderRadius: '8px',
-        p: 3,
-        boxShadow: colors.cardShadow,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2.5,
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '3px',
-          background: c.gradient,
-          opacity: 0,
-          transition: 'opacity 0.3s',
-        },
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          borderColor: c.hoverBorder,
-          boxShadow: '0 0 40px rgba(37, 99, 235, 0.1)',
-          '&::before': { opacity: 1 },
-        },
-      }}
-    >
-      <Box
-        sx={{
-          width: 56,
-          height: 56,
-          borderRadius: '8px',
-          background: c.soft,
-          color: c.main,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Icon />
-      </Box>
-      <Box>
-        <Typography sx={{ fontSize: 13, color: colors.textMuted, mb: 0.5 }}>{label}</Typography>
-        <Typography sx={{ fontSize: 26, fontWeight: 700, color: colors.textPrimary, fontFamily: 'monospace' }}>
-          {value}
-        </Typography>
-        {changeText && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-            {changePositive !== undefined && (
-              changePositive ? (
-                <CheckCircle sx={{ fontSize: 14, color: colors.accentEmerald }} />
-              ) : (
-                <TrendingUp sx={{ fontSize: 14, color: colors.accentRose }} />
-              )
-            )}
-            <Typography sx={{ fontSize: 12, color: changePositive ? colors.accentEmerald : (changePositive === false ? colors.accentRose : colors.textMuted) }}>
-              {changeText}
-            </Typography>
-          </Box>
-        )}
-        {subtitle && !changeText && (
-          <Typography sx={{ fontSize: 12, color: colors.textMuted, mt: 0.5 }}>{subtitle}</Typography>
-        )}
-      </Box>
-    </Box>
-  );
 };
 
 // =====================================================
@@ -908,51 +809,47 @@ const ProjectCosts = ({ projectId, budget, projectName, onProjectUpdate }) => {
     );
   }, [expenses, searchTerm]);
 
+  const dense = true;
+
   return (
     <Box sx={{ animation: 'fadeInUp 0.5s ease', '@keyframes fadeInUp': { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } } }}>
-      {/* KPI Grid */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 2.5,
-          mb: 4,
-        }}
-      >
-        <KPICard
-          icon={AccountBalanceWallet}
-          label="Orçamento Total"
+      <ProjectTabKpiStrip columnCount={4}>
+        <StatsCard
+          dense={dense}
+          title="Orçamento"
           value={formatCurrency(totalBudget)}
-          colorType="indigo"
-          colors={colors}
+          iconName="account_balance_wallet"
+          hexColor="#2563eb"
+          valueSx={COST_KPI_VALUE_SX}
         />
-        <KPICard
-          icon={TrendingDown}
-          label="Custo Realizado"
+        <StatsCard
+          dense={dense}
+          title="Realizado"
           value={formatCurrency(approvedExpenses)}
-          colorType="rose"
-          changeText={`${usagePercent}% do orçamento`}
-          changePositive={false}
-          colors={colors}
+          subtitle={`${usagePercent}% do orçamento`}
+          iconName="trending_down"
+          hexColor="#f43f5e"
+          valueSx={COST_KPI_VALUE_SX}
         />
-        <KPICard
-          icon={Savings}
-          label="Saldo Disponível"
+        <StatsCard
+          dense={dense}
+          title="Saldo"
           value={formatCurrency(savings)}
-          colorType="emerald"
-          changeText={`${savingsPercentage}% restante`}
-          changePositive={true}
-          colors={colors}
+          subtitle={`${savingsPercentage}% restante`}
+          iconName="savings"
+          hexColor="#10b981"
+          valueSx={COST_KPI_VALUE_SX}
         />
-        <KPICard
-          icon={HourglassEmpty}
-          label="Pendente Aprovação"
+        <StatsCard
+          dense={dense}
+          title="Pendente"
           value={formatCurrency(pendingExpenses)}
-          colorType="amber"
-          changeText={`${pendingCount} itens aguardando`}
-          colors={colors}
+          subtitle={`${pendingCount} itens aguardando`}
+          iconName="hourglass_empty"
+          hexColor="#f59e0b"
+          valueSx={COST_KPI_VALUE_SX}
         />
-      </Box>
+      </ProjectTabKpiStrip>
 
       {/* Budget Progress Card */}
       <BudgetProgressCard

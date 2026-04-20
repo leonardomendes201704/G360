@@ -14,6 +14,8 @@ import { ThemeContext } from '../../../contexts/ThemeContext';
 import { getMinutes, deleteMinute, submitMinute } from '../../../services/project-details.service';
 import MinuteModal from '../../modals/MinuteModal';
 import { getFileURL } from '../../../utils/urlUtils';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenClose }) => {
   const { mode } = useContext(ThemeContext);
@@ -118,35 +120,7 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
     return true;
   });
 
-  // Stat Card Component
-  const StatCard = ({ icon: Icon, value, label, color }) => (
-    <Box sx={{
-      ...cardStyle,
-      p: 2.5,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 2,
-      transition: 'all 0.2s',
-      '&:hover': { borderColor: 'rgba(37, 99, 235, 0.3)', transform: 'translateY(-2px)' }
-    }}>
-      <Box sx={{
-        width: 48,
-        height: 48,
-        borderRadius: '8px',
-        background: `${color}15`,
-        color: color,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <Icon />
-      </Box>
-      <Box>
-        <Typography sx={{ fontSize: '24px', fontWeight: 700, color: textPrimary }}>{value}</Typography>
-        <Typography sx={{ fontSize: '12px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</Typography>
-      </Box>
-    </Box>
-  );
+  const dense = true;
 
   // Status config
   const getStatusConfig = (status) => {
@@ -198,13 +172,12 @@ const ProjectMinutes = ({ projectId, projectName, project, autoOpen, onAutoOpenC
         </Button>
       </Box>
 
-      {/* Stats Cards */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2, mb: 3 }}>
-        <StatCard icon={Summarize} value={stats.total} label="Total de Atas" color="#14b8a6" />
-        <StatCard icon={CalendarMonth} value={stats.thisMonth} label="Este Mês" color="#0ea5e9" />
-        <StatCard icon={PendingActions} value={stats.pending} label="Pendentes" color="#f59e0b" />
-        <StatCard icon={People} value={stats.participants} label="Participantes" color="#3b82f6" />
-      </Box>
+      <ProjectTabKpiStrip columnCount={4}>
+        <StatsCard dense={dense} title="Total de atas" value={stats.total} iconName="summarize" hexColor="#14b8a6" />
+        <StatsCard dense={dense} title="Este mês" value={stats.thisMonth} iconName="calendar_month" hexColor="#0ea5e9" />
+        <StatsCard dense={dense} title="Pendentes" value={stats.pending} iconName="pending_actions" hexColor="#f59e0b" />
+        <StatsCard dense={dense} title="Participantes" value={stats.participants} iconName="people" hexColor="#3b82f6" />
+      </ProjectTabKpiStrip>
 
       {/* Filters Bar */}
       <Box sx={{

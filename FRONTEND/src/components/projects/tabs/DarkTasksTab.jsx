@@ -7,6 +7,8 @@ import DarkTaskKanban from '../../tasks/DarkTaskKanban';
 import DarkTaskList from '../../tasks/DarkTaskList';
 import { getProjectTasks, updateProjectTask, createProjectTask, deleteProjectTask } from '../../../services/project-details.service';
 import ProjectTaskModal from '../../modals/ProjectTaskModal';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const DarkTasksTab = ({ project }) => {
     const { mode } = useContext(ThemeContext);
@@ -156,14 +158,7 @@ const DarkTasksTab = ({ project }) => {
         });
     }, [tasks, statusFilter, priorityFilter, assigneeFilter, searchQuery]);
 
-    // KPI config igual as tarefas gerais
-    const kpiConfig = [
-        { key: 'total', label: 'Total de Tarefas', value: stats.total, icon: 'assignment', color: '#2563eb' },
-        { key: 'backlog', label: 'Backlog', value: stats.backlog, icon: 'inventory_2', color: '#64748b' },
-        { key: 'todo', label: 'A Fazer', value: stats.todo, icon: 'pending_actions', color: '#0ea5e9' },
-        { key: 'inProgress', label: 'Em Progresso', value: stats.inProgress, icon: 'autorenew', color: '#f59e0b' },
-        { key: 'done', label: 'Concluidas', value: stats.done, icon: 'check_circle', color: '#10b981' },
-    ];
+    const dense = true;
 
     if (loading) {
         return (
@@ -217,61 +212,13 @@ const DarkTasksTab = ({ project }) => {
                 </Button>
             </Box>
 
-            {/* KPI Grid - igual as tarefas gerais */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 2.5, mb: 4 }}>
-                {kpiConfig.map((item) => (
-                    <Box key={item.key} sx={{
-                        background: cardBg,
-                        backdropFilter: isDark ? 'blur(10px)' : 'none',
-                        border: cardBorder,
-                        boxShadow: cardShadow,
-                        borderRadius: '8px',
-                        padding: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        transition: 'all 0.2s',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '3px',
-                            borderRadius: '8px',
-                            background: item.color,
-                        },
-                        '&:hover': {
-                            borderColor: 'rgba(37, 99, 235, 0.3)',
-                            transform: 'translateY(-2px)',
-                        },
-                    }}>
-                        <Box sx={{
-                            width: '52px',
-                            height: '52px',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            background: `${item.color}15`,
-                            color: item.color,
-                        }}>
-                            <span className="material-icons-round" style={{ fontSize: '26px' }}>{item.icon}</span>
-                        </Box>
-                        <Box>
-                            <Typography sx={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: textSecondary, mb: 0.5 }}>
-                                {item.label}
-                            </Typography>
-                            <Typography sx={{ fontSize: '22px', fontWeight: 700, color: textPrimary }}>
-                                {item.value}
-                            </Typography>
-                        </Box>
-                    </Box>
-                ))}
-            </Box>
+            <ProjectTabKpiStrip columnCount={5}>
+                <StatsCard dense={dense} title="Total" value={stats.total} iconName="assignment" hexColor="#2563eb" />
+                <StatsCard dense={dense} title="Backlog" value={stats.backlog} iconName="inventory_2" hexColor="#64748b" />
+                <StatsCard dense={dense} title="A fazer" value={stats.todo} iconName="pending_actions" hexColor="#0ea5e9" />
+                <StatsCard dense={dense} title="Em prog." value={stats.inProgress} iconName="autorenew" hexColor="#f59e0b" />
+                <StatsCard dense={dense} title="Concluídas" value={stats.done} iconName="check_circle" hexColor="#10b981" />
+            </ProjectTabKpiStrip>
 
             {/* View Tabs */}
             <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>

@@ -8,6 +8,8 @@ import { getFollowUps, deleteFollowUp, completeFollowUp, rescheduleFollowUp } fr
 import FollowUpModal from '../../modals/FollowUpModal';
 import ConfirmDialog from '../../common/ConfirmDialog';
 import RescheduleModal from '../../modals/RescheduleModal';
+import StatsCard from '../../common/StatsCard';
+import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const TYPE_CONFIG = {
   STATUS_REPORT: { label: 'Status', icon: 'analytics', color: '#2563eb' },
@@ -242,35 +244,7 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   };
 
-  // Stat Card Component
-  const StatCard = ({ icon, value, label, color }) => (
-    <Box sx={{
-      ...cardStyle,
-      p: 2.5,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 2,
-      transition: 'all 0.2s',
-      '&:hover': { borderColor: 'rgba(37, 99, 235, 0.3)', transform: 'translateY(-2px)' }
-    }}>
-      <Box sx={{
-        width: 48,
-        height: 48,
-        borderRadius: '8px',
-        background: `${color}15`,
-        color: color,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <span className="material-icons-round" style={{ fontSize: 24 }}>{icon}</span>
-      </Box>
-      <Box>
-        <Typography sx={{ fontSize: '24px', fontWeight: 700, color: textPrimary }}>{value}</Typography>
-        <Typography sx={{ fontSize: '12px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</Typography>
-      </Box>
-    </Box>
-  );
+  const dense = true;
 
   if (loading) {
     return (
@@ -320,13 +294,12 @@ const ProjectFollowUp = ({ projectId, projectMembers = [] }) => {
         </Box>
       </Box>
 
-      {/* Stats */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2, mb: 3 }}>
-        <StatCard icon="event_note" value={stats.total} label="Total" color="#2563eb" />
-        <StatCard icon="pending_actions" value={stats.pending} label="Pendentes" color="#f59e0b" />
-        <StatCard icon="warning" value={stats.overdue} label="Atrasados" color="#f43f5e" />
-        <StatCard icon="check_circle" value={stats.completed} label="Concluídos" color="#10b981" />
-      </Box>
+      <ProjectTabKpiStrip columnCount={4}>
+        <StatsCard dense={dense} title="Total" value={stats.total} iconName="event_note" hexColor="#2563eb" />
+        <StatsCard dense={dense} title="Pendentes" value={stats.pending} iconName="pending_actions" hexColor="#f59e0b" />
+        <StatsCard dense={dense} title="Atrasados" value={stats.overdue} iconName="warning" hexColor="#f43f5e" />
+        <StatsCard dense={dense} title="Concluídos" value={stats.completed} iconName="check_circle" hexColor="#10b981" />
+      </ProjectTabKpiStrip>
 
       {/* Filters */}
       <Box sx={{ ...cardStyle, p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
