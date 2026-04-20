@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import debounce from 'lodash/debounce';
 
-import ProjectModal from '../../components/modals/ProjectModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import EmptyState from '../../components/common/EmptyState';
 import DataListTable from '../../components/common/DataListTable';
@@ -20,7 +19,7 @@ import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import PageTitleCard from '../../components/common/PageTitleCard';
 
-import { getProjects, createProject, updateProject, deleteProject, submitForApproval } from '../../services/project.service';
+import { getProjects, deleteProject, submitForApproval } from '../../services/project.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 
@@ -134,11 +133,8 @@ const ProjectsListPage = () => {
     const [projects, setProjects] = useState([]);
     const [users, setUsers] = useState([]);
 
-    const [modalOpen, setModalOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState(null);
-
-    const [selectedProject, setSelectedProject] = useState(null);
 
     const [filters, setFilters] = useState({
         search: '',
@@ -476,22 +472,6 @@ const ProjectsListPage = () => {
         fetchData(next, 1, orderBy, orderDirection, rowsPerPage);
     };
 
-    const handleSave = async (data) => {
-        try {
-            if (selectedProject) {
-                await updateProject(selectedProject.id, data);
-                enqueueSnackbar('Projeto atualizado com sucesso!', { variant: 'success' });
-            } else {
-                await createProject(data);
-                enqueueSnackbar('Projeto criado com sucesso!', { variant: 'success' });
-            }
-            setModalOpen(false);
-            fetchData(filters);
-        } catch (error) {
-            enqueueSnackbar(getErrorMessage(error, 'Erro ao salvar projeto'), { variant: 'error' });
-        }
-    };
-
     const handleDeleteClick = (e, id) => {
         e.stopPropagation();
         setProjectToDelete(id);
@@ -511,11 +491,10 @@ const ProjectsListPage = () => {
         }
     };
 
-    const handleOpenNew = () => { setSelectedProject(null); setModalOpen(true); };
+    const handleOpenNew = () => navigate('/projects/new');
     const handleOpenEdit = (e, project) => {
         e.stopPropagation();
-        setSelectedProject(project);
-        setModalOpen(true);
+        navigate(`/projects/${project.id}/edit`);
     };
 
     const handleResubmit = async (e, projectId) => {
@@ -824,13 +803,6 @@ const ProjectsListPage = () => {
                     }
                 />
             </div >
-
-            <ProjectModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSave={handleSave}
-                project={selectedProject}
-            />
 
             <ConfirmDialog
                 open={confirmOpen}

@@ -76,7 +76,7 @@ const labelSx = { color: 'var(--modal-text-secondary)', fontSize: '13px', fontWe
 
 const steps = ['Identificação', 'Escopo e Justificativa', 'Planejamento'];
 
-const ProjectCreationWizard = ({ onSave, onCancel, loading }) => {
+const ProjectCreationWizard = ({ onSave, onCancel, loading, variant = 'modal' }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [users, setUsers] = useState([]);
     const [costCenters, setCostCenters] = useState([]);
@@ -395,8 +395,13 @@ const ProjectCreationWizard = ({ onSave, onCancel, loading }) => {
         }
     };
 
+    const rootSx =
+        variant === 'page'
+            ? { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }
+            : { display: 'flex', flexDirection: 'column', height: '100%' };
+
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box sx={rootSx}>
             {/* Header Content */}
             <Box sx={{ px: 3, pt: 1, pb: 3 }}>
                 <Stepper activeStep={activeStep} alternativeLabel
@@ -425,12 +430,14 @@ const ProjectCreationWizard = ({ onSave, onCancel, loading }) => {
 
             <Box sx={{
                 p: 3, borderTop: '1px solid var(--modal-border-strong)',
-                display: 'flex', justifyContent: 'space-between',
+                display: 'flex', justifyContent: variant === 'page' ? 'flex-end' : 'space-between',
                 background: 'var(--modal-surface-subtle)'
             }}>
-                <Button onClick={onCancel} disabled={loading} sx={{ color: 'var(--modal-text-muted)' }}>
-                    Cancelar
-                </Button>
+                {variant !== 'page' && (
+                    <Button onClick={onCancel} disabled={loading} sx={{ color: 'var(--modal-text-muted)' }}>
+                        Cancelar
+                    </Button>
+                )}
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button

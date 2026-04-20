@@ -18,6 +18,7 @@ import DashboardRouter from './pages/dashboard/DashboardRouter'; // <--- NEW ROU
 import ModernDashboardPage from './pages/dashboard/ModernDashboardPage'; // <--- NEW DEMO
 import ProjectsListPage from './pages/projects/ProjectsListPage';
 import ProjectDetailsPage from './pages/projects/ProjectDetailsPage';
+import ProjectFormPage from './pages/projects/ProjectFormPage';
 import TeamProjectsStatusReport from './pages/projects/TeamProjectsStatusReport';
 import PortfolioDashboard from './pages/projects/PortfolioDashboard';
 import TasksPage from './pages/tasks/TasksPage';
@@ -95,6 +96,8 @@ function App() {
             <Route path="/projects" element={<ProjectsListPage />} />
             <Route path="/projects/portfolio" element={<PortfolioDashboard />} />
             <Route path="/projects/team-status-report" element={<TeamProjectsStatusReport />} /> {/* <--- NEW ROUTE */}
+            <Route path="/projects/new" element={<ProjectFormPage />} />
+            <Route path="/projects/:id/edit" element={<ProjectFormPage />} />
             <Route path="/projects/:id" element={<ProjectDetailsPage />} />
 
             {/* Módulos Operacionais */}

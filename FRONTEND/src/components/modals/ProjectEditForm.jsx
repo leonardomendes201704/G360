@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import {
     Box, Typography, TextField, Select, MenuItem, Button, IconButton, Autocomplete
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
 import userService from '../../services/user.service';
 import { getCostCenters } from '../../services/cost-center.service';
 
@@ -64,7 +63,7 @@ const selectSx = {
 
 const labelSx = { color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 };
 
-const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
+const ProjectEditForm = ({ onSave, onCancel, project, loading, variant = 'modal' }) => {
     const [users, setUsers] = useState([]);
     const [costCenters, setCostCenters] = useState([]);
     const [selectedArea, setSelectedArea] = useState('');
@@ -141,12 +140,16 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
             area: data.area,
             notes: data.notes || '',
         };
-        console.log('[ProjectEditForm] Saving project with data:', cleanData);
         onSave(cleanData);
     };
 
+    const rootSx =
+        variant === 'page'
+            ? { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }
+            : { display: 'flex', flexDirection: 'column', height: '100%' };
+
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box sx={rootSx}>
             {/* Content */}
             <Box sx={{
                 flex: 1,
@@ -301,7 +304,9 @@ const ProjectEditForm = ({ onSave, onCancel, project, loading }) => {
                 padding: '16px 24px', borderTop: '1px solid var(--modal-border-strong)',
                 display: 'flex', justifyContent: 'flex-end', gap: 2, background: 'var(--modal-surface-subtle)'
             }}>
-                <Button onClick={onCancel} disabled={loading} sx={{ color: 'var(--modal-text-secondary)' }}>Cancelar</Button>
+                {variant !== 'page' && (
+                    <Button onClick={onCancel} disabled={loading} sx={{ color: 'var(--modal-text-secondary)' }}>Cancelar</Button>
+                )}
                 <Button
                     type="submit"
                     form="editForm"

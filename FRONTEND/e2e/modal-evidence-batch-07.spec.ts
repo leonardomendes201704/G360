@@ -55,7 +55,7 @@ test.describe('Modal evidence batch 07 (31–35)', () => {
         await expect(dlg).toHaveScreenshot('modal-evidence-33-payment-condition-modal-shell.png');
     });
 
-    test('34 — ProjectModal (Projetos → Novo Projeto)', async ({ page }) => {
+    test('34 — Project form page (Projetos → Novo Projeto)', async ({ page }) => {
         await loginAs(page, 'manager');
         await page.goto('/projects');
         await page.waitForURL(/\/projects/, { timeout: 30000 });
@@ -71,11 +71,11 @@ test.describe('Modal evidence batch 07 (31–35)', () => {
             await page.getByText('Criar projeto ágil').click();
         }
 
-        const dlg = page.getByRole('dialog');
-        await expect(dlg.getByText('Novo Projeto').first()).toBeVisible({ timeout: 15000 });
-        await expect(dlg.getByText('Assistente de criação de projeto')).toBeVisible({ timeout: 10000 });
+        await expect(page).toHaveURL(/\/projects\/new/, { timeout: 15000 });
+        await expect(page.getByRole('heading', { name: 'Novo projeto' })).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Identificação')).toBeVisible({ timeout: 10000 });
 
-        await expect(dlg).toHaveScreenshot('modal-evidence-34-project-modal-shell.png');
+        await expect(page).toHaveScreenshot('modal-evidence-34-project-modal-shell.png');
     });
 
     test('35 — ProjectTaskModal (Projeto → Tarefas → Nova Tarefa)', async ({ page }) => {

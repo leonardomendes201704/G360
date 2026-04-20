@@ -8,14 +8,12 @@ import { AuthContext } from '../../contexts/AuthContext';
 import ActivityFeed from '../../components/dashboard/ActivityFeed';
 import DashboardCustomizer from '../../components/dashboard/DashboardCustomizer';
 import TaskModal from '../../components/modals/TaskModal';
-import ProjectModal from '../../components/modals/ProjectModal';
 import ChangeModal from '../../components/modals/ChangeModal';
 import ExpenseModal from '../../components/modals/ExpenseModal';
 import IncidentCreateModal from '../../components/modals/IncidentCreateModal';
 import api from '../../services/api';
 import { createGeneralTask } from '../../services/task.service';
 import { getReferenceUsers } from '../../services/reference.service';
-import { createProject } from '../../services/project.service';
 import { createChange } from '../../services/change-request.service';
 import { createExpense } from '../../services/expense.service';
 import { formatRelative, formatDueDate } from '../../utils/dateUtils';
@@ -143,7 +141,6 @@ const CollaboratorOverview = () => {
 
     // Modal states
     const [isTaskOpen, setIsTaskOpen] = useState(false);
-    const [isProjectOpen, setIsProjectOpen] = useState(false);
     const [isGmudOpen, setIsGmudOpen] = useState(false);
     const [isExpenseOpen, setIsExpenseOpen] = useState(false);
     const [isIncidentOpen, setIsIncidentOpen] = useState(false);
@@ -163,7 +160,6 @@ const CollaboratorOverview = () => {
 
     // Modal save handlers
     const handleSaveTask = async (d) => { try { await createGeneralTask(d); enqueueSnackbar('Tarefa criada!', { variant: 'success' }); setIsTaskOpen(false); reload(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } };
-    const handleSaveProject = async (d) => { try { await createProject(d); enqueueSnackbar('Projeto criado!', { variant: 'success' }); setIsProjectOpen(false); reload(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } };
     const handleSaveGmud = async (d) => { try { await createChange(d); enqueueSnackbar('GMUD criada!', { variant: 'success' }); setIsGmudOpen(false); reload(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } };
     const handleSaveExpense = async (d) => { try { await createExpense(d); enqueueSnackbar('Despesa lançada!', { variant: 'success' }); setIsExpenseOpen(false); reload(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } };
 
@@ -219,11 +215,11 @@ const CollaboratorOverview = () => {
 
     const quickActions = useMemo(() => getQuickActions(user, {
         task: () => setIsTaskOpen(true),
-        project: () => setIsProjectOpen(true),
+        project: () => navigate('/projects/new'),
         gmud: () => setIsGmudOpen(true),
         expense: () => setIsExpenseOpen(true),
         incident: () => setIsIncidentOpen(true),
-    }), [user]);
+    }), [user, navigate]);
 
     const priorityColor = (p) =>
         p === 'CRITICAL' ? '#ef4444' : p === 'HIGH' ? '#f97316' : p === 'MEDIUM' ? '#f59e0b' : '#94a3b8';
@@ -514,7 +510,6 @@ const CollaboratorOverview = () => {
                 isGeneralTask={true}
                 members={taskAssignees.map((u) => ({ user: u }))}
             />
-            <ProjectModal open={isProjectOpen} onClose={() => setIsProjectOpen(false)} onSave={handleSaveProject} />
             <ChangeModal open={isGmudOpen} onClose={() => setIsGmudOpen(false)} onSave={handleSaveGmud} />
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />
         </Box>

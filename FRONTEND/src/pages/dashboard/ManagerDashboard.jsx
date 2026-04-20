@@ -9,7 +9,6 @@ import { useContext } from 'react'; // Added useContext
 import { ThemeContext } from '../../contexts/ThemeContext'; // Added ThemeContext
 
 // Modals
-import ProjectModal from '../../components/modals/ProjectModal';
 import TaskModal from '../../components/modals/TaskModal';
 import ChangeModal from '../../components/modals/ChangeModal';
 import ExpenseModal from '../../components/modals/ExpenseModal';
@@ -17,7 +16,6 @@ import ContractModal from '../../components/modals/ContractModal';
 import SupplierModal from '../../components/modals/SupplierModal';
 
 // Services
-import { createProject } from '../../services/project.service';
 import { createGeneralTask } from '../../services/task.service';
 import { createChange } from '../../services/change-request.service';
 import { createExpense } from '../../services/expense.service';
@@ -44,7 +42,6 @@ const ManagerDashboard = ({ user }) => {
     const { mode } = useContext(ThemeContext);
 
     // Modal States
-    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isGmudModalOpen, setIsGmudModalOpen] = useState(false);
     const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
@@ -70,7 +67,7 @@ const ManagerDashboard = ({ user }) => {
 
     const handleQuickAction = (action) => {
         switch (action) {
-            case 'project': setIsProjectModalOpen(true); break;
+            case 'project': navigate('/projects/new'); break;
             case 'task': setIsTaskModalOpen(true); break;
             case 'gmud': setIsGmudModalOpen(true); break;
             case 'expense': setIsExpenseModalOpen(true); break;
@@ -99,7 +96,6 @@ const ManagerDashboard = ({ user }) => {
     };
 
     // Save Handlers
-    const handleSaveProject = async (data) => { setModalLoading(true); try { await createProject(data); enqueueSnackbar('Projeto criado!', { variant: 'success' }); setIsProjectModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } finally { setModalLoading(false); } };
     const handleSaveTask = async (data) => { setModalLoading(true); try { await createGeneralTask(data); enqueueSnackbar('Tarefa criada!', { variant: 'success' }); setIsTaskModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } finally { setModalLoading(false); } };
     const handleSaveGmud = async (data) => { setModalLoading(true); try { await createChange(data); enqueueSnackbar('GMUD criada!', { variant: 'success' }); setIsGmudModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } finally { setModalLoading(false); } };
     const handleSaveExpense = async (data) => { setModalLoading(true); try { await createExpense(data); enqueueSnackbar('Despesa lançada!', { variant: 'success' }); setIsExpenseModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } finally { setModalLoading(false); } };
@@ -525,7 +521,6 @@ const ManagerDashboard = ({ user }) => {
             </Box>
 
             {/* Modals */}
-            <ProjectModal open={isProjectModalOpen} onClose={() => setIsProjectModalOpen(false)} onSave={handleSaveProject} loading={modalLoading} />
             <TaskModal open={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} onSave={handleSaveTask} loading={modalLoading} isGeneralTask={true} members={allUsers} />
             <ChangeModal open={isGmudModalOpen} onClose={() => setIsGmudModalOpen(false)} onSave={handleSaveGmud} loading={modalLoading} />
             <ExpenseModal open={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} onSave={handleSaveExpense} />

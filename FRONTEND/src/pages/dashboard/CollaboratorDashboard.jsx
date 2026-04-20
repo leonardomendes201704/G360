@@ -8,7 +8,6 @@ import { useSnackbar } from 'notistack';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 // Modals
-import ProjectModal from '../../components/modals/ProjectModal';
 import TaskModal from '../../components/modals/TaskModal';
 import ChangeModal from '../../components/modals/ChangeModal';
 
@@ -35,7 +34,6 @@ const CollaboratorDashboard = ({ user }) => {
     const [loading, setLoading] = useState(true);
 
     // Modal States
-    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isGmudModalOpen, setIsGmudModalOpen] = useState(false);
     const [taskAssignees, setTaskAssignees] = useState([]);
@@ -57,7 +55,6 @@ const CollaboratorDashboard = ({ user }) => {
 
     useEffect(() => { fetchStats(); }, []);
 
-    const handleCreateProject = async (data) => { try { await projectService.create(data); enqueueSnackbar('Projeto criado!', { variant: 'success' }); setIsProjectModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } };
     const handleCreateTask = async (data) => { try { await createGeneralTask(data); enqueueSnackbar('Tarefa criada!', { variant: 'success' }); setIsTaskModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } };
     const handleCreateGmud = async (data) => { try { await createChange(data); enqueueSnackbar('GMUD criada!', { variant: 'success' }); setIsGmudModalOpen(false); fetchStats(); } catch { enqueueSnackbar('Erro.', { variant: 'error' }); } };
 
@@ -141,7 +138,7 @@ const CollaboratorDashboard = ({ user }) => {
             {/* Quick Actions Strip */}
             <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
                 {quickActions.map(action => (
-                    <Paper key={action.key} onClick={() => action.key === 'project' ? setIsProjectModalOpen(true) : action.key === 'task' ? setIsTaskModalOpen(true) : setIsGmudModalOpen(true)} sx={{
+                    <Paper key={action.key} onClick={() => action.key === 'project' ? navigate('/projects/new') : action.key === 'task' ? setIsTaskModalOpen(true) : setIsGmudModalOpen(true)} sx={{
                         ...commonPaperStyle, p: 2, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
                         transition: 'all 0.2s', '&:hover': { transform: 'translateY(-2px)', borderColor: 'primary.main' }
                     }}>
@@ -358,7 +355,6 @@ const CollaboratorDashboard = ({ user }) => {
             </Box>
 
             {/* Modals */}
-            <ProjectModal open={isProjectModalOpen} onClose={() => setIsProjectModalOpen(false)} onSave={handleCreateProject} />
             <TaskModal
                 open={isTaskModalOpen}
                 onClose={() => setIsTaskModalOpen(false)}

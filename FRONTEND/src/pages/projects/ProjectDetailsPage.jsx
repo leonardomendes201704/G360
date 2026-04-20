@@ -10,7 +10,7 @@ import {
 } from '@mui/icons-material';
 
 import {
-    getProjectById, updateProject, deleteProject,
+    getProjectById, deleteProject,
     submitForApproval, addProjectMember, updateProjectMember, removeProjectMember
 } from '../../services/project.service';
 import { getSuppliers } from '../../services/supplier.service';
@@ -24,7 +24,6 @@ import ProjectTimeline from '../../components/projects/ProjectTimeline';
 import KPICardsGrid from '../../components/projects/KPICardsGrid';
 import MacroTimelineCard from '../../components/projects/MacroTimelineCard';
 import QuickActionsGrid from '../../components/projects/QuickActionsGrid';
-import ProjectModal from '../../components/modals/ProjectModal';
 import RiskModal from '../../components/modals/RiskModal';
 import MinuteModal from '../../components/modals/MinuteModal';
 import ExpenseModal from '../../components/modals/ExpenseModal';
@@ -70,7 +69,6 @@ const ProjectDetailsPage = () => {
 
     const initialTab = tabMap[searchParams.get('tab')] || 0;
     const [tabValue, setTabValue] = useState(initialTab);
-    const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState('');
     const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
 
@@ -118,19 +116,7 @@ const ProjectDetailsPage = () => {
     };
 
     const handleEdit = () => {
-        setModalOpen(true);
-    };
-
-    const handleSaveProject = async (data) => {
-        try {
-            await updateProject(id, data);
-            setModalOpen(false);
-            fetchProject();
-            setToast({ open: true, message: 'Projeto atualizado com sucesso!', severity: 'success' });
-        } catch (err) {
-            console.error(err);
-            setToast({ open: true, message: 'Erro ao atualizar projeto.', severity: 'error' });
-        }
+        navigate(`/projects/${id}/edit`);
     };
 
     const handleDelete = async () => {
@@ -377,13 +363,6 @@ const ProjectDetailsPage = () => {
                     )}
                 </Box>
             </Box>
-
-            <ProjectModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSave={handleSaveProject}
-                project={project}
-            />
 
             {/* Quick Action Modals */}
             <RiskModal

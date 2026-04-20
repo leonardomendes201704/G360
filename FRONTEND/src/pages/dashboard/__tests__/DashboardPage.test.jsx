@@ -14,7 +14,6 @@ vi.mock('../../../services/task.service');
 vi.mock('../../../services/change-request.service');
 
 // Mock components that might cause issues in isolation
-vi.mock('../../../components/modals/ProjectModal', () => ({ default: () => null }));
 vi.mock('../../../components/modals/TaskModal', () => ({ default: () => null }));
 vi.mock('../../../components/modals/ChangeModal', () => ({ default: () => null }));
 

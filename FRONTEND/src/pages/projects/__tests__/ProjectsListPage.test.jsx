@@ -12,25 +12,25 @@ import * as referenceService from '../../../services/reference.service';
 vi.mock('../../../services/project.service');
 vi.mock('../../../services/reference.service');
 
-// Mock Child Components
-vi.mock('../../../components/modals/ProjectModal', () => ({
-    default: ({ open, onClose }) => open ? (
-        <div data-testid="project-modal">
-            <button onClick={onClose}>Close</button>
-        </div>
-    ) : null
-}));
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
+});
 
 // Auth & Permission mocks
 vi.mock('../../../hooks/useAuth', () => ({ default: () => ({ user: { id: '1', name: 'Test', roles: [{ name: 'Super Admin' }] }, token: 't', hasRole: () => true }) }));
 
 const authValue = { hasPermission: () => true, user: { id: '1', roles: [{ name: 'Test' }] }, login: () => {}, logout: () => {} };
 
-const renderWithProviders = (ui) => {
+const renderWithProviders = (ui, { initialEntries = ['/projects'] } = {}) => {
     return render(
         <SnackbarProvider>
             <AuthContext.Provider value={authValue}>
-                <MemoryRouter>
+                <MemoryRouter initialEntries={initialEntries}>
                     {ui}
                 </MemoryRouter>
             </AuthContext.Provider>
@@ -47,6 +47,7 @@ describe('ProjectsListPage', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockNavigate.mockClear();
         projectService.getProjects.mockResolvedValue(mockProjects);
         referenceService.getReferenceUsers.mockResolvedValue(mockUsers);
     });
@@ -74,13 +75,13 @@ describe('ProjectsListPage', () => {
         });
     });
 
-    it('should open new project modal', async () => {
+    it('should navigate to new project page', async () => {
         renderWithProviders(<ProjectsListPage />);
         await waitFor(() => expect(screen.queryByText('Carregando...')).not.toBeInTheDocument());
 
         const newButton = screen.getByTestId('btn-novo-projeto');
         fireEvent.click(newButton);
 
-        expect(await screen.findByTestId('project-modal')).toBeInTheDocument();
+        expect(mockNavigate).toHaveBeenCalledWith('/projects/new');
     });
 });

@@ -8,7 +8,6 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import ActivityFeed from '../../components/dashboard/ActivityFeed';
 import DashboardCustomizer from '../../components/dashboard/DashboardCustomizer';
-import ProjectModal from '../../components/modals/ProjectModal';
 import TaskModal from '../../components/modals/TaskModal';
 import ChangeModal from '../../components/modals/ChangeModal';
 import ExpenseModal from '../../components/modals/ExpenseModal';
@@ -18,7 +17,6 @@ import StatsCard from '../../components/common/StatsCard';
 import StandardModal from '../../components/common/StandardModal';
 import KpiGrid from '../../components/common/KpiGrid';
 import { getIncidentKPIs } from '../../services/incident.service';
-import { createProject } from '../../services/project.service';
 import { createGeneralTask } from '../../services/task.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import { createChange } from '../../services/change-request.service';
@@ -147,7 +145,6 @@ const ManagerOverview = () => {
 
     // Modal states
     const [isTaskOpen, setIsTaskOpen] = useState(false);
-    const [isProjectOpen, setIsProjectOpen] = useState(false);
     const [isGmudOpen, setIsGmudOpen] = useState(false);
     const [isExpenseOpen, setIsExpenseOpen] = useState(false);
     const [isIncidentOpen, setIsIncidentOpen] = useState(false);
@@ -161,7 +158,6 @@ const ManagerOverview = () => {
 
     // Modal save handlers
     const handleSaveTask = async (d) => { setModalLoading(true); try { await createGeneralTask(d); enqueueSnackbar('Tarefa criada!', { variant: 'success' }); setIsTaskOpen(false); load(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } finally { setModalLoading(false); } };
-    const handleSaveProject = async (d) => { setModalLoading(true); try { await createProject(d); enqueueSnackbar('Projeto criado!', { variant: 'success' }); setIsProjectOpen(false); load(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } finally { setModalLoading(false); } };
     const handleSaveGmud = async (d) => { setModalLoading(true); try { await createChange(d); enqueueSnackbar('GMUD criada!', { variant: 'success' }); setIsGmudOpen(false); load(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } finally { setModalLoading(false); } };
     const handleSaveExpense = async (d) => { setModalLoading(true); try { await createExpense(d); enqueueSnackbar('Despesa lançada!', { variant: 'success' }); setIsExpenseOpen(false); load(); } catch { enqueueSnackbar('Erro ao criar.', { variant: 'error' }); } finally { setModalLoading(false); } };
 
@@ -304,7 +300,7 @@ const ManagerOverview = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1, mt: 1.5, flexWrap: 'nowrap', overflowX: 'auto' }}>
                             <QA icon="add_task" label="Nova Tarefa" onClick={() => setIsTaskOpen(true)} color="#3b82f6" navigate={navigate} isDark={isDark} />
-                            <QA icon="folder_open" label="Novo Projeto" onClick={() => setIsProjectOpen(true)} color="#8b5cf6" navigate={navigate} isDark={isDark} />
+                            <QA icon="folder_open" label="Novo Projeto" onClick={() => navigate('/projects/new')} color="#8b5cf6" navigate={navigate} isDark={isDark} />
                             <QA icon="published_with_changes" label="Nova GMUD" onClick={() => setIsGmudOpen(true)} color="#6366f1" navigate={navigate} isDark={isDark} />
                             <QA icon="warning" label="Incidente" onClick={() => setIsIncidentOpen(true)} color="#f59e0b" navigate={navigate} isDark={isDark} />
                             <QA icon="description" label="Contratos" route="/contracts" color="#10b981" navigate={navigate} isDark={isDark} />
@@ -659,7 +655,6 @@ const ManagerOverview = () => {
                 isGeneralTask={true}
                 members={taskAssignees.map((u) => ({ user: u }))}
             />
-            <ProjectModal open={isProjectOpen} onClose={() => setIsProjectOpen(false)} onSave={handleSaveProject} />
             <ChangeModal open={isGmudOpen} onClose={() => setIsGmudOpen(false)} onSave={handleSaveGmud} />
             <ExpenseModal open={isExpenseOpen} onClose={() => setIsExpenseOpen(false)} onSave={handleSaveExpense} />
             <IncidentCreateModal open={isIncidentOpen} onClose={() => setIsIncidentOpen(false)} onSave={() => load()} />
