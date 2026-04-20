@@ -1,23 +1,29 @@
 import { Delete, CalendarToday, Warning, Edit } from '@mui/icons-material';
-import { Box, Typography, Checkbox } from '@mui/material';
-import StatusChip from '../../components/common/StatusChip';
+import { Box, Typography, Checkbox, Avatar, Chip, IconButton } from '@mui/material';
 import InlineStatusSelect from '../../components/common/InlineStatusSelect';
 import { formatRelative } from '../../utils/dateUtils';
-import {
-  GENERAL_TASK_STATUS_CONFIG,
-  GENERAL_TASK_STATUS_OPTIONS,
-  getTaskDeadline,
-  isTaskOverdueForList,
-} from './taskListSort';
+import { GENERAL_TASK_STATUS_CONFIG, getTaskDeadline, isTaskOverdueForList } from './taskListSort';
 
 const getPriorityLabel = (p) =>
   ({ HIGH: 'Alta', MEDIUM: 'Média', LOW: 'Baixa', CRITICAL: 'Crítica' })[String(p || '').toUpperCase()] || p;
-const getPriorityColor = (p) =>
-  ({ CRITICAL: '#ef4444', HIGH: '#f97316', MEDIUM: '#3b82f6', LOW: '#94a3b8' })[String(p || '').toUpperCase()] ||
-  '#94a3b8';
+
+/** Mesma escala que incidentes / lista de projetos — chips ~21px */
+const chipDenseSx = {
+  height: 21,
+  fontWeight: 600,
+  fontSize: '0.525rem',
+  '& .MuiChip-label': { px: 0.75, lineHeight: 1.2, whiteSpace: 'nowrap' },
+};
+
+const PRIORITY_CHIP = {
+  CRITICAL: { bg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444' },
+  HIGH: { bg: 'rgba(249, 115, 22, 0.12)', color: '#f97316' },
+  MEDIUM: { bg: 'rgba(59, 130, 246, 0.12)', color: '#3b82f6' },
+  LOW: { bg: 'rgba(148, 163, 184, 0.12)', color: '#94a3b8' },
+};
 
 /**
- * Colunas `DataListTable` — tarefas gerais (vista lista).
+ * Colunas `DataListTable` — tarefas gerais (vista lista, modo compacto).
  */
 export function getGeneralTaskListColumns({
   canWrite,
@@ -82,14 +88,28 @@ export function getGeneralTaskListColumns({
       id: 'title',
       label: 'Tarefa',
       width: '22%',
-      minWidth: 0,
+      minWidth: 180,
       accessor: (r) => r.title || r.name || '',
+      cellSx: () => ({
+        maxWidth: 280,
+        verticalAlign: 'middle',
+      }),
       render: (task) => (
-        <Box>
-          <Typography variant="body2" fontWeight="700" color="text.primary">
+        <Box sx={{ minWidth: 0 }}>
+          <Typography sx={{ color: 'text.primary', fontSize: '0.7rem', fontWeight: 600, lineHeight: 1.3 }}>
             {task.title || task.name}
           </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+          <Typography
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.6rem',
+              display: 'block',
+              mt: 0.25,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {task.description
               ? task.description.length > 50
                 ? `${task.description.substring(0, 50)}...`
@@ -103,7 +123,7 @@ export function getGeneralTaskListColumns({
       id: 'type',
       label: 'Tipo',
       width: '11%',
-      minWidth: 0,
+      minWidth: 92,
       sortable: true,
       accessor: (t) => {
         if (t.riskId) return 'RISCO';
@@ -113,22 +133,22 @@ export function getGeneralTaskListColumns({
       },
       render: (task) => (
         <Box>
-          <Box
+          <Chip
+            size="small"
+            label={task.riskId ? 'RISCO' : task.projectId ? 'PROJETO' : task.isPersonal ? 'PESSOAL' : 'GERAL'}
             sx={{
-              display: 'inline-block',
-              px: 1,
-              py: 0.3,
-              borderRadius: '8px',
-              bgcolor: task.riskId ? 'rgba(239, 68, 68, 0.12)' : '#f1f5f9',
-              color: task.riskId ? '#dc2626' : '#475569',
-              fontSize: '0.7rem',
+              ...chipDenseSx,
               fontWeight: 700,
+              bgcolor: task.riskId ? 'rgba(239, 68, 68, 0.12)' : 'rgba(241, 245, 249, 0.9)',
+              color: task.riskId ? '#dc2626' : '#475569',
+              border: task.riskId ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid rgba(148, 163, 184, 0.35)',
             }}
-          >
-            {task.riskId ? 'RISCO' : task.projectId ? 'PROJETO' : task.isPersonal ? 'PESSOAL' : 'GERAL'}
-          </Box>
+          />
           {task.risk && (
-            <Typography variant="caption" sx={{ display: 'block', color: '#dc2626', fontSize: '0.65rem', fontWeight: 600 }}>
+            <Typography
+              variant="caption"
+              sx={{ display: 'block', color: '#dc2626', fontSize: '0.55rem', fontWeight: 600, mt: 0.25, lineHeight: 1.2 }}
+            >
               {task.risk.title?.length > 25 ? `${task.risk.title.substring(0, 25)}...` : task.risk.title}
             </Typography>
           )}
@@ -139,80 +159,113 @@ export function getGeneralTaskListColumns({
       id: 'assigneeName',
       label: 'Responsável',
       width: '12%',
-      minWidth: 0,
+      minWidth: 128,
       sortable: true,
       accessor: (t) => t.assignee?.name || '',
-      render: (task) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '8px',
-              bgcolor: '#e0e7ff',
-              color: '#1e40af',
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            {task.assignee ? task.assignee.name.charAt(0) : '?'}
+      render: (task) =>
+        task.assignee ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+            <Avatar sx={{ width: 18, height: 18, fontSize: '0.5rem', bgcolor: '#2563eb' }}>
+              {task.assignee.name?.[0] ?? '?'}
+            </Avatar>
+            <Typography
+              sx={{
+                color: 'text.primary',
+                fontSize: '0.6rem',
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {task.assignee.name}
+            </Typography>
           </Box>
-          <Typography variant="body2" fontWeight="600" color="text.primary" fontSize="0.85rem" noWrap>
-            {task.assignee ? task.assignee.name.split(' ')[0] : 'N/A'}
+        ) : (
+          <Typography sx={{ color: 'text.secondary', fontSize: '0.6rem', fontStyle: 'italic' }}>
+            Não atribuído
           </Typography>
-        </Box>
-      ),
+        ),
     },
     {
       id: 'status',
       label: 'Status',
       width: '12%',
-      minWidth: 0,
+      minWidth: 118,
       sortable: true,
       accessor: (t) => t.status || '',
-      render: (task) => (
-        <Box onClick={(e) => e.stopPropagation()}>
-          {onStatusChange && canWrite ? (
-            <InlineStatusSelect
-              status={task.status}
-              statusConfig={GENERAL_TASK_STATUS_CONFIG}
-              statusOptions={GENERAL_TASK_STATUS_OPTIONS}
-              onStatusChange={(newStatus) => onStatusChange(task.id, newStatus)}
-            />
-          ) : (
-            <StatusChip
-              status={task.status}
-              label={GENERAL_TASK_STATUS_CONFIG[task.status]?.label || task.status}
-            />
-          )}
-        </Box>
-      ),
+      cellSx: () => ({
+        verticalAlign: 'middle',
+        whiteSpace: 'nowrap',
+      }),
+      render: (task) => {
+        const cfg = GENERAL_TASK_STATUS_CONFIG[task.status] || {
+          label: task.status || '—',
+          color: '#64748b',
+          bg: 'rgba(100, 116, 139, 0.15)',
+        };
+        return (
+          <Box onClick={(e) => e.stopPropagation()} sx={{ display: 'flex', justifyContent: 'flex-start', minWidth: 0 }}>
+            {onStatusChange && canWrite ? (
+              <InlineStatusSelect
+                status={task.status}
+                statusConfig={GENERAL_TASK_STATUS_CONFIG}
+                dense
+                onStatusChange={(newStatus) => onStatusChange(task.id, newStatus)}
+              />
+            ) : (
+              <Chip
+                size="small"
+                label={cfg.label}
+                sx={{
+                  ...chipDenseSx,
+                  fontWeight: 500,
+                  bgcolor: cfg.bg,
+                  color: cfg.color,
+                  border: `1px solid ${cfg.color}33`,
+                  maxWidth: '100%',
+                  '& .MuiChip-label': {
+                    px: 0.75,
+                    lineHeight: 1.2,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  },
+                }}
+              />
+            )}
+          </Box>
+        );
+      },
     },
     {
       id: 'priority',
       label: 'Prioridade',
       width: '10%',
-      minWidth: 0,
+      minWidth: 96,
       sortable: true,
       accessor: (t) => String(t.priority || ''),
-      render: (task) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '8px', bgcolor: getPriorityColor(task.priority) }} />
-          <Typography variant="body2" fontSize="0.8rem" color="text.secondary">
-            {getPriorityLabel(task.priority)}
-          </Typography>
-        </Box>
-      ),
+      render: (task) => {
+        const pri = PRIORITY_CHIP[String(task.priority || '').toUpperCase()] || PRIORITY_CHIP.MEDIUM;
+        return (
+          <Chip
+            size="small"
+            label={getPriorityLabel(task.priority)}
+            sx={{
+              ...chipDenseSx,
+              bgcolor: pri.bg,
+              color: pri.color,
+              border: `1px solid ${pri.color}33`,
+            }}
+          />
+        );
+      },
     },
     {
       id: 'due',
       label: 'Vencimento',
       width: '12%',
-      minWidth: 0,
+      minWidth: 108,
       sortable: true,
       accessor: (t) => {
         const d = getTaskDeadline(t);
@@ -222,10 +275,14 @@ export function getGeneralTaskListColumns({
         const deadline = getTaskDeadline(task);
         const overdue = isTaskOverdueForList(task);
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: overdue ? '#dc2626' : '#64748b' }}>
-            {overdue ? <Warning fontSize="inherit" /> : <CalendarToday fontSize="inherit" />}
-            <Typography variant="body2" fontWeight={overdue ? 700 : 400} fontSize="0.85rem">
-              {deadline ? formatRelative(deadline) : '-'}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: overdue ? '#dc2626' : '#64748b', minWidth: 0 }}>
+            {overdue ? (
+              <Warning sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
+            ) : (
+              <CalendarToday sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
+            )}
+            <Typography sx={{ fontWeight: overdue ? 600 : 400, fontSize: '0.6rem', lineHeight: 1.2 }}>
+              {deadline ? formatRelative(deadline) : '—'}
             </Typography>
           </Box>
         );
@@ -236,61 +293,55 @@ export function getGeneralTaskListColumns({
       label: 'Ações',
       sortable: false,
       width: '14%',
-      minWidth: 0,
+      minWidth: 108,
       align: 'right',
+      cellSx: () => ({
+        verticalAlign: 'middle',
+        whiteSpace: 'nowrap',
+      }),
       render: (task) => (
         <Box
-          sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, flexWrap: 'wrap' }}
+          sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.25, flexWrap: 'nowrap', alignItems: 'center' }}
           onClick={(e) => e.stopPropagation()}
         >
           {task.assignee?.id === currentUserId && onTimerToggle && (
-            <Box
-              component="button"
-              type="button"
+            <IconButton
+              size="small"
               title={activeTimerTaskId === task.id ? 'Parar timer' : 'Iniciar timer'}
               onClick={() => onTimerToggle(task)}
               sx={{
-                border: 'none',
-                bgcolor: activeTimerTaskId === task.id ? 'rgba(16,185,129,0.15)' : 'transparent',
-                cursor: 'pointer',
-                p: 0.4,
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
+                p: '4px',
                 color: activeTimerTaskId === task.id ? '#10b981' : '#64748b',
-                transition: 'all 0.15s',
+                bgcolor: activeTimerTaskId === task.id ? 'rgba(16,185,129,0.12)' : 'transparent',
                 animation: activeTimerTaskId === task.id ? 'taskTimerPulse 1.5s ease-in-out infinite' : 'none',
                 '@keyframes taskTimerPulse': {
                   '0%, 100%': { opacity: 1 },
                   '50%': { opacity: 0.6 },
                 },
-                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', color: activeTimerTaskId === task.id ? '#ef4444' : '#0f172a' },
+                '&:hover': {
+                  bgcolor: activeTimerTaskId === task.id ? 'rgba(239,68,68,0.12)' : 'rgba(0,0,0,0.04)',
+                  color: activeTimerTaskId === task.id ? '#ef4444' : '#0f172a',
+                },
               }}
             >
-              <span className="material-icons-round" style={{ fontSize: 16 }}>
+              <span className="material-icons-round" style={{ fontSize: '1.125rem' }}>
                 {activeTimerTaskId === task.id ? 'stop' : 'play_arrow'}
               </span>
-            </Box>
+            </IconButton>
           )}
           {canWrite && (
-            <Box
-              component="button"
-              type="button"
-              onClick={() => onTaskClick(task)}
-              sx={{ border: 'none', bgcolor: 'transparent', cursor: 'pointer', color: '#64748b', p: 0, '&:hover': { color: '#0f172a' } }}
-            >
-              <Edit fontSize="small" />
-            </Box>
+            <IconButton size="small" onClick={() => onTaskClick(task)} sx={{ p: '4px', color: '#64748b', '&:hover': { color: '#0f172a' } }}>
+              <Edit sx={{ fontSize: '1.125rem' }} />
+            </IconButton>
           )}
           {canWrite && (
-            <Box
-              component="button"
-              type="button"
+            <IconButton
+              size="small"
               onClick={() => onDeleteTask(task.id)}
-              sx={{ border: 'none', bgcolor: 'transparent', cursor: 'pointer', color: '#cbd5e1', p: 0, '&:hover': { color: '#ef4444' } }}
+              sx={{ p: '4px', color: '#cbd5e1', '&:hover': { color: '#ef4444' } }}
             >
-              <Delete fontSize="small" />
-            </Box>
+              <Delete sx={{ fontSize: '1.125rem' }} />
+            </IconButton>
           )}
         </Box>
       ),

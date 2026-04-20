@@ -809,6 +809,7 @@ const TasksPage = () => {
             {/* Content based on viewMode */}
             {viewMode === 'LIST' ? (
                 <DataListTable
+                    density="compact"
                     shell={{
                         title: 'Lista de Tarefas',
                         titleIcon: 'assignment',
@@ -820,6 +821,12 @@ const TasksPage = () => {
                             border: `1px solid ${borderColor}`,
                             boxShadow: cardShadow,
                             overflow: 'hidden',
+                        },
+                        tableContainerSx: {
+                            '& .MuiTable-root': {
+                                width: '100%',
+                                minWidth: 960,
+                            },
                         },
                     }}
                     dataTestidTable="tabela-tarefas-gerais"
