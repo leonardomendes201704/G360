@@ -6,6 +6,11 @@ export const getChanges = async (filters = {}) => {
   return response.data;
 };
 
+export const getChangeById = async (id) => {
+  const response = await api.get(`/changes/${id}`);
+  return response.data;
+};
+
 export const createChange = async (data) => {
   const response = await api.post('/changes', data);
   return response.data;

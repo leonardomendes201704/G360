@@ -70,7 +70,7 @@ test.describe('Modal evidence batch 03 (11–15)', () => {
         await expect(dlg).toHaveScreenshot('modal-evidence-14-change-modal-shell.png');
     });
 
-    test('15 — ChangeViewModal (lista → ver GMUD)', async ({ page }) => {
+    test('15 — Detalhe GMUD (lista → /changes/:id)', async ({ page }) => {
         await loginAs(page, 'manager');
         await page.goto('/changes');
         await page.waitForURL(/\/changes/, { timeout: 30000 });
@@ -82,9 +82,9 @@ test.describe('Modal evidence batch 03 (11–15)', () => {
 
         await page.locator('tbody tr').first().click();
 
-        const dlg = page.getByRole('dialog');
-        await expect(dlg.getByText('GMUD-E2E-001')).toBeVisible({ timeout: 15000 });
+        await expect(page).toHaveURL(/\/changes\/[0-9a-f-]{36}/i, { timeout: 15000 });
+        await expect(page.getByText('GMUD-E2E-001')).toBeVisible({ timeout: 15000 });
 
-        await expect(dlg).toHaveScreenshot('modal-evidence-15-change-view-shell.png');
+        await expect(page.locator('body')).toHaveScreenshot('modal-evidence-15-change-view-shell.png');
     });
 });

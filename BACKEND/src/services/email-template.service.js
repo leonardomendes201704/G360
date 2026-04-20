@@ -182,7 +182,7 @@ class EmailTemplateService {
             </table>
 
             <div style="text-align: center; margin-top: 32px;">
-                <a href="${config.baseUrl}/changes?id=${gmud.id}&action=approve" class="btn">Revisar e Aprovar</a>
+                <a href="${config.baseUrl}/changes/${gmud.id}?action=approve" class="btn">Revisar e Aprovar</a>
             </div>
         `;
         return this.getWrapper(title, content, `Aprovação necessária para GMUD ${gmud.code}`, accent);
@@ -289,7 +289,7 @@ class EmailTemplateService {
         return this.getWrapper(title, content, `Resultado da aprovação: ${projectName}`, accent);
     }
 
-    static getGmudConclusionTemplate(userName, gmudCode, gmudTitle, status, outcomeNotes) {
+    static getGmudConclusionTemplate(userName, gmudCode, gmudTitle, status, outcomeNotes, gmudId = null) {
         const isSuccess = status === 'EXECUTED';
         const accent = isSuccess ? config.colors.success : config.colors.error;
         const title = `GMUD Finalizada: ${gmudCode}`;
@@ -320,7 +320,7 @@ class EmailTemplateService {
             </table>
 
             <div style="text-align: center; margin-top: 32px;">
-                <a href="${config.baseUrl}/changes" class="btn">Ver GMUD</a>
+                <a href="${config.baseUrl}${gmudId ? `/changes/${gmudId}` : '/changes'}" class="btn">Ver GMUD</a>
             </div>
         `;
         return this.getWrapper(title, content, `GMUD ${gmudCode} finalizada`, accent);

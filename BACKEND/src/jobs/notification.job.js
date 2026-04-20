@@ -284,7 +284,7 @@ class NotificationJob {
                     title: '⏰ Lembrete: Aprovação Pendente',
                     message: `A GMUD "${cr.code}: ${cr.title}" aguarda sua aprovação há mais de 24h.`,
                     type: 'WARNING',
-                    link: `/changes?id=${cr.id}`,
+                    link: `/changes/${cr.id}`,
                     eventCode: 'GMUD_APPROVAL_REMINDER',
                     entityType: 'ChangeRequest',
                     entityId: cr.id,
@@ -299,7 +299,7 @@ class NotificationJob {
                                 approval.user.name,
                                 'Aprovação pendente',
                                 `<p>A GMUD <strong>${cr.code}</strong> — ${cr.title}</p><p>Aguarda sua aprovação há mais de 24 horas.</p>`,
-                                `/changes?id=${cr.id}`
+                                `/changes/${cr.id}`
                             ),
                             type: 'GMUD_APPROVAL_REMINDER',
                             module: 'GMUD'

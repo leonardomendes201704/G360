@@ -17,6 +17,8 @@
  * Variáveis opcionais:
  *   DEVCRAFT_ADMIN_EMAIL   (padrão: admin@devcraft.local)
  *   DEVCRAFT_ADMIN_PASSWORD (padrão: DevCraft@2026)
+ *   DEVCRAFT_PORTAL_EMAIL / DEVCRAFT_PORTAL_PASSWORD — utilizador portal (Colaborador)
+ *   DEVCRAFT_AGENT_EMAIL / DEVCRAFT_AGENT_PASSWORD — agente helpdesk (Gestor)
  */
 
 const path = require('path');
@@ -30,6 +32,7 @@ const TenantService = require('../services/tenant.service');
 const { seedItilServiceCatalog } = require('./seed-itil-service-catalog');
 const { seedSuppliers } = require('./seed-suppliers');
 const { seedThreeAreasWorkflow } = require('./seed-three-areas-workflow');
+const { seedDevCraftDemoUsers } = require('./seed-devcraft-demo-users');
 
 const SLUG = 'devcraft';
 const SCHEMA_NAME = 'tenant_devcraft';
@@ -116,6 +119,9 @@ async function main() {
   console.log('🌱 Fluxo 3 áreas (projetos, incidentes, GMUD, despesas, etc.)...');
   const summary = await seedThreeAreasWorkflow(prisma, { verbose: true });
 
+  console.log('\n👤 Utilizadores demo (portal + agente)...');
+  const demoUsers = await seedDevCraftDemoUsers(prisma, { verbose: true });
+
   await TenantManager.evictClient(schema);
   await TenantManager.disconnectAll();
 
@@ -130,6 +136,10 @@ async function main() {
   for (const a of summary.areas) {
     console.log(`     - ${a.key}: gestor ${a.managerEmail} / colab. ${a.collaboratorEmail}`);
   }
+  console.log('   Portal (solicitante):');
+  console.log(`     Login: ${demoUsers.portal.email}  |  Senha: ${demoUsers.portal.password}`);
+  console.log('   Agente (fila helpdesk):');
+  console.log(`     Login: ${demoUsers.agent.email}  |  Senha: ${demoUsers.agent.password}`);
   console.log('========================================\n');
 }
 

@@ -391,7 +391,7 @@ const IncidentModal = ({ open, onClose, onSave, onUpdate, onDelete, incident = n
                                                             <Button
                                                                 size="small"
                                                                 variant="outlined"
-                                                                onClick={() => { onClose(); navigate(`/changes?id=${currentIncident.relatedChange.id}`); }}
+                                                                onClick={() => { onClose(); navigate(`/changes/${currentIncident.relatedChange.id}`); }}
                                                                 sx={{ borderColor: 'rgba(37, 99, 235, 0.5)', color: '#818cf8' }}
                                                             >
                                                                 Ver GMUD

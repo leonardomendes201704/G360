@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {
     Search, CalendarToday, FormatListBulleted, FilterAlt,
@@ -29,7 +30,6 @@ import TableSkeleton from '../../components/common/TableSkeleton';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import ChangeModal from '../../components/modals/ChangeModal';
-import ChangeViewModal from '../../components/modals/ChangeViewModal';
 import PageTitleCard from '../../components/common/PageTitleCard';
 
 const GMUD_DRAWER_FILTER_DEFAULTS = {
@@ -43,6 +43,7 @@ const GMUD_DRAWER_FILTER_DEFAULTS = {
 };
 
 const ChangeRequestsPage = () => {
+    const navigate = useNavigate();
     const [changes, setChanges] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -137,7 +138,6 @@ const ChangeRequestsPage = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedChange, setSelectedChange] = useState(null);
     const [isViewMode, setIsViewMode] = useState(false);
-    const [viewModalOpen, setViewModalOpen] = useState(false);
     const [saving, setSaving] = useState(false);
 
     // Estado da View (Dashboard vs Lista vs Calendario)
@@ -248,31 +248,22 @@ const ChangeRequestsPage = () => {
     };
 
     useEffect(() => {
-        const handleDeepLink = async () => {
-            const data = await fetchChanges();
-            await fetchUsers();
-            await fetchMetrics(); // Load backend metrics
-
-            const params = new URLSearchParams(window.location.search);
-            const deepLinkId = params.get('id');
+        const params = new URLSearchParams(window.location.search);
+        const deepLinkId = params.get('id');
+        if (deepLinkId) {
             const deepLinkAction = params.get('action');
+            const qs = deepLinkAction === 'approve' ? '?action=approve' : '';
+            navigate(`/changes/${deepLinkId}${qs}`, { replace: true });
+            return;
+        }
 
-            if (deepLinkId && data.length > 0) {
-                const targetGmud = data.find(c => c.id === deepLinkId);
-                if (targetGmud) {
-                    if (deepLinkAction === 'approve') {
-                        setModalTab('aprovacao');
-                        handleOpenView(targetGmud);
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    } else {
-                        handleOpenView(targetGmud);
-                    }
-                }
-            }
+        const handleLoad = async () => {
+            await fetchChanges();
+            await fetchUsers();
+            await fetchMetrics();
         };
-
-        handleDeepLink();
-    }, []);
+        handleLoad();
+    }, [navigate]);
 
     // --- Handlers ---
     const handleOpenCreate = () => {
@@ -292,16 +283,7 @@ const ChangeRequestsPage = () => {
     };
 
     const handleOpenView = (gmud) => {
-        setSelectedChange(gmud);
-        setViewModalOpen(true);
-    };
-
-    const handleViewToEdit = (gmud) => {
-        setViewModalOpen(false);
-        setSelectedChange(gmud);
-        setIsViewMode(false);
-        setModalTab('geral');
-        setModalOpen(true);
+        navigate(`/changes/${gmud.id}`);
     };
 
     const handleSave = async (data) => {
@@ -909,14 +891,6 @@ const ChangeRequestsPage = () => {
                 loading={saving}
                 onUpdate={fetchChanges}
                 initialTab={modalTab}
-            />
-
-            {/* VIEW MODAL — Read-only */}
-            <ChangeViewModal
-                open={viewModalOpen}
-                onClose={() => setViewModalOpen(false)}
-                change={selectedChange}
-                onEdit={canEdit ? handleViewToEdit : undefined}
             />
 
             <ConfirmDialog

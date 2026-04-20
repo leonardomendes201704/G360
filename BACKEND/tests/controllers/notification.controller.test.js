@@ -85,7 +85,7 @@ describe('NotificationController', () => {
         req.prisma.notification.findMany.mockResolvedValue([
             { id: 'n1', link: '/projects/p1', userId: 'u1', isRead: false },
             { id: 'n2', link: '/finance/dashboard', userId: 'u1', isRead: false },
-            { id: 'n3', link: '/changes?id=g1', userId: 'u1', isRead: true },
+            { id: 'n3', link: '/changes/g1', userId: 'u1', isRead: true },
             { id: 'n4', link: '/tasks/t1', userId: 'u1', isRead: false },
             { id: 'n5', link: '/approvals/a1', userId: 'u1', isRead: false },
             { id: 'n6', link: '/contracts/c1', userId: 'u1', isRead: false },
