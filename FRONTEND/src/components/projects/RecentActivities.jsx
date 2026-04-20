@@ -105,6 +105,8 @@ const RecentActivities = ({ projectId, userId }) => {
         return `Ação em ${entity}`;
     };
 
+    const isEmpty = !loading && activities.length === 0;
+
     return (
         <Box
             sx={{
@@ -113,9 +115,10 @@ const RecentActivities = ({ projectId, userId }) => {
                 borderRadius: '8px',
                 p: '28px',
                 boxShadow: cardShadow,
-                height: '100%', // Important for alignment
+                height: isEmpty ? 'auto' : '100%',
+                minHeight: isEmpty ? 300 : undefined,
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
             }}
         >
             {/* Header */}
@@ -153,20 +156,29 @@ const RecentActivities = ({ projectId, userId }) => {
                         ))}
                     </Box>
                 ) : activities.length === 0 ? (
-                    <Box sx={{
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        gap: 2,
-                        opacity: 0.5
-                    }}>
-                        <span className="material-icons-round" style={{ fontSize: 48, color: textSecondary }}>
+                    <Box
+                        sx={{
+                            minHeight: 220,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            gap: 1.5,
+                            py: 4,
+                            px: 2,
+                            borderRadius: '8px',
+                            border: `1px dashed ${mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                            bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(15, 23, 42, 0.03)',
+                        }}
+                    >
+                        <span className="material-icons-round" style={{ fontSize: 44, color: textSecondary, opacity: 0.85 }}>
                             history_toggle_off
                         </span>
-                        <Typography sx={{ color: textSecondary, fontSize: '14px' }}>
+                        <Typography sx={{ color: textPrimary, fontSize: '15px', fontWeight: 600, textAlign: 'center' }}>
                             Nenhuma atividade recente
+                        </Typography>
+                        <Typography sx={{ color: textSecondary, fontSize: '13px', textAlign: 'center', maxWidth: 280, lineHeight: 1.45 }}>
+                            As alterações neste projeto aparecerão aqui quando houver registros no histórico.
                         </Typography>
                     </Box>
                 ) : (

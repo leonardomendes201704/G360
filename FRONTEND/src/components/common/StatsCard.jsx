@@ -23,10 +23,16 @@ import { TrendingUp, TrendingDown, Remove } from '@mui/icons-material';
  * @param {number}   [titleLineClamp=1] - Linhas do titulo (1 = uma linha + ellipsis; 2+ = line-clamp multilinha)
  * @param {string|object} [valueFontSize] - `fontSize` do valor principal (string ou breakpoints MUI, ex: `{ xs: '1rem', sm: '1.25rem' }`). Omite para o padrao compacto.
  * @param {object} [valueSx] - `sx` extra fundido no Typography do valor (sobrepoe parcialmente estilos padrao).
+ * @param {boolean} [dense=false] - Layout mais baixo e tipografia menor (faixas com muitos KPIs).
  */
 const DEFAULT_VALUE_FONT_SIZE = {
     xs: 'clamp(0.875rem, 2.4vw, 1.25rem)',
     sm: '1.25rem',
+};
+
+const DENSE_VALUE_FONT_SIZE = {
+    xs: '0.75rem',
+    sm: '0.8125rem',
 };
 
 const StatsCard = ({
@@ -44,6 +50,7 @@ const StatsCard = ({
     titleLineClamp = 1,
     valueFontSize,
     valueSx = {},
+    dense = false,
 }) => {
 
     // Escurece uma cor hex em 25%
@@ -66,9 +73,10 @@ const StatsCard = ({
     const mainColor = hexColor || colorMap[color] || colorMap.primary;
     const darkColor = darken(mainColor, 0.3);
 
+    const iconPx = dense ? 26 : 42;
     const iconElement = iconName
-        ? <span className="material-icons-round" style={{ fontSize: 42, color: '#ffffff' }}>{iconName}</span>
-        : icon ? React.cloneElement(icon, { style: { fontSize: 42, color: '#ffffff' } }) : null;
+        ? <span className="material-icons-round" style={{ fontSize: iconPx, color: '#ffffff' }}>{iconName}</span>
+        : icon ? React.cloneElement(icon, { style: { fontSize: iconPx, color: '#ffffff' } }) : null;
 
     return (
         <Paper
@@ -95,12 +103,12 @@ const StatsCard = ({
             {accentBar && (
                 <Box
                     sx={{
-                        height: 56,
+                        height: dense ? 36 : 56,
                         bgcolor: mainColor,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        px: 1.5,
+                        px: dense ? 1 : 1.5,
                     }}
                 >
                     {iconElement}
@@ -108,7 +116,7 @@ const StatsCard = ({
             )}
 
             {/* Corpo */}
-            <Box sx={{ p: 2, pt: accentBar ? 1.5 : 2 }}>
+            <Box sx={{ p: dense ? 1 : 2, pt: accentBar ? (dense ? 1 : 1.5) : 2 }}>
                 {/* Valor */}
                 <Typography
                     component="div"
@@ -118,11 +126,11 @@ const StatsCard = ({
                             : undefined
                     }
                     sx={{
-                        fontSize: valueFontSize ?? DEFAULT_VALUE_FONT_SIZE,
+                        fontSize: valueFontSize ?? (dense ? DENSE_VALUE_FONT_SIZE : DEFAULT_VALUE_FONT_SIZE),
                         fontWeight: 800,
                         color: darkColor,
-                        lineHeight: 1.1,
-                        mb: 0.5,
+                        lineHeight: dense ? 1.15 : 1.1,
+                        mb: dense ? 0.25 : 0.5,
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -139,11 +147,12 @@ const StatsCard = ({
                     title={typeof title === 'string' ? title : undefined}
                     data-testid="stats-card-title"
                     sx={{
-                        fontSize: '13px',
+                        fontSize: dense ? '10px' : '13px',
                         fontWeight: 600,
                         color: darkColor,
                         opacity: 0.85,
                         mb: subtitle ? 0.25 : 0,
+                        letterSpacing: dense ? '0.02em' : undefined,
                         ...(titleLineClamp > 1
                             ? {
                                 display: '-webkit-box',
@@ -206,7 +215,7 @@ const StatsCard = ({
             </Box>
 
             {/* Linha fina colorida no rodape */}
-            <Box sx={{ height: '3px', bgcolor: mainColor, mt: 'auto' }} />
+            <Box sx={{ height: dense ? '2px' : '3px', bgcolor: mainColor, mt: 'auto' }} />
         </Paper>
     );
 };

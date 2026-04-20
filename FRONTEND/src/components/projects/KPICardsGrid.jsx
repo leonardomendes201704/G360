@@ -1,146 +1,147 @@
-import { useContext } from 'react';
-import { Box, useTheme } from '@mui/material';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { Box } from '@mui/material';
+import StatsCard from '../common/StatsCard';
+import KpiGrid from '../common/KpiGrid';
 
+const PRIORITY_LABEL = {
+    LOW: 'Baixa',
+    MEDIUM: 'Média',
+    HIGH: 'Alta',
+    CRITICAL: 'Crítica',
+};
+
+const PRIORITY_HEX = {
+    LOW: '#10b981',
+    MEDIUM: '#f59e0b',
+    HIGH: '#f97316',
+    CRITICAL: '#ef4444',
+};
+
+/** Valor numa linha: sem partir palavras; tooltip com texto completo (via `title` no StatsCard). */
+const ellipsisValueSx = {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+};
+
+const formatMoneyCompact = (n) => {
+    const v = Number.isFinite(n) ? n : 0;
+    return v.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+    });
+};
+
+const formatPeriodCompact = (startDate, endDate) => {
+    if (!startDate || !endDate) return '—';
+    const opt = { day: '2-digit', month: '2-digit', year: '2-digit' };
+    const a = new Date(startDate).toLocaleDateString('pt-BR', opt);
+    const b = new Date(endDate).toLocaleDateString('pt-BR', opt);
+    return `${a}–${b}`;
+};
+
+/**
+ * Faixa única de 8 KPIs — modo denso (rótulos curtos, tipografia reduzida, ellipsis).
+ */
 const KPICardsGrid = ({ project, tasks = [], risks = [] }) => {
-    const { mode } = useContext(ThemeContext);
-    const theme = useTheme();
+    if (!project) return null;
 
-    // Theme-aware styles
-    const textPrimary = mode === 'dark' ? '#f1f5f9' : theme.palette.text.primary;
-    const textSecondary = mode === 'dark' ? '#64748b' : theme.palette.text.secondary;
-    const cardBg = mode === 'dark' ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#FFFFFF';
-    const borderColor = mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.08)';
-    const cardShadow = mode === 'dark' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.07)';
-
-    const budget = project?.budget ? parseFloat(project.budget) : 0;
-    const actualCost = project?.actualCost ? parseFloat(project.actualCost) : 0;
-    const criticalRisks = risks.filter(r =>
-        r.impact === 'CRITICO' || r.riskLevel === 'CRITICO' || r.severity === 'CRITICAL'
+    const budget = project.budget ? parseFloat(project.budget) : 0;
+    const actualCost = project.actualCost ? parseFloat(project.actualCost) : 0;
+    const criticalRisks = risks.filter(
+        (r) => r.impact === 'CRITICO' || r.riskLevel === 'CRITICO' || r.severity === 'CRITICAL'
     ).length;
-    const completedTasks = tasks.filter(t => t.status === 'DONE').length;
+    const completedTasks = tasks.filter((t) => t.status === 'DONE').length;
 
-    const kpis = [
-        {
-            label: 'Riscos Críticos',
-            value: criticalRisks,
-            icon: 'shield',
-            colorClass: 'emerald',
-            bgColor: 'rgba(16, 185, 129, 0.15)',
-            iconColor: '#10b981',
-            gradient: 'linear-gradient(90deg, #10b981, #06b6d4)',
-        },
-        {
-            label: 'Orçamento',
-            value: budget.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-            icon: 'account_balance_wallet',
-            colorClass: 'indigo',
-            bgColor: 'rgba(37, 99, 235, 0.15)',
-            iconColor: '#2563eb',
-            gradient: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-        },
-        {
-            label: 'Custo Real',
-            value: actualCost.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-            icon: 'trending_down',
-            colorClass: 'violet',
-            bgColor: 'rgba(59, 130, 246, 0.15)',
-            iconColor: '#3b82f6',
-            gradient: 'linear-gradient(90deg, #3b82f6, #f43f5e)',
-        },
-        {
-            label: 'Tarefas (Feitas/Total)',
-            value: `${completedTasks} / ${tasks.length}`,
-            icon: 'assignment',
-            colorClass: 'cyan',
-            bgColor: 'rgba(6, 182, 212, 0.15)',
-            iconColor: '#06b6d4',
-            gradient: 'linear-gradient(90deg, #06b6d4, #2563eb)',
-        },
-    ];
+    const budgetFormatted = formatMoneyCompact(budget);
+    const actualCostFormatted = formatMoneyCompact(actualCost);
+    const tasksLabel = `${completedTasks}/${tasks.length}`;
+
+    const priorityKey = project.priority || 'MEDIUM';
+    const priorityLabel = PRIORITY_LABEL[priorityKey] || PRIORITY_LABEL.MEDIUM;
+    const priorityColor = PRIORITY_HEX[priorityKey] || PRIORITY_HEX.MEDIUM;
+
+    const periodLabel = formatPeriodCompact(project.startDate, project.endDate);
+
+    const managerName = project.manager?.name || '—';
+    const techLeadName = project.techLead?.name || '—';
+
+    const dense = true;
 
     return (
-        <Box sx={{ display: 'flex', gap: 2.5, mb: 4 }}>
-            {kpis.map((kpi, index) => (
-                <Box
-                    key={index}
-                    sx={{
-                        flex: 1,
-                        background: cardBg,
-                        border: `1px solid ${borderColor}`,
-                        borderRadius: '8px',
-                        p: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2.5,
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: cardShadow,
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '3px',
-                            background: kpi.gradient,
-                            opacity: 0,
-                            transition: 'opacity 0.3s',
-                        },
-                        '&:hover': {
-                            transform: 'translateY(-4px)',
-                            borderColor: mode === 'dark' ? 'rgba(37, 99, 235, 0.3)' : 'rgba(37, 99, 235, 0.5)',
-                            boxShadow: mode === 'dark' ? '0 0 40px rgba(37, 99, 235, 0.1)' : '0 10px 25px rgba(37, 99, 235, 0.15)',
-                            '&::before': {
-                                opacity: 1,
-                            },
-                        },
-                    }}
-                >
-                    {/* Icon */}
-                    <Box
-                        sx={{
-                            width: 56,
-                            height: 56,
-                            borderRadius: '8px',
-                            background: kpi.bgColor,
-                            color: kpi.iconColor,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                        }}
-                    >
-                        <span className="material-icons-round" style={{ fontSize: 28 }}>
-                            {kpi.icon}
-                        </span>
-                    </Box>
-
-                    {/* Content */}
-                    <Box>
-                        <Box
-                            sx={{
-                                fontSize: '13px',
-                                color: textSecondary,
-                                mb: 0.5,
-                            }}
-                        >
-                            {kpi.label}
-                        </Box>
-                        <Box
-                            sx={{
-                                fontSize: '26px',
-                                fontWeight: 700,
-                                color: textPrimary,
-                                fontFamily: kpi.label.includes('Orçamento') || kpi.label.includes('Custo') ? 'DM Sans, monospace' : 'inherit',
-                            }}
-                        >
-                            {kpi.value}
-                        </Box>
-                    </Box>
-                </Box>
-            ))}
+        <Box
+            sx={{
+                width: '100%',
+                overflowX: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                mb: 4,
+            }}
+        >
+            <KpiGrid
+                maxColumns={8}
+                maxColumnsMd={8}
+                gap={1}
+                mb={0}
+                clampChildHeight
+                sx={{
+                    width: { xs: 'max(100%, 880px)', md: '100%' },
+                    gridTemplateColumns: {
+                        xs: 'repeat(8, minmax(100px, 1fr))',
+                        sm: 'repeat(8, minmax(100px, 1fr))',
+                        md: 'repeat(8, 1fr)',
+                        lg: 'repeat(8, 1fr)',
+                    },
+                    '& > *': {
+                        minWidth: 0,
+                        maxHeight: '148px',
+                    },
+                }}
+            >
+                <StatsCard
+                    dense={dense}
+                    title="Gerente"
+                    value={managerName}
+                    iconName="person"
+                    hexColor="#2563eb"
+                    valueSx={ellipsisValueSx}
+                />
+                <StatsCard
+                    dense={dense}
+                    title="Técnico"
+                    value={techLeadName}
+                    iconName="engineering"
+                    hexColor="#14b8a6"
+                    valueSx={ellipsisValueSx}
+                />
+                <StatsCard dense={dense} title="Prioridade" value={priorityLabel} iconName="flag" hexColor={priorityColor} />
+                <StatsCard
+                    dense={dense}
+                    title="Período"
+                    value={periodLabel}
+                    iconName="date_range"
+                    hexColor="#3b82f6"
+                    valueSx={ellipsisValueSx}
+                />
+                <StatsCard dense={dense} title="Riscos" value={criticalRisks} iconName="security" hexColor="#10b981" />
+                <StatsCard
+                    dense={dense}
+                    title="Orçamento"
+                    value={budgetFormatted}
+                    iconName="account_balance_wallet"
+                    hexColor="#2563eb"
+                    valueSx={ellipsisValueSx}
+                />
+                <StatsCard
+                    dense={dense}
+                    title="Custo"
+                    value={actualCostFormatted}
+                    iconName="trending_down"
+                    hexColor="#3b82f6"
+                    valueSx={ellipsisValueSx}
+                />
+                <StatsCard dense={dense} title="Tarefas" value={tasksLabel} iconName="assignment" hexColor="#06b6d4" />
+            </KpiGrid>
         </Box>
     );
 };

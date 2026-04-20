@@ -14,6 +14,8 @@ const PageTitleCard = ({
   actions = null,
   /** Se true, empurra `actions` para a direita do card (ex.: CTA “Novo …”) */
   pushActionsToEnd = false,
+  /** Alinhamento vertical do ícone com o bloco de texto (`flex-start` quando há várias linhas / chips). */
+  stackAlign = 'center',
   mb = 2,
   sx: sxProp,
   ...paperProps
@@ -37,7 +39,7 @@ const PageTitleCard = ({
       }}
       {...paperProps}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: stackAlign, gap: 2 }}>
         {iconName ? (
           <span
             className="material-icons-round"
@@ -86,8 +88,12 @@ const PageTitleCard = ({
             </Typography>
             {actions}
           </Box>
-          {subtitle ? (
-            <Typography sx={{ color: textSecondary, fontSize: '15px', mt: 0.5 }}>{subtitle}</Typography>
+          {subtitle != null && subtitle !== '' ? (
+            typeof subtitle === 'string' ? (
+              <Typography sx={{ color: textSecondary, fontSize: '15px', mt: 0.5 }}>{subtitle}</Typography>
+            ) : (
+              <Box sx={{ mt: 1 }}>{subtitle}</Box>
+            )
           ) : null}
         </Box>
       </Box>

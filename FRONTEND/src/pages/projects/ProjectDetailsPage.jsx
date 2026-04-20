@@ -18,7 +18,6 @@ import { createProjectTask, createProjectCost } from '../../services/project-det
 
 import DarkProjectHeader from '../../components/projects/DarkProjectHeader';
 import DarkTabsNavigation from '../../components/projects/DarkTabsNavigation';
-import ProjectInfoCard from '../../components/projects/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/projects/ProjectSummaryCard';
 import ProjectTimeline from '../../components/projects/ProjectTimeline';
 import KPICardsGrid from '../../components/projects/KPICardsGrid';
@@ -283,7 +282,6 @@ const ProjectDetailsPage = () => {
                 <Box sx={{ mt: 4 }}>
                     {tabValue === 0 && (
                         <Box className="fade-in-up">
-                            <ProjectInfoCard project={project} />
                             <KPICardsGrid
                                 project={project}
                                 tasks={project?.tasks || []}
@@ -302,7 +300,7 @@ const ProjectDetailsPage = () => {
                                     onAddProposal={handleAddProposal}
                                     onAddFollowUp={handleAddFollowUp}
                                 />
-                                <Box sx={{ position: 'relative', minHeight: '100%' }}>
+                                <Box sx={{ position: 'relative', minHeight: 300 }}>
                                     <Box sx={{ position: 'absolute', inset: 0 }}>
                                         <RecentActivities projectId={project.id} />
                                     </Box>

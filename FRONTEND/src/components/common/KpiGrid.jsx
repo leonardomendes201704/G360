@@ -11,8 +11,9 @@ import { Box } from '@mui/material';
  * @param {number}    [gap=2] - Espacamento entre cards (MUI spacing)
  * @param {number}    [mb=3] - Margin bottom (MUI spacing)
  * @param {boolean}   [clampChildHeight=true] - Se true, limita altura dos filhos (evita cards muito altos na grelha geral)
+ * @param {object}    [sx] - `sx` extra fundido no `Box` (pode sobrescrever `gridTemplateColumns`, etc.)
  */
-const KpiGrid = ({ children, maxColumns = 6, maxColumnsMd, gap = 1.5, mb = 3, clampChildHeight = true }) => {
+const KpiGrid = ({ children, maxColumns = 6, maxColumnsMd, gap = 1.5, mb = 3, clampChildHeight = true, sx: sxProp }) => {
     const mdCols = maxColumnsMd !== undefined ? Math.min(maxColumnsMd, 8) : Math.min(maxColumns, 5);
     const lgCols = Math.min(maxColumns, 8);
     return (
@@ -35,6 +36,7 @@ const KpiGrid = ({ children, maxColumns = 6, maxColumnsMd, gap = 1.5, mb = 3, cl
                         }
                         : {}),
                 },
+                ...sxProp,
             }}
         >
             {children}
