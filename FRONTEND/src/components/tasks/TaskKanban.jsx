@@ -22,28 +22,28 @@ const columnTheme = {
   CANCELLED: { icon: 'block', color: '#94a3b8', headerIcon: '🚫', bgTint: 'rgba(148, 163, 184, 0.08)' }
 };
 
-/** Densidade ~75% (equivalente visual a zoom 75% no browser) — padding e tipografia reduzidos */
+/** Densidade ~71% (base 75% + ~5% extra) — padding e tipografia */
 const K = {
-  boardGap: 1.5,
-  colMaxH: 'calc(100vh - 220px)',
-  headerPx: 1.5,
-  headerPy: 1.125,
-  iconBox: 22,
-  iconMat: 14,
-  titleFs: '0.6875rem',
-  badge: 18,
-  badgeFs: '0.6rem',
-  addBtn: 24,
-  dropPx: 1.25,
-  dropPy: 1,
-  cardMb: 1,
-  cardPad: '10px 12px',
-  cardTitleFs: '0.6875rem',
-  cardDescFs: '0.625rem',
-  chipFs: '0.5625rem',
-  chipIcon: 11,
-  openBtn: 22,
-  emptyIcon: 30,
+  boardGap: 1.375,
+  colMaxH: 'calc(100vh - 210px)',
+  headerPx: 1.375,
+  headerPy: 1,
+  iconBox: 21,
+  iconMat: 13,
+  titleFs: '0.65rem',
+  badge: 17,
+  badgeFs: '0.5625rem',
+  addBtn: 23,
+  dropPx: 1.125,
+  dropPy: 0.875,
+  cardMb: 0.875,
+  cardPad: '9px 11px',
+  cardTitleFs: '0.65rem',
+  cardDescFs: '0.6rem',
+  chipFs: '0.525rem',
+  chipIcon: 10,
+  openBtn: 21,
+  emptyIcon: 28,
 };
 
 const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeTimerTaskId, onTimerToggle, currentUserId }) => {
@@ -161,7 +161,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
           gap: K.boardGap,
           width: '100%',
           alignItems: 'flex-start',
-          minHeight: 'calc(100vh - 260px)'
+          minHeight: 'calc(100vh - 248px)'
         }}>
           {Object.entries(boardData).map(([columnId, column]) => {
             const isDoneColumn = columnId === 'DONE';
@@ -332,7 +332,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         overflowY: 'auto',
                         px: K.dropPx,
                         py: K.dropPy,
-                        minHeight: 64,
+                        minHeight: 60,
                         bgcolor: droppableSnapshot.isDraggingOver
                           ? (isDark ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.04)')
                           : 'transparent',
@@ -348,14 +348,14 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                     >
                       {/* Empty State */}
                       {columnItems.length === 0 && !droppableSnapshot.isDraggingOver && (
-                        <Box sx={{ textAlign: 'center', py: 3, opacity: 0.45 }}>
+                        <Box sx={{ textAlign: 'center', py: 2.5, opacity: 0.45 }}>
                           <span className="material-icons-round" style={{ fontSize: K.emptyIcon, color: textMuted }}>
                             {columnId === 'DONE' ? 'celebration' : 'inbox'}
                           </span>
-                          <Typography variant="caption" display="block" mt={0.75} fontWeight={600} sx={{ fontSize: '0.65rem' }} color={textMuted}>
+                          <Typography variant="caption" display="block" mt={0.5} fontWeight={600} sx={{ fontSize: K.cardDescFs }} color={textMuted}>
                             {columnId === 'DONE' ? 'Nenhuma concluída' : 'Nenhuma tarefa'}
                           </Typography>
-                          <Typography variant="caption" sx={{ color: textMuted, opacity: 0.7, fontSize: '0.6rem' }}>
+                          <Typography variant="caption" sx={{ color: textMuted, opacity: 0.7, fontSize: K.chipFs }}>
                             Arraste tarefas para cá
                           </Typography>
                         </Box>
@@ -621,8 +621,8 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                         border: `1.5px dashed ${isDark ? 'rgba(255,255,255,0.12)' : '#cbd5e1'}`,
                         bgcolor: 'transparent',
                         color: textMuted,
-                        fontSize: '0.6875rem', fontWeight: 700,
-                        borderRadius: '6px', py: 0.5,
+                        fontSize: '0.65rem', fontWeight: 700,
+                        borderRadius: '6px', py: 0.45,
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         '&:hover': { color: theme.color, borderColor: theme.color }
