@@ -219,6 +219,27 @@ class AuthController {
     }
   }
 
+  static async loginGoogle(req, res) {
+    try {
+      const { code, tenantSlug, redirectUri } = req.body;
+
+      if (!code || !tenantSlug) {
+        return res.status(400).json({ message: 'Código e identificação da empresa são obrigatórios.' });
+      }
+      const result = await AuthService.loginWithGoogle(req.prisma, code, tenantSlug, redirectUri, req);
+      recordAuthAudit(req.prisma, {
+        userId: result.user.id,
+        actionSuffix: 'LOGIN',
+        req,
+        newData: { channel: 'GOOGLE' },
+      });
+      return res.json(result);
+    } catch (err) {
+      logger.error('Erro Login Google:', err);
+      return res.status(401).json({ message: err.message || 'Falha na autenticação SSO.' });
+    }
+  }
+
   // Endpoint público para obter ClientID e TenantID do Azure para o Frontend iniciar o fluxo
   static async getAzureConfig(req, res) {
     try {

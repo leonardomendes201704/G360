@@ -6,9 +6,19 @@ import {
 import { Settings, CheckCircle, Cancel, Cloud, Mail, VpnKey } from '@mui/icons-material';
 import integrationService from '../../services/integration.service';
 import AzureConfigModal from '../modals/AzureConfigModal';
+import GoogleConfigModal from '../modals/GoogleConfigModal';
 import SmtpConfigModal from '../modals/SmtpConfigModal';
 import LdapConfigModal from '../modals/LdapConfigModal';
 import { ThemeContext } from '../../contexts/ThemeContext';
+
+const GoogleMark = () => (
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '3px', width: 28, height: 28 }}>
+        <Box sx={{ bgcolor: '#4285F4', borderRadius: '2px' }} />
+        <Box sx={{ bgcolor: '#EA4335', borderRadius: '2px' }} />
+        <Box sx={{ bgcolor: '#FBBC05', borderRadius: '2px' }} />
+        <Box sx={{ bgcolor: '#34A853', borderRadius: '2px' }} />
+    </Box>
+);
 
 const AVAILABLE_INTEGRATIONS = [
     {
@@ -17,6 +27,21 @@ const AVAILABLE_INTEGRATIONS = [
         description: 'Permite login com contas Microsoft corporativas e importação de usuários do Azure AD.',
         icon: <Cloud sx={{ fontSize: 36, color: '#0078D4' }} />,
         color: '#0078D4',
+    },
+    {
+        type: 'GOOGLE',
+        name: 'Google (OAuth)',
+        description: 'Permite login com contas Google via OAuth 2.0 (Google Cloud Console).',
+        icon: (
+            <Box sx={{
+                width: 48, height: 48, borderRadius: '8px',
+                background: '#4285F415',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+                <GoogleMark />
+            </Box>
+        ),
+        color: '#4285F4',
     },
     {
         type: 'SMTP',
@@ -40,6 +65,7 @@ const IntegrationsTab = () => {
     const [integrations, setIntegrations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [azureModalOpen, setAzureModalOpen] = useState(false);
+    const [googleModalOpen, setGoogleModalOpen] = useState(false);
     const [smtpModalOpen, setSmtpModalOpen] = useState(false);
     const [ldapModalOpen, setLdapModalOpen] = useState(false);
 
@@ -61,6 +87,7 @@ const IntegrationsTab = () => {
 
     const handleConfig = (type) => {
         if (type === 'AZURE') setAzureModalOpen(true);
+        if (type === 'GOOGLE') setGoogleModalOpen(true);
         if (type === 'SMTP') setSmtpModalOpen(true);
         if (type === 'LDAP') setLdapModalOpen(true);
     };
@@ -95,6 +122,9 @@ const IntegrationsTab = () => {
                                 <CardContent sx={{ flexGrow: 1, p: 3 }}>
                                     <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                                         <Box display="flex" alignItems="center" gap={2}>
+                                            {item.type === 'GOOGLE' ? (
+                                                item.icon
+                                            ) : (
                                             <Box sx={{
                                                 width: 48, height: 48, borderRadius: '8px',
                                                 background: item.color + '15',
@@ -102,6 +132,7 @@ const IntegrationsTab = () => {
                                             }}>
                                                 {item.icon}
                                             </Box>
+                                            )}
                                             <Box>
                                                 <Typography sx={{ fontSize: '16px', fontWeight: 600, color: textPrimary }}>
                                                     {item.name}
@@ -167,6 +198,14 @@ const IntegrationsTab = () => {
                 <AzureConfigModal
                     open={azureModalOpen}
                     onClose={() => setAzureModalOpen(false)}
+                    onSuccess={loadData}
+                />
+            )}
+
+            {googleModalOpen && (
+                <GoogleConfigModal
+                    open={googleModalOpen}
+                    onClose={() => setGoogleModalOpen(false)}
                     onSuccess={loadData}
                 />
             )}

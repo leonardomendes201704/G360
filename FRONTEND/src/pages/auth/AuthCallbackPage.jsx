@@ -29,7 +29,7 @@ const AuthCallbackPage = () => {
             const errorParam = searchParams.get('error');
             const errorDesc = searchParams.get('error_description');
             if (errorParam) {
-                setError(`Erro do Azure: ${errorDesc || errorParam}`);
+                setError(`Erro do SSO: ${errorDesc || errorParam}`);
             } else {
                 if (!status.includes('Processando'))
                     setError('Código de autorização não encontrado.');
@@ -50,22 +50,23 @@ const AuthCallbackPage = () => {
             const errorDesc = searchParams.get('error_description');
 
             if (errorParam) {
-                setError(`Erro do Azure: ${errorDesc || errorParam}`);
+                setError(`Erro do SSO: ${errorDesc || errorParam}`);
                 return;
             }
 
-            // Recupera tenant salvo no passo anterior (no LoginPage) ou usa AZURE default
-            const tenantSlug = localStorage.getItem('sso_tenant_slug') || 'AZURE';
+            const provider = (localStorage.getItem('sso_provider') || 'azure').toLowerCase();
+            const tenantSlug = localStorage.getItem('sso_tenant_slug') || 'default';
 
             try {
                 setStatus('Validando credenciais com o servidor...');
-                // Chama backend passing _skipAuthCheck to prevent auto-redirect on 401
-                const response = await api.post('/auth/azure', {
+                const body = {
                     code,
                     tenantSlug,
-                    redirectUri: window.location.origin + '/auth/callback'
-                }, {
-                    _skipAuthCheck: true
+                    redirectUri: `${window.location.origin}/auth/callback`,
+                };
+                const path = provider === 'google' ? '/auth/google' : '/auth/azure';
+                const response = await api.post(path, body, {
+                    _skipAuthCheck: true,
                 });
 
                 const { token, refreshToken, user } = response.data;
@@ -74,6 +75,9 @@ const AuthCallbackPage = () => {
                 localStorage.setItem('g360_token', token);
                 localStorage.setItem('g360_refresh_token', refreshToken);
                 localStorage.setItem('g360_user', JSON.stringify(user));
+
+                localStorage.removeItem('sso_provider');
+                localStorage.removeItem('sso_tenant_slug');
 
                 // Force cleanup of global flag on success (though redirection will handle it)
                 window.authCallbackProcessed = false;

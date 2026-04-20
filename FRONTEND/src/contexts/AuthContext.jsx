@@ -121,7 +121,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('g360_user');
     localStorage.removeItem('g360_token');
     localStorage.removeItem('g360_refresh_token');
-    localStorage.removeItem('g360_tenant_slug');
+    // Mantém g360_tenant_slug para /login resolver SSO (GET /integrations/public com X-Tenant-Slug)
     api.defaults.headers.Authorization = null;
     setUser(null);
     navigate('/login');
@@ -241,7 +241,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('g360_user');
       localStorage.removeItem('g360_token');
       localStorage.removeItem('g360_refresh_token');
-      localStorage.removeItem('g360_tenant_slug');
       api.defaults.headers.Authorization = null;
       setUser(null);
       navigate('/login');

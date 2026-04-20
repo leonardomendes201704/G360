@@ -6,6 +6,7 @@ async function main() {
 
     const integrations = [
         { type: 'AZURE', name: 'Azure Active Directory', isEnabled: false },
+        { type: 'GOOGLE', name: 'Google (OAuth)', isEnabled: false },
         { type: 'LDAP', name: 'LDAP / Active Directory', isEnabled: false },
         { type: 'SMTP', name: 'Servidor SMTP', isEnabled: false }
     ];

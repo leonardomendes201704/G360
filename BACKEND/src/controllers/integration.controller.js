@@ -46,11 +46,7 @@ class IntegrationController {
                     type: i.type,
                     name: i.name,
                     isEnabled: i.isEnabled,
-                    config: i.config ? {
-                        clientId: i.config.clientId,
-                        tenantIdAzure: i.config.tenantIdAzure,
-                        redirectUri: i.config.redirectUri
-                    } : null
+                    config: IntegrationService.getPublicConfig(i.type, i.config),
                 }));
             return res.json(active);
         } catch (error) {

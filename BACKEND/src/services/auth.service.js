@@ -52,6 +52,12 @@ class AuthService {
       throw error;
     }
 
+    if (authProvider === 'GOOGLE') {
+      const error = new Error('Este usuário usa autenticação Google. Clique em "Entrar com Google".');
+      error.statusCode = 400;
+      throw error;
+    }
+
     if (authProvider === 'LDAP') {
       // Autenticar via LDAP
       const integration = await IntegrationRepository.findByType(prisma, 'LDAP');
@@ -216,6 +222,70 @@ class AuthService {
     }
 
     // 6. Gerar Token JWT da nossa app (COM refreshToken)
+    return this.generateToken(user, req);
+  }
+
+  /**
+   * Login via Google OAuth 2.0
+   * @param {object} prisma - PrismaClient do tenant
+   */
+  static async loginWithGoogle(prisma, code, tenantSlug, redirectUri, req) {
+    logger.debug('[SSO] Starting loginWithGoogle');
+    const integration = await IntegrationRepository.findByType(prisma, 'GOOGLE');
+    if (!integration || !integration.isEnabled || !integration.config) {
+      throw new Error('Integração com Google não está ativa.');
+    }
+
+    const { clientId, clientSecret, redirectUri: configuredRedirect } = integration.config;
+    const redirect = redirectUri || configuredRedirect;
+
+    if (!clientId || !clientSecret || !redirect) {
+      throw new Error('Configuração Google incompleta.');
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      code,
+      grant_type: 'authorization_code',
+      redirect_uri: redirect,
+    });
+
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+
+    const tokenData = await tokenRes.json().catch(() => ({}));
+    if (!tokenRes.ok || !tokenData.access_token) {
+      logger.error('[SSO] Google token error', tokenData);
+      throw new Error(
+        tokenData.error_description || tokenData.error || 'Falha ao obter token do Google.'
+      );
+    }
+
+    const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+    const profile = await userInfoRes.json().catch(() => ({}));
+    if (!profile.email) {
+      throw new Error('Não foi possível obter o email da conta Google.');
+    }
+
+    const googleEmail = profile.email;
+    const user = await UserRepository.findByEmail(prisma, googleEmail);
+
+    if (!user) {
+      throw new Error(
+        `Usuário ${googleEmail} não encontrado no sistema. Peça ao administrador para criá-lo.`
+      );
+    }
+
+    if (!user.isActive) {
+      throw new Error('Utilizador inativo.');
+    }
+
     return this.generateToken(user, req);
   }
 

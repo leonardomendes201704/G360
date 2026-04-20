@@ -6,6 +6,28 @@ require('isomorphic-fetch');
 const logger = require('../config/logger');
 
 class IntegrationService {
+    /**
+     * Campos de config seguros para expor em GET /integrations/public (sem segredos).
+     */
+    static getPublicConfig(type, config) {
+        if (!config) return null;
+        switch (type) {
+            case 'AZURE':
+                return {
+                    clientId: config.clientId,
+                    tenantIdAzure: config.tenantIdAzure,
+                    redirectUri: config.redirectUri,
+                };
+            case 'GOOGLE':
+                return {
+                    clientId: config.clientId,
+                    redirectUri: config.redirectUri,
+                };
+            default:
+                return null;
+        }
+    }
+
     static async getAll(prisma) {
         return IntegrationRepository.findAll(prisma);
     }
@@ -29,11 +51,59 @@ class IntegrationService {
             return this.testAzureConnection(integration.config);
         }
 
+        if (type === 'GOOGLE') {
+            return this.testGoogleConnection(integration.config);
+        }
+
         if (type === 'LDAP') {
             return LdapService.testConnection(integration.config);
         }
 
         return { success: true, message: 'Conexão simulada OK' };
+    }
+
+    /**
+     * Valida Client ID/Secret com o endpoint de token do Google (código inválido de propósito).
+     */
+    static async testGoogleConnection(config) {
+        const { clientId, clientSecret, redirectUri } = config || {};
+
+        if (!clientId || !clientSecret || !redirectUri) {
+            throw new Error('Configuração incompleta (Client ID, Client Secret e Redirect URI são obrigatórios).');
+        }
+
+        const params = new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code: '__invalid_test_code__',
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri,
+        });
+
+        const res = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString(),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (data.error === 'invalid_client') {
+            throw new Error('Client ID ou Client Secret inválidos.');
+        }
+
+        if (data.error === 'invalid_grant') {
+            return {
+                success: true,
+                message: 'Credenciais aceites pelo Google (troca de código de teste rejeitada, como esperado).',
+            };
+        }
+
+        if (data.error === 'redirect_uri_mismatch') {
+            throw new Error('Redirect URI não coincide com o registado na Google Cloud Console.');
+        }
+
+        throw new Error(data.error_description || data.error || 'Resposta inesperada do Google OAuth.');
     }
 
     static async testAzureConnection(prisma, config) {

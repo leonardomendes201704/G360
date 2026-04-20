@@ -59,6 +59,7 @@ function runDbPush(schemaName) {
 async function ensurePlaceholderIntegrations(prisma) {
   const pairs = [
     ['AZURE', 'Azure Active Directory'],
+    ['GOOGLE', 'Google (OAuth)'],
     ['LDAP', 'LDAP / Active Directory'],
   ];
   for (const [type, name] of pairs) {

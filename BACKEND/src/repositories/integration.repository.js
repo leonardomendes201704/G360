@@ -12,6 +12,7 @@ class IntegrationRepository {
     static async update(prisma, type, data) {
         // Definir nome padrão caso não venha no data (necessário para o create do upsert)
         const defaultName = type === 'AZURE' ? 'Azure Active Directory' :
+            type === 'GOOGLE' ? 'Google (OAuth)' :
             type === 'LDAP' ? 'LDAP / Active Directory' : type;
 
         return prisma.integration.upsert({

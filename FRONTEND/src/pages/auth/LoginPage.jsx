@@ -71,25 +71,35 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchIntegrations = async () => {
       try {
-        const response = await api.get('/integrations/public');
+        // Mesmo tenant onde a integração foi gravada (multi-tenant). Sem X-Tenant-Slug o API usa só o schema public.
+        const slug =
+          tenantSlugFromUrl || (typeof localStorage !== 'undefined' ? localStorage.getItem('g360_tenant_slug') : null);
+        const response = await api.get('/integrations/public', {
+          headers: slug ? { 'X-Tenant-Slug': slug } : {},
+        });
         setIntegrations(response.data);
       } catch (e) {
-        console.error("Failed to load integrations", e);
+        console.error('Failed to load integrations', e);
       }
     };
     fetchIntegrations();
-  }, []);
+  }, [tenantSlugFromUrl]);
+
+  const resolveSsoTenantSlug = () =>
+    tenantSlugFromUrl || localStorage.getItem('g360_tenant_slug') || 'default';
 
   const handleAzureLogin = async () => {
     try {
       const response = await api.get('/integrations/public');
-      const azure = response.data.find(i => i.type === 'AZURE');
+      const azure = response.data.find((i) => i.type === 'AZURE');
       if (!azure || !azure.config) {
         setError('Integração Microsoft não configurada. Contate o administrador.');
         return;
       }
       const { clientId, tenantIdAzure } = azure.config;
-      const dynamicRedirectUri = window.location.origin + '/auth/callback';
+      const dynamicRedirectUri = `${window.location.origin}/auth/callback`;
+      localStorage.setItem('sso_provider', 'azure');
+      localStorage.setItem('sso_tenant_slug', resolveSsoTenantSlug());
       const authUrl = `https://login.microsoftonline.com/${tenantIdAzure}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(dynamicRedirectUri)}&response_mode=query&scope=User.Read openid profile email`;
       window.location.href = authUrl;
     } catch (err) {
@@ -97,6 +107,38 @@ const LoginPage = () => {
       setError('Erro ao conectar com Microsoft. Tente novamente.');
     }
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await api.get('/integrations/public');
+      const google = response.data.find((i) => i.type === 'GOOGLE');
+      if (!google || !google.config?.clientId) {
+        setError('Integração Google não configurada. Contate o administrador.');
+        return;
+      }
+      const { clientId } = google.config;
+      const redirectUri = google.config.redirectUri || `${window.location.origin}/auth/callback`;
+      const scope = encodeURIComponent('openid email profile');
+      localStorage.setItem('sso_provider', 'google');
+      localStorage.setItem('sso_tenant_slug', resolveSsoTenantSlug());
+      const authUrl =
+        `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}` +
+        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        '&response_type=code' +
+        `&scope=${scope}` +
+        '&access_type=offline' +
+        '&prompt=select_account';
+      window.location.href = authUrl;
+    } catch (err) {
+      console.error('Erro ao buscar config Google:', err);
+      setError('Erro ao conectar com Google. Tente novamente.');
+    }
+  };
+
+  const ssoAzure = integrations.find(
+    (i) => i.type === 'AZURE' && i.config?.clientId && i.config?.tenantIdAzure
+  );
+  const ssoGoogle = integrations.find((i) => i.type === 'GOOGLE' && i.config?.clientId);
 
   // ── Color Tokens ──
   const colors = {
@@ -497,16 +539,20 @@ const LoginPage = () => {
                 {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Entrar na Plataforma'}
               </button>
 
+              {(ssoAzure || ssoGoogle) && (
+              <>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, my: 1 }}>
                 <Box sx={{ flex: 1, height: '1px', background: colors.divider }} />
                 <Typography sx={{ fontSize: '12px', color: colors.textMuted, fontWeight: 500 }}>OU</Typography>
                 <Box sx={{ flex: 1, height: '1px', background: colors.divider }} />
               </Box>
 
+              {ssoAzure && (
               <button
                 type="button"
                 onClick={handleAzureLogin}
                 disabled={loading}
+                data-testid="login-sso-azure"
                 style={{
                   width: '100%',
                   padding: '12px',
@@ -531,6 +577,42 @@ const LoginPage = () => {
                 </Box>
                 Entrar com Microsoft
               </button>
+              )}
+
+              {ssoGoogle && (
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                data-testid="login-sso-google"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginTop: ssoAzure ? 10 : 0,
+                  background: colors.socialBtnBg,
+                  border: `1px solid ${colors.socialBtnBorder}`,
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: colors.textPrimary,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={(e) => { e.target.style.background = colors.socialBtnHoverBg; }}
+                onMouseLeave={(e) => { e.target.style.background = colors.socialBtnBg; }}
+              >
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2px', width: 16, height: 16 }}>
+                  <Box sx={{ background: '#4285F4' }} />
+                  <Box sx={{ background: '#EA4335' }} />
+                  <Box sx={{ background: '#FBBC05' }} />
+                  <Box sx={{ background: '#34A853' }} />
+                </Box>
+                Entrar com Google
+              </button>
+              )}
+              </>
+              )}
             </form>
           )}
 

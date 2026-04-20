@@ -50,6 +50,7 @@ router.post('/login', tenantResolverPublic(), loginLimiter, AuthController.login
  *         description: Login SSO bem-sucedido
  */
 router.post('/azure', tenantResolverPublic(), loginLimiter, AuthController.loginAzure);
+router.post('/google', tenantResolverPublic(), loginLimiter, AuthController.loginGoogle);
 router.post('/ldap', tenantResolverPublic(), loginLimiter, AuthController.loginLdap);
 router.get('/azure-config/:tenantSlug', tenantResolverPublic(), AuthController.getAzureConfig);
 

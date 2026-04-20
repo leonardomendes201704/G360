@@ -188,10 +188,10 @@ describe('AuthController', () => {
          it('should process Azure SSO with AuthService', async () => {
               const req = mockRequest({ body: { code: 'c', tenantSlug: 't', redirectUri: 'r' } });
               const res = mockResponse();
-              AuthService.loginWithAzure.mockResolvedValue({ token: 'jwt' });
+              AuthService.loginWithAzure.mockResolvedValue({ token: 'jwt', user: { id: 'u1' } });
               
               await AuthController.loginAzure(req, res);
-              expect(res.json).toHaveBeenCalledWith({ token: 'jwt' });
+              expect(res.json).toHaveBeenCalledWith({ token: 'jwt', user: { id: 'u1' } });
               expect(AuthService.loginWithAzure).toHaveBeenCalledWith(req.prisma, 'c', 't', 'r', req);
          });
 
@@ -200,6 +200,33 @@ describe('AuthController', () => {
               const res = mockResponse();
               AuthService.loginWithAzure.mockRejectedValue(new Error('fail'));
               await AuthController.loginAzure(req, res);
+              expect(res.status).toHaveBeenCalledWith(401);
+         });
+    });
+
+    describe('loginGoogle', () => {
+         it('should 400 if missing code or slug', async () => {
+              const req = mockRequest({ body: {} });
+              const res = mockResponse();
+              await AuthController.loginGoogle(req, res);
+              expect(res.status).toHaveBeenCalledWith(400);
+         });
+
+         it('should process Google SSO with AuthService', async () => {
+              const req = mockRequest({ body: { code: 'c', tenantSlug: 't', redirectUri: 'r' } });
+              const res = mockResponse();
+              AuthService.loginWithGoogle.mockResolvedValue({ token: 'jwt', user: { id: 'u2' } });
+
+              await AuthController.loginGoogle(req, res);
+              expect(res.json).toHaveBeenCalledWith({ token: 'jwt', user: { id: 'u2' } });
+              expect(AuthService.loginWithGoogle).toHaveBeenCalledWith(req.prisma, 'c', 't', 'r', req);
+         });
+
+         it('should catch errors', async () => {
+              const req = mockRequest({ body: { code: 'c', tenantSlug: 't' } });
+              const res = mockResponse();
+              AuthService.loginWithGoogle.mockRejectedValue(new Error('fail'));
+              await AuthController.loginGoogle(req, res);
               expect(res.status).toHaveBeenCalledWith(401);
          });
     });
