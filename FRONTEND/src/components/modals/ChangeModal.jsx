@@ -26,6 +26,50 @@ import { getFileURL } from '../../utils/urlUtils';
 import { getTemplates, applyTemplate } from '../../services/change-template.service';
 import './ChangeModal.css';
 
+/** Formulário GMUD em página dedicada (scroll) ou dentro de StandardModal (dashboards). */
+function GmudFormShell({ variant, open, onClose, title, subtitle, loading, footerEl, children }) {
+    if (variant === 'page') {
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, width: '100%' }}>
+                <Box sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>{children}</Box>
+                <Box
+                    sx={{
+                        flexShrink: 0,
+                        borderTop: 1,
+                        borderColor: 'divider',
+                        p: 2,
+                        bgcolor: 'background.paper',
+                    }}
+                >
+                    {footerEl}
+                </Box>
+            </Box>
+        );
+    }
+    return (
+        <StandardModal
+            open={open}
+            onClose={onClose}
+            title={title}
+            subtitle={subtitle}
+            icon="sync"
+            size="wide"
+            loading={loading}
+            contentSx={{
+                p: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                minHeight: 0,
+                overflow: 'hidden',
+            }}
+            footer={footerEl}
+        >
+            {children}
+        </StandardModal>
+    );
+}
+
 const schema = yup.object({
     code: yup.string().required('Código é obrigatório'),
     title: yup.string().required('Título é obrigatório'),
@@ -39,7 +83,18 @@ const schema = yup.object({
     projectId: yup.string().nullable(),
 }).required();
 
-const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMode = false, loading = false, initialTab = 'geral' }) => {
+const ChangeModal = ({
+    open,
+    onClose,
+    onSave,
+    onUpdate,
+    change = null,
+    isViewMode = false,
+    loading = false,
+    initialTab = 'geral',
+    /** `page` = view dedicada (sem teto do dialog); `modal` = StandardModal (dashboards) */
+    variant = 'modal',
+}) => {
     const { user } = useContext(AuthContext);
     const { mode } = useContext(ThemeContext);
     const isDark = mode === 'dark';
@@ -437,7 +492,44 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
     const gmudModalTitle = isViewMode ? 'Detalhes da GMUD' : (change ? 'Editar GMUD' : 'Nova solicitação');
     const gmudModalSubtitle = change?.code || 'Preencha os dados para registrar a mudança';
 
-    if (!open) return null;
+    if (variant === 'modal' && !open) return null;
+
+    const innerStyle =
+        variant === 'page'
+            ? { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'none' }
+            : { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(85dvh, 900px)' };
+
+    const footerEl = (
+        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <Button type="button" variant="outlined" color="inherit" onClick={onClose} sx={{ textTransform: 'none', fontWeight: 600, mr: 'auto' }}>
+                {isViewMode ? 'Fechar' : 'Cancelar'}
+            </Button>
+            {isWizardMode && (
+                <>
+                    {activeStep > 0 && (
+                        <Button type="button" variant="outlined" onClick={handleBackStep} sx={{ textTransform: 'none' }}>
+                            ← Voltar
+                        </Button>
+                    )}
+                    {activeStep < 1 && (
+                        <Button type="button" variant="contained" color="primary" onClick={handleNextStep} disabled={!canProceedStep} sx={{ textTransform: 'none' }}>
+                            Próximo →
+                        </Button>
+                    )}
+                    {activeStep === 1 && (
+                        <Button type="submit" form="gmudForm" variant="contained" color="success" disabled={loading || !canProceedStep} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                            Criar GMUD
+                        </Button>
+                    )}
+                </>
+            )}
+            {!isWizardMode && !isViewMode && (!change || change.status === 'DRAFT' || change.status === 'REVISION_REQUESTED') && (
+                <Button type="submit" form="gmudForm" variant="contained" color="primary" disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                    {change ? 'Salvar alterações' : 'Criar GMUD'}
+                </Button>
+            )}
+        </Box>
+    );
 
     const inputClass = `form-input ${isViewMode ? 'disabled-input' : ''}`;
     const selectClass = `form-select ${isViewMode ? 'disabled-input' : ''}`;
@@ -445,55 +537,19 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
 
     return (
         <>
-            <StandardModal
+            <GmudFormShell
+                variant={variant}
                 open={open}
                 onClose={onClose}
                 title={gmudModalTitle}
                 subtitle={gmudModalSubtitle}
-                icon="sync"
-                size="wide"
                 loading={loading}
-                contentSx={{
-                    p: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    minHeight: 0,
-                    overflow: 'hidden',
-                }}
-                footer={
-                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                        <Button type="button" variant="outlined" color="inherit" onClick={onClose} sx={{ textTransform: 'none', fontWeight: 600, mr: 'auto' }}>
-                            {isViewMode ? 'Fechar' : 'Cancelar'}
-                        </Button>
-                        {isWizardMode && (
-                            <>
-                                {activeStep > 0 && (
-                                    <Button type="button" variant="outlined" onClick={handleBackStep} sx={{ textTransform: 'none' }}>
-                                        ← Voltar
-                                    </Button>
-                                )}
-                                {activeStep < 1 && (
-                                    <Button type="button" variant="contained" color="primary" onClick={handleNextStep} disabled={!canProceedStep} sx={{ textTransform: 'none' }}>
-                                        Próximo →
-                                    </Button>
-                                )}
-                                {activeStep === 1 && (
-                                    <Button type="submit" form="gmudForm" variant="contained" color="success" disabled={loading || !canProceedStep} sx={{ textTransform: 'none', fontWeight: 600 }}>
-                                        Criar GMUD
-                                    </Button>
-                                )}
-                            </>
-                        )}
-                        {!isWizardMode && !isViewMode && (!change || change.status === 'DRAFT' || change.status === 'REVISION_REQUESTED') && (
-                            <Button type="submit" form="gmudForm" variant="contained" color="primary" disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
-                                {change ? 'Salvar alterações' : 'Criar GMUD'}
-                            </Button>
-                        )}
-                    </Box>
-                }
+                footerEl={footerEl}
             >
-            <div className="change-modal-inner" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(85dvh, 900px)' }}>
+            <div
+                className={variant === 'page' ? 'change-modal-inner change-modal-inner--page' : 'change-modal-inner'}
+                style={innerStyle}
+            >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, px: 3, pt: 1, pb: 0.5, flexShrink: 0 }}>
                     {change && (
                         <Chip
@@ -1390,7 +1446,7 @@ const ChangeModal = ({ open, onClose, onSave, onUpdate, change = null, isViewMod
                     </form>
                 </div>
             </div>
-            </StandardModal>
+            </GmudFormShell>
             <ConfirmDialog
                 open={confirmDialog.open}
                 title={confirmDialog.title}

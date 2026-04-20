@@ -20,7 +20,7 @@ import DataListTable from '../../components/common/DataListTable';
 import { getChangeRequestColumns } from './changeRequestListColumns';
 import { sortChangeRequestRows } from './changeRequestListSort';
 import ChangeRequestDashboard from '../../components/changes/ChangeRequestDashboard';
-import { getChanges, createChange, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
+import { getChanges, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { getErrorMessage } from '../../utils/errorUtils';
@@ -29,7 +29,6 @@ import DataListShell from '../../components/common/DataListShell';
 import TableSkeleton from '../../components/common/TableSkeleton';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
-import ChangeModal from '../../components/modals/ChangeModal';
 import PageTitleCard from '../../components/common/PageTitleCard';
 
 const GMUD_DRAWER_FILTER_DEFAULTS = {
@@ -134,15 +133,8 @@ const ChangeRequestsPage = () => {
         });
     }, [changes, filters]);
 
-    // Estados do Modal
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedChange, setSelectedChange] = useState(null);
-    const [isViewMode, setIsViewMode] = useState(false);
-    const [saving, setSaving] = useState(false);
-
     // Estado da View (Dashboard vs Lista vs Calendario)
     const [viewMode, setViewMode] = useState('DASHBOARD'); // 'DASHBOARD', 'LIST', 'CALENDAR'
-    const [modalTab, setModalTab] = useState('geral');
 
     const resetPaginationKey = useMemo(
         () =>
@@ -212,10 +204,6 @@ const ChangeRequestsPage = () => {
         try {
             const data = await getChanges();
             setChanges(data);
-            setSelectedChange(prev => {
-                if (!prev) return null;
-                return data.find(c => c.id === prev.id) || prev;
-            });
             return data;
         } catch (error) {
             console.error(error);
@@ -267,42 +255,15 @@ const ChangeRequestsPage = () => {
 
     // --- Handlers ---
     const handleOpenCreate = () => {
-        setSelectedChange(null);
-        setIsViewMode(false);
-        setModalTab('geral');
-        setModalOpen(true);
+        navigate('/changes/new');
     };
 
     const handleOpenEdit = (gmud) => {
-        setSelectedChange(gmud);
-        setIsViewMode(false);
-        if (!new URLSearchParams(window.location.search).get('action')) {
-            setModalTab('geral');
-        }
-        setModalOpen(true);
+        navigate(`/changes/${gmud.id}/edit`);
     };
 
     const handleOpenView = (gmud) => {
         navigate(`/changes/${gmud.id}`);
-    };
-
-    const handleSave = async (data) => {
-        setSaving(true);
-        try {
-            if (selectedChange) {
-                await updateChange(selectedChange.id, data);
-                enqueueSnackbar('GMUD atualizada com sucesso!', { variant: 'success' });
-            } else {
-                await createChange(data);
-                enqueueSnackbar('GMUD criada com sucesso!', { variant: 'success' });
-            }
-            setModalOpen(false);
-            fetchChanges();
-        } catch (error) {
-            enqueueSnackbar(getErrorMessage(error, 'Erro ao salvar GMUD.'), { variant: 'error' });
-        } finally {
-            setSaving(false);
-        }
     };
 
     const handleDeleteClick = (id) => {
@@ -849,6 +810,7 @@ const ChangeRequestsPage = () => {
                         </DataListShell>
                     ) : (
                         <DataListTable
+                            density="compact"
                             shell={{
                                 title: 'Lista de GMUDs',
                                 titleIcon: 'sync_alt',
@@ -880,18 +842,6 @@ const ChangeRequestsPage = () => {
                     )}
                 </>
             )}
-
-            {/* MODAL CONECTADO */}
-            <ChangeModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSave={handleSave}
-                change={selectedChange}
-                isViewMode={isViewMode}
-                loading={saving}
-                onUpdate={fetchChanges}
-                initialTab={modalTab}
-            />
 
             <ConfirmDialog
                 open={confirmOpen}

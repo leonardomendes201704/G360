@@ -8,6 +8,11 @@
     color: var(--modal-text, #1e293b);
 }
 
+/* Página dedicada (/changes/new, /changes/:id/edit): sem teto de altura do dialog */
+.change-modal-inner--page {
+    max-height: none !important;
+}
+
 .change-modal-inner .modal-header {
     padding: 24px 28px;
     display: flex;

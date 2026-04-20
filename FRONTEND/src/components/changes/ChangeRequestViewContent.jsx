@@ -101,7 +101,7 @@ const ChangeRequestViewContent = ({
 
     return (
         <div className="change-modal-inner" style={innerStyle}>
-            <Box sx={{ px: 3, pt: 0, pb: 1.5, flexShrink: 0 }}>
+            <Box sx={{ px: 3, pt: variant === 'page' ? 2 : 1.5, pb: 1.5, flexShrink: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
                     <StatusChip status={change.status} type="CHANGE" />
                     {change.type && (

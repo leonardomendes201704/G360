@@ -56,24 +56,49 @@ const getTypeLabel = (type) => {
 };
 
 /**
+ * Pílula prioridade/status — uma linha, sem wrap.
+ * Não usar `maxWidth: '100%'` numa célula estreita: o fundo ficava mais estreito que o texto.
+ */
+const compactPillSx = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 0.5,
+  px: 1,
+  py: 0.25,
+  borderRadius: '6px',
+  whiteSpace: 'nowrap',
+  width: 'max-content',
+  flexShrink: 0,
+};
+
+/**
  * Colunas DataListTable — lista de GMUDs.
  */
 export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSend }) {
   const codeColor = isDark ? '#667eea' : undefined;
+  const textMuted = isDark ? '#94a3b8' : '#64748b';
 
   return [
     {
       id: 'code',
-      label: 'ID GMUD',
+      label: 'GMUD',
       width: '10%',
       minWidth: 100,
       accessor: (r) => r.code || '',
+      cellSx: () => ({
+        maxWidth: 160,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }),
       render: (gmud) => (
         <Typography
-          variant="body2"
+          component="span"
           fontWeight={600}
           fontFamily="monospace"
-          sx={{ color: codeColor ?? 'text.secondary' }}
+          noWrap
+          title={gmud.code}
+          sx={{ color: codeColor ?? 'text.secondary', fontSize: '0.65rem', display: 'block' }}
         >
           {gmud.code}
         </Typography>
@@ -89,9 +114,15 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
         maxWidth: 280,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
       }),
       render: (gmud) => (
-        <Typography variant="body2" fontWeight={600} sx={{ color: isDark ? '#e0e0e0' : '#1e293b' }}>
+        <Typography
+          noWrap
+          title={gmud.title}
+          fontWeight={600}
+          sx={{ fontSize: '0.65rem', color: isDark ? '#e0e0e0' : '#1e293b' }}
+        >
           {gmud.title}
         </Typography>
       ),
@@ -100,8 +131,14 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
       id: 'type',
       label: 'Tipo',
       accessor: (r) => r.type || '',
+      cellSx: () => ({ overflow: 'hidden', maxWidth: 120 }),
       render: (gmud) => (
-        <Typography variant="body2" fontSize="13px" fontWeight={500} color={isDark ? '#e0e0e0' : '#475569'}>
+        <Typography
+          noWrap
+          title={getTypeLabel(gmud.type)}
+          fontWeight={500}
+          sx={{ fontSize: '0.65rem', color: isDark ? '#e0e0e0' : '#475569' }}
+        >
           {getTypeLabel(gmud.type)}
         </Typography>
       ),
@@ -109,33 +146,37 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
     {
       id: 'riskLevel',
       label: 'Prioridade',
+      minWidth: 92,
       accessor: (r) => r.riskLevel || '',
+      verticalAlign: 'middle',
+      /** Preset compact: `tbody td { overflow: hidden }` corta bordas dos chips (especificidade > sx). */
+      cellSx: () => ({
+        overflow: 'visible !important',
+        py: 1,
+      }),
       render: (gmud) => {
         const riskColors = getRiskColor(gmud.riskLevel);
+        const label =
+          gmud.riskLevel === 'CRITICO'
+            ? 'Crítica'
+            : gmud.riskLevel === 'ALTO'
+              ? 'Alta'
+              : gmud.riskLevel === 'MEDIO'
+                ? 'Média'
+                : gmud.riskLevel === 'BAIXO'
+                  ? 'Baixa'
+                  : gmud.riskLevel;
         return (
           <Box
             sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.75,
-              px: 1.5,
-              py: 0.5,
-              borderRadius: '8px',
+              ...compactPillSx,
               bgcolor: getRiskBgColor(gmud.riskLevel),
               color: riskColors[1],
             }}
           >
-            <FiberManualRecord sx={{ fontSize: 8 }} />
-            <Typography fontSize="12px" fontWeight={500}>
-              {gmud.riskLevel === 'CRITICO'
-                ? 'Crítica'
-                : gmud.riskLevel === 'ALTO'
-                  ? 'Alta'
-                  : gmud.riskLevel === 'MEDIO'
-                    ? 'Média'
-                    : gmud.riskLevel === 'BAIXO'
-                      ? 'Baixa'
-                      : gmud.riskLevel}
+            <FiberManualRecord sx={{ fontSize: 7, flexShrink: 0 }} />
+            <Typography fontWeight={500} sx={{ fontSize: '0.6rem', lineHeight: 1.2, flexShrink: 0 }}>
+              {label}
             </Typography>
           </Box>
         );
@@ -144,24 +185,25 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
     {
       id: 'statusSort',
       label: 'Status',
+      minWidth: 112,
       accessor: (r) => r.status || '',
+      verticalAlign: 'middle',
+      cellSx: () => ({
+        overflow: 'visible !important',
+        py: 1,
+      }),
       render: (gmud) => {
         const statusConfig = getStatusConfig(gmud.status);
         return (
           <Box
             sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.75,
-              px: 1.5,
-              py: 0.5,
-              borderRadius: '8px',
+              ...compactPillSx,
               bgcolor: statusConfig.bg,
               color: statusConfig.color,
             }}
           >
-            <FiberManualRecord sx={{ fontSize: 8 }} />
-            <Typography fontSize="12px" fontWeight={500}>
+            <FiberManualRecord sx={{ fontSize: 7, flexShrink: 0 }} />
+            <Typography fontWeight={500} sx={{ fontSize: '0.6rem', lineHeight: 1.2, flexShrink: 0 }}>
               {statusConfig.label}
             </Typography>
           </Box>
@@ -170,20 +212,31 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
     },
     {
       id: 'requesterName',
-      label: 'Responsável',
+      label: 'Resp.',
       accessor: (r) => r.requester?.name || '',
-      render: (gmud) => (
-        <Typography variant="body2" fontWeight={500} color={isDark ? '#e0e0e0' : '#334155'}>
-          {gmud.requester?.name?.split(' ')[0] || 'Desconhecido'}
-        </Typography>
-      ),
+      cellSx: () => ({ maxWidth: 120, overflow: 'hidden' }),
+      render: (gmud) => {
+        const name = gmud.requester?.name?.split(' ')[0] || 'Desconhecido';
+        const full = gmud.requester?.name || '';
+        return (
+          <Typography
+            noWrap
+            title={full || undefined}
+            fontWeight={500}
+            sx={{ fontSize: '0.65rem', color: isDark ? '#e0e0e0' : '#334155' }}
+          >
+            {name}
+          </Typography>
+        );
+      },
     },
     {
       id: 'scheduledStart',
-      label: 'Data execução',
+      label: 'Execução',
       accessor: (r) => (r.scheduledStart ? new Date(r.scheduledStart).getTime() : null),
+      cellSx: () => ({ whiteSpace: 'nowrap' }),
       render: (gmud) => (
-        <Typography variant="body2" fontSize="13px" color={isDark ? '#e0e0e0' : '#64748b'}>
+        <Typography noWrap sx={{ fontSize: '0.65rem', color: isDark ? '#e0e0e0' : textMuted }}>
           {gmud.scheduledStart ? format(new Date(gmud.scheduledStart), 'dd/MM/yyyy HH:mm') : '-'}
         </Typography>
       ),
@@ -195,14 +248,29 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
       render: (gmud) => {
         const impactConfig = getImpactConfig(gmud.impact);
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-            <Typography sx={{ fontSize: 11, color: isDark ? '#9ca3af' : '#64748b' }}>{impactConfig.label}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.75,
+              minWidth: 0,
+              maxWidth: '100%',
+            }}
+          >
+            <Typography
+              noWrap
+              sx={{ fontSize: 10, color: isDark ? '#9ca3af' : '#64748b', flexShrink: 0, maxWidth: 56 }}
+            >
+              {impactConfig.label}
+            </Typography>
             <Box
               sx={{
-                width: 100,
-                height: 6,
+                flex: 1,
+                minWidth: 48,
+                maxWidth: 88,
+                height: 4,
                 bgcolor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
-                borderRadius: '8px',
+                borderRadius: '4px',
                 overflow: 'hidden',
               }}
             >
@@ -211,7 +279,7 @@ export function getChangeRequestColumns({ isDark, onEdit, onDelete, onView, onSe
                   width: impactConfig.width,
                   height: '100%',
                   background: impactConfig.gradient,
-                  borderRadius: '8px',
+                  borderRadius: '4px',
                   transition: 'width 0.3s ease',
                 }}
               />

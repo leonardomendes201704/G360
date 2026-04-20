@@ -259,8 +259,11 @@ const DataListTable = ({
                     const cellSx = {
                       ...thBase,
                       minWidth: 0,
-                      wordBreak: 'break-word',
-                      overflowWrap: 'anywhere',
+                      whiteSpace: 'nowrap',
+                      wordBreak: 'normal',
+                      overflowWrap: 'normal',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
                       ...(col.width ? { width: col.width } : {}),
                       ...(col.minWidth != null ? { minWidth: col.minWidth } : {}),
                       ...(col.align ? { textAlign: col.align } : {}),
@@ -280,6 +283,7 @@ const DataListTable = ({
                             direction={effectiveOrderBy === col.id ? effectiveOrder : 'asc'}
                             onClick={() => handleRequestSort(col.id)}
                             hideSortIcon={col.hideSortIcon !== false}
+                            sx={{ whiteSpace: 'nowrap' }}
                           >
                             {typeof col.label === 'string' ? col.label.trim() : col.label}
                           </TableSortLabel>
