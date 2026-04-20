@@ -27,11 +27,29 @@ const ALLOWED_TAGS = [
 
 const ALLOWED_ATTR = ['href', 'src', 'alt', 'title', 'target', 'rel', 'class'];
 
+const ENUM_LIKE_BYPASS = new Set([
+    'status',
+    'priority',
+    'type',
+    'role',
+    'state',
+    'code',
+    'codePrefix',
+    'codeSuffix',
+    'codePattern',
+    'codeTemplate',
+]);
+
 /**
- * Sanitiza recursivamente todos os campos string de um objeto.
- * Remove TODO HTML por padrão.
+ * Sanitiza recursivamente campos string (remove HTML com DOMPurify).
+ * Chaves em ENUM_LIKE_BYPASS (ex.: `status`) só recebem trim — o DOMPurify pode
+ * corromper valores de enum; o yup ainda valida. `key` ausente (itens de array) usa DOMPurify.
+ * @param {string} [key] – nome da chave
  */
-function sanitizeValue(value) {
+function sanitizeValue(value, key) {
+    if (typeof value === 'string' && key != null && ENUM_LIKE_BYPASS.has(String(key))) {
+        return value.trim();
+    }
     if (typeof value === 'string') {
         return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
     }
@@ -47,7 +65,7 @@ function sanitizeValue(value) {
 function sanitizeObject(obj) {
     const result = {};
     for (const [key, value] of Object.entries(obj)) {
-        result[key] = sanitizeValue(value);
+        result[key] = sanitizeValue(value, key);
     }
     return result;
 }
@@ -85,7 +103,7 @@ const sanitizeRichText = (richTextFields = []) => {
                         ALLOW_DATA_ATTR: false
                     });
                 } else {
-                    sanitized[key] = sanitizeValue(value);
+                    sanitized[key] = sanitizeValue(value, key);
                 }
             }
             req.body = sanitized;

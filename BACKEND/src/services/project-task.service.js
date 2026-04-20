@@ -1,8 +1,10 @@
+const crypto = require('crypto');
 const ProjectTaskRepository = require('../repositories/project-task.repository');
 const ProjectRepository = require('../repositories/project.repository');
 const UserRepository = require('../repositories/user.repository');
 const AuditLogRepository = require('../repositories/audit-log.repository');
 const ProjectService = require('./project.service');
+const { assertAcyclicTaskDependencies } = require('../utils/project-task-graph.util');
 const logger = require('../config/logger');
 
 class ProjectTaskService {
@@ -22,6 +24,13 @@ class ProjectTaskService {
         throw { statusCode: 400, message: 'Uma ou mais dependências são inválidas.' };
       }
     }
+
+    const existingGraph = await ProjectTaskRepository.findDependencyGraph(prisma, data.projectId);
+    const pendingId = crypto.randomUUID();
+    assertAcyclicTaskDependencies([
+      ...existingGraph,
+      { id: pendingId, dependencies: data.dependencies || [] },
+    ]);
 
     // Sanitização: Cria objeto explícito para evitar erro de campos desconhecidos
     const taskData = {
@@ -97,6 +106,11 @@ class ProjectTaskService {
           throw { statusCode: 400, message: 'Uma tarefa não pode depender de si mesma.' };
         }
       }
+      const graph = await ProjectTaskRepository.findDependencyGraph(prisma, task.projectId);
+      const merged = graph.map((t) =>
+        t.id === id ? { id: t.id, dependencies: data.dependencies } : { id: t.id, dependencies: t.dependencies || [] }
+      );
+      assertAcyclicTaskDependencies(merged);
       updateData.dependencies = data.dependencies;
     }
 

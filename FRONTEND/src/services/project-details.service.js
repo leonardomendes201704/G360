@@ -237,6 +237,40 @@ export const getActivities = async (projectId) => {
 // TAREFAS DO PROJETO
 // ==========================================
 
+/** Alinhado a `BACKEND/src/validators/project-task.validator.js` (normalizeStatusForApi + lista). */
+const PROJECT_TASK_API_STATUSES = new Set([
+  'BACKLOG',
+  'TODO',
+  'ON_HOLD',
+  'IN_PROGRESS',
+  'REVIEW',
+  'DONE',
+  'ARCHIVED',
+  'CANCELLED',
+]);
+
+function normalizeProjectTaskStatusForApi(v) {
+  if (v == null) return v;
+  let s = String(v).trim();
+  if (!s) return s;
+  if (typeof s.normalize === 'function') {
+    s = s.normalize('NFKC');
+  }
+  s = s.replace(/[\u200B-\u200D\uFEFF\u00AD\u2060\u180E]/g, '');
+  s = s.replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+  s = s.toUpperCase();
+  s = s.replace(/-/g, '_').replace(/\s+/g, '_');
+  const shortToFull = {
+    IN: 'IN_PROGRESS',
+    ON: 'ON_HOLD',
+    INP: 'IN_PROGRESS',
+    INPROGRESS: 'IN_PROGRESS',
+    ONHOLD: 'ON_HOLD',
+  };
+  if (shortToFull[s]) return shortToFull[s];
+  return s;
+}
+
 export const getProjectTasks = async (projectId) => {
   const response = await api.get(`/project-tasks/project/${projectId}`);
   return response.data;
@@ -250,6 +284,47 @@ export const createProjectTask = async (projectId, data) => {
 export const updateProjectTask = async (taskId, data) => {
   const response = await api.put(`/project-tasks/${taskId}`, data);
   return response.data;
+};
+
+/** Só `status` no corpo: o backend usa o validador mínimo (mesmo `PUT` que o modal, sem rota extra `/status`). */
+export const updateProjectTaskStatus = async (taskId, status) => {
+  if (typeof status !== 'string' || !String(status).trim()) {
+    throw new TypeError('updateProjectTaskStatus: status deve ser string não vazia');
+  }
+  const normalized = normalizeProjectTaskStatusForApi(String(status).trim());
+  if (!normalized || !PROJECT_TASK_API_STATUSES.has(normalized)) {
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn('[updateProjectTaskStatus] rejeitado no cliente (normalização)', {
+        taskId,
+        raw: status,
+        normalized: normalized || null,
+      });
+    }
+    throw new TypeError(
+      'updateProjectTaskStatus: status inválido após normalização. Valor: ' + String(status),
+    );
+  }
+  const body = { status: normalized };
+  const path = `/project-tasks/${taskId}?update=status-only`;
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.info('[updateProjectTaskStatus] PUT', { path, body, rawInput: String(status) });
+  }
+  try {
+    const response = await api.put(path, body);
+    return response.data;
+  } catch (err) {
+    // Sempre no erro: útil em dev e em build ao diagnosticar 422
+    // eslint-disable-next-line no-console
+    console.error('[updateProjectTaskStatus] falha', {
+      httpStatus: err?.response?.status,
+      data: err?.response?.data,
+      requestUrl: err?.config?.url,
+      requestData: err?.config?.data,
+    });
+    throw err;
+  }
 };
 
 export const deleteProjectTask = async (taskId) => {

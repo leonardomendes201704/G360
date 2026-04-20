@@ -137,6 +137,37 @@ const DarkProjectHeader = ({ project, onEdit, onDelete, onSubmit }) => {
                 </Box>
             )}
 
+            {hasPermission('PROJECTS', 'READ') && (
+                <Tooltip title="Abrir Gantt em nova aba">
+                    <IconButton
+                        component="a"
+                        href={`/projects/${project.id}/gantt`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="header-abrir-gantt"
+                        sx={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: '8px',
+                            background: btnBg,
+                            border: `1px solid ${borderColor}`,
+                            color: '#2563eb',
+                            transition: 'all 0.2s',
+                            flexShrink: 0,
+                            '&:hover': {
+                                background: 'rgba(37, 99, 235, 0.12)',
+                                borderColor: 'rgba(37, 99, 235, 0.35)',
+                            },
+                        }}
+                        aria-label="Abrir Gantt em nova aba"
+                    >
+                        <span className="material-icons-round" style={{ fontSize: 22 }}>
+                            view_timeline
+                        </span>
+                    </IconButton>
+                </Tooltip>
+            )}
+
             <Tooltip title="Voltar à lista de projetos">
                 <IconButton
                     onClick={() => navigate('/projects')}

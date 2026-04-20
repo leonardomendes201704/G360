@@ -91,7 +91,12 @@ const configureCORS = () => {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Tenant-Slug'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'X-Tenant-Slug',
+    ],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     maxAge: 600 // 10 minutos de cache para preflight
   });

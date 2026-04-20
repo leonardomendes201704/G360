@@ -11,6 +11,9 @@ RUN npm ci --legacy-peer-deps
 COPY FRONTEND/ ./
 # RoleModal.jsx resolve ../../../../rbac-matrix.json = ficheiro na raiz do monorepo (acima de FRONTEND).
 COPY rbac-matrix.json /rbac-matrix.json
+# ChangelogTab.jsx resolve ../../../../docs/CHANGELOG.md a partir de /app/src/components/config,
+# o que no container aponta para /docs/CHANGELOG.md.
+COPY docs/CHANGELOG.md /docs/CHANGELOG.md
 
 RUN npm run build
 

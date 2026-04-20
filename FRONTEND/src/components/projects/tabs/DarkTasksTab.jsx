@@ -1,16 +1,18 @@
 ﻿import { useState, useMemo, useEffect, useCallback, useContext } from 'react';
 import { Box, Typography, Button, TextField, Select, MenuItem, FormControl, InputAdornment, CircularProgress } from '@mui/material';
-import { Add, Search } from '@mui/icons-material';
+import { Add, Search, OpenInNew } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
+import { useAuth } from '../../../contexts/AuthContext';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import DarkTaskKanban from '../../tasks/DarkTaskKanban';
 import ProjectTaskListTable from '../projectDetailLists/ProjectTaskListTable';
-import { getProjectTasks, updateProjectTask, createProjectTask, deleteProjectTask } from '../../../services/project-details.service';
+import { getProjectTasks, updateProjectTask, updateProjectTaskStatus, createProjectTask, deleteProjectTask } from '../../../services/project-details.service';
 import ProjectTaskModal from '../../modals/ProjectTaskModal';
 import StatsCard from '../../common/StatsCard';
 import ProjectTabKpiStrip from '../ProjectTabKpiStrip';
 
 const DarkTasksTab = ({ project }) => {
+    const { hasPermission } = useAuth();
     const { mode } = useContext(ThemeContext);
     const isDark = mode === 'dark';
 
@@ -69,11 +71,25 @@ const DarkTasksTab = ({ project }) => {
 
     const handleTaskMove = async (taskId, newStatus) => {
         try {
-            await updateProjectTask(taskId, { status: newStatus });
+            await updateProjectTaskStatus(taskId, newStatus);
             fetchTasks();
         } catch (error) {
-            console.error('Erro ao mover tarefa:', error);
-            enqueueSnackbar('Erro ao mover tarefa', { variant: 'error' });
+            if (import.meta.env.DEV) {
+                // eslint-disable-next-line no-console
+                console.error('[handleTaskMove] Erro ao mover tarefa', {
+                    taskId,
+                    newStatus,
+                    responseStatus: error?.response?.status,
+                    responseData: error?.response?.data,
+                });
+            } else {
+                console.error('Erro ao mover tarefa:', error);
+            }
+            const d = error?.response?.data;
+            const e0 = Array.isArray(d?.errors) ? d.errors[0] : null;
+            const fromErrors = e0 == null ? null : (typeof e0 === 'string' ? e0 : (e0?.message ?? null));
+            const msg = d?.message || fromErrors || 'Erro ao mover tarefa';
+            enqueueSnackbar(String(msg), { variant: 'error' });
         }
     };
 
@@ -92,7 +108,7 @@ const DarkTasksTab = ({ project }) => {
     const handleTaskToggle = async (taskId, currentStatus) => {
         const newStatus = currentStatus === 'DONE' ? 'TODO' : 'DONE';
         try {
-            await updateProjectTask(taskId, { status: newStatus });
+            await updateProjectTaskStatus(taskId, newStatus);
             fetchTasks();
         } catch (error) {
             console.error('Erro ao atualizar status:', error);
@@ -190,26 +206,53 @@ const DarkTasksTab = ({ project }) => {
                         {stats.total} {stats.total === 1 ? 'tarefa' : 'tarefas'}
                     </Box>
                 </Box>
-                <Button
-                    onClick={handleOpenCreateTask}
-                    startIcon={<Add />}
-                    sx={{
-                        background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
-                        color: 'white',
-                        borderRadius: '8px',
-                        padding: '12px 20px',
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                        '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
-                        },
-                    }}
-                >
-                    Nova Tarefa
-                </Button>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                    {hasPermission('PROJECTS', 'READ') && project?.id && (
+                        <Button
+                            component="a"
+                            href={`/projects/${project.id}/gantt`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-testid="abrir-gantt-nova-aba"
+                            startIcon={<OpenInNew sx={{ fontSize: 18 }} />}
+                            sx={{
+                                color: '#2563eb',
+                                border: '1px solid rgba(37, 99, 235, 0.35)',
+                                borderRadius: '8px',
+                                padding: '10px 16px',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                '&:hover': {
+                                    borderColor: '#2563eb',
+                                    bgcolor: 'rgba(37, 99, 235, 0.08)',
+                                },
+                            }}
+                        >
+                            Abrir Gantt em nova aba
+                        </Button>
+                    )}
+                    <Button
+                        onClick={handleOpenCreateTask}
+                        startIcon={<Add />}
+                        sx={{
+                            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                            color: 'white',
+                            borderRadius: '8px',
+                            padding: '12px 20px',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            textTransform: 'none',
+                            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
+                            },
+                        }}
+                    >
+                        Nova Tarefa
+                    </Button>
+                </Box>
             </Box>
 
             <ProjectTabKpiStrip columnCount={5}>

@@ -1,7 +1,17 @@
 import { useState, useContext, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, useDroppable, DragOverlay } from '@dnd-kit/core';
+import {
+    DndContext,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    useDroppable,
+    DragOverlay,
+    pointerWithin,
+    rectIntersection,
+    closestCorners,
+} from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import DarkTaskCard from './DarkTaskCard';
 import DraggableTaskCard from './DraggableTaskCard';
@@ -47,6 +57,20 @@ const DroppableColumn = ({ id, children, isDark }) => {
             {children}
         </Box>
     );
+};
+
+const DROPPABLE_SUFFIX = '-droppable';
+
+/**
+ * Vários alvos: cartões (sortable) e áreas de coluna (`*-droppable`).
+ * `closestCenter` falhava trocas entre colunas; priorizar ponteiro e interseção de retângulos.
+ */
+const kanbanCollisionDetection = (args) => {
+    const within = pointerWithin(args);
+    if (within && within.length > 0) return within;
+    const inter = rectIntersection(args);
+    if (inter && inter.length > 0) return inter;
+    return closestCorners(args);
 };
 
 const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask }) => {
@@ -152,19 +176,24 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
         }
 
         const taskId = active.id;
-        let newStatus;
+        const overId = String(over.id);
 
-        // Se soltou sobre uma área droppable (termina com '-droppable')
-        if (over.id.includes('-droppable')) {
-            newStatus = over.id.split('-')[0];
+        let newStatus;
+        // NUNCA usar split('-')[0] — "IN_PROGRESS-droppable" virava "IN" e a API rejeitava; o card “voltava”.
+        if (overId.endsWith(DROPPABLE_SUFFIX)) {
+            newStatus = overId.slice(0, -DROPPABLE_SUFFIX.length);
         } else {
-            // Se soltou sobre outro card, encontrar o status desse card
             const targetTask = normalizedTasks.find(t => t.id === over.id);
             if (targetTask) {
                 newStatus = targetTask.status;
             } else {
                 return;
             }
+        }
+
+        const validStatuses = ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+        if (!validStatuses.includes(newStatus)) {
+            return;
         }
 
         const task = normalizedTasks.find(t => t.id === taskId);
@@ -176,13 +205,24 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
             return;
         }
 
+        if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.info('[DarkTaskKanban] drop → API', {
+                taskId,
+                fromStatus: task.status,
+                newStatus,
+                overId,
+                overIsDroppable: overId.endsWith(DROPPABLE_SUFFIX),
+            });
+        }
+
         onTaskMove(taskId, newStatus);
     };
 
     return (
         <DndContext
             sensors={sensors}
-            collisionDetection={closestCenter}
+            collisionDetection={kanbanCollisionDetection}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
@@ -206,8 +246,9 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                             key={column.id}
                             sx={{
                                 background: columnBg,
-                                border: columnBorder, // Updated border
-                                backdropFilter: isDark ? 'blur(10px)' : 'none', // Added blur
+                                border: columnBorder,
+                                /* Sem backdropFilter: em WebKit cria novo containing block e o DragOverlay
+                                   do @dnd-kit desloca o “ghost” em relação ao cursor. */
                                 borderRadius: '8px',
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -438,9 +479,9 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                     );
                 })}
             </Box>
-            <DragOverlay>
+            <DragOverlay dropAnimation={null} zIndex={10000}>
                 {activeTask ? (
-                    <Box sx={{ transform: 'rotate(3deg)', cursor: 'grabbing' }}>
+                    <Box sx={{ cursor: 'grabbing', maxWidth: 360 }}>
                         <DarkTaskCard task={activeTask} onClick={() => { }} />
                     </Box>
                 ) : null}

@@ -7,6 +7,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2026-04-19]
 
+### Added
+- **Projetos — Gantt em ecrã inteiro:** rota **`/projects/:id/gantt`** (autenticada, **sem** `MainLayout`) com **`DarkTaskGantt`** (`gantt-task-react`); entrada **Abrir Gantt em nova aba** na aba Tarefas e ícone na barra do detalhe do projeto; **somente leitura** sem permissão `PROJECTS` **WRITE**. **Backend:** validação de dependências **sem ciclos** em criação/atualização de `ProjectTask`.
+  - `FRONTEND/src/App.jsx` (`PrivateRouteBare`), `FRONTEND/src/pages/projects/ProjectGanttPage.jsx`
+  - `FRONTEND/src/components/projects/tabs/DarkTasksTab.jsx`, `FRONTEND/src/components/projects/DarkProjectHeader.jsx`
+  - `BACKEND/src/utils/project-task-graph.util.js`, `BACKEND/src/services/project-task.service.js`, `BACKEND/src/repositories/project-task.repository.js`
+
 ### Refactored
 - **Detalhe do projeto — abas Tarefas (lista), Riscos, Atas, Custos, Propostas e Equipe (membros):** listas migradas para **`DataListTable`** em modo compacto; colunas e ordenação em `FRONTEND/src/components/projects/projectDetailLists/` (`projectTaskList*`, `projectRiskList*`, `projectMinuteList*`, `projectCostList*`, `projectProposalList*`, `projectMemberList*`, wrappers `ProjectTaskListTable.jsx`, `ProjectMembersTable.jsx`); `data-testid` `tabela-projeto-tarefas`, `tabela-projeto-riscos`, `tabela-projeto-atas`, `tabela-projeto-custos`, `tabela-projeto-propostas`, `tabela-projeto-membros`. Removido `DarkTaskList.jsx`; filtros de status/período em Atas passam a aplicar-se à lista.
   - `FRONTEND/src/components/projects/tabs/DarkTasksTab.jsx`, `ProjectRisks.jsx`, `ProjectMinutes.jsx`, `ProjectCosts.jsx`, `ProjectProposals.jsx`, `ProjectTeams.jsx`

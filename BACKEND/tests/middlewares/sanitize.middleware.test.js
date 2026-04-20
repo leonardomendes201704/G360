@@ -50,6 +50,12 @@ describe('sanitize middleware', () => {
         expect(req.body.active).toBe(true);
     });
 
+    it('preserves status enum strings (e.g. ON_HOLD) without DOMPurify on the value', () => {
+        req.body = { status: 'ON_HOLD' };
+        sanitize()(req, res, next);
+        expect(req.body.status).toBe('ON_HOLD');
+    });
+
     it('calls next even with empty body', () => {
         req.body = null;
         sanitize()(req, res, next);

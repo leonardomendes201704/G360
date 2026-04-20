@@ -32,6 +32,14 @@ class ProjectTaskRepository {
     });
   }
 
+  /** Grafo leve para validação de ciclos (id + dependencies). */
+  static async findDependencyGraph(prisma, projectId) {
+    return prisma.projectTask.findMany({
+      where: { projectId },
+      select: { id: true, dependencies: true },
+    });
+  }
+
   // Busca múltiplas tarefas por IDs (para validar dependências)
   static async findByIds(prisma, ids, projectId) {
     return prisma.projectTask.findMany({

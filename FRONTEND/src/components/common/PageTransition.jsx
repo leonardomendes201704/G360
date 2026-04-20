@@ -14,14 +14,13 @@ const PageTransition = ({ children }) => {
             key={location.pathname}
             sx={{
                 animation: 'pageEnter 0.35s cubic-bezier(0.4, 0, 0.2, 1) both',
+                /* Só opacidade no fim — evita transform no wrapper e corrige ghost do Kanban (dnd-kit). */
                 '@keyframes pageEnter': {
                     '0%': {
                         opacity: 0,
-                        transform: 'translateY(12px)',
                     },
                     '100%': {
                         opacity: 1,
-                        transform: 'translateY(0)',
                     },
                 },
             }}

@@ -1,5 +1,6 @@
 const multer = require('multer');
-const { AppError, ValidationError: AppValidationError } = require('../errors');
+const yup = require('yup');
+const { AppError } = require('../errors');
 
 const errorHandler = (err, req, res, next) => {
     // 1. Multer file size error
@@ -12,15 +13,17 @@ const errorHandler = (err, req, res, next) => {
         });
     }
 
-    // 2. Yup validation errors
-    if (err.name === 'ValidationError' && err.inner) {
-        const errors = err.inner.map(e => e.message);
+    // 2. Erros Yup 1.7+ (Yup `ValidationError`, não a classe App `ValidationError`)
+    if ((yup.ValidationError.isError && yup.ValidationError.isError(err)) || err instanceof yup.ValidationError) {
+        const fromInner = (err.inner || []).map((e) => e && e.message).filter(Boolean);
+        const fromYup = Array.isArray(err.errors) && err.errors.length ? err.errors.filter(Boolean) : null;
+        const list = (fromInner.length && fromInner) || fromYup || (err.message ? [err.message] : ['Validation error']);
         return res.status(422).json({
             status: 'error',
             statusCode: 422,
             errorCode: 'VALIDATION_ERROR',
-            message: errors.join('; '),
-            errors
+            message: list.join('; '),
+            errors: list
         });
     }
 

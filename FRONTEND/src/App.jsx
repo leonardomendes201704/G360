@@ -18,6 +18,7 @@ import DashboardRouter from './pages/dashboard/DashboardRouter'; // <--- NEW ROU
 import ModernDashboardPage from './pages/dashboard/ModernDashboardPage'; // <--- NEW DEMO
 import ProjectsListPage from './pages/projects/ProjectsListPage';
 import ProjectDetailsPage from './pages/projects/ProjectDetailsPage';
+import ProjectGanttPage from './pages/projects/ProjectGanttPage';
 import ProjectFormPage from './pages/projects/ProjectFormPage';
 import TeamProjectsStatusReport from './pages/projects/TeamProjectsStatusReport';
 import PortfolioDashboard from './pages/projects/PortfolioDashboard';
@@ -76,6 +77,21 @@ const PrivateRoute = () => {
   );
 };
 
+/** Rota autenticada sem shell (sidebar) — ex.: Gantt em ecrã inteiro. */
+const PrivateRouteBare = () => {
+  const { authenticated, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return authenticated ? <Outlet /> : <Navigate to="/login" />;
+};
+
 // 3. Aplicação Principal
 function App() {
   return (
@@ -85,6 +101,10 @@ function App() {
           {/* Rota Pública */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+
+          <Route element={<PrivateRouteBare />}>
+            <Route path="/projects/:id/gantt" element={<ProjectGanttPage />} />
+          </Route>
 
           {/* Rotas Protegidas */}
           <Route element={<PrivateRoute />}>

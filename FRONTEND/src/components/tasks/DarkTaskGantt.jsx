@@ -9,7 +9,9 @@ const STATUS_COLORS = {
     BACKLOG: { bar: '#64748b', progress: '#475569' },
     TODO: { bar: '#0ea5e9', progress: '#0284c7' },
     IN_PROGRESS: { bar: '#f59e0b', progress: '#d97706' },
+    REVIEW: { bar: '#a855f7', progress: '#7c3aed' },
     DONE: { bar: '#10b981', progress: '#059669' },
+    ARCHIVED: { bar: '#475569', progress: '#334155' },
 };
 
 // Cores por prioridade
@@ -26,7 +28,8 @@ const DarkTaskGantt = ({
     tasks = [],
     onTaskClick,
     onTaskDateChange,
-    onProgressChange
+    onProgressChange,
+    readOnly = false,
 }) => {
     const [viewMode, setViewMode] = useState(ViewMode.Week);
     const [isExpanded, setIsExpanded] = useState(true);
@@ -366,8 +369,8 @@ const DarkTaskGantt = ({
                         handleWidth={8}
                         todayColor="rgba(37, 99, 235, 0.08)"
                         onClick={handleTaskClick}
-                        onDateChange={handleDateChange}
-                        onProgressChange={handleProgressChange}
+                        onDateChange={readOnly ? undefined : handleDateChange}
+                        onProgressChange={readOnly ? undefined : handleProgressChange}
                         TooltipContent={TooltipContent}
                         locale="pt-BR"
                     />

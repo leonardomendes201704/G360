@@ -3,11 +3,16 @@ const ProjectTaskRepository = require('../../src/repositories/project-task.repos
 const ProjectRepository = require('../../src/repositories/project.repository');
 const UserRepository = require('../../src/repositories/user.repository');
 const AuditLogRepository = require('../../src/repositories/audit-log.repository');
+const ProjectService = require('../../src/services/project.service');
 
 jest.mock('../../src/repositories/project-task.repository');
 jest.mock('../../src/repositories/project.repository');
 jest.mock('../../src/repositories/user.repository');
 jest.mock('../../src/repositories/audit-log.repository');
+jest.mock('../../src/services/project.service', () => ({
+    getById: jest.fn(),
+    recalculateProgress: jest.fn().mockResolvedValue(undefined),
+}));
 jest.mock('../../src/config/logger', () => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()
 }));
@@ -48,8 +53,9 @@ describe('ProjectTaskService', () => {
         };
 
         it('should create task successfully', async () => {
-            ProjectRepository.findById.mockResolvedValue(projectData);
+            ProjectService.getById.mockResolvedValue(projectData);
             UserRepository.findById.mockResolvedValue({ id: 'user-2' });
+            ProjectTaskRepository.findDependencyGraph.mockResolvedValue([]);
             ProjectTaskRepository.create.mockResolvedValue({ id: 'task-1', ...validTaskData });
 
             const result = await ProjectTaskService.create(prisma, tenantId, userId, validTaskData);
@@ -65,7 +71,8 @@ describe('ProjectTaskService', () => {
         });
 
         it('should perform date conversion correctly', async () => {
-            ProjectRepository.findById.mockResolvedValue(projectData);
+            ProjectService.getById.mockResolvedValue(projectData);
+            ProjectTaskRepository.findDependencyGraph.mockResolvedValue([]);
             ProjectTaskRepository.create.mockResolvedValue({});
 
             await ProjectTaskService.create(prisma, tenantId, userId, { projectId, title: 'T', startDate: '2025-05-05' });
@@ -76,9 +83,9 @@ describe('ProjectTaskService', () => {
         });
 
         it('should throw 404 if project not found', async () => {
-            ProjectRepository.findById.mockResolvedValue(null);
+            ProjectService.getById.mockResolvedValue(null);
 
-            await expect(ProjectTaskService.create(prisma, tenantId, userId, { projectId: 'missing' }))
+            await expect(ProjectTaskService.create(prisma, tenantId, userId, { projectId: 'missing', title: 'x' }))
                 .rejects.toHaveProperty('statusCode', 404);
         });
     });
@@ -97,7 +104,7 @@ describe('ProjectTaskService', () => {
 
         it('should update allowed fields', async () => {
             ProjectTaskRepository.findById.mockResolvedValue(existingTask);
-            ProjectRepository.findById.mockResolvedValue({ id: 'proj-1' });
+            ProjectService.getById.mockResolvedValue({ id: 'proj-1' });
             ProjectTaskRepository.update.mockResolvedValue({ ...existingTask, title: 'New Title' });
 
             await ProjectTaskService.update(prisma, taskId, tenantId, userId, { title: 'New Title' });
@@ -109,7 +116,7 @@ describe('ProjectTaskService', () => {
 
         it('should log status change', async () => {
             ProjectTaskRepository.findById.mockResolvedValue(existingTask); // status: TODO
-            ProjectRepository.findById.mockResolvedValue({ id: 'proj-1' });
+            ProjectService.getById.mockResolvedValue({ id: 'proj-1' });
             ProjectTaskRepository.update.mockResolvedValue({ ...existingTask, status: 'DONE' });
 
             await ProjectTaskService.update(prisma, taskId, tenantId, userId, { status: 'DONE' });
@@ -118,12 +125,34 @@ describe('ProjectTaskService', () => {
                 action: expect.stringContaining('moveu a tarefa "Old Title" para DONE')
             }));
         });
+
+        it('should reject dependencies that create a cycle', async () => {
+            ProjectTaskRepository.findById.mockResolvedValue({
+                id: 't1',
+                projectId: 'proj-1',
+                title: 'T1',
+                status: 'TODO',
+                dependencies: [],
+            });
+            ProjectService.getById.mockResolvedValue({ id: 'proj-1' });
+            ProjectTaskRepository.findByIds.mockResolvedValue([{ id: 't2' }]);
+            ProjectTaskRepository.findDependencyGraph.mockResolvedValue([
+                { id: 't1', dependencies: [] },
+                { id: 't2', dependencies: ['t1'] },
+            ]);
+
+            await expect(
+                ProjectTaskService.update(prisma, 't1', tenantId, userId, { dependencies: ['t2'] })
+            ).rejects.toMatchObject({ statusCode: 400 });
+
+            expect(ProjectTaskRepository.update).not.toHaveBeenCalled();
+        });
     });
 
     describe('delete', () => {
         it('should delete task if exists and user has access', async () => {
             ProjectTaskRepository.findById.mockResolvedValue({ id: 't1', projectId: 'p1' });
-            ProjectRepository.findById.mockResolvedValue({ id: 'p1' });
+            ProjectService.getById.mockResolvedValue({ id: 'p1' });
             ProjectTaskRepository.delete.mockResolvedValue(true);
 
             await ProjectTaskService.delete(prisma, 't1', 'tenant-1', 'user-1');
