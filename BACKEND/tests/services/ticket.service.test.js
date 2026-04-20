@@ -11,7 +11,10 @@ describe('TicketService', () => {
 
     beforeEach(() => {
         mockPrisma = {
-            $queryRaw: jest.fn().mockResolvedValue([{ lastNumber: 6 }]),
+            $transaction: jest.fn(async (fn) => fn(mockPrisma)),
+            ticketCodeSequence: {
+                upsert: jest.fn().mockResolvedValue({ year: new Date().getFullYear(), lastNumber: 6 })
+            },
             user: {
                 findUnique: jest.fn().mockResolvedValue({ departmentId: null, costCenterId: null }),
             },
@@ -77,7 +80,8 @@ describe('TicketService', () => {
 
             const res = await TicketService.create(mockPrisma, data);
 
-            expect(mockPrisma.$queryRaw).toHaveBeenCalled();
+            expect(mockPrisma.$transaction).toHaveBeenCalled();
+            expect(mockPrisma.ticketCodeSequence.upsert).toHaveBeenCalled();
             expect(mockPrisma.ticket.create).toHaveBeenCalledWith(
                 expect.objectContaining({
                     data: expect.objectContaining({
@@ -394,6 +398,21 @@ describe('TicketService', () => {
                 expect(mockPrisma.ticket.update).toHaveBeenCalledWith({ where: { id: '1' }, data: { linkedProjectId: 'p1' } });
                 expect(TicketService.addMessage).toHaveBeenCalled();
             });
+        });
+    });
+
+    describe('ticket code format', () => {
+        it('legacyTicketCodeToCompact converts HD-2026-0361 to HD260361', () => {
+            expect(TicketService.legacyTicketCodeToCompact('HD-2026-0361')).toBe('HD260361');
+        });
+        it('normalizeTicketCodeForStorage accepts compact HD260361', () => {
+            expect(TicketService.normalizeTicketCodeForStorage('HD260361')).toBe('HD260361');
+        });
+        it('normalizeTicketCodeForStorage fixes legacy', () => {
+            expect(TicketService.normalizeTicketCodeForStorage('HD-2026-0361')).toBe('HD260361');
+        });
+        it('normalizeTicketCodeForStorage throws on garbage', () => {
+            expect(() => TicketService.normalizeTicketCodeForStorage('BAD')).toThrow();
         });
     });
 });

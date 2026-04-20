@@ -111,18 +111,43 @@ class TicketService {
     return `HD${yy}${String(sequenceNumber).padStart(4, '0')}`;
   }
 
+  /** Legado: HD-2026-0361 → HD260361 (mesma regra que `migrate-ticket-codes-legacy-format.js`). */
+  static legacyTicketCodeToCompact(code) {
+    const m = /^HD-(\d{4})-(\d+)$/.exec(String(code || '').trim());
+    if (!m) return null;
+    const year = parseInt(m[1], 10);
+    const seq = parseInt(m[2], 10);
+    const yy = String(year).slice(-2);
+    return `HD${yy}${String(seq).padStart(4, '0')}`;
+  }
+
   /**
-   * Próximo código de chamado (PostgreSQL, sequência por ano).
+   * Garante código persistido no formato HDyynnnn (6 dígitos após HD). Corrige legado se necessário.
+   */
+  static normalizeTicketCodeForStorage(code) {
+    const s = String(code || '').trim();
+    if (/^HD\d{6}$/.test(s)) return s;
+    const fixed = this.legacyTicketCodeToCompact(s);
+    if (fixed) return fixed;
+    throw new Error(`Código de chamado em formato inválido: ${code}`);
+  }
+
+  /**
+   * Próximo código de chamado — sequência por ano via Prisma (atómico, sem SQL bruto por dialect).
    */
   static async getNextTicketCode(prismaClient) {
     const year = new Date().getFullYear();
-    const rows = await prismaClient.$queryRaw`
-      INSERT INTO "TicketCodeSequence" (year, "lastNumber")
-      VALUES (${year}, 1)
-      ON CONFLICT (year) DO UPDATE SET "lastNumber" = "TicketCodeSequence"."lastNumber" + 1
-      RETURNING "lastNumber"
-    `;
-    const n = Number(rows[0].lastNumber);
+    const row = await prismaClient.$transaction(async (tx) =>
+      tx.ticketCodeSequence.upsert({
+        where: { year },
+        create: { year, lastNumber: 1 },
+        update: { lastNumber: { increment: 1 } }
+      })
+    );
+    const n = Number(row.lastNumber);
+    if (!Number.isFinite(n) || n < 1) {
+      throw new Error('Falha ao obter sequência de código de chamado.');
+    }
     return this.formatTicketCodeCompact(year, n);
   }
 
@@ -297,7 +322,7 @@ class TicketService {
     );
 
     const prio = priority || 'MEDIUM';
-    const code = await this.getNextTicketCode(prismaClient);
+    const code = this.normalizeTicketCodeForStorage(await this.getNextTicketCode(prismaClient));
     const slaMin = await this.resolveSlaMinutes(prismaClient, serviceId, supportGroupId, prio);
     const slaDates = await this.computeSlaDueDates(
       prismaClient,
