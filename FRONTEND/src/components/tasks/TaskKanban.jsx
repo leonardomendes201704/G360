@@ -25,7 +25,6 @@ const columnTheme = {
 /** Densidade ~67% (passos cumulativos de ~5% sobre layout base compacto) */
 const K = {
   boardGap: 1.25,
-  colMaxH: 'calc(100vh - 200px)',
   headerPx: 1.25,
   headerPy: 0.875,
   iconBox: 20,
@@ -48,6 +47,20 @@ const K = {
   footerTagFs: '0.53125rem',
   loadMoreFs: '0.62rem',
 };
+
+/**
+ * @hello-pangea/dnd drags the card with inline `transform` on the Draggable root.
+ * MUI `sx` with `transform` (or `&:hover` transform) overrides that and breaks the drag preview.
+ * Keep library transforms: merge visual rotate only in the `style` we pass to Paper.
+ */
+function getDraggablePaperStyle(draggableStyle, snapshot) {
+  const base = { ...(draggableStyle || {}) };
+  if (snapshot.isDragging) {
+    const t = base.transform;
+    base.transform = t && t !== 'none' ? `${t} rotate(2deg)` : 'rotate(2deg)';
+  }
+  return base;
+}
 
 const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeTimerTaskId, onTimerToggle, currentUserId }) => {
   const [boardData, setBoardData] = useState({});
@@ -185,8 +198,10 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                   borderRadius: '8px',
                   display: 'flex',
                   flexDirection: 'column',
-                  maxHeight: K.colMaxH,
-                  overflow: 'hidden',
+                  /* Sem maxHeight/scroll interno: @hello-pangea/dnd não suporta scroll aninhado
+                   * (ex.: coluna com overflow + main.page-content com overflow) — o drag fica fora do cursor.
+                   * Rolar listas longas: scroll da página (main) apenas. */
+                  overflow: 'visible',
                   transition: 'all 0.25s ease'
                 }}
               >
@@ -332,7 +347,7 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                       {...provided.droppableProps}
                       sx={{
                         flex: 1,
-                        overflowY: 'auto',
+                        overflowY: 'visible',
                         px: K.dropPx,
                         py: K.dropPy,
                         minHeight: K.dropMinH,
@@ -408,11 +423,14 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                             const dueStatus = item.status === 'DONE' ? null : getDueStatus(deadline);
                             const progressBg = isDark ? 'rgba(255,255,255,0.06)' : '#e2e8f0';
 
+                            const { style: dndStyle, ...draggableRest } = provided.draggableProps;
+
                             return (
                               <Paper
                                 ref={provided.innerRef}
-                                {...provided.draggableProps}
+                                {...draggableRest}
                                 {...provided.dragHandleProps}
+                                style={getDraggablePaperStyle(dndStyle, snapshot)}
                                 elevation={0}
                                 className="animate-card-enter"
                                 sx={{
@@ -423,16 +441,14 @@ const TaskKanban = ({ tasks = [], onTaskMove, onTaskClick, onTaskDelete, activeT
                                   borderLeft: `2px solid ${statusBg}`,
                                   padding: K.cardPad,
                                   cursor: snapshot.isDragging ? 'grabbing' : 'grab',
-                                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                  transition: 'border-color, box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                                   position: 'relative',
                                   userSelect: 'none',
-                                  transform: snapshot.isDragging ? 'rotate(2deg)' : 'none',
                                   boxShadow: snapshot.isDragging ? '0 12px 32px rgba(37,99,235,0.25)' : cardShadow,
                                   '&:hover': {
                                     borderColor: 'rgba(37, 99, 235, 0.3)',
                                     borderLeftColor: statusBg,
-                                    transform: snapshot.isDragging ? 'none' : 'translateY(-2px)',
-                                    boxShadow: cardHover,
+                                    boxShadow: snapshot.isDragging ? undefined : cardHover,
                                     '& .card-open-btn': { opacity: 1, transform: 'scale(1)' },
                                   },
                                 }}

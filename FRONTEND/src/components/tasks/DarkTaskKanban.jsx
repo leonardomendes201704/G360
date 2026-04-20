@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { useState, useContext, useEffect, useMemo } from 'react';
+import { Box, Typography, Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Add, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {
     DndContext,
     PointerSensor,
@@ -73,7 +73,18 @@ const kanbanCollisionDetection = (args) => {
     return closestCorners(args);
 };
 
-const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask }) => {
+const DarkTaskKanban = ({
+    tasks = [],
+    onTaskClick,
+    onTaskMove,
+    onOpenCreateTask,
+    /** Tarefas gerais: 5 colunas (inclui Canceladas) + menu / timer */
+    showCancelledColumn = false,
+    activeTimerTaskId = null,
+    onTimerToggle,
+    currentUserId,
+    onTaskDelete,
+}) => {
     const { mode } = useContext(ThemeContext);
     const isDark = mode === 'dark';
 
@@ -99,20 +110,46 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
         })
     );
 
-    // Premium Column Config (Matched TaskKanban)
-    const columnConfig = {
-        TODO: { id: 'TODO', title: 'A Fazer', icon: 'pending_actions', color: '#2563eb', gradient: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, transparent 100%)' },
-        ON_HOLD: { id: 'ON_HOLD', title: 'Em Pausa', icon: 'pause_circle', color: '#f59e0b', gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, transparent 100%)' },
-        IN_PROGRESS: { id: 'IN_PROGRESS', title: 'Em Progresso', icon: 'autorenew', color: '#3b82f6', gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, transparent 100%)' },
-        DONE: { id: 'DONE', title: 'Concluído', icon: 'check_circle', color: '#22c55e', gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 100%)' }
-    };
+    const columnConfig = useMemo(() => {
+        const base = {
+            TODO: { id: 'TODO', title: 'A Fazer', icon: 'pending_actions', color: '#2563eb', gradient: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, transparent 100%)' },
+            ON_HOLD: { id: 'ON_HOLD', title: 'Em Pausa', icon: 'pause_circle', color: '#f59e0b', gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, transparent 100%)' },
+            IN_PROGRESS: { id: 'IN_PROGRESS', title: 'Em Progresso', icon: 'autorenew', color: '#3b82f6', gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, transparent 100%)' },
+            DONE: { id: 'DONE', title: 'Concluído', icon: 'check_circle', color: '#22c55e', gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 100%)' },
+        };
+        if (showCancelledColumn) {
+            base.CANCELLED = { id: 'CANCELLED', title: 'Canceladas', icon: 'block', color: '#94a3b8', gradient: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, transparent 100%)' };
+        }
+        return base;
+    }, [showCancelledColumn]);
 
-    const columns = Object.values(columnConfig);
+    const columnOrder = showCancelledColumn
+        ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
+        : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+    const columns = columnOrder.map((id) => columnConfig[id]);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [menuTask, setMenuTask] = useState(null);
+    const handleMenuOpen = (event, task) => {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+        setMenuTask(task);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setMenuTask(null);
+    };
 
     // Normalizar status de tarefas (migrar valores antigos e corrigir inválidos)
     const normalizedTasks = tasks.map(task => {
-        const validStatuses = ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+        const validStatuses = showCancelledColumn
+            ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
+            : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
         let normalizedStatus = task.status;
+
+        if (!showCancelledColumn && normalizedStatus === 'CANCELLED') {
+            normalizedStatus = 'TODO';
+        }
 
         // Migrar status antigos/removidos
         if (task.status === 'BACKLOG') {
@@ -191,7 +228,9 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
             }
         }
 
-        const validStatuses = ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+        const validStatuses = showCancelledColumn
+            ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
+            : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
         if (!validStatuses.includes(newStatus)) {
             return;
         }
@@ -229,7 +268,9 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', lg: 'repeat(4, 1fr)' }, // Added responsive grid
+                    gridTemplateColumns: showCancelledColumn
+                        ? { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(5, 1fr)' }
+                        : { xs: '1fr', lg: 'repeat(4, 1fr)' },
                     gap: 2.5,
                     mb: 4,
                 }}
@@ -304,8 +345,10 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                         {totalDone}
                                     </Box>
                                 </Box>
+                                {onOpenCreateTask ? (
                                 <Box
                                     component="button"
+                                    type="button"
                                     onClick={onOpenCreateTask}
                                     sx={{
                                         border: 'none',
@@ -327,6 +370,7 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                 >
                                     <Add sx={{ fontSize: 20 }} />
                                 </Box>
+                                ) : null}
                             </Box>
 
                             {/* "Done" Filters - Fixed Spacing */}
@@ -411,6 +455,10 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                                                 task={task}
                                                 taskIndex={normalizedTasks.indexOf(task)}
                                                 onClick={onTaskClick}
+                                                activeTimerTaskId={activeTimerTaskId}
+                                                onTimerToggle={onTimerToggle}
+                                                currentUserId={currentUserId}
+                                                onContextMenu={onTaskDelete ? handleMenuOpen : undefined}
                                             />
                                         ))
                                     ) : (
@@ -486,6 +534,50 @@ const DarkTaskKanban = ({ tasks = [], onTaskClick, onTaskMove, onOpenCreateTask 
                     </Box>
                 ) : null}
             </DragOverlay>
+
+            {onTaskDelete ? (
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                        sx: {
+                            borderRadius: '8px',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                            border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'}`,
+                            bgcolor: isDark ? '#1e293b' : '#ffffff',
+                            minWidth: 160,
+                        },
+                    }}
+                >
+                    <MenuItem
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (menuTask) onTaskClick(menuTask);
+                            handleMenuClose();
+                        }}
+                        sx={{ borderRadius: '8px', mx: 0.5 }}
+                    >
+                        <ListItemIcon>
+                            <EditIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Editar</ListItemText>
+                    </MenuItem>
+                    <MenuItem
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (menuTask) onTaskDelete(menuTask.id);
+                            handleMenuClose();
+                        }}
+                        sx={{ borderRadius: '8px', mx: 0.5 }}
+                    >
+                        <ListItemIcon>
+                            <DeleteIcon fontSize="small" color="error" />
+                        </ListItemIcon>
+                        <ListItemText sx={{ color: 'error.main' }}>Excluir</ListItemText>
+                    </MenuItem>
+                </Menu>
+            ) : null}
         </DndContext>
     );
 };

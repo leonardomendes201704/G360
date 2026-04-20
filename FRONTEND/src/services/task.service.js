@@ -85,8 +85,12 @@ export const createGeneralTask = async (data) => {
   return response.data;
 };
 
+/** Kanban / drag: mesmo truque que project-tasks — `?update=status-only` evita 422 Yup no PUT só com status. */
 export const updateGeneralTask = async (id, data) => {
-  const response = await api.put(`/tasks/${id}`, data);
+  const keys = data && typeof data === 'object' ? Object.keys(data).filter((k) => data[k] !== undefined) : [];
+  const statusOnly = keys.length === 1 && keys[0] === 'status';
+  const url = statusOnly ? `/tasks/${id}?update=status-only` : `/tasks/${id}`;
+  const response = await api.put(url, data);
   return response.data;
 };
 

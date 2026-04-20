@@ -12,11 +12,8 @@ vi.mock('../../../services/task.service');
 vi.mock('../../../services/reference.service');
 
 // Mock Subcomponents
-vi.mock('../../../components/tasks/TaskKanban', () => ({
-    default: ({ tasks }) => <div data-testid="kanban-view">Kanban Items: {tasks.length}</div>
-}));
 vi.mock('../../../components/tasks/DarkTaskKanban', () => ({
-    default: ({ tasks }) => <div data-testid="kanban-view-dark">Dark Kanban Items: {tasks.length}</div>
+    default: ({ tasks }) => <div data-testid="kanban-view">Kanban Items: {tasks.length}</div>
 }));
 vi.mock('../../../components/modals/TaskModal', () => ({
     default: ({ open, onClose }) => open ? <div data-testid="task-modal"><button onClick={onClose}>Close</button></div> : null

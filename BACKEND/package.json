@@ -12,6 +12,7 @@
     "seed": "node src/prisma/seed.js",
     "seed:gantt-demo": "node src/scripts/seed-gantt-demo-project.js",
     "seed:devcraft": "node src/scripts/seed-model-tenant-devcraft.js",
+    "catalog:tenants": "node scripts/debug-tenants.js",
     "seed:catalog": "node seed-catalog.js",
     "seed:catalog:all": "node src/scripts/seed-catalog-all-tenants.js",
     "seed:suppliers:all": "node src/scripts/seed-suppliers-all-tenants.js",

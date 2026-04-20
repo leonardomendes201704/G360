@@ -14,7 +14,7 @@ import { getErrorMessage } from '../../utils/errorUtils';
 
 // Components
 import DataListTable from '../../components/common/DataListTable';
-import KanbanComponent from '../../components/tasks/TaskKanban';
+import DarkTaskKanban from '../../components/tasks/DarkTaskKanban';
 import TaskPlanningGrid from '../../components/tasks/TaskPlanningGrid';
 import TaskModal from '../../components/modals/TaskModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
@@ -650,7 +650,7 @@ const TasksPage = () => {
             <Box
                 sx={{
                     background: filterBg,
-                    backdropFilter: 'blur(10px)',
+                    /* Sem backdrop-filter: no WebKit isso cria containing block e atrapalha camadas de drag (Kanban). */
                     border: `1px solid ${filterBorder}`,
                     borderRadius: '8px',
                     mb: 3,
@@ -909,13 +909,15 @@ const TasksPage = () => {
                     onTaskClick={handleTaskClick}
                 />
             ) : (
-                <KanbanComponent
+                <DarkTaskKanban
                     tasks={filteredTasks}
                     onTaskClick={handleTaskClick}
                     onTaskMove={handleTaskMove}
-                    onOpenCreateTask={handleOpenCreate}
+                    onOpenCreateTask={canWrite ? handleOpenCreate : undefined}
+                    showCancelledColumn
                     activeTimerTaskId={isRunning ? activeTimer?.taskId : null}
                     currentUserId={user?.id}
+                    onTaskDelete={canWrite ? handleDeleteClick : undefined}
                     onTimerToggle={async (task) => {
                         try {
                             if (isRunning && activeTimer?.taskId === task.id) {

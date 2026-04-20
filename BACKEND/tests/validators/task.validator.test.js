@@ -44,8 +44,8 @@ describe('Task Validators', () => {
                 .rejects.toThrow('Status inválido');
         });
 
-        it('should accept all valid statuses', async () => {
-            for (const status of ['TODO', 'IN_PROGRESS', 'REVIEW', 'DONE', 'ARCHIVED']) {
+        it('should accept all valid statuses (incl. Kanban ON_HOLD / CANCELLED)', async () => {
+            for (const status of ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'REVIEW', 'DONE', 'ARCHIVED', 'CANCELLED']) {
                 const result = await createTaskSchema.validate({ ...validData, status });
                 expect(result.status).toBe(status);
             }
@@ -71,6 +71,11 @@ describe('Task Validators', () => {
         it('should pass with partial data', async () => {
             const result = await updateTaskSchema.validate({ title: 'Updated' });
             expect(result.title).toBe('Updated');
+        });
+
+        it('should accept status-only ON_HOLD (Kanban)', async () => {
+            const result = await updateTaskSchema.validate({ status: 'ON_HOLD' });
+            expect(result.status).toBe('ON_HOLD');
         });
 
         it('should still reject invalid priority', async () => {

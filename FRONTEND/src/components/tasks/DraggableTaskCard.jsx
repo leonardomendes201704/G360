@@ -1,13 +1,21 @@
 ﻿import { useContext } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Box, Typography, Chip, Avatar } from '@mui/material';
+import { Box, Typography, Chip, Avatar, Tooltip } from '@mui/material';
 import { Event } from '@mui/icons-material';
 import { format, isPast, isToday, isTomorrow, addDays, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
-const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
+const DraggableTaskCard = ({
+    task,
+    onClick,
+    taskIndex,
+    activeTimerTaskId,
+    onTimerToggle,
+    currentUserId,
+    onContextMenu,
+}) => {
     const { mode } = useContext(ThemeContext);
     const isDark = mode === 'dark';
     const cardBg = isDark ? 'linear-gradient(145deg, #1a222d 0%, #151c25 100%)' : '#ffffff';
@@ -84,8 +92,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
 
     const priorityStyle = getPriorityColor(task.priority);
     const statusStyle = getStatusColor(task.status);
-    const dueStatus = getDueStatus(task.dueDate || task.endDate);
-    const assignee = task.assignedTo || task.assignee;
+    const dueStatus = task.status === 'DONE' ? null : getDueStatus(task.dueDate || task.endDate);
 
     const checklistTotal = task.checklist?.length || 0;
     const checklistDone = task.checklist?.filter(item => item.completed || item.done).length || 0;
@@ -101,12 +108,24 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
         progressLabel = 'Progresso';
     }
 
+    const assignee = task.assignedTo || task.assignee;
+    const showTimer = onTimerToggle && currentUserId && assignee?.id === currentUserId;
+
     return (
         <Box
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
+            onContextMenu={
+                onContextMenu
+                    ? (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onContextMenu(e, task);
+                    }
+                    : undefined
+            }
             className="animate-card-enter"
             sx={{
                 background: cardBg,
@@ -257,7 +276,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                 }}
             >
                 {/* Assignee */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
                     {assignee ? (
                         <Box sx={{
                             display: 'flex',
@@ -281,8 +300,53 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                     )}
                 </Box>
 
-                {/* Due Date */}
-                {dueStatus && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    {showTimer && (
+                        <Tooltip title={activeTimerTaskId === task.id ? 'Parar timer' : 'Iniciar timer'} arrow>
+                            <Box
+                                component="button"
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); onTimerToggle(task); }}
+                                onPointerDown={(e) => e.stopPropagation()}
+                                sx={{
+                                    border: 'none',
+                                    bgcolor: activeTimerTaskId === task.id ? 'rgba(16,185,129,0.15)' : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'),
+                                    cursor: 'pointer',
+                                    p: 0.4,
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: activeTimerTaskId === task.id ? '#10b981' : textMuted,
+                                    transition: 'all 0.2s',
+                                    flexShrink: 0,
+                                    animation: activeTimerTaskId === task.id ? 'timerPulse 1.5s ease-in-out infinite' : 'none',
+                                    '@keyframes timerPulse': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.6 } },
+                                    '&:hover': {
+                                        bgcolor: activeTimerTaskId === task.id ? 'rgba(239,68,68,0.15)' : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'),
+                                        color: activeTimerTaskId === task.id ? '#ef4444' : '#2563eb'
+                                    }
+                                }}
+                            >
+                                <span className="material-icons-round" style={{ fontSize: 14 }}>
+                                    {activeTimerTaskId === task.id ? 'stop' : 'play_arrow'}
+                                </span>
+                            </Box>
+                        </Tooltip>
+                    )}
+
+                    {task.status === 'DONE' && (
+                        <Box sx={{
+                            display: 'flex', alignItems: 'center', gap: 0.4,
+                            px: 0.75, py: 0.25, borderRadius: '8px',
+                            background: 'rgba(34, 197, 94, 0.15)',
+                        }}>
+                            <span className="material-icons-round" style={{ fontSize: '13px', color: '#4ade80' }}>check_circle</span>
+                            <Typography sx={{ fontSize: '11px', fontWeight: 600, color: '#4ade80', textTransform: 'uppercase' }}>Entregue</Typography>
+                        </Box>
+                    )}
+
+                    {dueStatus && task.status !== 'DONE' && (
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -298,6 +362,7 @@ const DraggableTaskCard = ({ task, onClick, taskIndex }) => {
                         </Typography>
                     </Box>
                 )}
+                </Box>
             </Box>
         </Box>
     );
