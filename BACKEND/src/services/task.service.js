@@ -6,6 +6,31 @@ const AuditLogRepository = require('../repositories/audit-log.repository');
 const { getUserAccessScope, getAccessibleUserIds } = require('../utils/access-scope');
 const logger = require('../config/logger');
 
+/**
+ * Yup/JSON podem enviar `Date` ou `YYYY-MM-DD`. Evita `String(Date).split('T')[0]` quebrado em locale sem "T"
+ * e alinha o dia civil a meio-dia UTC (TAR-04).
+ */
+function normalizeGeneralDueDateToUtcNoon(value) {
+  if (value == null || value === '') return null;
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return null;
+    return new Date(
+      Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate(), 12, 0, 0, 0),
+    );
+  }
+  const s = String(value).trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) {
+    const y = Number(m[1]);
+    const mo = Number(m[2]) - 1;
+    const da = Number(m[3]);
+    return new Date(Date.UTC(y, mo, da, 12, 0, 0, 0));
+  }
+  const d = new Date(s);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 12, 0, 0, 0));
+}
+
 class TaskService {
   static async create(prisma, userId, data) {
     // 1. Validar Responsável (se informado)
@@ -30,13 +55,7 @@ class TaskService {
       priority: data.priority || 'MEDIUM',
       isPersonal: data.isPersonal || false,
       assigneeId: data.assigneeId || null,
-      dueDate: data.dueDate ? (function (d) {
-        try {
-          if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return new Date(d + 'T12:00:00Z');
-          const date = new Date(d);
-          return isNaN(date.getTime()) ? null : date;
-        } catch (e) { return null; }
-      })(String(data.dueDate).split('T')[0]) : null,
+      dueDate: normalizeGeneralDueDateToUtcNoon(data.dueDate),
       checklist: data.checklist || null,
       riskId: data.riskId || null
     };
@@ -131,8 +150,7 @@ class TaskService {
     Object.keys(data).forEach(key => {
       if (allowedFields.includes(key)) {
         if (key === 'dueDate' && data[key]) {
-          const dueDateStr = String(data[key]);
-          updateData[key] = new Date(dueDateStr.includes('T') ? dueDateStr : `${dueDateStr.split('T')[0]}T12:00:00Z`);
+          updateData[key] = normalizeGeneralDueDateToUtcNoon(data[key]);
         } else if (key === 'assigneeId') {
           updateData[key] = data[key] || null;
         } else {

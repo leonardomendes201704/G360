@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { format } from 'date-fns';
@@ -62,7 +62,7 @@ const DarkTaskModal = ({
   const [checklistItems, setChecklistItems] = useState([]);
   const [newItemText, setNewItemText] = useState('');
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
+  const { register, control, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     resolver: yupResolver(getSchema(isGeneralTask)),
     defaultValues: { priority: 'MEDIUM', status: 'TODO', storyPoints: null }
   });
@@ -204,7 +204,15 @@ const DarkTaskModal = ({
       sprintId: data.sprintId === "" ? null : data.sprintId,
       startDate: data.startDate === "" ? null : data.startDate,
       endDate: data.endDate === "" ? null : data.endDate,
-      dueDate: data.dueDate === "" ? null : data.dueDate,
+      dueDate: (() => {
+        const v = data.dueDate;
+        if (v == null || v === '') return null;
+        if (typeof v === 'string') {
+          const s = v.trim().slice(0, 10);
+          return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : v;
+        }
+        return v;
+      })(),
       storyPoints: data.storyPoints ? parseInt(data.storyPoints) : null,
       checklist: normalizeChecklistForApi(checklistItems),
       riskId: riskId || data.riskId
@@ -950,32 +958,40 @@ const DarkTaskModal = ({
                     <Typography sx={{ color: 'var(--modal-text-secondary)', fontSize: '13px', fontWeight: 500, mb: 1 }}>
                       Vencimento <span style={{ color: '#ef4444' }}>*</span>
                     </Typography>
-                    <TextField
-                      {...register('dueDate')}
-                      type="date"
-                      fullWidth
-                      error={!!errors.dueDate}
-                      helperText={errors.dueDate?.message}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          background: 'var(--modal-surface-hover)',
-                          border: '1px solid var(--modal-border-strong)',
-                          borderRadius: G360_INPUT_RADIUS,
-                          color: 'var(--modal-text)',
-                          fontSize: '13px',
-                          transition: 'all 0.2s',
-                          '& fieldset': { border: 'none' },
-                          '&:hover': {
-                            background: 'var(--modal-surface-active)',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                          },
-                          '&.Mui-focused': {
-                            background: 'var(--modal-surface-active)',
-                            boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.25)',
-                            border: '1px solid #3b82f6'
-                          }
-                        }
-                      }}
+                    <Controller
+                      name="dueDate"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          value={field.value ?? ''}
+                          type="date"
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                          error={!!errors.dueDate}
+                          helperText={errors.dueDate?.message}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              background: 'var(--modal-surface-hover)',
+                              border: '1px solid var(--modal-border-strong)',
+                              borderRadius: G360_INPUT_RADIUS,
+                              color: 'var(--modal-text)',
+                              fontSize: '13px',
+                              transition: 'all 0.2s',
+                              '& fieldset': { border: 'none' },
+                              '&:hover': {
+                                background: 'var(--modal-surface-active)',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                              },
+                              '&.Mui-focused': {
+                                background: 'var(--modal-surface-active)',
+                                boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.25)',
+                                border: '1px solid #3b82f6',
+                              },
+                            },
+                          }}
+                        />
+                      )}
                     />
                   </Box>
                 )}
