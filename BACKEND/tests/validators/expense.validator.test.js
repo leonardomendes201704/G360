@@ -69,6 +69,21 @@ describe('Expense Validators', () => {
             const result = await createExpenseSchema.validate({ ...validData, accountId: '' });
             expect(result.accountId).toBeNull();
         });
+
+        it('should reject invalid status on create', async () => {
+            await expect(createExpenseSchema.validate({ ...validData, status: 'APROVADO' }))
+                .rejects.toThrow('Status inválido na criação');
+        });
+
+        it('should reject invalid approvalStatus', async () => {
+            await expect(createExpenseSchema.validate({ ...validData, approvalStatus: 'OTHER' }))
+                .rejects.toThrow('Âmbito da despesa inválido');
+        });
+
+        it('should accept UNPLANNED approvalStatus', async () => {
+            const result = await createExpenseSchema.validate({ ...validData, approvalStatus: 'UNPLANNED' });
+            expect(result.approvalStatus).toBe('UNPLANNED');
+        });
     });
 
     describe('updateExpenseSchema', () => {

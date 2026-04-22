@@ -20,6 +20,10 @@ class ExpenseService {
       costCenterId: data.costCenterId || null,
     };
 
+    if (String(payload.approvalStatus || '') === 'UNPLANNED') {
+      payload.status = 'AGUARDANDO_APROVACAO';
+    }
+
     if (data.createdBy && payload.costCenterId) {
       const scope = await getUserAccessScope(prisma, data.createdBy);
       // Allow Admin and Finance roles to create expenses for any cost center
@@ -219,6 +223,27 @@ class ExpenseService {
       updateData.requiresAdjustment = false;
     }
 
+    const effectiveApproval =
+      updateData.approvalStatus !== undefined ? updateData.approvalStatus : expense.approvalStatus;
+    const nextStatusForRule =
+      updateData.status !== undefined ? updateData.status : expense.status;
+    if (String(effectiveApproval || '') === 'UNPLANNED') {
+      const expStUp = String(expense.status || '').toUpperCase();
+      const nextStUp = String(nextStatusForRule || '').toUpperCase();
+      if (expStUp === 'PREVISTO' && ['APROVADO', 'APPROVED', 'PAGO'].includes(nextStUp)) {
+        throw {
+          statusCode: 400,
+          message:
+            'Despesa extra-orçamentária não pode ser aprovada ou paga sem passar pelo fluxo de aprovação.',
+        };
+      }
+      if (nextStUp === 'PREVISTO') {
+        updateData.status = 'AGUARDANDO_APROVACAO';
+        updateData.rejectionReason = null;
+        updateData.requiresAdjustment = false;
+      }
+    }
+
     // Prisma requires nested relation syntax for updates
     if (supplierId !== undefined) {
       updateData.supplier = supplierId ? { connect: { id: supplierId } } : { disconnect: true };
@@ -234,7 +259,8 @@ class ExpenseService {
     }
 
     // Validar aprovação (Regra de Negócio: Aprovação requer NF e Arquivo)
-    if (payload.status === 'APPROVED') {
+    const statusUpper = String(payload.status || '').toUpperCase();
+    if (statusUpper === 'APPROVED' || statusUpper === 'APROVADO') {
       const hasInvoice = payload.invoiceNumber || expense.invoiceNumber;
       const hasFile = file || expense.fileUrl; // file is the new upload, expense.fileUrl is existing
 

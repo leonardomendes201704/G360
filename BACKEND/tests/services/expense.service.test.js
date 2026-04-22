@@ -14,7 +14,14 @@ jest.mock('../../src/repositories/audit-log.repository');
 jest.mock('../../src/services/email-template.service');
 jest.mock('../../src/services/mail.service');
 jest.mock('../../src/utils/access-scope');
-jest.mock('fs');
+jest.mock('fs', () => {
+  const actual = jest.requireActual('fs');
+  return {
+    ...actual,
+    existsSync: jest.fn(),
+    unlinkSync: jest.fn(),
+  };
+});
 jest.mock('../../src/config/logger', () => ({
     error: jest.fn(),
     warn: jest.fn(),
@@ -133,6 +140,24 @@ describe('ExpenseService', () => {
               expect(res.id).toBe('e1');
          });
 
+         it('should force AGUARDANDO_APROVACAO when approvalStatus is UNPLANNED on create', async () => {
+              ExpenseRepository.create.mockImplementation((_prisma, payload) =>
+                  Promise.resolve({ id: 'e1', ...payload })
+              );
+              const res = await ExpenseService.create(mockPrisma, {
+                   amount: 500,
+                   date: '2025-05-15',
+                   createdBy: 'u1',
+                   approvalStatus: 'UNPLANNED',
+                   status: 'PREVISTO',
+              });
+              expect(res.status).toBe('AGUARDANDO_APROVACAO');
+              expect(ExpenseRepository.create).toHaveBeenCalledWith(
+                   mockPrisma,
+                   expect.objectContaining({ status: 'AGUARDANDO_APROVACAO', approvalStatus: 'UNPLANNED' })
+              );
+         });
+
          it('should route partial failures gracefully mapping empty nested arrays correctly natively executing successfully internally', async () => {
               ExpenseRepository.create.mockResolvedValue({ id: 'e1', amount: 500, costCenterId: 'c1', accountId: 'a1', date: new Date('2025-05-15') });
               mockPrisma.costCenter.findUnique.mockResolvedValue({ department: { managerId: 'm1' } });
@@ -240,6 +265,52 @@ describe('ExpenseService', () => {
               
               expect(fs.unlinkSync).toHaveBeenCalled();
               expect(res.id).toBe('e1');
+         });
+
+         it('should force approval flow when marking UNPLANNED from PREVISTO', async () => {
+              ExpenseRepository.findById.mockResolvedValue({
+                   id: 'e1',
+                   status: 'PREVISTO',
+                   createdBy: 'u1',
+                   approvalStatus: 'PLANNED',
+                   invoiceNumber: null,
+                   fileUrl: null,
+              });
+              ExpenseRepository.update.mockResolvedValue({ id: 'e1', status: 'AGUARDANDO_APROVACAO' });
+              await ExpenseService.update(mockPrisma, 'e1', 't1', {
+                   userId: 'u1',
+                   approvalStatus: 'UNPLANNED',
+              });
+              expect(ExpenseRepository.update).toHaveBeenCalledWith(
+                   mockPrisma,
+                   'e1',
+                   expect.objectContaining({
+                        status: 'AGUARDANDO_APROVACAO',
+                        rejectionReason: null,
+                        requiresAdjustment: false,
+                   })
+              );
+         });
+
+         it('should reject approving UNPLANNED expense while still PREVISTO', async () => {
+              ExpenseRepository.findById.mockResolvedValue({
+                   id: 'e1',
+                   status: 'PREVISTO',
+                   createdBy: 'u1',
+                   approvalStatus: 'UNPLANNED',
+                   invoiceNumber: '1',
+                   fileUrl: '/f.pdf',
+              });
+              await expect(
+                   ExpenseService.update(mockPrisma, 'e1', 't1', {
+                        userId: 'u1',
+                        status: 'APROVADO',
+                        invoiceNumber: '1',
+                   })
+              ).rejects.toMatchObject({
+                   statusCode: 400,
+                   message: expect.stringContaining('fluxo de aprovação'),
+              });
          });
 
          it('should enforce File and NF required for APPROVED payload status natively processing reliably gracefully evaluating scopes carefully', async () => {

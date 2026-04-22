@@ -153,7 +153,8 @@ class ApprovalController {
                         requestedBy: e.createdBy,
                         createdAt: e.createdAt,
                         supplier: e.supplier?.name,
-                        invoiceNumber: e.invoiceNumber
+                        invoiceNumber: e.invoiceNumber,
+                        approvalStatus: e.approvalStatus || null,
                     })));
             }
 

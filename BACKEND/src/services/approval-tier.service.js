@@ -8,10 +8,56 @@ const ENTITY_TYPES = {
   BUDGET: 'BUDGET',
 };
 
+/** Valores para ApprovalTier.expensePlanScope (só entityType EXPENSE). null/ALL = qualquer despesa. */
+const EXPENSE_PLAN_SCOPES = ['ALL', 'PLANNED', 'UNPLANNED'];
+
 /**
  * GMUD / ChangeRequest não usa ApprovalTier: aprovadores vêm do CAB (perfil configurável)
  * e da tabela ChangeApprover — ver governance.config.js (CAB_MEMBER_ROLE_NAME).
  */
+
+/** Alçada EXPENSE aplica-se a esta despesa consoante o âmbito previsto / extra-orçamentário. */
+function tierAppliesToExpensePlan(tier, expense) {
+  if (tier.entityType !== ENTITY_TYPES.EXPENSE) return true;
+  const scope = tier.expensePlanScope || 'ALL';
+  if (scope === 'ALL') return true;
+  const unplanned = expense?.approvalStatus === 'UNPLANNED';
+  if (scope === 'UNPLANNED') return unplanned;
+  if (scope === 'PLANNED') return !unplanned;
+  return true;
+}
+
+/** Filtro Prisma em Expense.approvalStatus para uma alçada com expensePlanScope. */
+function expenseTierApprovalStatusWhere(tier) {
+  const scope = tier.expensePlanScope;
+  if (!scope || scope === 'ALL') return null;
+  if (scope === 'PLANNED') {
+    return { OR: [{ approvalStatus: 'PLANNED' }, { approvalStatus: null }] };
+  }
+  if (scope === 'UNPLANNED') {
+    return { approvalStatus: 'UNPLANNED' };
+  }
+  return null;
+}
+
+function mergeExpenseTierOrPart(amountPart, costCenterFilter, scopeWhere) {
+  const parts = [];
+  if (costCenterFilter) parts.push(costCenterFilter);
+  if (amountPart && Object.keys(amountPart).length) parts.push(amountPart);
+  if (scopeWhere) parts.push(scopeWhere);
+  if (parts.length === 0) return {};
+  if (parts.length === 1) return parts[0];
+  return { AND: parts };
+}
+
+function normalizeExpensePlanScopeForTier(entityType, value) {
+  if (entityType !== ENTITY_TYPES.EXPENSE) return null;
+  if (value == null || value === '' || value === 'ALL') return null;
+  if (value === 'PLANNED' || value === 'UNPLANNED') return value;
+  const err = new Error('Âmbito da despesa inválido (use ALL, PLANNED ou UNPLANNED).');
+  err.statusCode = 400;
+  throw err;
+}
 
 function amountInTierRange(amount, tier) {
   const a = Number(amount);
@@ -95,14 +141,14 @@ async function buildExpensePendingWhere(prisma, userId) {
     if (t.minAmount != null) band.gte = t.minAmount;
     if (t.maxAmount != null) band.lte = t.maxAmount;
     const amountPart = Object.keys(band).length ? { amount: band } : {};
+    const scopeWhere = expenseTierApprovalStatusWhere(t);
 
     if (t.globalScope) {
-      orParts.push({ ...amountPart });
+      orParts.push(mergeExpenseTierOrPart(amountPart, null, scopeWhere));
     } else if (ctx.managedCostCenterIds.length > 0) {
-      orParts.push({
-        costCenterId: { in: ctx.managedCostCenterIds },
-        ...amountPart,
-      });
+      orParts.push(
+        mergeExpenseTierOrPart(amountPart, { costCenterId: { in: ctx.managedCostCenterIds } }, scopeWhere)
+      );
     }
   }
 
@@ -174,6 +220,7 @@ async function userCanApproveExpense(prisma, userId, expense) {
 
   for (const t of tiers) {
     if (!amountInTierRange(expense.amount, t)) continue;
+    if (!tierAppliesToExpensePlan(t, expense)) continue;
     if (t.globalScope) return true;
     if (ctx.managedCostCenterIds.includes(expense.costCenterId)) return true;
   }
@@ -755,7 +802,9 @@ async function collectUserIdsForExpenseTiers(prisma, expense) {
   const tiers = await prisma.approvalTier.findMany({
     where: { entityType: ENTITY_TYPES.EXPENSE, isActive: true },
   });
-  const matching = tiers.filter((t) => amountInTierRange(expense.amount, t));
+  const matching = tiers.filter(
+    (t) => amountInTierRange(expense.amount, t) && tierAppliesToExpensePlan(t, expense)
+  );
   if (matching.length === 0) return [];
 
   const ids = new Set();
@@ -973,6 +1022,7 @@ class ApprovalTierService {
       err.statusCode = 400;
       throw err;
     }
+    const expensePlanScope = normalizeExpensePlanScopeForTier(data.entityType, data.expensePlanScope);
     return prisma.approvalTier.create({
       data: {
         name: data.name,
@@ -981,6 +1031,7 @@ class ApprovalTierService {
         minAmount: data.minAmount ?? null,
         maxAmount: data.maxAmount ?? null,
         globalScope: Boolean(data.globalScope),
+        expensePlanScope,
         isActive: data.isActive !== false,
         sortOrder: data.sortOrder ?? 0,
       },
@@ -1009,6 +1060,14 @@ class ApprovalTierService {
       throw err;
     }
 
+    const nextEntityType = data.entityType != null ? data.entityType : existing.entityType;
+    let expensePlanScopePatch;
+    if (data.expensePlanScope !== undefined) {
+      expensePlanScopePatch = normalizeExpensePlanScopeForTier(nextEntityType, data.expensePlanScope);
+    } else if (data.entityType != null && data.entityType !== ENTITY_TYPES.EXPENSE) {
+      expensePlanScopePatch = null;
+    }
+
     return prisma.approvalTier.update({
       where: { id },
       data: {
@@ -1020,6 +1079,7 @@ class ApprovalTierService {
         ...(data.globalScope !== undefined && { globalScope: Boolean(data.globalScope) }),
         ...(data.isActive !== undefined && { isActive: Boolean(data.isActive) }),
         ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
+        ...(expensePlanScopePatch !== undefined && { expensePlanScope: expensePlanScopePatch }),
       },
       include: { role: { select: { id: true, name: true } } },
     });
@@ -1033,6 +1093,8 @@ class ApprovalTierService {
 module.exports = {
   ApprovalTierService,
   ENTITY_TYPES,
+  EXPENSE_PLAN_SCOPES,
+  tierAppliesToExpensePlan,
   buildExpensePendingWhere,
   buildProjectCostPendingWhere,
   buildProjectBaselinePendingWhere,

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-    Box, Typography, CircularProgress, Button, Divider, Chip
-} from '@mui/material';
+import { Box, Typography, CircularProgress, Button, Divider, Chip } from '@mui/material';
 import { Description, AttachFile, Person, Business, CalendarToday, Payments, Label } from '@mui/icons-material';
 import approvalService from '../../services/approval.service';
 import { getFileURL } from '../../utils/urlUtils';
@@ -29,6 +27,7 @@ const ApprovalDetailsModal = ({ open, onClose, item }) => {
 
     useEffect(() => {
         if (open && item) {
+            setDetails(null);
             setLoading(true);
             setError(null);
             approvalService.getDetail(item.type, item.id)
@@ -64,11 +63,28 @@ const ApprovalDetailsModal = ({ open, onClose, item }) => {
             }
         >
             {item && (
-                <Chip
-                    label={item.type.toUpperCase()}
-                    size="small"
-                    sx={{ mb: 2, background: 'var(--modal-border-strong)', color: 'var(--modal-text-soft)', fontSize: 10, fontWeight: 700 }}
-                />
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                    <Chip
+                        label={item.type.toUpperCase()}
+                        size="small"
+                        sx={{ background: 'var(--modal-border-strong)', color: 'var(--modal-text-soft)', fontSize: 10, fontWeight: 700 }}
+                    />
+                    {item.type === 'expense' &&
+                    (item.approvalStatus === 'UNPLANNED' || details?.approvalStatus === 'UNPLANNED') ? (
+                        <Chip
+                            icon={<span className="material-icons-round" style={{ fontSize: '14px' }}>warning</span>}
+                            label="Extra-orçamentário"
+                            size="small"
+                            sx={{
+                                fontSize: 10,
+                                fontWeight: 700,
+                                background: 'rgba(245, 158, 11, 0.2)',
+                                color: '#d97706',
+                                '& .MuiChip-icon': { color: '#d97706' },
+                            }}
+                        />
+                    ) : null}
+                </Box>
             )}
 
             {loading ? (

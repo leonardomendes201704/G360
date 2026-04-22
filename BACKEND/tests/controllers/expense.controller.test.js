@@ -147,6 +147,32 @@ describe('ExpenseController', () => {
              }));
         });
 
+        it('should notify approvers when service promotes to AGUARDANDO_APROVACAO without status in body', async () => {
+             const { notifyExpenseTierApprovers } = require('../../src/services/approval-tier.service');
+             const req = mockRequest({
+                  params: { id: 'e1' },
+                  body: { approvalStatus: 'UNPLANNED' },
+             });
+             const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({
+                  id: 'e1',
+                  status: 'PREVISTO',
+                  amount: 200,
+                  costCenter: { managerId: 'm1' },
+             });
+             ExpenseService.update.mockResolvedValue({
+                  id: 'e1',
+                  status: 'AGUARDANDO_APROVACAO',
+                  amount: 200,
+             });
+
+             await ExpenseController.update(req, res);
+
+             expect(res.status).toHaveBeenCalledWith(200);
+             expect(NotificationService.createNotification).toHaveBeenCalled();
+             expect(notifyExpenseTierApprovers).toHaveBeenCalled();
+        });
+
         it('should 500 on generic update errors or pipe status code', async () => {
              const req = mockRequest({ params: { id: 'e1' }, body: {} });
              const res = mockResponse();

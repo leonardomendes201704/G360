@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-    Box, Button, Typography, TextField, CircularProgress
-} from '@mui/material';
+import { Box, Button, Typography, TextField, CircularProgress, Chip } from '@mui/material';
 import { CheckCircle, Check, CloudUpload } from '@mui/icons-material';
 import StandardModal from '../common/StandardModal';
 
@@ -77,6 +75,19 @@ const ExpenseApprovalModal = ({ open, onClose, onConfirm, expense }) => {
             }
             contentSx={{ pt: 2 }}
         >
+            {expense.approvalStatus === 'UNPLANNED' && (
+                <Chip
+                    icon={<span className="material-icons-round" style={{ fontSize: '16px' }}>warning</span>}
+                    label="Extra-orçamentário"
+                    sx={{
+                        mb: 2,
+                        fontWeight: 600,
+                        background: 'rgba(245, 158, 11, 0.2)',
+                        color: '#d97706',
+                        '& .MuiChip-icon': { color: '#d97706' },
+                    }}
+                />
+            )}
             <Typography sx={{ fontSize: '14px', color: 'var(--modal-text-secondary)', mb: 3, lineHeight: 1.6 }}>
                 Para aprovar a despesa <strong style={{ color: 'var(--modal-text-strong)' }}>{expense.description}</strong> no valor de{' '}
                 <strong style={{ color: '#10b981' }}>

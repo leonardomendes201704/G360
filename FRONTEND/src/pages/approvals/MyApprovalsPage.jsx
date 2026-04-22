@@ -243,9 +243,24 @@ const MyApprovalsPage = () => {
 
                                     {/* Info */}
                                     <Box sx={{ flex: 1 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.25 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.25, flexWrap: 'wrap' }}>
                                             <Typography sx={{ fontSize: 14, fontWeight: 600, color: textPrimary }}>{item.title}</Typography>
                                             <Chip label={config.label} size="small" sx={{ background: config.bg, color: config.color, fontSize: 9, height: 18, fontWeight: 600 }} />
+                                            {item.type === 'expense' && item.approvalStatus === 'UNPLANNED' && (
+                                                <Chip
+                                                    icon={<span className="material-icons-round" style={{ fontSize: '14px' }}>warning</span>}
+                                                    label="Extra-orçamentário"
+                                                    size="small"
+                                                    sx={{
+                                                        height: 18,
+                                                        fontSize: 9,
+                                                        fontWeight: 600,
+                                                        background: 'rgba(245, 158, 11, 0.2)',
+                                                        color: '#d97706',
+                                                        '& .MuiChip-icon': { color: '#d97706', ml: 0.25 },
+                                                    }}
+                                                />
+                                            )}
                                         </Box>
                                         <Typography sx={{ fontSize: 12, color: textSecondary }}>
                                             {item.subtitle}

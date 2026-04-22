@@ -86,10 +86,10 @@ const categoryOptions = [
     { value: 'CAPEX', label: 'CAPEX', color: '#06b6d4' },
 ];
 
-// Tipo de custo: se foi previsto no orçamento ou não (não afeta aprovação)
+// Tipo de custo: previsto no orçamento vs extra-orçamentário (extra segue alçadas de não previsto e exige aprovação)
 const costTypeOptions = [
     { value: 'PLANNED', label: 'Custo Previsto (no orçamento)' },
-    { value: 'UNPLANNED', label: 'Custo Não Previsto (extra orçamentário)' },
+    { value: 'UNPLANNED', label: 'Custo Não Previsto (extra-orçamentário)' },
 ];
 
 // ==============================================
@@ -440,6 +440,9 @@ const ExpenseModal = ({
                                             ))}
                                         </Select>
                                     )} />
+                                    <Typography sx={{ color: 'var(--modal-text-muted)', fontSize: '11px', mt: 0.75, lineHeight: 1.45 }}>
+                                        Extra-orçamentário é enviado para aprovação e usa as alçadas de despesa configuradas para custo não previsto.
+                                    </Typography>
                                 </Box>
                                 {/* Nº NF */}
                                 <Box sx={{ flex: 1 }}>

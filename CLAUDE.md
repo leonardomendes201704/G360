@@ -302,6 +302,18 @@ Este projeto usa **Vite + React SPA** (NAO e Next.js). Portanto:
 - Arquitetura: Routes > Controllers > Services > Prisma
 - Multi-tenant: sempre considerar o contexto do tenant nas operacoes de banco
 
+### Base de dados PostgreSQL (multi-tenant)
+
+O G360 usa **um schema PostgreSQL por tenant** (além do catálogo em `public`). Alterações em `BACKEND/src/prisma/schema.prisma` que tocam tabelas por tenant **não** bastam só com `prisma migrate` / `db push` no default se os ambientes reais aplicam DDL via scripts que iteram todos os schemas.
+
+**Diretriz fixa para o agente (local, CI e alinhamento com produção):**
+
+1. Sempre que existir um script em `BACKEND/src/scripts/` do tipo **`*-all-tenants.js`** (ou `npm run db:...` em `BACKEND/package.json` que aplique DDL em todos os tenants), **executar esse comando na pasta `BACKEND`** após implementar a alteração de schema — **incluindo ambiente local** antes de validar fluxos que leem/gravam essas tabelas. Exemplos atuais: `npm run db:add-expense-rejection-columns`, `npm run db:add-approval-tier-expense-plan-scope`.
+2. Depois de mudar `schema.prisma`, correr **`npx prisma generate`** em `BACKEND` para o cliente Prisma ficar coerente.
+3. Se for criada uma **nova** migração DDL multi-tenant, seguir o padrão dos scripts existentes (idempotente com `IF NOT EXISTS` / bloco `DO $$`, iterar `TenantManager.getAllActiveTenants()`, `package.json` com entrada `db:...` documentada).
+
+**Pronto para testes:** com `.env` apontando ao Postgres local e tenants ativos no catálogo, `npm run db:add-approval-tier-expense-plan-scope` deve terminar com `Concluído: N OK, 0 falha(s).` antes de testar DES-03 (alçadas / despesas extra-orçamentárias).
+
 ### Convencoes de Commit
 ```
 tipo(escopo): descricao curta

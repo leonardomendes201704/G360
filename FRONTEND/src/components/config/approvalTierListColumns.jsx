@@ -1,5 +1,5 @@
 import { Box, IconButton } from '@mui/material';
-import { approvalTierEntityLabel } from './approvalTierConstants';
+import { approvalTierEntityLabel, approvalTierExpensePlanScopeLabel } from './approvalTierConstants';
 
 function formatMoney(v) {
   if (v == null || v === '') return '—';
@@ -38,6 +38,16 @@ export function getApprovalTierListColumns({ textPrimary, actionBtnStyle, onEdit
       sortable: true,
       accessor: (row) => row.entityType || '',
       render: (row) => approvalTierEntityLabel(row.entityType),
+    },
+    {
+      id: 'expensePlanScope',
+      label: 'Âmbito despesa',
+      width: '14%',
+      minWidth: 120,
+      sortable: true,
+      accessor: (row) => (row.entityType === 'EXPENSE' ? approvalTierExpensePlanScopeLabel(row.expensePlanScope) : ''),
+      render: (row) =>
+        row.entityType === 'EXPENSE' ? approvalTierExpensePlanScopeLabel(row.expensePlanScope) : '—',
     },
     {
       id: 'role',

@@ -38,16 +38,21 @@ class ExpenseController {
         accountId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
 
 
-        // Campos Opcionais
-        status: yup.string().default('PREVISTO'),
+        // Campos Opcionais — status restrito (aprovação via fluxo dedicado)
+        status: yup
+          .string()
+          .oneOf(['PREVISTO', 'AGUARDANDO_APROVACAO'], 'Status inválido na criação')
+          .default('PREVISTO'),
         dueDate: yup.date().nullable().transform((v, o) => (o === '' ? null : v)),
         paymentDate: yup.date().nullable().transform((v, o) => (o === '' ? null : v)),
         invoiceNumber: yup.string().nullable(),
 
         supplierId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
-        supplierId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
         contractId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
-        approvalStatus: yup.string().nullable(), // Allow UNPLANNED/PLANNED flag
+        approvalStatus: yup
+          .string()
+          .nullable()
+          .oneOf([null, 'PLANNED', 'UNPLANNED'], 'Âmbito da despesa inválido'),
       });
 
 
@@ -93,7 +98,12 @@ class ExpenseController {
         amount: yup.number(),
         date: yup.date(),
         type: yup.string().oneOf(validTypes),
-        status: yup.string(),
+        status: yup
+          .string()
+          .oneOf(
+            ['PREVISTO', 'AGUARDANDO_APROVACAO', 'RETURNED', 'APROVADO', 'APPROVED', 'PAGO', 'AGUARDANDO_EXCLUSAO'],
+            'Status de despesa inválido'
+          ),
         accountId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
         costCenterId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
         dueDate: yup.date().nullable().transform((v, o) => (o === '' ? null : v)),
@@ -101,7 +111,10 @@ class ExpenseController {
         invoiceNumber: yup.string().nullable(),
         supplierId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
         contractId: yup.string().uuid().nullable().transform((v, o) => (o === '' ? null : v)),
-        approvalStatus: yup.string().nullable(),
+        approvalStatus: yup
+          .string()
+          .nullable()
+          .oneOf([null, 'PLANNED', 'UNPLANNED'], 'Âmbito da despesa inválido'),
       });
 
 
@@ -138,7 +151,11 @@ class ExpenseController {
       // Update continua recebendo ID e Tenant separados por segurança
       const expense = await ExpenseService.update(req.prisma, id, req.user.tenantId, { ...validData, userId: req.user.userId });
 
-      if (validData.status === 'AGUARDANDO_APROVACAO' && prior && ['PREVISTO', 'RETURNED'].includes(prior.status)) {
+      if (
+        prior &&
+        ['PREVISTO', 'RETURNED'].includes(prior.status) &&
+        expense.status === 'AGUARDANDO_APROVACAO'
+      ) {
         const NotificationService = require('../services/notification.service');
         const { notifyExpenseTierApprovers } = require('../services/approval-tier.service');
         if (prior.costCenter?.managerId) {

@@ -134,6 +134,8 @@ model ApprovalTier {
   maxAmount   Decimal? @db.Decimal(18, 2)
   /// true = vê itens de toda a empresa na faixa; false = só CCs/projetos que o usuário gerencia
   globalScope Boolean  @default(false)
+  /// Só para entityType EXPENSE: ALL | PLANNED | UNPLANNED (null = ALL)
+  expensePlanScope String?
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())

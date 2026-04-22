@@ -9,6 +9,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "db:add-expense-rejection-columns": "node src/scripts/add-expense-rejection-columns-all-tenants.js",
+    "db:add-approval-tier-expense-plan-scope": "node src/scripts/add-approval-tier-expense-plan-scope-all-tenants.js",
     "prisma:studio": "prisma studio",
     "seed": "node src/prisma/seed.js",
     "seed:gantt-demo": "node src/scripts/seed-gantt-demo-project.js",

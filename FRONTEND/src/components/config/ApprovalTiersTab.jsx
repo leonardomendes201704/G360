@@ -9,13 +9,14 @@ import StandardModal from '../common/StandardModal';
 import DataListTable from '../common/DataListTable';
 import { getErrorMessage } from '../../utils/errorUtils';
 import { useOrgThemeStyles } from '../../pages/config/useOrgThemeStyles';
-import { APPROVAL_TIER_ENTITY_OPTIONS } from './approvalTierConstants';
+import { APPROVAL_TIER_ENTITY_OPTIONS, EXPENSE_PLAN_SCOPE_OPTIONS } from './approvalTierConstants';
 import { getApprovalTierListColumns } from './approvalTierListColumns';
 import { sortApprovalTierRows } from './approvalTierListSort';
 
 const emptyForm = () => ({
   name: '',
   entityType: 'EXPENSE',
+  expensePlanScope: 'ALL',
   roleId: '',
   minAmount: '',
   maxAmount: '',
@@ -61,6 +62,7 @@ const ApprovalTiersTab = () => {
     setForm({
       name: row.name || '',
       entityType: row.entityType || 'EXPENSE',
+      expensePlanScope: row.expensePlanScope && row.expensePlanScope !== 'ALL' ? row.expensePlanScope : 'ALL',
       roleId: row.roleId || '',
       minAmount: row.minAmount != null ? String(row.minAmount) : '',
       maxAmount: row.maxAmount != null ? String(row.maxAmount) : '',
@@ -83,7 +85,7 @@ const ApprovalTiersTab = () => {
     if (minAmount != null && maxAmount != null && minAmount > maxAmount) {
       throw new Error('Mínimo não pode ser maior que o máximo');
     }
-    return {
+    const payload = {
       name: form.name.trim(),
       entityType: form.entityType,
       roleId: form.roleId,
@@ -93,6 +95,11 @@ const ApprovalTiersTab = () => {
       isActive: form.isActive,
       sortOrder: Number(form.sortOrder) || 0,
     };
+    if (form.entityType === 'EXPENSE') {
+      payload.expensePlanScope =
+        !form.expensePlanScope || form.expensePlanScope === 'ALL' ? 'ALL' : form.expensePlanScope;
+    }
+    return payload;
   };
 
   const handleSave = async () => {
@@ -170,9 +177,10 @@ const ApprovalTiersTab = () => {
         <Box>
           <Typography sx={{ fontSize: '20px', fontWeight: 600, color: textPrimary }}>Alçadas de aprovação</Typography>
           <Typography sx={{ fontSize: '13px', color: textMuted, mt: 0.5, maxWidth: 720 }}>
-            Defina faixas de valor e perfis que podem aprovar despesas e custos de projeto. Escopo restrito: apenas itens dos
-            centros de custo ou projetos que o usuário gerencia. Escopo global: toda a empresa na faixa de valor (ex.: diretoria
-            financeira). Sem alçadas cadastradas, vale apenas a regra atual (gestor de CC / gestor de projeto).
+            Defina faixas de valor e perfis que podem aprovar despesas e custos de projeto. Para despesas, o âmbito
+            (previsto vs extra-orçamentário) restringe em que tipo de despesa a alçada se aplica. Escopo restrito: apenas itens
+            dos centros de custo ou projetos que o usuário gerencia. Escopo global: toda a empresa na faixa de valor (ex.:
+            diretoria financeira). Sem alçadas cadastradas, vale apenas a regra atual (gestor de CC / gestor de projeto).
           </Typography>
         </Box>
       </Box>
@@ -233,13 +241,43 @@ const ApprovalTiersTab = () => {
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField label="Nome" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} fullWidth size="small" InputLabelProps={{ shrink: true }} />
-          <TextField select label="Tipo de item" value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} fullWidth size="small">
+          <TextField
+            select
+            label="Tipo de item"
+            value={form.entityType}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                entityType: e.target.value,
+                ...(e.target.value !== 'EXPENSE' ? { expensePlanScope: 'ALL' } : {}),
+              }))
+            }
+            fullWidth
+            size="small"
+          >
             {APPROVAL_TIER_ENTITY_OPTIONS.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
               </MenuItem>
             ))}
           </TextField>
+          {form.entityType === 'EXPENSE' && (
+            <TextField
+              select
+              label="Âmbito da despesa"
+              value={form.expensePlanScope || 'ALL'}
+              onChange={(e) => setForm((f) => ({ ...f, expensePlanScope: e.target.value }))}
+              fullWidth
+              size="small"
+              helperText="Alçada aplica-se só a despesas previstas, só extra-orçamentárias, ou a ambas (Todas)."
+            >
+              {EXPENSE_PLAN_SCOPE_OPTIONS.map((o) => (
+                <MenuItem key={o.value} value={o.value}>
+                  {o.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <TextField select label="Perfil (role)" value={form.roleId} onChange={(e) => setForm((f) => ({ ...f, roleId: e.target.value }))} fullWidth size="small">
             <MenuItem value="">
               <em>Selecione</em>
