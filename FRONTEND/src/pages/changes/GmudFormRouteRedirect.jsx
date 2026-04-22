@@ -10,7 +10,7 @@ export function GmudNewRouteRedirect() {
     return null;
 }
 
-/** `/changes/:id/edit` — abre a lista com modal de edição (GMUD completa) */
+/** `/changes/:id/edit` — abre a lista com modal (edição ou só leitura se GMUD já finalizada) */
 export function GmudEditRouteRedirect() {
     const { id } = useParams();
     const navigate = useNavigate();

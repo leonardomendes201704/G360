@@ -24,6 +24,7 @@ import { getChanges, getChangeById, createChange, updateChange, deleteChange, ge
 import { getReferenceUsers } from '../../services/reference.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { getErrorMessage } from '../../utils/errorUtils';
+import { isGmudPostClosureReadOnly } from '../../utils/changeRequestViewUtils';
 import EmptyState from '../../components/common/EmptyState';
 import DataListShell from '../../components/common/DataListShell';
 import TableSkeleton from '../../components/common/TableSkeleton';
@@ -275,9 +276,9 @@ const ChangeRequestsPage = () => {
                 }
             } else if (s.openGmudEditId) {
                 try {
-                    setGmudModalViewOnly(false);
                     const full = await getChangeById(s.openGmudEditId);
                     if (!cancelled) {
+                        setGmudModalViewOnly(isGmudPostClosureReadOnly(full?.status));
                         setGmudModalChange(full);
                         setGmudModalOpen(true);
                     }
@@ -311,9 +312,9 @@ const ChangeRequestsPage = () => {
     };
 
     const handleOpenEdit = async (gmud) => {
-        setGmudModalViewOnly(false);
         try {
             const full = await getChangeById(gmud.id);
+            setGmudModalViewOnly(isGmudPostClosureReadOnly(full?.status));
             setGmudModalChange(full);
             setGmudModalOpen(true);
         } catch (e) {
