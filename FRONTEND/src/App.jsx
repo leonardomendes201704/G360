@@ -29,7 +29,7 @@ import TimeReportPage from './pages/tasks/TimeReportPage';
 
 import ChangeRequestsPage from './pages/changes/ChangeRequestsPage';
 import ChangeRequestDetailPage from './pages/changes/ChangeRequestDetailPage';
-import ChangeRequestFormPage from './pages/changes/ChangeRequestFormPage';
+import { GmudNewRouteRedirect, GmudEditRouteRedirect } from './pages/changes/GmudFormRouteRedirect';
 import IncidentsPage from './pages/incidents/IncidentsPage';
 import SuppliersPage from './pages/suppliers/SuppliersPage';
 import ContractsPage from './pages/contracts/ContractsPage';
@@ -128,8 +128,8 @@ function App() {
             {/* Knowledge Base */}
             <Route path="/knowledge" element={<KnowledgeBasePage />} />
 
-            <Route path="/changes/new" element={<ChangeRequestFormPage />} />
-            <Route path="/changes/:id/edit" element={<ChangeRequestFormPage />} />
+            <Route path="/changes/new" element={<GmudNewRouteRedirect />} />
+            <Route path="/changes/:id/edit" element={<GmudEditRouteRedirect />} />
             <Route path="/changes/:id" element={<ChangeRequestDetailPage />} />
             <Route path="/changes" element={<ChangeRequestsPage />} />
             <Route path="/incidents" element={<IncidentsPage />} />

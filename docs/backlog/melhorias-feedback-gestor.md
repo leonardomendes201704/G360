@@ -41,7 +41,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
-| GMUD-01 | UX | **Consistência de UI:** avaliar uso de **modal** (como no resto do sistema) para criação/edição de GMUD, mantendo padrão de experiência. | [ ] | [ ] |
+| GMUD-01 | UX | **Consistência de UI:** avaliar uso de **modal** (como no resto do sistema) para criação/edição de GMUD, mantendo padrão de experiência. | [x] | [ ] |
 | GMUD-02 | Produto | **Pós-conclusão:** após GMUD **finalizada** (sucesso ou falha), **bloquear edição** (somente leitura + auditoria). | [ ] | [ ] |
 
 ---

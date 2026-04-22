@@ -3,11 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useSnackbar } from 'notistack';
-import {
-    Add, Delete, ThumbUp, ThumbDown, AttachFile, CheckCircle,
-    Schedule, Assignment, People, PlayArrow, History, Warning
-} from '@mui/icons-material';
-import { IconButton, Button, Box, List, ListItem, ListItemText, ListItemAvatar, Avatar, Alert, Chip, Divider, LinearProgress, Tooltip } from '@mui/material';
+import { AttachFile, Warning } from '@mui/icons-material';
+import { IconButton, Button, Box, List, ListItem, ListItemText, ListItemAvatar, Avatar, Alert, Chip, Divider, LinearProgress, Tooltip, Stepper, Step, StepLabel } from '@mui/material';
 import StandardModal from '../common/StandardModal';
 import StatusChip from '../common/StatusChip';
 import userService from '../../services/user.service';
@@ -27,7 +24,7 @@ import { getTemplates, applyTemplate } from '../../services/change-template.serv
 import './ChangeModal.css';
 
 /** Formulário GMUD em página dedicada (scroll) ou dentro de StandardModal (dashboards). */
-function GmudFormShell({ variant, open, onClose, title, subtitle, loading, footerEl, children }) {
+function GmudFormShell({ variant, open, onClose, title, subtitle, loading, footerEl, titleAdornment, children }) {
     if (variant === 'page') {
         return (
             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, width: '100%' }}>
@@ -52,16 +49,12 @@ function GmudFormShell({ variant, open, onClose, title, subtitle, loading, foote
             onClose={onClose}
             title={title}
             subtitle={subtitle}
+            titleAdornment={titleAdornment}
             icon="sync"
             size="wide"
             loading={loading}
             contentSx={{
                 p: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                flex: 1,
-                minHeight: 0,
-                overflow: 'hidden',
             }}
             footer={footerEl}
         >
@@ -101,17 +94,37 @@ const ChangeModal = ({
     const { enqueueSnackbar } = useSnackbar();
     const [mounted, setMounted] = useState(false);
 
-    // Wizard mode for new GMUDs, tab mode for existing
-    const isWizardMode = !change && !isViewMode;
-    const [activeStep, setActiveStep] = useState(0); // Wizard: 0=Geral, 1=Planejamento
-    const [activeTab, setActiveTab] = useState(initialTab); // Tabs: para GMUDs existentes
+    // Assistente no modal: criar, editar e visualizar (em `page` se existir, mantém abas).
+    const isWizardMode = variant === 'modal';
+    const [activeStep, setActiveStep] = useState(0);
+    const [activeTab, setActiveTab] = useState(initialTab);
+
+    const showExecInWizard = Boolean(
+        change && ['APPROVED', 'APPROVED_WAITING_EXECUTION', 'EXECUTED', 'FAILED'].includes(change.status)
+    );
+
+    const wizardStepLabels = useMemo(() => {
+        const base = ['Identificação', 'Risco', 'Escopo', 'Planejamento'];
+        if (!change) return base;
+        const next = [...base, 'Aprovações'];
+        if (showExecInWizard) next.push('Execução');
+        return next;
+    }, [change, showExecInWizard]);
+
+    const wizardLastIndex = Math.max(0, wizardStepLabels.length - 1);
+
+    useEffect(() => {
+        if (open && isWizardMode && activeStep > wizardLastIndex) {
+            setActiveStep(wizardLastIndex);
+        }
+    }, [open, isWizardMode, activeStep, wizardLastIndex]);
 
     useEffect(() => {
         if (open) {
             setActiveTab(initialTab);
-            setActiveStep(0); // Reset wizard
+            setActiveStep(0);
         }
-    }, [open, initialTab]);
+    }, [open, change?.id, initialTab]);
 
     // Estados
     const [users, setUsers] = useState([]);
@@ -149,6 +162,7 @@ const ChangeModal = ({
         defaultValues: { type: 'NORMAL', impact: 'MENOR', assetIds: [], projectId: '' }
     });
 
+    const watchCode = watch('code');
     const watchType = watch('type');
     const watchScheduledStart = watch('scheduledStart');
     const watchScheduledEnd = watch('scheduledEnd');
@@ -223,18 +237,28 @@ const ChangeModal = ({
         execucao: change?.status && ['EXECUTED', 'FAILED'].includes(change.status)
     }), [watchTitle, watchDescription, watchScheduledStart, watchScheduledEnd, watchJustification, currentApprovers, change?.status]);
 
-    // Wizard step validation
+    // Assistente: validação por passo (visualização: sem bloquear avanço)
     const canProceedStep = useMemo(() => {
+        if (!isWizardMode) return true;
+        if (isViewMode) return true;
         if (activeStep === 0) {
-            // Step 1: Visão Geral - precisa de título e descrição
-            return !!(watchTitle && watchDescription);
+            return !!(
+                String(watchCode || '').trim() &&
+                String(watchTitle || '').trim() &&
+                String(watchDescription || '').trim()
+            );
         }
-        if (activeStep === 1) {
-            // Step 2: Planejamento - precisa de datas e justificativa
-            return !!(watchScheduledStart && watchScheduledEnd && watchJustification);
+        if (activeStep === 1) return true;
+        if (activeStep === 2) return true;
+        if (activeStep === 3) {
+            return !!(
+                watchScheduledStart &&
+                watchScheduledEnd &&
+                String(watchJustification || '').trim()
+            );
         }
         return true;
-    }, [activeStep, watchTitle, watchDescription, watchScheduledStart, watchScheduledEnd, watchJustification]);
+    }, [isWizardMode, isViewMode, activeStep, watchCode, watchTitle, watchDescription, watchScheduledStart, watchScheduledEnd, watchJustification]);
 
     // Wizard navigation
     const handleNextStep = () => {
@@ -242,7 +266,7 @@ const ChangeModal = ({
             enqueueSnackbar('Preencha todos os campos obrigatórios para continuar.', { variant: 'warning' });
             return;
         }
-        setActiveStep(prev => prev + 1);
+        setActiveStep((prev) => Math.min(prev + 1, wizardLastIndex));
     };
 
     const handleBackStep = () => {
@@ -330,7 +354,7 @@ const ChangeModal = ({
                 setAvailableIncidents(data);
             }).catch(console.error);
 
-            setActiveTab('geral');
+            // activeTab redefinido no efeito [open, change?.id, initialTab]
 
             // Fetch templates for new GMUD
             if (!change) {
@@ -385,6 +409,20 @@ const ChangeModal = ({
         };
         onSave(payload);
     };
+
+    /** Invoque pelo <form> ou pelo botão do rodapé; evita `form="…"` (submit externo) que deixa de disparar o submit em alguns layouts de Dialog. */
+    const handleGmudSubmit = handleSubmit(
+        onSubmit,
+        (errors) => {
+            const firstKey = Object.keys(errors)[0];
+            const firstMsg = firstKey && errors[firstKey]?.message ? String(errors[firstKey].message) : null;
+            enqueueSnackbar(
+                firstMsg ||
+                    'Há campos inválidos ou em falta. Reveja o planejamento (agenda e justificativa) ou o botão Voltar para ajustar outro passo do assistente.',
+                { variant: 'warning' }
+            );
+        }
+    );
 
     // Handle template selection and apply
     const handleApplyTemplate = async (templateId) => {
@@ -492,12 +530,45 @@ const ChangeModal = ({
     const gmudModalTitle = isViewMode ? 'Detalhes da GMUD' : (change ? 'Editar GMUD' : 'Nova solicitação');
     const gmudModalSubtitle = change?.code || 'Preencha os dados para registrar a mudança';
 
+    const modalRiskTitleAdornment = change ? (
+        <Chip
+            label={calculatedRisk.level || change.riskLevel}
+            size="small"
+            sx={{
+                bgcolor: calculatedRisk.level === 'CRITICO' ? 'error.main' :
+                    calculatedRisk.level === 'ALTO' ? 'warning.main' :
+                        calculatedRisk.level === 'MEDIO' ? 'info.main' : 'success.main',
+                color: 'var(--modal-text)',
+                fontWeight: 600,
+                fontSize: 10
+            }}
+        />
+    ) : null;
+
     if (variant === 'modal' && !open) return null;
 
     const innerStyle =
         variant === 'page'
             ? { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'none' }
-            : { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, maxHeight: 'min(85dvh, 900px)' };
+            : { width: '100%' };
+
+    const inGeralA = (!isWizardMode && activeTab === 'geral') || (isWizardMode && activeStep === 0);
+    const inGeralB = (!isWizardMode && activeTab === 'geral') || (isWizardMode && activeStep === 1);
+    const inGeralC = (!isWizardMode && activeTab === 'geral') || (isWizardMode && activeStep === 2);
+    const inGeralAll = inGeralA || inGeralB || inGeralC;
+
+    const showPlano =
+        (isWizardMode && activeStep === 3) ||
+        (!isWizardMode && activeTab === 'plano');
+    const showAprov = Boolean(
+        (isWizardMode && change && activeStep === 4) ||
+        (!isWizardMode && change && activeTab === 'aprovacao')
+    );
+    const showExec = Boolean(
+        change &&
+        ['APPROVED', 'APPROVED_WAITING_EXECUTION', 'EXECUTED', 'FAILED'].includes(change.status) &&
+        ((isWizardMode && activeStep === 5) || (!isWizardMode && activeTab === 'execucao'))
+    );
 
     const footerEl = (
         <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -511,20 +582,41 @@ const ChangeModal = ({
                             ← Voltar
                         </Button>
                     )}
-                    {activeStep < 1 && (
-                        <Button type="button" variant="contained" color="primary" onClick={handleNextStep} disabled={!canProceedStep} sx={{ textTransform: 'none' }}>
+                    {activeStep < wizardLastIndex && (
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={handleNextStep}
+                            disabled={!isViewMode && !canProceedStep}
+                            sx={{ textTransform: 'none' }}
+                        >
                             Próximo →
                         </Button>
                     )}
-                    {activeStep === 1 && (
-                        <Button type="submit" form="gmudForm" variant="contained" color="success" disabled={loading || !canProceedStep} sx={{ textTransform: 'none', fontWeight: 600 }}>
-                            Criar GMUD
+                    {activeStep === wizardLastIndex && !isViewMode && (
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color={change ? 'primary' : 'success'}
+                            disabled={loading}
+                            onClick={handleGmudSubmit}
+                            sx={{ textTransform: 'none', fontWeight: 600 }}
+                        >
+                            {change ? 'Salvar alterações' : 'Criar GMUD'}
                         </Button>
                     )}
                 </>
             )}
             {!isWizardMode && !isViewMode && (!change || change.status === 'DRAFT' || change.status === 'REVISION_REQUESTED') && (
-                <Button type="submit" form="gmudForm" variant="contained" color="primary" disabled={loading} sx={{ textTransform: 'none', fontWeight: 600 }}>
+                <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    disabled={loading}
+                    onClick={handleGmudSubmit}
+                    sx={{ textTransform: 'none', fontWeight: 600 }}
+                >
                     {change ? 'Salvar alterações' : 'Criar GMUD'}
                 </Button>
             )}
@@ -543,30 +635,26 @@ const ChangeModal = ({
                 onClose={onClose}
                 title={gmudModalTitle}
                 subtitle={gmudModalSubtitle}
+                titleAdornment={variant === 'modal' ? modalRiskTitleAdornment : null}
                 loading={loading}
                 footerEl={footerEl}
             >
             <div
-                className={variant === 'page' ? 'change-modal-inner change-modal-inner--page' : 'change-modal-inner'}
+                className={[
+                    variant === 'page' ? 'change-modal-inner change-modal-inner--page' : 'change-modal-inner change-modal-inner--in-dialog',
+                    isWizardMode && variant !== 'page' ? 'change-modal-inner--wizard' : '',
+                ].filter(Boolean).join(' ')}
                 style={innerStyle}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, px: 3, pt: 1, pb: 0.5, flexShrink: 0 }}>
-                    {change && (
-                        <Chip
-                            label={calculatedRisk.level || change.riskLevel}
-                            size="small"
-                            sx={{
-                                bgcolor: calculatedRisk.level === 'CRITICO' ? 'error.main' :
-                                    calculatedRisk.level === 'ALTO' ? 'warning.main' :
-                                        calculatedRisk.level === 'MEDIO' ? 'info.main' : 'success.main',
-                                color: 'var(--modal-text)',
-                                fontWeight: 600,
-                                fontSize: 10
-                            }}
-                        />
+                <div className="modal-body">
+                    {variant === 'page' && change && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                            {modalRiskTitleAdornment}
+                        </Box>
                     )}
+
                     {!isViewMode && !change && (
-                        <div className={`autosave-indicator ${autoSaveStatus}`} style={{ marginLeft: change ? undefined : 'auto' }}>
+                        <div className={`autosave-indicator ${autoSaveStatus}`} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
                             <span className="autosave-dot" style={{
                                 background: autoSaveStatus === 'saving' ? '#f59e0b' :
                                     autoSaveStatus === 'saved' ? '#10b981' : 'var(--modal-text-muted)'
@@ -575,143 +663,63 @@ const ChangeModal = ({
                                 autoSaveStatus === 'saved' ? 'Rascunho salvo' : ''}
                         </div>
                     )}
-                </Box>
 
-                {/* Status Banner - Only for existing changes */}
-                {change && (
-                    <div className={`gmud-status-banner ${change.status === 'DRAFT' ? 'draft' :
-                        change.status === 'PENDING_APPROVAL' ? 'pending' :
-                            change.status === 'APPROVED' || change.status === 'APPROVED_WAITING_EXECUTION' ? 'approved' :
-                                change.status === 'REJECTED' ? 'rejected' :
-                                    change.status === 'EXECUTED' ? 'executed' :
-                                        change.status === 'FAILED' ? 'failed' :
-                                            change.status === 'REVISION_REQUESTED' ? 'revision' : ''
-                        }`} style={{ margin: '0 24px' }}>
-                        {change.status === 'DRAFT' && <Assignment />}
-                        {change.status === 'PENDING_APPROVAL' && <Schedule />}
-                        {(change.status === 'APPROVED' || change.status === 'APPROVED_WAITING_EXECUTION') && <CheckCircle />}
-                        {change.status === 'REJECTED' && <Warning />}
-                        {change.status === 'EXECUTED' && <CheckCircle />}
-                        {change.status === 'FAILED' && <Warning />}
-                        {change.status === 'REVISION_REQUESTED' && <History />}
-                        <div>
-                            <div style={{ fontWeight: 600 }}>
-                                {change.status === 'DRAFT' && 'Rascunho'}
-                                {change.status === 'PENDING_APPROVAL' && 'Aguardando Aprovação'}
-                                {change.status === 'APPROVED' && 'Aprovada - Pronta para Execução'}
-                                {change.status === 'APPROVED_WAITING_EXECUTION' && 'Aprovada - Aguardando Janela'}
-                                {change.status === 'REJECTED' && 'Rejeitada'}
-                                {change.status === 'EXECUTED' && 'Executada com Sucesso'}
-                                {change.status === 'FAILED' && 'Falha na Execução'}
-                                {change.status === 'REVISION_REQUESTED' && 'Revisão Solicitada'}
-                            </div>
-                            <div style={{ fontSize: 11, opacity: 0.8 }}>
-                                {change.status === 'PENDING_APPROVAL' && `${currentApprovers.filter(a => a.status === 'PENDING').length} aprovação(ões) pendente(s)`}
-                                {change.status === 'REVISION_REQUESTED' && 'Ajustes solicitados pelos aprovadores'}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                    {change && (
+                    <Box
+                        data-testid="gmud-lifecycle"
+                        sx={{
+                            flexShrink: 0,
+                            px: 0,
+                            pt: 0,
+                            pb: 0.5,
+                            zIndex: 0,
+                        }}
+                    >
+                        <ChangeLifecycle
+                            compact={isWizardMode}
+                            status={change.status}
+                            createdAt={change.createdAt}
+                            updatedAt={change.updatedAt}
+                        />
+                    </Box>
+                    )}
 
-                {/* Progress Bar / Stepper - Só para novos GMUDs */}
                 {isWizardMode && (
-                    <div style={{ padding: '16px 24px' }}>
-                        {/* Stepper */}
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-                            {/* Step 1 */}
-                            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                                <div style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: '8px',
-                                    background: activeStep >= 0 ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'var(--modal-border-strong)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 600,
-                                    color: '#ffffff',
-                                    boxShadow: activeStep === 0 ? '0 0 20px rgba(37, 99, 235, 0.5)' : 'none',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    {tabStatus.geral ? '✓' : '1'}
-                                </div>
-                                <div style={{ marginLeft: 12 }}>
-                                    <div style={{ fontSize: 13, fontWeight: 600, color: activeStep === 0 ? '#a5b4fc' : 'var(--modal-text-secondary)' }}>Visão Geral</div>
-                                    <div style={{ fontSize: 11, color: 'var(--modal-text-muted)' }}>Título, descrição e risco</div>
-                                </div>
-                            </div>
-
-                            {/* Linha conectora */}
-                            <div style={{
-                                flex: 0.5,
-                                height: 2,
-                                background: activeStep >= 1 ? 'linear-gradient(90deg, #2563eb, #3b82f6)' : 'var(--modal-border-strong)',
-                                margin: '0 16px',
-                                transition: 'all 0.3s ease'
-                            }} />
-
-                            {/* Step 2 */}
-                            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                                <div style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: '8px',
-                                    background: activeStep >= 1 ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'var(--modal-border-strong)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 600,
-                                    color: '#ffffff',
-                                    boxShadow: activeStep === 1 ? '0 0 20px rgba(37, 99, 235, 0.5)' : 'none',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    {tabStatus.plano ? '✓' : '2'}
-                                </div>
-                                <div style={{ marginLeft: 12 }}>
-                                    <div style={{ fontSize: 13, fontWeight: 600, color: activeStep === 1 ? '#a5b4fc' : 'var(--modal-text-secondary)' }}>Planejamento</div>
-                                    <div style={{ fontSize: 11, color: 'var(--modal-text-muted)' }}>Datas, justificativa e plano</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Preview de Aprovadores Automáticos */}
-                        <div style={{
-                            padding: 12,
-                            borderRadius: '8px',
-                            background: 'rgba(16, 185, 129, 0.08)',
-                            border: '1px solid rgba(16, 185, 129, 0.2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12
-                        }}>
-                            <div style={{ fontSize: 20 }}>👥</div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: 12, fontWeight: 600, color: '#34d399' }}>Aprovadores Automáticos</div>
-                                <div style={{ fontSize: 11, color: 'var(--modal-text-secondary)' }}>
-                                    {autoApproverPreview.map((a, i) => (
-                                        <span key={i}>
-                                            {a.name} ({a.role})
-                                            {i < autoApproverPreview.length - 1 ? ' • ' : ''}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Box
+                        data-testid="gmud-wizard-stepper"
+                        sx={{
+                            px: 0,
+                            pt: 0.5,
+                            pb: 1,
+                            flexShrink: 0,
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
+                        }}
+                    >
+                        <Stepper
+                            activeStep={Math.min(activeStep, wizardLastIndex)}
+                            alternativeLabel
+                            sx={{
+                                width: '100%',
+                                maxWidth: '100%',
+                                overflow: 'auto',
+                                py: 0.5,
+                                '& .MuiStepLabel-label': { fontSize: { xs: '0.7rem', sm: '0.75rem' }, color: 'var(--modal-text-secondary)' },
+                                '& .MuiStepLabel-label.Mui-active': { fontWeight: 700, color: 'var(--modal-text)' },
+                            }}
+                        >
+                            {wizardStepLabels.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Box>
                 )}
 
-                {/* Lifecycle Stepper - Visual de progresso da GMUD */}
-                {!isWizardMode && change && (
-                    <ChangeLifecycle
-                        status={change.status}
-                        createdAt={change.createdAt}
-                        updatedAt={change.updatedAt}
-                    />
-                )}
-
-                {/* Tabs - Apenas para GMUDs existentes */}
+                {/* Tabs - Apenas para GMUDs existentes (modo sem assistente) */}
                 {!isWizardMode && (
-                    <div className="gmud-tabs" style={{ margin: '16px 24px', overflowX: 'hidden' }}>
+                    <div className="gmud-tabs" style={{ margin: '0 0 16px 0', overflowX: 'hidden' }}>
                         <button
                             className={`gmud-tab ${activeTab === 'geral' ? 'active' : ''}`}
                             onClick={() => setActiveTab('geral')}
@@ -747,13 +755,14 @@ const ChangeModal = ({
                     </div>
                 )}
 
-                <div className="modal-body">
-                    <form id="gmudForm" onSubmit={handleSubmit(onSubmit)}>
+                    <form id="gmudForm" onSubmit={handleGmudSubmit}>
 
-                        {/* ETAPA 1 / ABA GERAL */}
-                        <div className="gmud-tab-content" style={{ display: (isWizardMode ? activeStep === 0 : activeTab === 'geral') ? 'block' : 'none' }}>
+                        {/* Aba Geral (existente) / assistente passos 0–2: identificação, risco, escopo */}
+                        <div className="gmud-tab-content" style={{ display: inGeralAll ? 'block' : 'none' }} data-testid="gmud-panel-geral">
                             <div className="form-section">
                                 <div className="form-grid">
+                                    {inGeralA && (
+                                    <>
                                     {/* TEMPLATE SELECTOR - Apenas para nova GMUD */}
                                     {!change && templates.length > 0 && (
                                         <div className="form-group col-12" style={{ marginBottom: 16 }}>
@@ -833,7 +842,15 @@ const ChangeModal = ({
                                         </select>
                                     </div>
 
-                                    {/* MATRIZ DE RISCO COM GAUGE VISUAL */}
+                                    <div className="form-group col-12">
+                                        <label className="form-label">Descrição detalhada <span className="required">*</span></label>
+                                        <textarea {...register('description')} className={textareaClass} rows={4} disabled={isViewMode} />
+                                        {errors.description && <span style={{ color: 'red', fontSize: '11px' }}>{errors.description.message}</span>}
+                                    </div>
+                                    </>
+                                    )}
+
+                                    {inGeralB && (
                                     <div className="form-group col-12">
                                         <div className="gmud-section" style={{ padding: 20 }}>
                                             <div className="gmud-section-header">
@@ -846,7 +863,6 @@ const ChangeModal = ({
                                                 </div>
                                             ) : (
                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: 20, alignItems: 'start' }}>
-                                                    {/* Risk Assessment Questions */}
                                                     <div>
                                                         <Controller
                                                             name="riskAssessment"
@@ -863,7 +879,6 @@ const ChangeModal = ({
                                                             )}
                                                         />
                                                     </div>
-                                                    {/* Risk Gauge Visual */}
                                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                         <RiskGauge
                                                             riskLevel={calculatedRisk.level}
@@ -879,8 +894,10 @@ const ChangeModal = ({
                                             )}
                                         </div>
                                     </div>
+                                    )}
 
-                                    {/* SELEÇÃO DE ATIVOS */}
+                                    {inGeralC && (
+                                    <>
                                     <div className="form-group col-12">
                                         <label className="form-label">Ativos / Sistemas Afetados</label>
                                         <Controller
@@ -911,7 +928,6 @@ const ChangeModal = ({
                                         </div>
                                     </div>
 
-                                    {/* SELEÇÃO DE PROJETO (OPCIONAL) */}
                                     <div className="form-group col-12">
                                         <label className="form-label">Vincular a Projeto (Opcional)</label>
                                         <select {...register('projectId')} className={selectClass} disabled={isViewMode}>
@@ -924,13 +940,6 @@ const ChangeModal = ({
                                         </select>
                                     </div>
 
-                                    <div className="form-group col-12">
-                                        <label className="form-label">Descrição Detalhada</label>
-                                        <textarea {...register('description')} className={textareaClass} rows={4} disabled={isViewMode} />
-                                        {errors.description && <span style={{ color: 'red', fontSize: '11px' }}>{errors.description.message}</span>}
-                                    </div>
-
-                                    {/* INCIDENTES RELACIONADOS - Integração Bidirecional */}
                                     <div className="form-group col-12" style={{ marginTop: 16 }}>
                                         <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                             ⚠️ Incidentes Relacionados
@@ -969,14 +978,42 @@ const ChangeModal = ({
                                             </div>
                                         </div>
                                     </div>
+                                    </>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* ETAPA 2 / ABA PLANEJAMENTO */}
-                        <div style={{ display: (isWizardMode ? activeStep === 1 : activeTab === 'plano') ? 'block' : 'none' }}>
+                        {/* Aba Planejamento (existente) / assistente passo 3 */}
+                        <div style={{ display: showPlano ? 'block' : 'none' }} data-testid="gmud-panel-plano">
                             <div className="form-section">
                                 <div className="form-grid">
+                                    {isWizardMode && activeStep === 3 && !change && (
+                                        <div className="form-group col-12" style={{ marginBottom: 4 }}>
+                                            <div style={{
+                                                padding: 12,
+                                                borderRadius: '8px',
+                                                background: 'rgba(16, 185, 129, 0.08)',
+                                                border: '1px solid rgba(16, 185, 129, 0.2)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 12
+                                            }}>
+                                                <div style={{ fontSize: 20 }}>👥</div>
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{ fontSize: 12, fontWeight: 600, color: '#34d399' }}>Aprovadores automáticos</div>
+                                                    <div style={{ fontSize: 11, color: 'var(--modal-text-secondary)' }}>
+                                                        {autoApproverPreview.map((a, i) => (
+                                                            <span key={i}>
+                                                                {a.name} ({a.role})
+                                                                {i < autoApproverPreview.length - 1 ? ' • ' : ''}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="form-group col-6">
                                         <label className="form-label">Início Agendado <span className="required">*</span></label>
                                         <input type="datetime-local" {...register('scheduledStart')} className={inputClass} disabled={isViewMode} />
@@ -1113,7 +1150,7 @@ const ChangeModal = ({
                         </div>
 
                         {/* ABA APROVADORES */}
-                        <div style={{ display: activeTab === 'aprovacao' ? 'block' : 'none' }}>
+                        <div style={{ display: showAprov ? 'block' : 'none' }} data-testid="gmud-panel-aprovacao">
                             <div className="form-section">
                                 <div className="approval-container">
 
@@ -1179,8 +1216,8 @@ const ChangeModal = ({
 
 
                         {/* ABA EXECUÇÃO E FECHAMENTO */}
-                        {change && ['APPROVED', 'APPROVED_WAITING_EXECUTION', 'EXECUTED', 'FAILED'].includes(change.status) && (
-                            <div style={{ display: activeTab === 'execucao' ? 'block' : 'none' }}>
+                        {showExec && (
+                            <div data-testid="gmud-panel-execucao">
                                 <div className="form-section">
                                     <div className="form-grid">
                                         <div className="form-group col-12">
@@ -1196,7 +1233,7 @@ const ChangeModal = ({
                                                 type="datetime-local"
                                                 {...register('actualStart')}
                                                 className={inputClass}
-                                                disabled={!['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
+                                                disabled={isViewMode || !['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
                                             />
                                             <div style={{ fontSize: '11px', color: 'var(--modal-text-muted)', marginTop: '4px' }}>
                                                 Quando a execução realmente começou
@@ -1208,7 +1245,7 @@ const ChangeModal = ({
                                                 type="datetime-local"
                                                 {...register('actualEnd')}
                                                 className={inputClass}
-                                                disabled={!['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
+                                                disabled={isViewMode || !['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
                                             />
                                             <div style={{ fontSize: '11px', color: 'var(--modal-text-muted)', marginTop: '4px' }}>
                                                 Quando a execução foi concluída
@@ -1241,7 +1278,7 @@ const ChangeModal = ({
                                                 className={textareaClass}
                                                 rows={5}
                                                 placeholder="Descreva como foi a execução, logs de erro ou sucesso..."
-                                                disabled={!['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
+                                                disabled={isViewMode || !['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status)}
                                             />
                                         </div>
 
@@ -1273,6 +1310,7 @@ const ChangeModal = ({
                                                             className="pir-textarea"
                                                             rows={3}
                                                             placeholder="Descreva o motivo técnico, processual ou humano que causou a falha..."
+                                                            disabled={isViewMode}
                                                         />
                                                     </div>
 
@@ -1286,6 +1324,7 @@ const ChangeModal = ({
                                                             className="pir-textarea"
                                                             rows={3}
                                                             placeholder="O que aprendemos com este incidente?"
+                                                            disabled={isViewMode}
                                                         />
                                                     </div>
 
@@ -1298,6 +1337,7 @@ const ChangeModal = ({
                                                             className="pir-textarea"
                                                             rows={3}
                                                             placeholder="Que medidas serão tomadas para evitar reincidência?"
+                                                            disabled={isViewMode}
                                                         />
                                                     </div>
                                                 </div>
@@ -1307,7 +1347,7 @@ const ChangeModal = ({
                                         <div className="form-group col-12" style={{ marginTop: '20px', borderTop: '1px solid var(--modal-border)', paddingTop: '20px' }}>
                                             <h4 style={{ fontSize: '14px', marginBottom: '10px', color: '#334155' }}>Evidências e Anexos</h4>
 
-                                            {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && (
+                                            {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && !isViewMode && (
                                                 <div style={{ marginBottom: '15px' }}>
                                                     <input
                                                         type="file"
@@ -1335,7 +1375,7 @@ const ChangeModal = ({
                                                             </a>
                                                             <div style={{ display: 'flex', gap: '10px', fontSize: '12px', color: 'var(--modal-text-muted)' }}>
                                                                 <span>{(att.fileSize / 1024).toFixed(1)} KB</span>
-                                                                {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && (
+                                                                {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && !isViewMode && (
                                                                     <span
                                                                         style={{ cursor: 'pointer', color: '#ef4444', fontWeight: 'bold' }}
                                                                         onClick={() => handleDeleteAttachment(att.id)}
@@ -1352,7 +1392,7 @@ const ChangeModal = ({
                                             )}
                                         </div>
 
-                                        {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && (
+                                        {['APPROVED', 'APPROVED_WAITING_EXECUTION'].includes(change.status) && !isViewMode && (
                                             <div className="form-group col-12" style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
                                                 <Button
                                                     variant="contained"

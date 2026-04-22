@@ -8,6 +8,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Added
+- **GMUD — GMUD-01 (assistente + modal na lista e no detalhe):** criação e edição de GMUD no **`ChangeModal`** a partir da **lista**; `/changes/new` e `/changes/:id/edit` **redirecionam** para `/changes` com `state` e abrem o modal. **4 passos** (nova GMUD); **abas** (edição). Página de **detalhe**: **Editar** abre o mesmo `ChangeModal` (ficheiro de página de formulário removido). E2E `modal-evidence-14`: diálogo na lista.
+  - `ChangeRequestsPage.jsx`, `ChangeRequestDetailPage.jsx`, `GmudFormRouteRedirect.jsx`, `App.jsx`, `ChangeModal.jsx`, `ChangeModal.css`, e2e
+  - `docs/backlog/melhorias-feedback-gestor.md`
 - **Contratos — CTR-02 (rastreabilidade de aditivos):** utilitário **`contractAddendumImpact`** (replay na ordem de assinatura, alinhado ao recálculo no backend) com testes Vitest; **`AddendumViewModal`** com bloco **Efeito no contrato** (valor total e fim de vigência antes → depois); **`ContractModal`** passa `contract` e lista de aditivos; coluna **Impacto** da tabela de aditivos com legenda **Contrato** / **Vigência** quando aplicável. Snapshot Playwright **`modal-evidence-03-addendum-view-shell`** atualizado. Backlog **CTR-02** Corrigido.
   - `FRONTEND/src/utils/contractAddendumImpact.js`, `FRONTEND/src/utils/contractAddendumImpact.test.js`
   - `FRONTEND/src/components/modals/AddendumViewModal.jsx`, `FRONTEND/src/components/modals/ContractModal.jsx`, `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-03-addendum-view-shell-chromium-win32.png`

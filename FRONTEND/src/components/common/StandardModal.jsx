@@ -70,6 +70,7 @@ function resolveDialogContentPaddingTop(theme, contentSx) {
  * @param {boolean}   [fullWidth=true]
  * @param {object}    [contentSx] - sx extra no DialogContent (corpo scrollável)
  * @param {object}    [paperProps] - props extra no Paper do Dialog (ex.: `data-testid`)
+ * @param {ReactNode} [titleAdornment] - elemento à direita do título (ex. chip, badge)
  */
 const StandardModal = ({
     open,
@@ -77,6 +78,7 @@ const StandardModal = ({
     title,
     subtitle,
     icon,
+    titleAdornment,
     children,
     actions,
     footer,
@@ -161,9 +163,12 @@ const StandardModal = ({
                         </Box>
                     )}
                     <Box sx={{ minWidth: 0 }}>
-                        <Typography component="span" sx={{ fontSize: 18, fontWeight: 600, display: 'block' }}>
-                            {title}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                            <Typography component="span" sx={{ fontSize: 18, fontWeight: 600, display: 'block' }}>
+                                {title}
+                            </Typography>
+                            {titleAdornment}
+                        </Box>
                         {subtitle && (
                             <Typography sx={{ fontSize: 13, color: mode === 'dark' ? '#94a3b8' : '#64748b' }}>
                                 {subtitle}

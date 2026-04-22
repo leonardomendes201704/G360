@@ -2,11 +2,13 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { Box, Button, Typography, CircularProgress, Alert } from '@mui/material';
 import { ArrowBack, Edit } from '@mui/icons-material';
+import { useSnackbar } from 'notistack';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import ChangeRequestViewContent, { formatChangeViewDate } from '../../components/changes/ChangeRequestViewContent';
 import PageTitleCard from '../../components/common/PageTitleCard';
-import { getChangeById } from '../../services/change-request.service';
+import ChangeModal from '../../components/modals/ChangeModal';
+import { getChangeById, updateChange } from '../../services/change-request.service';
 import { getErrorMessage } from '../../utils/errorUtils';
 
 const ChangeRequestDetailPage = () => {
@@ -15,6 +17,7 @@ const ChangeRequestDetailPage = () => {
     const [searchParams] = useSearchParams();
     const { hasPermission } = useContext(AuthContext);
     const { mode } = useContext(ThemeContext);
+    const { enqueueSnackbar } = useSnackbar();
     const isDark = mode === 'dark';
     const canEdit = hasPermission('GMUD', 'EDIT_CHANGE');
     const initialTab = searchParams.get('action') === 'approve' ? 'aprovacao' : 'geral';
@@ -22,6 +25,8 @@ const ChangeRequestDetailPage = () => {
     const [change, setChange] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [saving, setSaving] = useState(false);
     const textMuted = isDark ? '#64748b' : '#94a3b8';
 
     const load = useCallback(async () => {
@@ -123,7 +128,7 @@ const ChangeRequestDetailPage = () => {
                     </Button>
                     {canEdit && (
                         <Button
-                            onClick={() => navigate(`/changes/${change.id}/edit`)}
+                            onClick={() => setEditModalOpen(true)}
                             variant="contained"
                             color="primary"
                             startIcon={<Edit />}
@@ -134,6 +139,31 @@ const ChangeRequestDetailPage = () => {
                     )}
                 </Box>
             </Box>
+
+            {canEdit && change && (
+                <ChangeModal
+                    open={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    onSave={async (data) => {
+                        setSaving(true);
+                        try {
+                            await updateChange(change.id, data);
+                            enqueueSnackbar('GMUD atualizada com sucesso!', { variant: 'success' });
+                            setEditModalOpen(false);
+                            await load();
+                        } catch (e) {
+                            enqueueSnackbar(getErrorMessage(e, 'Erro ao salvar GMUD.'), { variant: 'error' });
+                        } finally {
+                            setSaving(false);
+                        }
+                    }}
+                    change={change}
+                    isViewMode={false}
+                    loading={saving}
+                    onUpdate={load}
+                    initialTab="geral"
+                />
+            )}
         </Box>
     );
 };

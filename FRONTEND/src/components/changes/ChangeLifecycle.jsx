@@ -12,7 +12,7 @@ const LIFECYCLE_STEPS = [
     { key: 'DONE', label: 'Finalizada', icon: '🏁', statuses: ['EXECUTED', 'FAILED', 'CANCELLED'] },
 ];
 
-const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
+const ChangeLifecycle = ({ status, createdAt, updatedAt, compact = false }) => {
     const currentIdx = LIFECYCLE_STEPS.findIndex(s => s.statuses.includes(status));
     const isFailed = status === 'FAILED' || status === 'CANCELLED';
     const isRevision = status === 'REVISION_REQUESTED';
@@ -37,11 +37,11 @@ const ChangeLifecycle = ({ status, createdAt, updatedAt }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '16px 24px',
+            padding: compact ? '8px 10px' : '16px 24px',
             background: 'transparent',
             borderRadius: '8px',
             border: 'none',
-            margin: '16px 24px 8px',
+            margin: compact ? '0 0 4px' : '16px 24px 8px',
             position: 'relative',
             overflow: 'hidden'
         }}>

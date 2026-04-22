@@ -8,9 +8,21 @@
     color: var(--modal-text, #1e293b);
 }
 
-/* Página dedicada (/changes/new, /changes/:id/edit): sem teto de altura do dialog */
+/* Só aplica quando ChangeModal `variant="page"` (páginas que ainda o usem) */
 .change-modal-inner--page {
     max-height: none !important;
+}
+
+/* Dialog: scroll único no corpo do StandardModal; timeline + passos + form acompanham o scroll */
+.change-modal-inner--in-dialog {
+    max-height: none;
+    display: block;
+}
+
+.change-modal-inner--in-dialog .modal-body {
+    overflow: visible;
+    flex: none;
+    max-height: none;
 }
 
 .change-modal-inner .modal-header {
@@ -109,6 +121,14 @@
     width: 100%;
     box-sizing: border-box;
     transition: all 0.2s ease;
+}
+
+.change-modal-inner .form-select[multiple] {
+    min-height: 120px;
+}
+
+.change-modal-inner--wizard .form-select:not([multiple]) {
+    min-height: 44px;
 }
 
 .change-modal-inner .form-input:focus,

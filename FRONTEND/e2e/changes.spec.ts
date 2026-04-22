@@ -60,12 +60,15 @@ test.describe('GMUD: Gestão de Mudança', () => {
             await page.locator('input[name="title"]').fill(uniqueTitle);
             await page.locator('textarea[name="description"]').fill('Descricao gerada via Teste E2E do Playwright');
             
-            // Advance to Step 2
+            // Assistente: passos identificação → risco → escopo → planejamento
             await page.getByRole('button', { name: /próximo/i }).click();
+            await page.waitForTimeout(300);
+            await page.getByRole('button', { name: /próximo/i }).click();
+            await page.waitForTimeout(300);
+            await page.getByRole('button', { name: /próximo/i }).click();
+            await page.waitForTimeout(400);
 
-            // Step 2: Planejamento
-            // Wait a little bit for transition
-            await page.waitForTimeout(500);
+            // Último passo: planejamento
             
             await page.locator('input[name="scheduledStart"]').fill(startStr);
             await page.locator('input[name="scheduledEnd"]').fill(endStr);

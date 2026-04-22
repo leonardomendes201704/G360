@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {
     Search, CalendarToday, FormatListBulleted, FilterAlt,
@@ -20,7 +20,7 @@ import DataListTable from '../../components/common/DataListTable';
 import { getChangeRequestColumns } from './changeRequestListColumns';
 import { sortChangeRequestRows } from './changeRequestListSort';
 import ChangeRequestDashboard from '../../components/changes/ChangeRequestDashboard';
-import { getChanges, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
+import { getChanges, getChangeById, createChange, updateChange, deleteChange, getMetrics } from '../../services/change-request.service';
 import { getReferenceUsers } from '../../services/reference.service';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { getErrorMessage } from '../../utils/errorUtils';
@@ -30,6 +30,7 @@ import TableSkeleton from '../../components/common/TableSkeleton';
 import ExportButton from '../../components/common/ExportButton';
 import { EXPORT_COLUMNS } from '../../utils/exportUtils';
 import PageTitleCard from '../../components/common/PageTitleCard';
+import ChangeModal from '../../components/modals/ChangeModal';
 
 const GMUD_DRAWER_FILTER_DEFAULTS = {
     status: '',
@@ -43,6 +44,7 @@ const GMUD_DRAWER_FILTER_DEFAULTS = {
 
 const ChangeRequestsPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [changes, setChanges] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -76,6 +78,12 @@ const ChangeRequestsPage = () => {
     // Backend Metrics State
     const [backendMetrics, setBackendMetrics] = useState(null);
     const [metricsLoading, setMetricsLoading] = useState(false);
+
+    // Modal: nova GMUD / editar (substitui páginas /changes/new e /changes/:id/edit)
+    const [gmudModalOpen, setGmudModalOpen] = useState(false);
+    const [gmudModalChange, setGmudModalChange] = useState(null);
+    const [gmudModalSaving, setGmudModalSaving] = useState(false);
+    const [gmudModalViewOnly, setGmudModalViewOnly] = useState(false);
 
     // Extended filters
     const [filters, setFilters] = useState({
@@ -253,17 +261,108 @@ const ChangeRequestsPage = () => {
         handleLoad();
     }, [navigate]);
 
-    // --- Handlers ---
+    // Deep link: /changes/new e /changes/:id/edit redirecionam para /changes com state; abre o modal
+    useEffect(() => {
+        const s = location.state;
+        if (!s || (s.openGmudCreate !== true && !s.openGmudEditId)) return;
+        let cancelled = false;
+        (async () => {
+            if (s.openGmudCreate === true) {
+                if (!cancelled) {
+                    setGmudModalViewOnly(false);
+                    setGmudModalChange(null);
+                    setGmudModalOpen(true);
+                }
+            } else if (s.openGmudEditId) {
+                try {
+                    setGmudModalViewOnly(false);
+                    const full = await getChangeById(s.openGmudEditId);
+                    if (!cancelled) {
+                        setGmudModalChange(full);
+                        setGmudModalOpen(true);
+                    }
+                } catch (e) {
+                    if (!cancelled) {
+                        enqueueSnackbar(getErrorMessage(e, 'GMUD não encontrada.'), { variant: 'error' });
+                    }
+                }
+            }
+            if (!cancelled) {
+                navigate(
+                    { pathname: location.pathname, search: location.search, hash: location.hash },
+                    { replace: true, state: {} }
+                );
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [location.state, location.pathname, location.search, location.hash, navigate, enqueueSnackbar]);
+
+    // --- Handlers: modal criação/edição (rotas /new e /edit redirecionam para cá com state) ---
+    const handleCloseGmudModal = () => {
+        setGmudModalOpen(false);
+        setGmudModalChange(null);
+        setGmudModalViewOnly(false);
+    };
+
     const handleOpenCreate = () => {
-        navigate('/changes/new');
+        setGmudModalViewOnly(false);
+        setGmudModalChange(null);
+        setGmudModalOpen(true);
     };
 
-    const handleOpenEdit = (gmud) => {
-        navigate(`/changes/${gmud.id}/edit`);
+    const handleOpenEdit = async (gmud) => {
+        setGmudModalViewOnly(false);
+        try {
+            const full = await getChangeById(gmud.id);
+            setGmudModalChange(full);
+            setGmudModalOpen(true);
+        } catch (e) {
+            enqueueSnackbar(getErrorMessage(e, 'Não foi possível abrir a GMUD para edição.'), { variant: 'error' });
+        }
     };
 
-    const handleOpenView = (gmud) => {
-        navigate(`/changes/${gmud.id}`);
+    const handleOpenView = async (gmud) => {
+        try {
+            setGmudModalViewOnly(true);
+            const full = await getChangeById(gmud.id);
+            setGmudModalChange(full);
+            setGmudModalOpen(true);
+        } catch (e) {
+            setGmudModalViewOnly(false);
+            enqueueSnackbar(getErrorMessage(e, 'Não foi possível abrir a GMUD.'), { variant: 'error' });
+        }
+    };
+
+    const handleSaveGmud = async (data) => {
+        setGmudModalSaving(true);
+        try {
+            if (gmudModalChange) {
+                await updateChange(gmudModalChange.id, data);
+                enqueueSnackbar('GMUD atualizada com sucesso!', { variant: 'success' });
+            } else {
+                await createChange(data);
+                enqueueSnackbar('GMUD criada com sucesso!', { variant: 'success' });
+            }
+            handleCloseGmudModal();
+            fetchChanges();
+            fetchMetrics();
+        } catch (e) {
+            enqueueSnackbar(getErrorMessage(e, 'Erro ao salvar GMUD.'), { variant: 'error' });
+        } finally {
+            setGmudModalSaving(false);
+        }
+    };
+
+    const handleGmudModalUpdate = async () => {
+        if (!gmudModalChange?.id) return;
+        try {
+            const fresh = await getChangeById(gmudModalChange.id);
+            setGmudModalChange(fresh);
+        } catch (e) {
+            console.error(e);
+        }
+        fetchChanges();
+        fetchMetrics();
     };
 
     const handleDeleteClick = (id) => {
@@ -859,6 +958,17 @@ const ChangeRequestsPage = () => {
                 content="Confirma o envio para aprovacao? O gestor responsavel sera notificado."
                 confirmText="Enviar"
                 confirmColor="primary"
+            />
+
+            <ChangeModal
+                open={gmudModalOpen}
+                onClose={handleCloseGmudModal}
+                onSave={handleSaveGmud}
+                change={gmudModalChange}
+                isViewMode={gmudModalViewOnly}
+                loading={gmudModalSaving}
+                onUpdate={gmudModalChange && !gmudModalViewOnly ? handleGmudModalUpdate : undefined}
+                initialTab="geral"
             />
         </Box>
     );

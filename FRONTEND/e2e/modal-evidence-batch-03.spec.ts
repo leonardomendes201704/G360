@@ -56,16 +56,16 @@ test.describe('Modal evidence batch 03 (11–15)', () => {
         await expect(dlg).toHaveScreenshot('modal-evidence-13-budget-modal-shell.png');
     });
 
-    test('14 — ChangeModal (GMUD → Nova GMUD)', async ({ page }) => {
+    test('14 — ChangeModal: Nova GMUD (assistente na lista)', async ({ page }) => {
         await loginAs(page, 'manager');
         await page.goto('/changes');
-        await page.waitForURL(/\/changes/, { timeout: 30000 });
+        await page.waitForURL(/\/changes$/, { timeout: 30000 });
         await page.waitForLoadState('networkidle');
         await expect(page.getByText('Gestão de Mudança (GMUD)')).toBeVisible({ timeout: 20000 });
-
         await page.getByRole('button', { name: /nova gmud/i }).click();
         const dlg = page.getByRole('dialog');
-        await expect(dlg.getByText('Nova solicitação')).toBeVisible({ timeout: 20000 });
+        await expect(dlg.getByTestId('gmud-wizard-stepper')).toBeVisible({ timeout: 20000 });
+        await page.waitForTimeout(400);
 
         await expect(dlg).toHaveScreenshot('modal-evidence-14-change-modal-shell.png');
     });
