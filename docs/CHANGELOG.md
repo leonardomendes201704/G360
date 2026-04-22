@@ -8,6 +8,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 ## [2026-04-19]
 
 ### Added
+- **Contratos — CTR-02 (rastreabilidade de aditivos):** utilitário **`contractAddendumImpact`** (replay na ordem de assinatura, alinhado ao recálculo no backend) com testes Vitest; **`AddendumViewModal`** com bloco **Efeito no contrato** (valor total e fim de vigência antes → depois); **`ContractModal`** passa `contract` e lista de aditivos; coluna **Impacto** da tabela de aditivos com legenda **Contrato** / **Vigência** quando aplicável. Snapshot Playwright **`modal-evidence-03-addendum-view-shell`** atualizado. Backlog **CTR-02** Corrigido.
+  - `FRONTEND/src/utils/contractAddendumImpact.js`, `FRONTEND/src/utils/contractAddendumImpact.test.js`
+  - `FRONTEND/src/components/modals/AddendumViewModal.jsx`, `FRONTEND/src/components/modals/ContractModal.jsx`, `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-03-addendum-view-shell-chromium-win32.png`
+  - `docs/backlog/melhorias-feedback-gestor.md`
 - **Projetos — Gantt em ecrã inteiro:** rota **`/projects/:id/gantt`** (autenticada, **sem** `MainLayout`) com **`DarkTaskGantt`** (`gantt-task-react`); entrada **Abrir Gantt em nova aba** na aba Tarefas e ícone na barra do detalhe do projeto; **somente leitura** sem permissão `PROJECTS` **WRITE**. **Backend:** validação de dependências **sem ciclos** em criação/atualização de `ProjectTask`.
   - `FRONTEND/src/App.jsx` (`PrivateRouteBare`), `FRONTEND/src/pages/projects/ProjectGanttPage.jsx`
   - `FRONTEND/src/components/projects/tabs/DarkTasksTab.jsx`, `FRONTEND/src/components/projects/DarkProjectHeader.jsx`

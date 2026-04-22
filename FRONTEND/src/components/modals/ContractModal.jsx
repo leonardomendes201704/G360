@@ -20,6 +20,7 @@ import { getFileURL, getUploadURL } from '../../utils/urlUtils';
 import AddendumFormModal from './AddendumFormModal';
 import AddendumViewModal from './AddendumViewModal';
 import ContractCreationWizard from './ContractCreationWizard';
+import { computeAddendumContractImpact } from '../../utils/contractAddendumImpact';
 
 // Serviços
 import { getReferenceSuppliers, getReferenceCostCenters, getReferenceAccounts, clearReferenceCache } from '../../services/reference.service';
@@ -313,6 +314,26 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
     };
 
     const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+
+    const addendumContractDeltaCaption = (add) => {
+        if (!contract || !addendums.length) return null;
+        const imp = computeAddendumContractImpact(contract, addendums, add.id);
+        if (!imp) return null;
+        const valueDelta = Math.abs(Number(imp.before.value) - Number(imp.after.value)) > 0.0001;
+        const endDelta =
+            imp.before.endDate &&
+            imp.after.endDate &&
+            imp.before.endDate.getTime() !== imp.after.endDate.getTime();
+        if (!valueDelta && !endDelta) return null;
+        const bits = [];
+        if (valueDelta) {
+            bits.push(`Contrato: ${formatCurrency(imp.before.value)} → ${formatCurrency(imp.after.value)}`);
+        }
+        if (endDelta) {
+            bits.push(`Vigência: ${format(imp.before.endDate, 'dd/MM/yyyy')} → ${format(imp.after.endDate, 'dd/MM/yyyy')}`);
+        }
+        return bits.join(' · ');
+    };
 
     const FileUploadBox = ({ label, type }) => {
         const file = getFileByType(type);
@@ -633,12 +654,23 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {addendums.length === 0 ? <TableRow><TableCell colSpan={7} align="center" sx={{ py: 4, color: 'text.secondary', fontStyle: 'italic' }}>Nenhum aditivo registrado.</TableCell></TableRow> : addendums.map((add, index) => (
+                                            {addendums.length === 0 ? <TableRow><TableCell colSpan={7} align="center" sx={{ py: 4, color: 'text.secondary', fontStyle: 'italic' }}>Nenhum aditivo registrado.</TableCell></TableRow> : addendums.map((add, index) => {
+                                                const impactCaption = addendumContractDeltaCaption(add);
+                                                return (
                                                 <TableRow key={add.id} sx={index === 0 ? { bgcolor: 'rgba(16, 185, 129, 0.1)' } : {}}>
                                                     <TableCell><Typography variant="body2" fontWeight="bold">{add.number}</Typography>{index === 0 && <Chip label="VIGENTE" size="small" color="success" sx={{ height: 20, fontSize: '0.65rem' }} />}</TableCell>
                                                     <TableCell>{format(new Date(add.signatureDate), 'dd/MM/yyyy')}</TableCell>
                                                     <TableCell>{add.description}</TableCell>
-                                                    <TableCell sx={{ color: Number(add.valueChange) !== 0 ? 'primary.main' : 'inherit', fontWeight: 'bold' }}>{Number(add.valueChange) !== 0 ? formatCurrency(add.valueChange) : '-'}</TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body2" sx={{ color: Number(add.valueChange) !== 0 ? 'primary.main' : 'inherit', fontWeight: 'bold' }}>
+                                                            {Number(add.valueChange) !== 0 ? formatCurrency(add.valueChange) : '-'}
+                                                        </Typography>
+                                                        {impactCaption && (
+                                                            <Typography variant="caption" sx={{ display: 'block', mt: 0.25, color: 'text.secondary', lineHeight: 1.35 }}>
+                                                                {impactCaption}
+                                                            </Typography>
+                                                        )}
+                                                    </TableCell>
                                                     <TableCell sx={{ fontWeight: add.newEndDate ? 'bold' : 'normal' }}>{add.newEndDate ? format(new Date(add.newEndDate), 'dd/MM/yyyy') : '-'}</TableCell>
                                                     <TableCell>{add.fileUrl && <IconButton size="small" onClick={() => window.open(getFileURL(add.fileUrl), '_blank')}><Download fontSize="small" /></IconButton>}</TableCell>
                                                     <TableCell align="right">
@@ -647,7 +679,7 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                                         {!isViewMode && <IconButton size="small" color="error" onClick={() => handleDeleteAdd(add.id)}><Delete fontSize="small" /></IconButton>}
                                                     </TableCell>
                                                 </TableRow>
-                                            ))}
+                                            );})}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
@@ -664,6 +696,8 @@ const ContractModal = ({ open, onClose, onSave, onRefresh, contract = null, isVi
                                     open={!!viewingAddendum}
                                     onClose={() => setViewingAddendum(null)}
                                     addendum={viewingAddendum}
+                                    contract={contract}
+                                    allAddendums={addendums}
                                 />
                             </div>
 
