@@ -13,6 +13,7 @@ const { Prisma } = require('@prisma/client');
 const IncidentRepository = require('../repositories/incident.repository');
 const CorporateRiskRepository = require('../repositories/corporate-risk.repository');
 const IncidentService = require('../services/incident.service');
+const { seedGmudFinalizedGmud02 } = require('./seed-gmud-finalized-gmud02');
 
 const AREAS = [
   {
@@ -402,6 +403,11 @@ async function seedThreeAreasWorkflow(prisma, options = {}) {
     });
 
     log(`   ✓ Área ${area.key}: dept ${dept.code}, CC ${cc.code}, projeto ${project.code}`);
+  }
+
+  const gmud02 = await seedGmudFinalizedGmud02(prisma, { verbose });
+  if (gmud02 && !gmud02.skipped) {
+    log(`   ✓ GMUD finalizada (GMUD-02 / testes): ${gmud02.code} — ${gmud02.status}`);
   }
 
   return summary;
