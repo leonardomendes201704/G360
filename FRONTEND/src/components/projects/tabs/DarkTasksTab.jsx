@@ -117,17 +117,30 @@ const DarkTasksTab = ({ project }) => {
     };
 
 
-    const handleSaveTask = async (data) => {
+    /** `closeModal: false` + `quiet: true`: auto-save do checklist em modo visualização (TAR-03). */
+    const handleSaveTask = async (data, opts = {}) => {
+        const { closeModal = true, quiet = false } = opts;
+        const lightTouch = quiet && !closeModal;
         try {
+            let updated = null;
             if (selectedTask) {
-                await updateProjectTask(selectedTask.id, data);
-                enqueueSnackbar('Tarefa atualizada com sucesso', { variant: 'success' });
+                updated = await updateProjectTask(selectedTask.id, data);
+                if (!quiet) enqueueSnackbar('Tarefa atualizada com sucesso', { variant: 'success' });
             } else {
-                await createProjectTask(project.id, data);
-                enqueueSnackbar('Tarefa criada com sucesso', { variant: 'success' });
+                updated = await createProjectTask(project.id, data);
+                if (!quiet) enqueueSnackbar('Tarefa criada com sucesso', { variant: 'success' });
             }
-            setModalOpen(false);
-            fetchTasks();
+            if (closeModal) setModalOpen(false);
+            if (lightTouch && updated && selectedTask) {
+                setSelectedTask((prev) =>
+                    prev && prev.id === selectedTask.id ? { ...prev, ...updated } : prev,
+                );
+                setTasks((prev) =>
+                    prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t)),
+                );
+            } else {
+                fetchTasks();
+            }
         } catch (error) {
             console.error('Erro ao salvar tarefa:', error);
             enqueueSnackbar('Erro ao salvar tarefa', { variant: 'error' });

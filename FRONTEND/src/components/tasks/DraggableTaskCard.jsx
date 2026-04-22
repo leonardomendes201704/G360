@@ -111,12 +111,16 @@ const DraggableTaskCard = ({
     const assignee = task.assignedTo || task.assignee;
     const showTimer = onTimerToggle && currentUserId && assignee?.id === currentUserId;
 
+    /** Listeners só na alça (TAR-02): clique no corpo abre detalhe sem competir com o drag. */
+    const handleCardBodyClick = () => {
+        onClick?.(task);
+    };
+
     return (
         <Box
             ref={setNodeRef}
             style={style}
             {...attributes}
-            {...listeners}
             onContextMenu={
                 onContextMenu
                     ? (e) => {
@@ -128,12 +132,14 @@ const DraggableTaskCard = ({
             }
             className="animate-card-enter"
             sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'stretch',
                 background: cardBg,
                 border: cardBorder,
                 borderRadius: '8px',
                 borderLeft: `3px solid ${statusStyle.bg}`,
-                padding: '14px 16px',
-                cursor: isDragging ? 'grabbing' : 'grab',
+                cursor: 'default',
                 transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 position: 'relative',
                 '&:hover': {
@@ -145,6 +151,60 @@ const DraggableTaskCard = ({
                 },
             }}
         >
+            <Box
+                {...listeners}
+                aria-label="Arrastar tarefa"
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                    flexShrink: 0,
+                    width: 30,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                    borderRight: `1px solid ${borderSubtle}`,
+                    color: textMuted,
+                    touchAction: 'none',
+                    borderTopLeftRadius: '6px',
+                    borderBottomLeftRadius: '6px',
+                    '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)' },
+                }}
+            >
+                <span className="material-icons-round" style={{ fontSize: 18 }}>drag_indicator</span>
+            </Box>
+
+            <Box
+                onClick={onClick ? handleCardBodyClick : undefined}
+                onKeyDown={
+                    onClick
+                        ? (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleCardBodyClick();
+                            }
+                        }
+                        : undefined
+                }
+                role={onClick ? 'button' : undefined}
+                tabIndex={onClick ? 0 : undefined}
+                sx={{
+                    flex: 1,
+                    minWidth: 0,
+                    padding: '14px 16px',
+                    cursor: onClick ? 'pointer' : 'default',
+                    textAlign: 'left',
+                    border: 'none',
+                    background: 'transparent',
+                    font: 'inherit',
+                    color: 'inherit',
+                    borderTopRightRadius: '8px',
+                    borderBottomRightRadius: '8px',
+                    outline: 'none',
+                    '&:focus-visible': onClick
+                        ? { boxShadow: `0 0 0 2px ${isDark ? 'rgba(37,99,235,0.5)' : 'rgba(37,99,235,0.35)'}` }
+                        : {},
+                }}
+            >
             {/* Header: Title + Open Button */}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1, mb: 0.75 }}>
                 <Typography
@@ -160,7 +220,7 @@ const DraggableTaskCard = ({
                 </Typography>
                 <Box
                     className="card-open-btn"
-                    onClick={(e) => { e.stopPropagation(); onClick(task); }}
+                    onClick={(e) => { e.stopPropagation(); onClick?.(task); }}
                     sx={{
                         width: '28px',
                         height: '28px',
@@ -363,6 +423,7 @@ const DraggableTaskCard = ({
                     </Box>
                 )}
                 </Box>
+            </Box>
             </Box>
         </Box>
     );

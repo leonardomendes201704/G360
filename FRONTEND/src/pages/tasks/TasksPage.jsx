@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useContext } from 'react';
+import { useState, useEffect, useCallback, useMemo, useContext, useRef } from 'react';
 import FilterDrawer from '../../components/common/FilterDrawer';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -89,6 +89,7 @@ const TasksPage = () => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [saving, setSaving] = useState(false);
+    const prevUrlTaskIdRef = useRef(null);
 
     // Filter State
     const [statusFilter, setStatusFilter] = useState([]);
@@ -121,14 +122,22 @@ const TasksPage = () => {
         fetchData();
     }, [fetchData]);
 
-    // [NEW] Deep Linking Effect
+    // Deep link: abre a tarefa da URL. Não substitui `selectedTask` só porque `tasks` mudou
+    // (ex.: checklist quiet save) — evita reset do modal e “piscar”.
     useEffect(() => {
         if (urlTaskId && tasks.length > 0) {
-            const taskToOpen = tasks.find(t => t.id === urlTaskId);
+            const taskToOpen = tasks.find((t) => t.id === urlTaskId);
             if (taskToOpen) {
-                setSelectedTask(taskToOpen);
+                const urlChanged = prevUrlTaskIdRef.current !== urlTaskId;
+                prevUrlTaskIdRef.current = urlTaskId;
+                setSelectedTask((prev) => {
+                    if (!urlChanged && prev?.id === taskToOpen.id) return prev;
+                    return taskToOpen;
+                });
                 setModalOpen(true);
             }
+        } else if (!urlTaskId) {
+            prevUrlTaskIdRef.current = null;
         }
     }, [urlTaskId, tasks]);
 
@@ -198,22 +207,35 @@ const TasksPage = () => {
         }
     };
 
-    const handleSaveTask = async (data) => {
-        setSaving(true);
+    /** `opts.closeModal` false: auto-save (ex.: checklist no modo visualização, TAR-03). `quiet`: sem snackbar de sucesso. */
+    const handleSaveTask = async (data, opts = {}) => {
+        const { closeModal = true, quiet = false } = opts;
+        const lightTouch = quiet && !closeModal;
+        if (!lightTouch) setSaving(true);
         try {
+            let updated = null;
             if (selectedTask) {
-                await updateGeneralTask(selectedTask.id, data);
-                enqueueSnackbar('Tarefa atualizada com sucesso!', { variant: 'success' });
+                updated = await updateGeneralTask(selectedTask.id, data);
+                if (!quiet) enqueueSnackbar('Tarefa atualizada com sucesso!', { variant: 'success' });
             } else {
-                await createGeneralTask(data);
-                enqueueSnackbar('Tarefa criada com sucesso!', { variant: 'success' });
+                updated = await createGeneralTask(data);
+                if (!quiet) enqueueSnackbar('Tarefa criada com sucesso!', { variant: 'success' });
             }
-            setModalOpen(false);
-            fetchData();
+            if (closeModal) setModalOpen(false);
+            if (lightTouch && updated && selectedTask) {
+                setSelectedTask((prev) =>
+                    prev && prev.id === selectedTask.id ? { ...prev, ...updated } : prev,
+                );
+                setTasks((prev) =>
+                    prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t)),
+                );
+            } else {
+                fetchData();
+            }
         } catch (e) {
             enqueueSnackbar(getErrorMessage(e, 'Erro ao salvar tarefa.'), { variant: 'error' });
         } finally {
-            setSaving(false);
+            if (!lightTouch) setSaving(false);
         }
     };
 

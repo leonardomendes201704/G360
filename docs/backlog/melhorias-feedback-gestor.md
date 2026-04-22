@@ -19,7 +19,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
 | ORC-01 | Bug | **Navegação “voltar”:** ao lançar orçamento dentro de um orçamento salvo, a seta de voltar deve regressar à **lista/tela de orçamentos**, não ao **dashboard**. Mapear rota/histórico (`navigate`, `location.state`, breadcrumbs). | [x] | [ ] |
-| DES-01 | Bug | **Minhas aprovações — anexo:** ao enviar despesa para aprovação, garantir visualização do **anexo** na aba “Minhas aprovações” (mesma origem de dados que aprovação; links assinados / permissões). | [x] | [ ] |
+| DES-01 | Bug | **Minhas aprovações — anexo:** ao enviar despesa para aprovação, garantir visualização do **anexo** na aba “Minhas aprovações” (mesma origem de dados que aprovação; links assinados / permissões). | [x] | [x] |
 | DES-02 | Produto | **Rejeição de despesa:** hoje só existe **rejeição definitiva**; incluir fluxo de **devolução para ajuste** (reprovar com revisão), com estado claro para o solicitante e reenvio. | [ ] | [ ] |
 | DES-03 | Produto | **Despesas manuais:** tratar como **não previstas / fora do orçamento** — exigir **aprovação** (ou fluxo dedicado), **destaque visual** (badge, cor, ícone) e regras claras no catálogo de aprovação. | [ ] | [ ] |
 | FIN-ARC-01 | Arquitetura | **Custos de projetos:** decidir se o controlo permanece **no módulo de projeto** ou migra / espelha no **módulo financeiro** (ex.: “custos de projeto” com aprovação de despesa e ligação a **propostas** em finanças). Documentar decisão e impacto em dados e telas. | [ ] | [ ] |
@@ -58,8 +58,8 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
 | TAR-01 | Bug | **Status Backlog:** criar tarefa com status backlog gera erro — alinhar **coluna Kanban “Backlog”** com estados da API/validador (mesma lógica que tarefas de projeto). | [ ] | [ ] |
-| TAR-02 | Bug | **Clique no Kanban:** abrir detalhe/drawer da tarefa ao clicar no cartão (sem conflito com drag). | [ ] | [ ] |
-| TAR-03 | Bug | **Expandir ações:** no modo expandido, permitir **marcar concluído** nas ações (checkbox / handler). | [ ] | [ ] |
+| TAR-02 | Bug | **Clique no Kanban:** abrir detalhe/drawer da tarefa ao clicar no cartão (sem conflito com drag). | [x] | [ ] |
+| TAR-03 | Bug | **Expandir ações:** no modo expandido, permitir **marcar concluído** nas ações (checkbox / handler); **salvar checklist** sem recarregar o modal nem a lista com loading global (estado checked consistente). | [x] | [ ] |
 | TAR-04 | Bug | **Data de vencimento:** corrigir **off-by-one** (ex.: 30/04 aparece 29/04) — timezone, `startOfDay`/`UTC`, exibição vs armazenamento. | [ ] | [ ] |
 | TAR-05 | Bug | **Lista:** vencimento não deve mostrar texto genérico **“agora”** em detrimento da **data**; definir regra (ex.: “hoje”, data formatada, relativo só quando fizer sentido). | [ ] | [ ] |
 

@@ -11,6 +11,16 @@ import StandardModal from '../common/StandardModal';
 import { CheckCircle, Add, Delete, CheckBox } from '@mui/icons-material';
 import { getReferenceUsers } from '../../services/reference.service';
 
+/** API pode usar `completed`; alinhar a `done` para o backend. */
+function normalizeChecklistForApi(items) {
+    if (!items || !Array.isArray(items)) return [];
+    return items.map((i) => ({
+        id: String(i.id),
+        text: i.text ?? '',
+        done: !!(i.done ?? i.completed),
+    }));
+}
+
 const schema = yup.object({
     title: yup.string().required('O Título é obrigatório'),
     description: yup.string(),
@@ -36,6 +46,7 @@ const ProjectTaskModal = ({
     const [users, setUsers] = useState([]);
     const [checklistItems, setChecklistItems] = useState([]);
     const [newItemText, setNewItemText] = useState('');
+    const [checklistSaving, setChecklistSaving] = useState(false);
     const [selectedDependencies, setSelectedDependencies] = useState([]);
 
     const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
@@ -86,7 +97,8 @@ const ProjectTaskModal = ({
                 // setViewMode(false); handled above
             }
         }
-    }, [open, task, reset]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- idem TaskModal: não reinicializar em cada ref de `task`
+    }, [open, task?.id, reset]);
 
     // Available tasks for dependencies (exclude current task)
     const availableDependencies = allTasks.filter(t => t.id !== task?.id);
@@ -99,11 +111,40 @@ const ProjectTaskModal = ({
     };
 
     const toggleChecklistItem = (id) => {
-        setChecklistItems(checklistItems.map(item => item.id === id ? { ...item, done: !item.done } : item));
+        const sid = String(id);
+        setChecklistItems(
+            checklistItems.map((item) =>
+                String(item.id) === sid ? { ...item, done: !(item.done ?? item.completed) } : item,
+            ),
+        );
     };
 
     const removeChecklistItem = (id) => {
-        setChecklistItems(checklistItems.filter(item => item.id !== id));
+        const sid = String(id);
+        setChecklistItems(checklistItems.filter((item) => String(item.id) !== sid));
+    };
+
+    /** Vista só leitura: alternar checklist e persistir (TAR-03 / tarefas de projeto). */
+    const persistChecklistFromView = async (nextRaw) => {
+        const normalized = normalizeChecklistForApi(nextRaw);
+        setChecklistItems(normalized);
+        if (!task?.id || !onSave) return;
+        setChecklistSaving(true);
+        try {
+            await onSave({ checklist: normalized }, { closeModal: false, quiet: true });
+        } catch {
+            const prev = task.checklist && Array.isArray(task.checklist) ? task.checklist : [];
+            setChecklistItems(
+                prev.map((i) => ({
+                    ...i,
+                    id: String(i.id),
+                    text: i.text ?? '',
+                    done: !!(i.done ?? i.completed),
+                })),
+            );
+        } finally {
+            setChecklistSaving(false);
+        }
     };
 
     const onSubmit = (data) => {
@@ -114,7 +155,7 @@ const ProjectTaskModal = ({
             endDate: data.endDate === "" ? null : data.endDate,
             storyPoints: data.storyPoints ? parseInt(data.storyPoints) : null,
             progress: parseInt(data.progress) || 0,
-            checklist: checklistItems,
+            checklist: normalizeChecklistForApi(checklistItems),
             dependencies: selectedDependencies,
         };
         onSave(payload);
@@ -272,21 +313,53 @@ const ProjectTaskModal = ({
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                                     <Typography sx={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--modal-text-muted)' }}>Checklist</Typography>
                                     <Typography sx={{ fontSize: '12px', color: 'var(--modal-text-secondary)' }}>
-                                        {checklistItems.filter(i => i.done).length}/{checklistItems.length}
+                                        {checklistItems.filter((i) => !!(i.done ?? i.completed)).length}/{checklistItems.length}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ width: '100%', height: 4, borderRadius: '8px', background: 'var(--modal-border-strong)', mb: 1.5 }}>
-                                    <Box sx={{ width: `${(checklistItems.filter(i => i.done).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: '8px', background: '#22c55e', transition: 'width 0.3s ease' }} />
+                                    <Box sx={{ width: `${(checklistItems.filter((i) => !!(i.done ?? i.completed)).length / checklistItems.length) * 100}%`, height: '100%', borderRadius: '8px', background: '#22c55e', transition: 'width 0.3s ease' }} />
                                 </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-                                    {checklistItems.map(item => (
-                                        <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Box sx={{ width: 16, height: 16, borderRadius: '8px', border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: item.done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                                {item.done && <span style={{ color: '#fff', fontSize: '10px' }}>✓</span>}
+                                    {checklistItems.map((item) => {
+                                        const done = !!(item.done ?? item.completed);
+                                        return (
+                                            <Box
+                                                key={item.id}
+                                                component="button"
+                                                type="button"
+                                                disabled={checklistSaving}
+                                                onClick={() =>
+                                                    void persistChecklistFromView(
+                                                        checklistItems.map((it) =>
+                                                            String(it.id) === String(item.id) ? { ...it, done: !done } : it,
+                                                        ),
+                                                    )
+                                                }
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                    width: '100%',
+                                                    textAlign: 'left',
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    cursor: checklistSaving ? 'wait' : 'pointer',
+                                                    p: 0.5,
+                                                    m: 0,
+                                                    borderRadius: '8px',
+                                                    font: 'inherit',
+                                                    color: 'inherit',
+                                                    '&:hover': { background: 'var(--modal-border)' },
+                                                    '&:disabled': { opacity: 0.6, cursor: 'wait' },
+                                                }}
+                                            >
+                                                <Box sx={{ width: 16, height: 16, borderRadius: '8px', border: `2px solid ${done ? '#22c55e' : 'var(--modal-text-muted)'}`, background: done ? '#22c55e' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                    {done ? <span style={{ color: '#fff', fontSize: '10px' }}>✓</span> : null}
+                                                </Box>
+                                                <Typography sx={{ fontSize: '13px', color: done ? 'var(--modal-text-muted)' : 'var(--modal-text)', textDecoration: done ? 'line-through' : 'none' }}>{item.text}</Typography>
                                             </Box>
-                                            <Typography sx={{ fontSize: '13px', color: item.done ? 'var(--modal-text-muted)' : 'var(--modal-text)', textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</Typography>
-                                        </Box>
-                                    ))}
+                                        );
+                                    })}
                                 </Box>
                             </Box>
                         )}
@@ -545,7 +618,9 @@ const ProjectTaskModal = ({
 
                         {checklistItems.length > 0 && (
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 1.5 }}>
-                                {checklistItems.map((item) => (
+                                {checklistItems.map((item) => {
+                                    const itemDone = !!(item.done ?? item.completed);
+                                    return (
                                     <Box
                                         key={item.id}
                                         sx={{
@@ -563,9 +638,9 @@ const ProjectTaskModal = ({
                                             sx={{
                                                 width: '18px',
                                                 height: '18px',
-                                                border: `2px solid ${item.done ? '#22c55e' : 'var(--modal-text-muted)'}`,
+                                                border: `2px solid ${itemDone ? '#22c55e' : 'var(--modal-text-muted)'}`,
                                                 borderRadius: '8px',
-                                                background: item.done ? '#22c55e' : 'transparent',
+                                                background: itemDone ? '#22c55e' : 'transparent',
                                                 cursor: 'pointer',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -573,13 +648,13 @@ const ProjectTaskModal = ({
                                                 flexShrink: 0,
                                             }}
                                         >
-                                            {item.done && <CheckBox sx={{ fontSize: '14px', color: 'var(--modal-text)' }} />}
+                                            {itemDone ? <CheckBox sx={{ fontSize: '14px', color: 'var(--modal-text)' }} /> : null}
                                         </Box>
                                         <Typography sx={{
                                             flex: 1,
-                                            color: item.done ? 'var(--modal-text-muted)' : 'var(--modal-text)',
+                                            color: itemDone ? 'var(--modal-text-muted)' : 'var(--modal-text)',
                                             fontSize: '14px',
-                                            textDecoration: item.done ? 'line-through' : 'none',
+                                            textDecoration: itemDone ? 'line-through' : 'none',
                                         }}>
                                             {item.text}
                                         </Typography>
@@ -592,7 +667,8 @@ const ProjectTaskModal = ({
                                             <Delete sx={{ fontSize: 16 }} />
                                         </IconButton>
                                     </Box>
-                                ))}
+                                    );
+                                })}
                             </Box>
                         )}
 
