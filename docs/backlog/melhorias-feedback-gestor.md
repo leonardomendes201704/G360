@@ -32,7 +32,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
-| CTR-01 | UX | **Modal de aditivo:** redesenhar layout (hierarquia, espaçamento, largura, scroll); alinhar ao padrão de modais do G360. | [ ] | [ ] |
+| CTR-01 | UX | **Modal de aditivo:** redesenhar layout (hierarquia, espaçamento, largura, scroll); alinhar ao padrão de modais do G360. | [x] | [ ] |
 | CTR-02 | Produto | **Histórico de aditivos:** exibir **rastreabilidade** do que cada aditivo alterou (campos antes/depois, valores, datas, anexos), não só “incremento” sem contexto. | [ ] | [ ] |
 
 ---

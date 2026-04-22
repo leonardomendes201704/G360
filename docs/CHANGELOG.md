@@ -39,6 +39,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 - **Configuração — Organização (`/config/organization`), aba Diretorias:** lista em `<table>` HTML substituída por **`DataListTable`** com `departmentListColumns.jsx` e `departmentListSort.js` (ordenação por código, nome, diretor, CCs vinculados); paginação no cliente; estado vazio com ícone; `data-testid` **`tabela-organizacao-diretorias`**. Modais e demais abas da página inalterados.
   - `FRONTEND/src/pages/config/OrganizationPage.jsx`, `FRONTEND/src/pages/config/departmentListColumns.jsx`, `FRONTEND/src/pages/config/departmentListSort.js`
   - `docs/patterns/data-grids-inventory.md`, `docs/patterns/data-list-table-migration-plan.md`
+- **Contratos — CTR-01 (`AddendumFormModal`):** modal **Novo termo aditivo** / editar com `StandardModal` **`size="wide"`**, corpo em secções (tipo, identificação, valores e vigência, documento, justificativa), `Stack` + `Grid`, rodapé Cancelar / ação primária com `space-between`, campos com tokens `--modal-*`, justificativa `minRows={4}` para scroll útil, `helperText` no valor total quando há cálculo mensal × meses, `data-testid` **`modal-addendum-form`**. Snapshot Playwright `modal-evidence-02-addendum-form-shell` atualizado. Backlog **CTR-01** Corrigido.
+  - `FRONTEND/src/components/modals/AddendumFormModal.jsx`, `FRONTEND/e2e/modal-evidence-batch-01.spec.ts-snapshots/modal-evidence-02-addendum-form-shell-chromium-win32.png`
+  - `docs/backlog/melhorias-feedback-gestor.md`
 
 ---
 
