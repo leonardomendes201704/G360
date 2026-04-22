@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { Box, Button, Typography, useTheme, TextField } from '@mui/material';
 
@@ -31,8 +31,16 @@ const commonPaperStyle = {
   transition: 'all 0.3s',
 };
 
+/** ORC-01: deep-link e voltar do detalhe do orçamento — ?tab=budgets ou ?tab=2 → aba Orçamentos */
+function getInitialTabFromSearch(searchParams) {
+  const t = (searchParams.get('tab') || '').toLowerCase();
+  if (t === 'budgets' || t === '2') return 2;
+  return 0;
+}
+
 const FinancePage = () => {
-  const [tabValue, setTabValue] = useState(0);
+  const [searchParams] = useSearchParams();
+  const [tabValue, setTabValue] = useState(() => getInitialTabFromSearch(searchParams));
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { mode } = useContext(ThemeContext);
@@ -61,8 +69,6 @@ const FinancePage = () => {
 
   const handleTabChange = (newValue) => {
     setTabValue(newValue);
-    if (newValue === 2) fetchBudgets();
-    if (newValue === 3) fetchAccounts();
   };
 
   // --- LÓGICA ORÇAMENTOS ---
@@ -131,6 +137,11 @@ const FinancePage = () => {
     try { const data = await getAccounts(); setAccounts(data); }
     catch (e) { console.error(e); }
   };
+
+  useEffect(() => {
+    if (tabValue === 2) fetchBudgets();
+    if (tabValue === 3) fetchAccounts();
+  }, [tabValue]);
 
   const handleSaveAccount = async (data) => {
     try {

@@ -56,9 +56,9 @@ vi.mock('../../../services/account.service', () => ({
 
 const theme = createTheme();
 
-const renderFinancePage = () =>
+const renderFinancePage = (initialEntries = ['/finance']) =>
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
       <SnackbarProvider>
         <ThemeProvider theme={theme}>
           <ThemeContext.Provider value={{ mode: 'light', toggleTheme: vi.fn() }}>
@@ -96,6 +96,25 @@ describe('FinancePage', () => {
   it('mostra o dashboard simulado no separador inicial', () => {
     renderFinancePage();
     expect(screen.getByTestId('finance-dashboard-mock')).toBeInTheDocument();
+  });
+
+  it('ORC-01: ?tab=budgets abre na aba Orçamentos e carrega lista sem clicar', async () => {
+    renderFinancePage(['/finance?tab=budgets']);
+    await waitFor(() => {
+      expect(budgetService.getAll).toHaveBeenCalled();
+    });
+    expect(screen.queryByTestId('finance-dashboard-mock')).not.toBeInTheDocument();
+    const budgetsTab = screen.getByTestId('budgets-tab-content');
+    expect(budgetsTab).toBeInTheDocument();
+    expect(within(budgetsTab).getByRole('columnheader', { name: /Nome/i })).toBeInTheDocument();
+  });
+
+  it('ORC-01: ?tab=2 é alias para aba Orçamentos', async () => {
+    renderFinancePage(['/finance?tab=2']);
+    await waitFor(() => {
+      expect(budgetService.getAll).toHaveBeenCalled();
+    });
+    expect(screen.getByTestId('budgets-tab-content')).toBeInTheDocument();
   });
 
   it('separador Orçamentos: grelha e estado vazio', async () => {

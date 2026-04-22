@@ -225,7 +225,7 @@ const BudgetDetailsPage = () => {
 
   const fetchBudget = async () => {
     try { const data = await getBudgetById(id); setBudget(data); }
-    catch (e) { console.error(e); enqueueSnackbar(getErrorMessage(e, 'Erro ao carregar orçamento.'), { variant: 'error' }); navigate('/finance'); }
+    catch (e) { console.error(e); enqueueSnackbar(getErrorMessage(e, 'Erro ao carregar orçamento.'), { variant: 'error' }); navigate('/finance?tab=budgets'); }
   };
 
   useEffect(() => { fetchBudget(); }, [id]);
@@ -323,7 +323,7 @@ const BudgetDetailsPage = () => {
       {/* Header */}
       <Box sx={{ ...ui.cardStyle, p: 3, mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <IconButton onClick={() => navigate('/finance')} sx={{ background: ui.colors.surface, border: `1px solid ${ui.colors.borderSubtle}`, color: ui.colors.textSecondary, '&:hover': { background: ui.colors.accentSoft, color: ui.colors.accent } }}>
+          <IconButton onClick={() => navigate('/finance?tab=budgets')} sx={{ background: ui.colors.surface, border: `1px solid ${ui.colors.borderSubtle}`, color: ui.colors.textSecondary, '&:hover': { background: ui.colors.accentSoft, color: ui.colors.accent } }}>
             <span className="material-icons-round">arrow_back</span>
           </IconButton>
           <Box>

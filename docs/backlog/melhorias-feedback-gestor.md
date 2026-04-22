@@ -18,7 +18,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
-| ORC-01 | Bug | **Navegação “voltar”:** ao lançar orçamento dentro de um orçamento salvo, a seta de voltar deve regressar à **lista/tela de orçamentos**, não ao **dashboard**. Mapear rota/histórico (`navigate`, `location.state`, breadcrumbs). | [ ] | [ ] |
+| ORC-01 | Bug | **Navegação “voltar”:** ao lançar orçamento dentro de um orçamento salvo, a seta de voltar deve regressar à **lista/tela de orçamentos**, não ao **dashboard**. Mapear rota/histórico (`navigate`, `location.state`, breadcrumbs). | [x] | [ ] |
 | DES-01 | Bug | **Minhas aprovações — anexo:** ao enviar despesa para aprovação, garantir visualização do **anexo** na aba “Minhas aprovações” (mesma origem de dados que aprovação; links assinados / permissões). | [ ] | [ ] |
 | DES-02 | Produto | **Rejeição de despesa:** hoje só existe **rejeição definitiva**; incluir fluxo de **devolução para ajuste** (reprovar com revisão), com estado claro para o solicitante e reenvio. | [ ] | [ ] |
 | DES-03 | Produto | **Despesas manuais:** tratar como **não previstas / fora do orçamento** — exigir **aprovação** (ou fluxo dedicado), **destaque visual** (badge, cor, ícone) e regras claras no catálogo de aprovação. | [ ] | [ ] |
