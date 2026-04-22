@@ -2,6 +2,7 @@
 import { startOfDay } from 'date-fns';
 
 export const GENERAL_TASK_STATUS_CONFIG = {
+  BACKLOG: { label: 'Backlog', color: '#64748b', bg: 'rgba(100, 116, 139, 0.18)' },
   TODO: { label: 'A Fazer', color: '#64748b', bg: 'rgba(100, 116, 139, 0.15)' },
   IN_PROGRESS: { label: 'Em Andamento', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)' },
   ON_HOLD: { label: 'Em Pausa', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)' },
@@ -13,6 +14,7 @@ export const GENERAL_TASK_STATUS_CONFIG = {
 };
 
 export const GENERAL_TASK_STATUS_OPTIONS = [
+  { value: 'BACKLOG', label: 'Backlog', color: '#64748b' },
   { value: 'TODO', label: 'A Fazer', color: '#64748b' },
   { value: 'IN_PROGRESS', label: 'Em Andamento', color: '#3b82f6' },
   { value: 'ON_HOLD', label: 'Em Pausa', color: '#f59e0b' },

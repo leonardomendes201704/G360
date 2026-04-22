@@ -398,7 +398,8 @@ const TasksPage = () => {
                     // Status Config
                     let statusLabel = task.status;
                     let statusColor = [100, 116, 139]; // Default grey
-                    if (task.status === 'TODO') { statusLabel = 'A Fazer'; statusColor = [14, 165, 233]; }
+                    if (task.status === 'BACKLOG') { statusLabel = 'Backlog'; statusColor = [100, 116, 139]; }
+                    else if (task.status === 'TODO') { statusLabel = 'A Fazer'; statusColor = [14, 165, 233]; }
                     else if (task.status === 'ON_HOLD') { statusLabel = 'Em Pausa'; statusColor = [245, 158, 11]; }
                     else if (task.status === 'IN_PROGRESS') { statusLabel = 'Em Progresso'; statusColor = [59, 130, 246]; }
                     else if (task.status === 'DONE') { statusLabel = 'Concluído'; statusColor = [16, 185, 129]; }
@@ -483,6 +484,7 @@ const TasksPage = () => {
         const todayStart = startOfDay(new Date());
         return {
             total: tasks.length,
+            backlog: tasks.filter((t) => t.status === 'BACKLOG').length,
             delayed: tasks.filter(t => t.status !== 'DONE' && t.status !== 'CANCELLED' && t.dueDate && startOfDay(new Date(t.dueDate)) < todayStart).length,
             todo: tasks.filter(t => t.status === 'TODO').length,
             onHold: tasks.filter(t => t.status === 'ON_HOLD').length,
@@ -545,6 +547,7 @@ const TasksPage = () => {
     // KPI config igual as tarefas de projeto
     const kpiConfig = [
         { key: 'total', label: 'Total de Tarefas', value: stats.total, icon: 'assignment', color: '#2563eb' },
+        { key: 'backlog', label: 'Backlog', value: stats.backlog, icon: 'inventory_2', color: '#64748b' },
         { key: 'delayed', label: 'Em Atraso', value: stats.delayed, icon: 'event_busy', color: '#ef4444' },
         { key: 'todo', label: 'A Fazer', value: stats.todo, icon: 'pending_actions', color: '#0ea5e9' },
         { key: 'onHold', label: 'Em Pausa', value: stats.onHold, icon: 'pause_circle', color: '#f59e0b' },
@@ -622,7 +625,7 @@ const TasksPage = () => {
                 }
             />
 
-            <KpiGrid maxColumns={7} mb={4}>
+            <KpiGrid maxColumns={8} mb={4}>
                 {kpiConfig.map((item) => (
                     <StatsCard
                         key={item.key}
@@ -762,7 +765,7 @@ const TasksPage = () => {
                         multiple: true,
                         renderValue: (selected) => {
                             if (selected.length === 0) return 'Todos';
-                            const labels = { OVERDUE: 'Em Atraso', TODO: 'A Fazer', ON_HOLD: 'Em Pausa', IN_PROGRESS: 'Em Progresso', DONE: 'Concluído', CANCELLED: 'Cancelada' };
+                            const labels = { OVERDUE: 'Em Atraso', BACKLOG: 'Backlog', TODO: 'A Fazer', ON_HOLD: 'Em Pausa', IN_PROGRESS: 'Em Progresso', DONE: 'Concluído', CANCELLED: 'Cancelada' };
                             return selected.map((s) => labels[s] || s).join(', ');
                         },
                     }}
@@ -771,6 +774,10 @@ const TasksPage = () => {
                     <MenuItem value="OVERDUE">
                         <Checkbox checked={draftFilters.status.includes('OVERDUE')} size="small" />
                         <ListItemText primary="Em Atraso" />
+                    </MenuItem>
+                    <MenuItem value="BACKLOG">
+                        <Checkbox checked={draftFilters.status.includes('BACKLOG')} size="small" />
+                        <ListItemText primary="Backlog" />
                     </MenuItem>
                     <MenuItem value="TODO">
                         <Checkbox checked={draftFilters.status.includes('TODO')} size="small" />
@@ -936,6 +943,7 @@ const TasksPage = () => {
                     onTaskClick={handleTaskClick}
                     onTaskMove={handleTaskMove}
                     onOpenCreateTask={canWrite ? handleOpenCreate : undefined}
+                    showBacklogColumn
                     showCancelledColumn
                     activeTimerTaskId={isRunning ? activeTimer?.taskId : null}
                     currentUserId={user?.id}

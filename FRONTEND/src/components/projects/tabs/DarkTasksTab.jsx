@@ -477,6 +477,7 @@ const DarkTasksTab = ({ project }) => {
                     onTaskClick={handleTaskClick}
                     onTaskMove={handleTaskMove}
                     onOpenCreateTask={handleOpenCreateTask}
+                    showBacklogColumn
                 />
             )}
 

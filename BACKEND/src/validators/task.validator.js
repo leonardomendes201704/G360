@@ -1,8 +1,9 @@
 const yup = require('yup');
 const { normalizeStatusForApi } = require('./project-task.validator');
 
-/** Kanban (Tarefas gerais) + listas/legacy; alinhado a PROJECT_TASK_STATUSES (sem BACKLOG p/ criação típica). */
+/** Kanban (Tarefas gerais) + listas/legacy; paridade com PROJECT_TASK_STATUSES (inclui BACKLOG). */
 const GENERAL_TASK_STATUSES = [
+    'BACKLOG',
     'TODO',
     'ON_HOLD',
     'IN_PROGRESS',

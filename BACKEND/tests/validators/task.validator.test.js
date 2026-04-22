@@ -44,8 +44,8 @@ describe('Task Validators', () => {
                 .rejects.toThrow('Status inválido');
         });
 
-        it('should accept all valid statuses (incl. Kanban ON_HOLD / CANCELLED)', async () => {
-            for (const status of ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'REVIEW', 'DONE', 'ARCHIVED', 'CANCELLED']) {
+        it('should accept all valid statuses (incl. BACKLOG / Kanban ON_HOLD / CANCELLED)', async () => {
+            for (const status of ['BACKLOG', 'TODO', 'ON_HOLD', 'IN_PROGRESS', 'REVIEW', 'DONE', 'ARCHIVED', 'CANCELLED']) {
                 const result = await createTaskSchema.validate({ ...validData, status });
                 expect(result.status).toBe(status);
             }
@@ -76,6 +76,11 @@ describe('Task Validators', () => {
         it('should accept status-only ON_HOLD (Kanban)', async () => {
             const result = await updateTaskSchema.validate({ status: 'ON_HOLD' });
             expect(result.status).toBe('ON_HOLD');
+        });
+
+        it('should accept BACKLOG (paridade com project tasks)', async () => {
+            const result = await updateTaskSchema.validate({ status: 'BACKLOG' });
+            expect(result.status).toBe('BACKLOG');
         });
 
         it('should still reject invalid priority', async () => {

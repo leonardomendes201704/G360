@@ -57,7 +57,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
-| TAR-01 | Bug | **Status Backlog:** criar tarefa com status backlog gera erro — alinhar **coluna Kanban “Backlog”** com estados da API/validador (mesma lógica que tarefas de projeto). | [ ] | [ ] |
+| TAR-01 | Bug | **Status Backlog:** criar tarefa com status backlog gera erro — alinhar **coluna Kanban “Backlog”** com estados da API/validador (mesma lógica que tarefas de projeto). | [x] | [ ] |
 | TAR-02 | Bug | **Clique no Kanban:** abrir detalhe/drawer da tarefa ao clicar no cartão (sem conflito com drag). | [x] | [ ] |
 | TAR-03 | Bug | **Expandir ações:** no modo expandido, permitir **marcar concluído** nas ações (checkbox / handler); **salvar checklist** sem recarregar o modal nem a lista com loading global (estado checked consistente). | [x] | [ ] |
 | TAR-04 | Bug | **Data de vencimento:** corrigir **off-by-one** (ex.: 30/04 aparece 29/04) — timezone, `startOfDay`/`UTC`, exibição vs armazenamento. | [ ] | [ ] |
@@ -145,7 +145,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 ## Resumo por prioridade sugerida (editável)
 
-1. **Bloqueadores / erros:** PRJ-01, PRB-01, INC-04, TAR-01, PRJ-09, RSK-03, ORC-01.
+1. **Bloqueadores / erros:** PRJ-01, PRB-01, INC-04, PRJ-09, RSK-03, ORC-01.
 2. **Fluxo financeiro e aprovações:** DES-01, DES-02, DES-03, GLB-01, ATA-03.
 3. **Consistência UX (modais, listas, badges):** GMUD-01, PRJ-02, ATA-01, ATA-02, SR-01–SR-03, CTR-01.
 4. **Decisões de produto antes de codar grande:** FIN-ARC-01, ABA-03.

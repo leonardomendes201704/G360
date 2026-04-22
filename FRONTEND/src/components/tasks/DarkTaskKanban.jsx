@@ -78,6 +78,8 @@ const DarkTaskKanban = ({
     onTaskClick,
     onTaskMove,
     onOpenCreateTask,
+    /** Coluna Backlog (paridade API/Kanban com tarefas de projeto e tarefas gerais — TAR-01). */
+    showBacklogColumn = false,
     /** Tarefas gerais: 5 colunas (inclui Canceladas) + menu / timer */
     showCancelledColumn = false,
     activeTimerTaskId = null,
@@ -111,22 +113,38 @@ const DarkTaskKanban = ({
     );
 
     const columnConfig = useMemo(() => {
-        const base = {
+        const cfg = {};
+        if (showBacklogColumn) {
+            cfg.BACKLOG = {
+                id: 'BACKLOG',
+                title: 'Backlog',
+                icon: 'inventory_2',
+                color: '#64748b',
+                gradient: 'linear-gradient(135deg, rgba(100, 116, 139, 0.22) 0%, transparent 100%)',
+            };
+        }
+        Object.assign(cfg, {
             TODO: { id: 'TODO', title: 'A Fazer', icon: 'pending_actions', color: '#2563eb', gradient: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, transparent 100%)' },
             ON_HOLD: { id: 'ON_HOLD', title: 'Em Pausa', icon: 'pause_circle', color: '#f59e0b', gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, transparent 100%)' },
             IN_PROGRESS: { id: 'IN_PROGRESS', title: 'Em Progresso', icon: 'autorenew', color: '#3b82f6', gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, transparent 100%)' },
             DONE: { id: 'DONE', title: 'Concluído', icon: 'check_circle', color: '#22c55e', gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 100%)' },
-        };
+        });
         if (showCancelledColumn) {
-            base.CANCELLED = { id: 'CANCELLED', title: 'Canceladas', icon: 'block', color: '#94a3b8', gradient: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, transparent 100%)' };
+            cfg.CANCELLED = { id: 'CANCELLED', title: 'Canceladas', icon: 'block', color: '#94a3b8', gradient: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, transparent 100%)' };
         }
-        return base;
-    }, [showCancelledColumn]);
+        return cfg;
+    }, [showBacklogColumn, showCancelledColumn]);
 
-    const columnOrder = showCancelledColumn
-        ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
-        : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+    const columnOrder = useMemo(() => {
+        const core = ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
+        const start = showBacklogColumn ? ['BACKLOG'] : [];
+        const end = showCancelledColumn ? ['CANCELLED'] : [];
+        return [...start, ...core, ...end];
+    }, [showBacklogColumn, showCancelledColumn]);
+
     const columns = columnOrder.map((id) => columnConfig[id]);
+
+    const kanbanColCount = 4 + (showBacklogColumn ? 1 : 0) + (showCancelledColumn ? 1 : 0);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuTask, setMenuTask] = useState(null);
@@ -141,33 +159,30 @@ const DarkTaskKanban = ({
     };
 
     // Normalizar status de tarefas (migrar valores antigos e corrigir inválidos)
-    const normalizedTasks = tasks.map(task => {
-        const validStatuses = showCancelledColumn
-            ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
-            : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
-        let normalizedStatus = task.status;
+    const normalizedTasks = useMemo(() => {
+        const validStatuses = columnOrder;
+        return tasks.map((task) => {
+            let normalizedStatus = task.status;
 
-        if (!showCancelledColumn && normalizedStatus === 'CANCELLED') {
-            normalizedStatus = 'TODO';
-        }
+            if (!showCancelledColumn && normalizedStatus === 'CANCELLED') {
+                normalizedStatus = 'TODO';
+            }
 
-        // Migrar status antigos/removidos
-        if (task.status === 'BACKLOG') {
-            normalizedStatus = 'TODO';
-        }
-        // Migrar REVIEW para ON_HOLD
-        if (task.status === 'REVIEW') {
-            normalizedStatus = 'ON_HOLD';
-        }
+            if (!showBacklogColumn && normalizedStatus === 'BACKLOG') {
+                normalizedStatus = 'TODO';
+            }
+            if (normalizedStatus === 'REVIEW') {
+                normalizedStatus = 'ON_HOLD';
+            }
 
-        // Tratar status inválidos
-        if (!validStatuses.includes(normalizedStatus)) {
-            console.error(`[DarkTaskKanban] Tarefa "${task.title}" com status inválido '${task.status}', usando 'TODO' como fallback`);
-            normalizedStatus = 'TODO';
-        }
+            if (!validStatuses.includes(normalizedStatus)) {
+                console.error(`[DarkTaskKanban] Tarefa "${task.title}" com status inválido '${task.status}', usando 'TODO' como fallback`);
+                normalizedStatus = 'TODO';
+            }
 
-        return { ...task, status: normalizedStatus };
-    });
+            return { ...task, status: normalizedStatus };
+        });
+    }, [tasks, columnOrder, showBacklogColumn, showCancelledColumn]);
 
     const [activeTask, setActiveTask] = useState(null);
     const [doneCollapsed, setDoneCollapsed] = useState(false);
@@ -228,10 +243,7 @@ const DarkTaskKanban = ({
             }
         }
 
-        const validStatuses = showCancelledColumn
-            ? ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE', 'CANCELLED']
-            : ['TODO', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
-        if (!validStatuses.includes(newStatus)) {
+        if (!columnOrder.includes(newStatus)) {
             return;
         }
 
@@ -268,9 +280,12 @@ const DarkTaskKanban = ({
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: showCancelledColumn
-                        ? { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(5, 1fr)' }
-                        : { xs: '1fr', lg: 'repeat(4, 1fr)' },
+                    gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: kanbanColCount >= 5 ? 'repeat(2, 1fr)' : '1fr',
+                        md: kanbanColCount >= 5 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
+                        lg: `repeat(${kanbanColCount}, 1fr)`,
+                    },
                     gap: 2.5,
                     mb: 4,
                 }}
@@ -481,7 +496,9 @@ const DarkTaskKanban = ({
                                                 {column.id === 'DONE' ? 'Nenhuma tarefa concluída' : 'Nenhuma tarefa'}
                                             </Typography>
                                             <Typography variant="caption" sx={{ color: textSecondary, opacity: 0.7 }}>
-                                                {column.id === 'TODO' ? 'Arraste tarefas aqui' : 'Mova tarefas para cá'}
+                                                {column.id === 'TODO' || column.id === 'BACKLOG'
+                                                    ? 'Arraste tarefas aqui'
+                                                    : 'Mova tarefas para cá'}
                                             </Typography>
                                         </Box>
                                     )}
