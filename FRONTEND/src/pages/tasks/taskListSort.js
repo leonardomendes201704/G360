@@ -1,5 +1,6 @@
 /** Tarefas gerais — ordenação (DataListTable) e metadados de status/prioridade. */
 import { startOfDay } from 'date-fns';
+import { parseLocalCalendarDateInput } from '../../utils/dateUtils';
 
 export const GENERAL_TASK_STATUS_CONFIG = {
   BACKLOG: { label: 'Backlog', color: '#64748b', bg: 'rgba(100, 116, 139, 0.18)' },
@@ -27,14 +28,20 @@ export const GENERAL_TASK_STATUS_OPTIONS = [
 const PRI_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
 
 export function getTaskDeadline(task) {
-  return task.dueDate || task.endDate;
+  if (!task || typeof task !== 'object') return null;
+  return task.dueDate ?? task.due_date ?? task.endDate ?? task.end_date ?? null;
+}
+
+/** `Date` local para vencimento (lista, ordenação, atraso) — ver TAR-04. */
+export function getTaskDeadlineDate(task) {
+  return parseLocalCalendarDateInput(getTaskDeadline(task));
 }
 
 export function isTaskOverdueForList(task) {
-  const deadline = getTaskDeadline(task);
+  const deadline = getTaskDeadlineDate(task);
   if (!deadline) return false;
   if (['DONE', 'COMPLETED', 'CANCELLED'].includes(task.status)) return false;
-  return startOfDay(new Date(deadline)) < startOfDay(new Date());
+  return startOfDay(deadline) < startOfDay(new Date());
 }
 
 function typeSortValue(task) {
@@ -73,8 +80,8 @@ export function sortGeneralTaskRows(rows, orderBy, order) {
         break;
       }
       case 'due': {
-        const da = getTaskDeadline(a) ? new Date(getTaskDeadline(a)).getTime() : 0;
-        const db = getTaskDeadline(b) ? new Date(getTaskDeadline(b)).getTime() : 0;
+        const da = getTaskDeadlineDate(a)?.getTime() ?? 0;
+        const db = getTaskDeadlineDate(b)?.getTime() ?? 0;
         cmp = da - db;
         break;
       }

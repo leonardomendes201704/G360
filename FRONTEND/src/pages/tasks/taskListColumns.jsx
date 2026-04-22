@@ -1,8 +1,8 @@
 import { Delete, CalendarToday, Warning, Edit } from '@mui/icons-material';
-import { Box, Typography, Checkbox, Avatar, Chip, IconButton } from '@mui/material';
+import { Box, Typography, Checkbox, Avatar, Chip, IconButton, Tooltip } from '@mui/material';
 import InlineStatusSelect from '../../components/common/InlineStatusSelect';
-import { formatRelative } from '../../utils/dateUtils';
-import { GENERAL_TASK_STATUS_CONFIG, getTaskDeadline, isTaskOverdueForList } from './taskListSort';
+import { formatDueDate, formatDate } from '../../utils/dateUtils';
+import { GENERAL_TASK_STATUS_CONFIG, getTaskDeadlineDate, isTaskOverdueForList } from './taskListSort';
 
 const getPriorityLabel = (p) =>
   ({ HIGH: 'Alta', MEDIUM: 'Média', LOW: 'Baixa', CRITICAL: 'Crítica' })[String(p || '').toUpperCase()] || p;
@@ -267,24 +267,43 @@ export function getGeneralTaskListColumns({
       width: '12%',
       minWidth: 108,
       sortable: true,
-      accessor: (t) => {
-        const d = getTaskDeadline(t);
-        return d ? new Date(d).getTime() : 0;
-      },
+      accessor: (t) => getTaskDeadlineDate(t)?.getTime() ?? 0,
       render: (task) => {
-        const deadline = getTaskDeadline(task);
+        const deadlineDate = getTaskDeadlineDate(task);
         const overdue = isTaskOverdueForList(task);
+        if (!deadlineDate) {
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#94a3b8', minWidth: 0 }}>
+              <CalendarToday sx={{ fontSize: '1.125rem', flexShrink: 0, opacity: 0.6 }} />
+              <Typography sx={{ fontWeight: 400, fontSize: '0.6rem', lineHeight: 1.2 }}>—</Typography>
+            </Box>
+          );
+        }
+        const fd = formatDueDate(deadlineDate);
+        const label = typeof fd === 'string' ? fd : fd.label;
+        const tone = typeof fd === 'string' ? '#94a3b8' : fd.color;
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: overdue ? '#dc2626' : '#64748b', minWidth: 0 }}>
-            {overdue ? (
-              <Warning sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
-            ) : (
-              <CalendarToday sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
-            )}
-            <Typography sx={{ fontWeight: overdue ? 600 : 400, fontSize: '0.6rem', lineHeight: 1.2 }}>
-              {deadline ? formatRelative(deadline) : '—'}
-            </Typography>
-          </Box>
+          <Tooltip title={formatDate(deadlineDate)} placement="top" arrow>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                color: overdue ? '#dc2626' : tone,
+                minWidth: 0,
+                cursor: 'default',
+              }}
+            >
+              {overdue ? (
+                <Warning sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
+              ) : (
+                <CalendarToday sx={{ fontSize: '1.125rem', flexShrink: 0 }} />
+              )}
+              <Typography sx={{ fontWeight: overdue ? 600 : 500, fontSize: '0.6rem', lineHeight: 1.2 }}>
+                {label}
+              </Typography>
+            </Box>
+          </Tooltip>
         );
       },
     },

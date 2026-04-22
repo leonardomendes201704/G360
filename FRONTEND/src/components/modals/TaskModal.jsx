@@ -18,6 +18,7 @@ import {
   getGeneralTaskAttachments, addGeneralTaskAttachment, deleteGeneralTaskAttachment
 } from '../../services/task.service';
 import { getFileURL } from '../../utils/urlUtils';
+import { formatDate } from '../../utils/dateUtils';
 
 /** Raio dos campos (TextField, Select, etc.) — alinhado a `--g360-radius-input` / login */
 const G360_INPUT_RADIUS = 'var(--g360-radius-input, 8px)';
@@ -438,9 +439,8 @@ const DarkTaskModal = ({
                   </Typography>
                   <Typography sx={{ fontSize: '14px', color: 'var(--modal-text)', fontWeight: 500 }}>
                     {isGeneralTask
-                      ? (task.dueDate ? format(new Date(task.dueDate), 'dd/MM/yyyy') : '-')
-                      : `${task.startDate ? format(new Date(task.startDate), 'dd/MM/yyyy') : '-'} → ${task.endDate ? format(new Date(task.endDate), 'dd/MM/yyyy') : '-'}`
-                    }
+                      ? formatDate(task.dueDate)
+                      : `${formatDate(task.startDate)} → ${formatDate(task.endDate)}`}
                   </Typography>
                 </Box>
               )}

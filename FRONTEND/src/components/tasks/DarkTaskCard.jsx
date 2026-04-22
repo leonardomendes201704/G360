@@ -4,6 +4,7 @@ import { Event, Warning, Flag } from '@mui/icons-material';
 import { format, isPast, isToday, isTomorrow, addDays, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import { parseLocalCalendarDateInput } from '../../utils/dateUtils';
 
 const DarkTaskCard = ({ task, onClick, taskIndex }) => {
     const { mode } = useContext(ThemeContext);
@@ -51,7 +52,9 @@ const DarkTaskCard = ({ task, onClick, taskIndex }) => {
 
     const getDueStatus = (dueDate) => {
         if (!dueDate) return null;
-        const date = startOfDay(new Date(dueDate));
+        const parsed = parseLocalCalendarDateInput(dueDate);
+        if (!parsed) return null;
+        const date = startOfDay(parsed);
         const today = startOfDay(new Date());
         if (date < today) {
             return { color: '#f43f5e', label: 'Atrasada' };

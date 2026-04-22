@@ -20,7 +20,7 @@ import TaskModal from '../../components/modals/TaskModal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import BulkActionsBar from '../../components/common/BulkActionsBar';
 import { getGeneralTaskListColumns } from './taskListColumns';
-import { sortGeneralTaskRows, isTaskOverdueForList } from './taskListSort';
+import { sortGeneralTaskRows, isTaskOverdueForList, getTaskDeadlineDate } from './taskListSort';
 import StatsCard from '../../components/common/StatsCard';
 import KpiGrid from '../../components/common/KpiGrid';
 import PageTitleCard from '../../components/common/PageTitleCard';
@@ -28,7 +28,7 @@ import PageTitleCard from '../../components/common/PageTitleCard';
 import './TasksPage.css';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { format, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import logoImg from '../../assets/liotecnica_logo_official.png';
 
@@ -414,10 +414,9 @@ const TasksPage = () => {
                     else { priorityLabel = 'Média'; }
 
                     const assigneeName = task.assignee?.name || '-';
-                    const deadline = task.dueDate ? format(new Date(task.dueDate), 'dd/MM/yyyy') : '-';
-
-                    // Check Overdue
-                    const isOverdue = task.status !== 'DONE' && task.status !== 'CANCELLED' && task.dueDate && startOfDay(new Date(task.dueDate)) < startOfDay(new Date());
+                    const deadlineDate = getTaskDeadlineDate(task);
+                    const deadline = deadlineDate ? format(deadlineDate, 'dd/MM/yyyy', { locale: ptBR }) : '-';
+                    const isOverdue = isTaskOverdueForList(task);
                     const deadlineText = isOverdue ? `${deadline} (Atrasado)` : deadline;
 
                     return [
@@ -481,11 +480,10 @@ const TasksPage = () => {
 
     // --- Stats Calculation ---
     const stats = useMemo(() => {
-        const todayStart = startOfDay(new Date());
         return {
             total: tasks.length,
             backlog: tasks.filter((t) => t.status === 'BACKLOG').length,
-            delayed: tasks.filter(t => t.status !== 'DONE' && t.status !== 'CANCELLED' && t.dueDate && startOfDay(new Date(t.dueDate)) < todayStart).length,
+            delayed: tasks.filter((t) => isTaskOverdueForList(t)).length,
             todo: tasks.filter(t => t.status === 'TODO').length,
             onHold: tasks.filter(t => t.status === 'ON_HOLD').length,
             inProgress: tasks.filter(t => t.status === 'IN_PROGRESS').length,
@@ -515,7 +513,7 @@ const TasksPage = () => {
                 const otherStatuses = statusFilter.filter(s => s !== 'OVERDUE');
 
                 // Check if task matches OVERDUE condition
-                const isOverdue = task.status !== 'DONE' && task.status !== 'CANCELLED' && task.dueDate && startOfDay(new Date(task.dueDate)) < startOfDay(new Date());
+                const isOverdue = isTaskOverdueForList(task);
 
                 // Task passes if it matches OVERDUE (when selected) OR matches one of the other selected statuses
                 const matchesOverdue = hasOverdue && isOverdue;

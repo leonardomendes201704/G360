@@ -1,5 +1,27 @@
-import { formatDistanceToNow, format, isToday, isYesterday, isTomorrow, differenceInDays } from 'date-fns';
+import { format, isToday, isYesterday, isTomorrow, differenceInDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+
+/**
+ * Converte valor da API (tarefas, etc.) em `Date` no **calendário local**:
+ * - `YYYY-MM-DD` sem hora → meio-dia local nesse dia (evita TAR-04: UTC midnight virar dia anterior no Brasil).
+ * - ISO com hora / `Date` → parsing nativo.
+ * @param {string|Date|number|null|undefined} input
+ * @returns {Date|null}
+ */
+export function parseLocalCalendarDateInput(input) {
+    if (input == null || input === '') return null;
+    if (input instanceof Date) {
+        return Number.isNaN(input.getTime()) ? null : input;
+    }
+    const s = String(input).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        const [y, m, d] = s.split('-').map(Number);
+        const local = new Date(y, m - 1, d, 12, 0, 0, 0);
+        return Number.isNaN(local.getTime()) ? null : local;
+    }
+    const t = new Date(s);
+    return Number.isNaN(t.getTime()) ? null : t;
+}
 
 /**
  * Returns a human-friendly relative string.
@@ -33,8 +55,8 @@ export const formatRelative = (dateInput) => {
  */
 export const formatDueDate = (dateInput) => {
     if (!dateInput) return '—';
-    const date = new Date(dateInput);
-    if (isNaN(date)) return '—';
+    const date = dateInput instanceof Date ? dateInput : parseLocalCalendarDateInput(dateInput);
+    if (!date || Number.isNaN(date.getTime())) return '—';
 
     const now = new Date();
     const diff = differenceInDays(date, now);
@@ -80,7 +102,7 @@ export const formatDateTime = (dateInput) => {
  */
 export const formatDate = (dateInput) => {
     if (!dateInput) return '—';
-    const date = new Date(dateInput);
-    if (isNaN(date)) return '—';
+    const date = dateInput instanceof Date ? dateInput : parseLocalCalendarDateInput(dateInput);
+    if (!date || Number.isNaN(date.getTime())) return '—';
     return format(date, 'dd/MM/yyyy', { locale: ptBR });
 };
