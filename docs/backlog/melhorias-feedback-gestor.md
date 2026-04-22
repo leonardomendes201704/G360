@@ -57,7 +57,7 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 
 | ID | Tipo | Tarefa | Corrigido | Homologado |
 |----|------|--------|:---------:|:----------:|
-| TAR-01 | Bug | **Status Backlog:** criar tarefa com status backlog gera erro — alinhar **coluna Kanban “Backlog”** com estados da API/validador (mesma lógica que tarefas de projeto). | [x] | [ ] |
+| TAR-01 | Bug | **Status Backlog:** criar tarefa com status backlog gera erro — alinhar **coluna Kanban “Backlog”** com estados da API/validador (mesma lógica que tarefas de projeto); **Kanban** com **scroll horizontal** quando há várias colunas (ex.: ver **Canceladas** com sidebar aberta). | [x] | [ ] |
 | TAR-02 | Bug | **Clique no Kanban:** abrir detalhe/drawer da tarefa ao clicar no cartão (sem conflito com drag). | [x] | [ ] |
 | TAR-03 | Bug | **Expandir ações:** no modo expandido, permitir **marcar concluído** nas ações (checkbox / handler); **salvar checklist** sem recarregar o modal nem a lista com loading global (estado checked consistente). | [x] | [ ] |
 | TAR-04 | Bug | **Data de vencimento:** corrigir **off-by-one** (ex.: 30/04 aparece 29/04) — timezone, `startOfDay`/`UTC`, exibição vs armazenamento. | [ ] | [ ] |

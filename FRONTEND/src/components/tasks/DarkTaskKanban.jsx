@@ -145,6 +145,11 @@ const DarkTaskKanban = ({
     const columns = columnOrder.map((id) => columnConfig[id]);
 
     const kanbanColCount = 4 + (showBacklogColumn ? 1 : 0) + (showCancelledColumn ? 1 : 0);
+    /** Largura mínima em `lg` (1 fila): força scroll horizontal quando o painel é mais estreito que todas as colunas. */
+    const KANBAN_COL_MIN_LG = 260;
+    const KANBAN_GAP_PX = 20; // alinhado a theme.spacing(2.5) com unit 8
+    const kanbanGridMinWidthLg =
+        kanbanColCount * KANBAN_COL_MIN_LG + Math.max(0, kanbanColCount - 1) * KANBAN_GAP_PX;
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuTask, setMenuTask] = useState(null);
@@ -279,17 +284,37 @@ const DarkTaskKanban = ({
         >
             <Box
                 sx={{
-                    display: 'grid',
-                    gridTemplateColumns: {
-                        xs: '1fr',
-                        sm: kanbanColCount >= 5 ? 'repeat(2, 1fr)' : '1fr',
-                        md: kanbanColCount >= 5 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
-                        lg: `repeat(${kanbanColCount}, 1fr)`,
+                    width: '100%',
+                    maxWidth: '100%',
+                    overflowX: 'auto',
+                    overflowY: 'visible',
+                    WebkitOverflowScrolling: 'touch',
+                    pb: 1,
+                    '&::-webkit-scrollbar': { height: 10 },
+                    '&::-webkit-scrollbar-thumb': {
+                        borderRadius: 9999,
+                        backgroundColor: isDark ? 'rgba(148, 163, 184, 0.35)' : 'rgba(100, 116, 139, 0.45)',
                     },
-                    gap: 2.5,
-                    mb: 4,
+                    '&::-webkit-scrollbar-track': {
+                        borderRadius: 9999,
+                        backgroundColor: isDark ? 'rgba(22, 29, 38, 0.6)' : 'rgba(241, 245, 249, 0.9)',
+                    },
                 }}
             >
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: {
+                            xs: '1fr',
+                            sm: kanbanColCount >= 5 ? 'repeat(2, minmax(0, 1fr))' : '1fr',
+                            md: kanbanColCount >= 5 ? 'repeat(3, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))',
+                            lg: `repeat(${kanbanColCount}, minmax(${KANBAN_COL_MIN_LG}px, 1fr))`,
+                        },
+                        gap: 2.5,
+                        mb: 4,
+                        minWidth: { xs: 0, sm: 0, md: 0, lg: `${kanbanGridMinWidthLg}px` },
+                    }}
+                >
                 {columns.map((column) => {
                     const isDoneColumn = column.id === 'DONE';
                     const columnTasks = isDoneColumn ? doneVisible : getTasksByStatus(column.id);
@@ -543,6 +568,7 @@ const DarkTaskKanban = ({
                         </Box>
                     );
                 })}
+                </Box>
             </Box>
             <DragOverlay dropAnimation={null} zIndex={10000}>
                 {activeTask ? (
