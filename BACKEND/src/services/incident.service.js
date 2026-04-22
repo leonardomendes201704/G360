@@ -606,7 +606,7 @@ class IncidentService {
                     where: { resolvedAt: { gte: fourteenDaysAgo, lt: sevenDaysAgo } }
                 }),
                 prisma.incident.findMany({
-                    where: { resolvedAt: { gte: sevenDaysAgo }, createdAt: { not: null } },
+                    where: { resolvedAt: { gte: sevenDaysAgo } },
                     select: { createdAt: true, resolvedAt: true },
                     take: 50
                 })
@@ -617,9 +617,10 @@ class IncidentService {
                 return Math.round(((curr - prev) / prev) * 100);
             };
 
-            const mttrMinutes = resolvedWithTime.length > 0
-                ? resolvedWithTime.reduce((sum, i) => sum + (new Date(i.resolvedAt) - new Date(i.createdAt)), 0)
-                / resolvedWithTime.length / 60000
+            const withCreated = resolvedWithTime.filter((i) => i.createdAt != null);
+            const mttrMinutes = withCreated.length > 0
+                ? withCreated.reduce((sum, i) => sum + (new Date(i.resolvedAt) - new Date(i.createdAt)), 0)
+                / withCreated.length / 60000
                 : null;
 
             return {

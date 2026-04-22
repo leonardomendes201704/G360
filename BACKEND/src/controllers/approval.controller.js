@@ -1,6 +1,7 @@
 const ProjectService = require('../services/project.service');
 const BudgetService = require('../services/budget.service');
 const ChangeRequestService = require('../services/change-request.service');
+const NotificationService = require('../services/notification.service');
 const logger = require('../config/logger');
 const {
   buildExpensePendingWhere,
@@ -616,10 +617,54 @@ class ApprovalController {
                     if (!(await userCanApproveExpense(req.prisma, userId, expReject))) {
                         return res.status(403).json({ message: 'Sem permissão para rejeitar esta despesa' });
                     }
+                    const adj = requiresAdjustment === true;
+                    const note = adj
+                        ? (reason ? `Devolvido para ajuste: ${reason}` : 'Devolvido para ajuste')
+                        : rejectNote;
                     result = await req.prisma.expense.update({
                         where: { id },
-                        data: { status: 'REJEITADO', notes: rejectNote }
+                        data: {
+                            status: adj ? 'RETURNED' : 'REJEITADO',
+                            rejectionReason: reason || null,
+                            requiresAdjustment: adj,
+                            notes: note,
+                        },
                     });
+                    if (expReject.createdBy) {
+                        try {
+                            if (adj) {
+                                await NotificationService.createNotification(req.prisma, {
+                                    userId: expReject.createdBy,
+                                    title: 'Despesa devolvida para ajuste',
+                                    message: reason
+                                        ? `Sua despesa foi devolvida para correção: ${reason}`
+                                        : 'Sua despesa foi devolvida para correção. Edite e reenvie para aprovação.',
+                                    type: 'WARNING',
+                                    link: '/finance',
+                                    category: 'FINANCE',
+                                    eventCode: 'EXPENSE_RETURNED',
+                                    entityType: 'EXPENSE',
+                                    entityId: id,
+                                });
+                            } else {
+                                await NotificationService.createNotification(req.prisma, {
+                                    userId: expReject.createdBy,
+                                    title: 'Despesa rejeitada',
+                                    message: reason
+                                        ? `Sua despesa foi rejeitada de forma definitiva: ${reason}`
+                                        : 'Sua despesa foi rejeitada de forma definitiva.',
+                                    type: 'ERROR',
+                                    link: '/finance',
+                                    category: 'FINANCE',
+                                    eventCode: 'EXPENSE_REJECTED',
+                                    entityType: 'EXPENSE',
+                                    entityId: id,
+                                });
+                            }
+                        } catch (notifyErr) {
+                            logger.error('Erro ao notificar solicitante da despesa:', notifyErr);
+                        }
+                    }
                     break;
                 }
 
@@ -730,7 +775,7 @@ class ApprovalController {
                         module: 'APPROVALS',
                         entityId: id,
                         entityType: type.toUpperCase(),
-                        newData: { reason }
+                        newData: { reason, requiresAdjustment: requiresAdjustment === true }
                     }
                 });
             }

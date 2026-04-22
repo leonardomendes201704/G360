@@ -532,6 +532,8 @@ model Expense {
   lessonsLearned    String?
   preventiveActions String?
   rootCause         String?
+  rejectionReason    String?
+  requiresAdjustment Boolean            @default(false)
   account           AccountingAccount? @relation(fields: [accountId], references: [id])
   contract          Contract?          @relation(fields: [contractId], references: [id])
   costCenter        CostCenter         @relation(fields: [costCenterId], references: [id])

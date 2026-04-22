@@ -117,6 +117,13 @@ class ExpenseController {
         validData.approvalStatus = req.body.approvalStatus;
       }
 
+      const prior = await req.prisma.expense.findUnique({
+        where: { id },
+        include: {
+          costCenter: { include: { manager: true } },
+        },
+      });
+
       // Validação Estrita para Pagamento
       if (validData.status === 'PAGO') {
         if (!validData.invoiceNumber && !req.body.invoiceNumber) return res.status(400).json({ error: 'Para confirmar pagamento, é obrigatório informar o número da Nota Fiscal.' });
@@ -130,6 +137,25 @@ class ExpenseController {
 
       // Update continua recebendo ID e Tenant separados por segurança
       const expense = await ExpenseService.update(req.prisma, id, req.user.tenantId, { ...validData, userId: req.user.userId });
+
+      if (validData.status === 'AGUARDANDO_APROVACAO' && prior && ['PREVISTO', 'RETURNED'].includes(prior.status)) {
+        const NotificationService = require('../services/notification.service');
+        const { notifyExpenseTierApprovers } = require('../services/approval-tier.service');
+        if (prior.costCenter?.managerId) {
+          await NotificationService.createNotification(
+            req.prisma,
+            prior.costCenter.managerId,
+            'Despesa Pendente de Aprovação',
+            `Uma despesa de R$ ${expense.amount} aguarda sua aprovação.`,
+            'INFO',
+            '/approvals'
+          );
+        }
+        await notifyExpenseTierApprovers(req.prisma, { ...prior, ...expense }, {
+          alreadyNotifiedManagerId: prior.costCenter?.managerId || undefined,
+        });
+      }
+
       return res.status(200).json(expense);
 
     } catch (error) {
@@ -190,9 +216,9 @@ class ExpenseController {
       }
 
       // Validar que está em status que pode ser submetido
-      if (expense.status !== 'PREVISTO') {
+      if (expense.status !== 'PREVISTO' && expense.status !== 'RETURNED') {
         return res.status(400).json({
-          error: 'Apenas despesas com status PREVISTO podem ser submetidas para aprovação.'
+          error: 'Apenas despesas com status Previsto ou Devolvida para ajuste podem ser submetidas para aprovação.'
         });
       }
 
@@ -200,7 +226,9 @@ class ExpenseController {
       const updated = await req.prisma.expense.update({
         where: { id },
         data: {
-          status: 'AGUARDANDO_APROVACAO'
+          status: 'AGUARDANDO_APROVACAO',
+          rejectionReason: null,
+          requiresAdjustment: false,
         },
         include: {
           costCenter: true,

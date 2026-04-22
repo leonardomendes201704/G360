@@ -5,6 +5,9 @@ const yup = require('yup');
 
 jest.mock('../../src/services/expense.service');
 jest.mock('../../src/services/notification.service');
+jest.mock('../../src/services/approval-tier.service', () => ({
+    notifyExpenseTierApprovers: jest.fn().mockResolvedValue(undefined),
+}));
 jest.mock('../../src/config/logger', () => ({
     error: jest.fn(),
     warn: jest.fn(),
@@ -112,12 +115,14 @@ describe('ExpenseController', () => {
         it('should 400 if PAGO but missing invoiceNumber and dueDate', async () => {
              const req = mockRequest({ params: { id: 'e1' }, body: { status: 'PAGO' } });
              const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({ id: 'e1', status: 'APROVADO', costCenter: null });
 
              await ExpenseController.update(req, res);
              expect(res.status).toHaveBeenCalledWith(400);
              expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringContaining('Nota Fiscal') }));
 
              req.body = { status: 'PAGO', invoiceNumber: '123' };
+             req.prisma.expense.findUnique.mockResolvedValue({ id: 'e1', status: 'APROVADO', costCenter: null });
              await ExpenseController.update(req, res);
              expect(res.status).toHaveBeenCalledWith(400);
              expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringContaining('Data de Vencimento') }));
@@ -130,6 +135,7 @@ describe('ExpenseController', () => {
                   file: { filename: 'f2.pdf', originalname: 'new.pdf' }
              });
              const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({ id: 'e1', status: 'PREVISTO', costCenter: null });
              ExpenseService.update.mockResolvedValue({ id: 'e1', amount: 150 });
 
              await ExpenseController.update(req, res);
@@ -144,6 +150,7 @@ describe('ExpenseController', () => {
         it('should 500 on generic update errors or pipe status code', async () => {
              const req = mockRequest({ params: { id: 'e1' }, body: {} });
              const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({ id: 'e1', status: 'PREVISTO', costCenter: null });
              
              // Piping custom status code
              ExpenseService.update.mockRejectedValue({ statusCode: 403, message: 'Denied' });
@@ -223,12 +230,15 @@ describe('ExpenseController', () => {
              expect(res.status).toHaveBeenCalledWith(404);
         });
 
-        it('should 400 if expense is not PREVISTO', async () => {
+        it('should 400 if expense is not PREVISTO nor RETURNED', async () => {
              const req = mockRequest({ params: { id: 'e1' } });
              const res = mockResponse();
              req.prisma.expense.findUnique.mockResolvedValue({ status: 'PAGO' });
              await ExpenseController.submitForApproval(req, res);
              expect(res.status).toHaveBeenCalledWith(400);
+             expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                 error: expect.stringContaining('Previsto ou Devolvida'),
+             }));
         });
 
         it('should update to AGUARDANDO_APROVACAO and notify manager', async () => {
@@ -242,9 +252,33 @@ describe('ExpenseController', () => {
              await ExpenseController.submitForApproval(req, res);
 
              expect(req.prisma.expense.update).toHaveBeenCalledWith(expect.objectContaining({ 
-                 data: { status: 'AGUARDANDO_APROVACAO' }
+                 data: expect.objectContaining({
+                     status: 'AGUARDANDO_APROVACAO',
+                     rejectionReason: null,
+                     requiresAdjustment: false,
+                 }),
              }));
              expect(NotificationService.createNotification).toHaveBeenCalled();
+             expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('should submit from RETURNED clearing rejection fields', async () => {
+             const req = mockRequest({ params: { id: 'e1' } });
+             const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({
+                 id: 'e1', status: 'RETURNED', amount: 200, costCenter: { managerId: 'm1' },
+             });
+             req.prisma.expense.update.mockResolvedValue({ id: 'e1', status: 'AGUARDANDO_APROVACAO' });
+
+             await ExpenseController.submitForApproval(req, res);
+
+             expect(req.prisma.expense.update).toHaveBeenCalledWith(expect.objectContaining({
+                 data: expect.objectContaining({
+                     status: 'AGUARDANDO_APROVACAO',
+                     rejectionReason: null,
+                     requiresAdjustment: false,
+                 }),
+             }));
              expect(res.status).toHaveBeenCalledWith(200);
         });
 

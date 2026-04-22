@@ -95,7 +95,7 @@ class ExpenseService {
                         },
                         // Exclude cancelled/rejected if needed? Assuming all created count or only approved?
                         // Usually "Provisão" counts.
-                        status: { notIn: ['REJECTED', 'CANCELLED'] }
+                        status: { notIn: ['REJECTED', 'CANCELLED', 'REJEITADO'] }
                       },
                       _sum: { amount: true }
                     });
@@ -157,6 +157,10 @@ class ExpenseService {
     if (!expense) throw { statusCode: 404, message: 'Despesa nao encontrada.' };
     await this.assertAccess(prisma, expense, data.userId);
 
+    if (String(expense.status || '').toUpperCase() === 'REJEITADO') {
+      throw { statusCode: 403, message: 'Despesas rejeitadas definitivamente não podem ser editadas.' };
+    }
+
     // Bloqueio de Edição para Despesas Aprovadas/Pagas
     if (['APROVADO', 'APPROVED', 'PAGO'].includes(expense.status?.toUpperCase())) {
       // Se não estiver mudando o status (ex: revertendo), bloqueia
@@ -203,6 +207,17 @@ class ExpenseService {
     });
 
     const { id: _id, tenantId: _t, createdAt, updatedAt, supplier, contract, account, costCenter, supplierId, contractId, costCenterId, accountId, userId, ...updateData } = payload;
+
+    if (payload.status === 'AGUARDANDO_APROVACAO') {
+      if (!['PREVISTO', 'RETURNED'].includes(expense.status)) {
+        throw {
+          statusCode: 400,
+          message: 'Apenas despesas com status Previsto ou Devolvida para ajuste podem ser enviadas para aprovação.',
+        };
+      }
+      updateData.rejectionReason = null;
+      updateData.requiresAdjustment = false;
+    }
 
     // Prisma requires nested relation syntax for updates
     if (supplierId !== undefined) {

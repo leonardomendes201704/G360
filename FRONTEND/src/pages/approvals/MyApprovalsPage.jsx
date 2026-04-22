@@ -173,6 +173,7 @@ const MyApprovalsPage = () => {
         if (type === 'project') return 'o projeto';
         if (type === 'gmud') return 'a GMUD';
         if (type === 'budget') return 'o orçamento';
+        if (type === 'expense') return 'a despesa';
         return 'o item';
     };
 
@@ -357,7 +358,7 @@ const MyApprovalsPage = () => {
                         sx={{ mb: 2 }}
                     />
 
-                    {(rejectDialog.item?.type === 'project' || rejectDialog.item?.type === 'minute' || rejectDialog.item?.type === 'projectCost' || rejectDialog.item?.type === 'proposal' || rejectDialog.item?.type === 'gmud') && (
+                    {(rejectDialog.item?.type === 'project' || rejectDialog.item?.type === 'minute' || rejectDialog.item?.type === 'projectCost' || rejectDialog.item?.type === 'proposal' || rejectDialog.item?.type === 'gmud' || rejectDialog.item?.type === 'expense') && (
                         <Box sx={{
                             p: 2,
                             background: requiresAdjustment ? 'rgba(245, 158, 11, 0.1)' : 'rgba(244, 63, 94, 0.1)',

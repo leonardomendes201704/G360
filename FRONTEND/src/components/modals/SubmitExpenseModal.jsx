@@ -26,7 +26,7 @@ const darkInputStyles = {
 /**
  * Modal leve para envio de despesa para aprovação.
  * Só pede: Data Vencimento, Data Pagamento, Nº NF, Anexo NF.
- * Usado pelo perfil Financeiro para despesas com status PREVISTO.
+ * Usado para despesas com status PREVISTO ou RETURNED (devolvida para ajuste).
  */
 const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
     const [dueDate, setDueDate] = useState('');
@@ -83,8 +83,8 @@ const SubmitExpenseModal = ({ open, onClose, onSubmit, expense = null }) => {
         <StandardModal
             open={open}
             onClose={onClose}
-            title="Enviar para Aprovação"
-            subtitle="Preencha os dados obrigatórios para submeter"
+            title={expense?.status === 'RETURNED' ? 'Reenviar para Aprovação' : 'Enviar para Aprovação'}
+            subtitle={expense?.status === 'RETURNED' ? 'Corrija conforme o retorno e complete os dados para nova submissão' : 'Preencha os dados obrigatórios para submeter'}
             icon="send"
             size="form"
             loading={submitting}

@@ -8,6 +8,8 @@ function getExpenseStatusLabel(status) {
     PREVISTO: { label: 'Previsto', bg: '#1c2632', color: '#94a3b8' },
     PENDENTE: { label: 'Pendente', bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' },
     AGUARDANDO_APROVACAO: { label: 'Aguardando Aprovação', bg: 'rgba(37, 99, 235, 0.15)', color: '#2563eb' },
+    RETURNED: { label: 'Devolvida p/ ajuste', bg: 'rgba(249, 115, 22, 0.15)', color: '#f97316' },
+    REJEITADO: { label: 'Rejeitada', bg: 'rgba(244, 63, 95, 0.15)', color: '#f43f5e' },
     APROVADO: { label: 'Aprovado', bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' },
     ATRASADO: { label: 'Atrasado', bg: 'rgba(244, 63, 95, 0.15)', color: '#f43f5e' },
     PAGO: { label: 'Pago', bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981' },
@@ -76,6 +78,20 @@ export function getExpenseListColumns({
       render: (e) => (
         <Box>
           <Typography sx={{ fontWeight: 500, color: textPrimary, fontSize: '13px' }}>{e.description}</Typography>
+          {(e.status || '').toUpperCase() === 'RETURNED' && e.rejectionReason && (
+            <Tooltip title={e.rejectionReason} arrow>
+              <Typography sx={{ fontSize: '11px', color: '#f97316', mt: 0.5, cursor: 'help', maxWidth: 280 }} noWrap>
+                Motivo: {e.rejectionReason}
+              </Typography>
+            </Tooltip>
+          )}
+          {(e.status || '').toUpperCase() === 'REJEITADO' && e.rejectionReason && (
+            <Tooltip title={e.rejectionReason} arrow>
+              <Typography sx={{ fontSize: '11px', color: '#f43f5e', mt: 0.5, cursor: 'help', maxWidth: 280 }} noWrap>
+                Motivo: {e.rejectionReason}
+              </Typography>
+            </Tooltip>
+          )}
           {e.approvalStatus === 'UNPLANNED' && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
               <span className="material-icons-round" style={{ fontSize: '12px', color: '#f59e0b' }}>warning</span>
@@ -158,8 +174,8 @@ export function getExpenseListColumns({
         const s = (e.status || '').toUpperCase();
         return (
           <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }} onClick={(ev) => ev.stopPropagation()}>
-            {s === 'PREVISTO' && canSubmitForApprovalFlow && (
-              <Tooltip title="Enviar para Aprovação" arrow>
+            {(s === 'PREVISTO' || s === 'RETURNED') && canSubmitForApprovalFlow && (
+              <Tooltip title={s === 'RETURNED' ? 'Reenviar para Aprovação' : 'Enviar para Aprovação'} arrow>
                 <IconButton onClick={() => onOpenSubmit(e)} sx={actionBtnStyle('success')}>
                   <span className="material-icons-round" style={{ fontSize: '16px' }}>send</span>
                 </IconButton>
@@ -172,7 +188,7 @@ export function getExpenseListColumns({
                 </IconButton>
               </Tooltip>
             )}
-            {s === 'PREVISTO' && canApproveOrEditExpense && (
+            {(s === 'PREVISTO' || s === 'RETURNED') && canApproveOrEditExpense && (
               <Tooltip title="Editar" arrow>
                 <IconButton onClick={() => onOpenEdit(e)} sx={actionBtnStyle('edit')}>
                   <span className="material-icons-round" style={{ fontSize: '16px' }}>edit</span>

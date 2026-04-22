@@ -8,6 +8,7 @@
     "dev": "nodemon src/app.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "db:add-expense-rejection-columns": "node src/scripts/add-expense-rejection-columns-all-tenants.js",
     "prisma:studio": "prisma studio",
     "seed": "node src/prisma/seed.js",
     "seed:gantt-demo": "node src/scripts/seed-gantt-demo-project.js",

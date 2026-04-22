@@ -2,6 +2,7 @@ const ApprovalController = require('../../src/controllers/approval.controller');
 const ProjectService = require('../../src/services/project.service');
 const BudgetService = require('../../src/services/budget.service');
 const ChangeRequestService = require('../../src/services/change-request.service');
+const NotificationService = require('../../src/services/notification.service');
 const approvalTierSvc = require('../../src/services/approval-tier.service');
 
 jest.mock('../../src/services/project.service');
@@ -31,6 +32,9 @@ jest.mock('../../src/services/approval-tier.service', () => {
 jest.mock('../../src/config/logger', () => ({
     error: jest.fn(),
     info: jest.fn()
+}));
+jest.mock('../../src/services/notification.service', () => ({
+    createNotification: jest.fn().mockResolvedValue(true),
 }));
 
 const mockResponse = () => {
@@ -410,16 +414,46 @@ describe('ApprovalController', () => {
              expect(res.status).toHaveBeenCalledWith(400);
         });
 
-        it('should reject expense', async () => {
+        it('should reject expense definitively', async () => {
              const req = mockRequest({ params: { type: 'expense', id: '1' }, body: { reason: 'No budget' } });
              const res = mockResponse();
              req.prisma.expense.findUnique.mockResolvedValue({
-                 id: '1', status: 'AGUARDANDO_APROVACAO', costCenterId: 'cc1', amount: 50
+                 id: '1', status: 'AGUARDANDO_APROVACAO', costCenterId: 'cc1', amount: 50, createdBy: 'creator1',
              });
              req.prisma.expense.update.mockResolvedValue({ id: '1' });
              await ApprovalController.reject(req, res);
-             expect(req.prisma.expense.update).toHaveBeenCalledWith(expect.objectContaining({ data: { status: 'REJEITADO', notes: 'Rejeitado: No budget' } }));
+             expect(req.prisma.expense.update).toHaveBeenCalledWith(expect.objectContaining({
+                 data: expect.objectContaining({
+                     status: 'REJEITADO',
+                     notes: 'Rejeitado: No budget',
+                     rejectionReason: 'No budget',
+                     requiresAdjustment: false,
+                 }),
+             }));
+             expect(NotificationService.createNotification).toHaveBeenCalled();
              expect(req.prisma.auditLog.create).toHaveBeenCalled();
+        });
+
+        it('should return expense for adjustment when requiresAdjustment', async () => {
+             const req = mockRequest({
+                 params: { type: 'expense', id: '1' },
+                 body: { reason: 'Corrigir NF', requiresAdjustment: true },
+             });
+             const res = mockResponse();
+             req.prisma.expense.findUnique.mockResolvedValue({
+                 id: '1', status: 'AGUARDANDO_APROVACAO', costCenterId: 'cc1', amount: 50, createdBy: 'creator1',
+             });
+             req.prisma.expense.update.mockResolvedValue({ id: '1' });
+             await ApprovalController.reject(req, res);
+             expect(req.prisma.expense.update).toHaveBeenCalledWith(expect.objectContaining({
+                 data: expect.objectContaining({
+                     status: 'RETURNED',
+                     rejectionReason: 'Corrigir NF',
+                     requiresAdjustment: true,
+                     notes: 'Devolvido para ajuste: Corrigir NF',
+                 }),
+             }));
+             expect(NotificationService.createNotification).toHaveBeenCalled();
         });
 
         it('should reject projectCost applying requiresAdjustment flows', async () => {
