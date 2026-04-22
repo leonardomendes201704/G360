@@ -24,6 +24,8 @@ Documento de **tarefas de acompanhamento** derivadas do texto de revisão. Marca
 | DES-03 | Produto | **Despesas manuais:** tratar como **não previstas / fora do orçamento** — exigir **aprovação** (ou fluxo dedicado), **destaque visual** (badge, cor, ícone) e regras claras no catálogo de aprovação. | [x] | [ ] |
 | FIN-ARC-01 | Arquitetura | **Custos de projetos:** decidir se o controlo permanece **no módulo de projeto** ou migra / espelha no **módulo financeiro** (ex.: “custos de projeto” com aprovação de despesa e ligação a **propostas** em finanças). Documentar decisão e impacto em dados e telas. | [ ] | [ ] |
 
+**FIN-ARC-01 — rascunho para decisão:** explicação em linguagem simples e plano de implantação por fases em [docs/architecture/FIN-ARC-01-decisao-e-plano.md](../architecture/FIN-ARC-01-decisao-e-plano.md).
+
 ---
 
 ## Contratos
