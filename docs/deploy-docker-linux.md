@@ -144,6 +144,29 @@ sudo docker compose up -d --build
 
 Se houver apenas alterações de backend/frontend sem mudar dependências, por vezes basta rebuild seletivo; para consistência, `--build` na raiz é o fluxo mais seguro.
 
+### 7.1. A partir de Windows (dev na LAN com SSH ao servidor)
+
+Na **máquina de desenvolvimento** (com chave ou password SSH para o Linux), a partir de **qualquer** pasta, pode invocar o script na **raiz do repositório** (clone local, não precisa de ser o mesmo path do servidor):
+
+```powershell
+cd C:\caminho\para\G360
+.\scripts\deploy-lan-g360.ps1 -SshUser SEU_USUARIO_LINUX
+```
+
+Exemplo (IP de homologação interna `10.0.0.80` — predefinido no script):
+
+```powershell
+.\scripts\deploy-lan-g360.ps1 -SshUser leonardo
+```
+
+Se o `docker` no servidor exigir `sudo` e tiver `NOPASSWD` para o utilizador:
+
+```powershell
+.\scripts\deploy-lan-g360.ps1 -SshUser leonardo -UseSudo
+```
+
+O script executa no remoto: `cd ~/g360` → `git pull` → `docker compose up -d --build` (igual à secção 7).
+
 ---
 
 ## 8. PostgreSQL a partir do teu PC
