@@ -197,6 +197,8 @@ docker compose exec backend npm run seed
 
 Apenas o Postgres (sem API/frontend): `docker compose up -d g360-postgres`.
 
+**Deploy num servidor Linux (rede interna, IP, atualizacoes):** ver [docs/deploy-docker-linux.md](docs/deploy-docker-linux.md).
+
 O ficheiro `rbac-matrix.json` na raiz do repositorio entra nas imagens de **backend** e **frontend** (resolucao de permissoes RBAC).
 
 **Credenciais padrao (apos seed):**
