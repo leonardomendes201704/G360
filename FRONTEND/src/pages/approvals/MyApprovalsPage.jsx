@@ -25,7 +25,39 @@ const typeConfig = {
     budget: { label: 'Orçamento', icon: 'account_balance', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.15)' },
 };
 
-const VALID_TABS = ['all', 'expense', 'projectCost', 'minute', 'gmud', 'project', 'proposal', 'budget'];
+/** Tabs na URL / notificações (singular) e KPIs (plural) — ver tabToPendingApiType para GET /approvals/pending */
+const VALID_TABS = [
+    'all',
+    'expense', 'expenses',
+    'projectCost', 'projectCosts',
+    'minute', 'minutes',
+    'gmud', 'gmuds',
+    'project', 'projects',
+    'proposal', 'proposals',
+    'budget', 'budgets',
+];
+
+/** Backend getPending espera type plural (expenses, projectCosts, …). */
+function tabToPendingApiType(tab) {
+    if (!tab || tab === 'all') return null;
+    const map = {
+        expense: 'expenses',
+        expenses: 'expenses',
+        projectCost: 'projectCosts',
+        projectCosts: 'projectCosts',
+        minute: 'minutes',
+        minutes: 'minutes',
+        gmud: 'gmuds',
+        gmuds: 'gmuds',
+        project: 'projects',
+        projects: 'projects',
+        proposal: 'proposals',
+        proposals: 'proposals',
+        budget: 'budgets',
+        budgets: 'budgets',
+    };
+    return map[tab] ?? tab;
+}
 
 const MyApprovalsPage = () => {
     const navigate = useNavigate();
@@ -73,7 +105,7 @@ const MyApprovalsPage = () => {
         try {
             const [countsData, itemsData] = await Promise.all([
                 approvalService.getCounts(),
-                approvalService.getPending(activeTab !== 'all' ? activeTab : null)
+                approvalService.getPending(tabToPendingApiType(activeTab))
             ]);
             setCounts(countsData);
             setItems(itemsData);

@@ -32,10 +32,25 @@ export const getServerBaseURL = () => {
 };
 
 /**
+ * Origem HTTP(S) onde o Express serve ficheiros estáticos (/uploads).
+ * Alinha com a API (api.js / getUploadURL), não com getServerBaseURL (legado 3001/3002).
+ */
+const getStaticFilesOrigin = () => {
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL
+            .replace(/\/api(?:\/v\d+)?\/?$/i, '')
+            .replace(/\/$/, '');
+    }
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    return `${protocol}//${hostname}:8500`;
+};
+
+/**
  * Constrói a URL completa para um arquivo/recurso do servidor
- * 
+ *
  * @param {string} path - Caminho relativo do arquivo, ex: "/uploads/file.pdf"
- * @returns {string} URL completa, ex: "http://10.0.8.53:3001/uploads/file.pdf"
+ * @returns {string} URL completa na mesma origem da API (ex.: http://localhost:8500/uploads/...)
  */
 export const getFileURL = (path) => {
     if (!path) return '';
@@ -48,7 +63,7 @@ export const getFileURL = (path) => {
     // Garantir que o path comece com /
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
-    return `${getServerBaseURL()}${normalizedPath}`;
+    return `${getStaticFilesOrigin()}${normalizedPath}`;
 };
 
 /**
